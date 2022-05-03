@@ -2,8 +2,12 @@ if(document.getElementById("defaultOpen")){
     document.getElementById("defaultOpen").click();
 }
 
-if(document.querySelector(".card-btn")){
-    const cardBtn = document.querySelector(".card-btn");
+if(document.getElementById("defaultOpen2")){
+    document.getElementById("defaultOpen2").click();
+}
+
+if(document.querySelector(".welcome-container .card-btn")){
+    const cardBtn = document.querySelector(".welcome-container .card-btn");
 
     cardBtn.addEventListener("click", () => {
         document.querySelector(".welcome-container").classList.toggle("change");
@@ -451,6 +455,24 @@ function openTab(event, tabName){
     document.getElementById(tabName).style.display = "block";
     event.currentTarget.className += " active";
 }
+function openTab2(event, tabName){
+    var i, postFeeds2, tablinks;
+
+    postFeeds2 = document.getElementsByClassName("postFeeds2");
+
+    for (i = 0; i < postFeeds2.length; i++){
+        postFeeds2[i].style.display = "none";
+    }
+
+    tablinks = document.getElementsByClassName("tablinks2");
+
+    for (i = 0; i < tablinks.length; i++){
+        tablinks[i].className = tablinks[i].className.replace("active", "");
+    }
+
+    document.getElementById(tabName).style.display = "block";
+    event.currentTarget.className += " active";
+}
 
 // =======================Closetabs in Forum=====================//
 function closeTag(){
@@ -747,4 +769,12 @@ function altEmail(){
 
 function closeAltEmail(){
     document.getElementById("alt-email").style.display = "none";
+}
+
+// ====================Show Profile======================= //
+function showProfile (){
+    document.querySelector(".user-chatroom").classList.add("show-profile");
+}
+function closeProfile(){
+    document.querySelector(".user-chatroom").classList.replace("show-profile","close-profile");
 }
