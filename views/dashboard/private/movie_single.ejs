@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Header -->
+    <%- include("./partials/header") %> 
+</head>
+<body>
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %>
+
+    <!--Main-->
+    <main>
+        <div class="body-container">
+            <!--=====================Alerts=====================-->
+            <div class="alerts">
+                <div class="alert-success" id="alert-success" style="display: none;">
+                    <span class="fa fa-times"></span>
+                    <div class="body">
+                        <i class="fa fa-check-circle"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+                <div class="alert-danger" id="alert-danger" style="display: none;">
+                    <span class="fa fa-times"></span>
+                    <div class="body">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+            </div>
+            <!-- Sidebar -->
+            <%- include ("./partials/sidebar") %> 
+            
+            <!--Middle-->
+            <div class="middle">
+                <div class="movies-container">
+                    <div class="action-bar">
+                        <div class="dots-btn">
+                            <div class="dot dot-1"></div>
+                            <div class="dot dot-2"></div>
+                            <div class="dot dot-3"></div>
+                        </div>
+                        <div class="nav-menu">
+                            <a href="<%= channelRoute %> " class="nav-menu-link" title="My Channel"><i class="fa fa-video-camera"></i></a>
+                            <a href="/dashboard/private/movies/myPlaylists" class="nav-menu-link" title="Playlists"><i
+                                    class="fa fa-play-circle-o"></i></a>
+                            <a href="/dashboard/private/movies/uploadVideo" class="nav-menu-link" title="Upload Video"><i
+                                    class="fa fa-upload"></i></a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="single-video">
+                                <video controls>
+                                    <source src="<%= movie.fileUpload %>" type="video/mp4">
+                                </video>
+                                <div class="video-tags">
+                                    <%  var categories = movie.category.split(",")
+                                        categories.forEach(category => {
+                                    %>
+                                        <div href="" style="text-transform: capitalize;">#<%= category %></div>
+                                    <% }) %>
+                                </div>
+                                <h3><%= movie.title %></h3>
+                                <div class="single-video-info">
+                                    <p><%= movie.views.length %> view<% if(movie.views.length > 1){ %>s<% } %> &bull; 
+                                        <% var timeInMS=new Date() - new Date(movie.createdAt); var secs=timeInMS / 1000; var mins=timeInMS / (1000 * 60); var
+                                            hours=timeInMS / (1000 * 60 * 60); var days=timeInMS / (1000 * 60 * 60 * 24); var weeks=timeInMS / (1000 * 60 * 60 *
+                                            24 * 7); 
+                                            if( days> 13.999){ %>
+                                                <%= Math.round(weeks) %> weeks
+                                                <% }else if( days> 6.999){ %>
+                                                <%= Math.round(weeks) %> week
+                                                    <% }else if( hours> 35.99){ %>
+                                                        <%= Math.round(days) %> days
+                                                    <% }else if( hours> 23.99){ %>
+                                                        <%= Math.round(days) %> day
+                                                            <% }else if(mins> 119) { %>
+                                                                <%= Math.round(hours) %> hrs
+                                                            <% }else if(mins> 59) { %>
+                                                                <%= Math.round(hours) %> hr
+                                                                    <% }else if(secs> 119){ %>
+                                                                        <%= Math.round(mins) %> mins
+                                                                    <% }else if(secs> 59){ %>
+                                                                        <%= Math.round(mins) %> min
+                                                                            <% }else{ %>
+                                                                                <%= Math.round(secs) %> secs
+                                                                                    <% } %>
+                                    ago</p>
+                                    <div class="actions">
+                                        <% 
+                                            var likesArray=[]; movie.likes.forEach((like)=> {
+                                            likesArray.push(like.userID);
+                                            });
+                                            var dislikesArray=[]; movie.dislikes.forEach((dislike)=> {
+                                            dislikesArray.push(dislike.userID);
+                                            });
+                                        %>
+                                        <div title="Like Video">
+                                            <%= likesArray.length %> <span id="like">Like<% if(likesArray.length > 1){ %>s<% } %></span>
+                                            <span class="likeVideo" style="
+                                                                        margin-left: 5px;
+                                                                        cursor: pointer;
+                                                                        color:
+                                                                            <% if(likesArray.includes(user._id.toString())){ %>
+                                                                                var(--color-primary);
+                                                                            <% }else{ %>
+                                                                                var(--color-dark);
+                                                                            <% } %>
+                                                                            "
+                                                onclick="likeVideo(this, '<%= user._id %>', '<%= movie._id %>')">
+                                                <i class="fa fa-thumbs-up"></i>
+                                            </span>
+                                        </div>
+                                        <div title="Dislike">
+                                            <%= dislikesArray.length %> <span id="dislike">Dislike<% if(dislikesArray.length> 1){ %>s<% } %></span>
+                                            <span class="dislikeVideo" style="
+                                                                            margin-left: 5px;
+                                                                            cursor: pointer;
+                                                                            color: 
+                                                                                <% if(dislikesArray.includes(user._id.toString())){ %>
+                                                                                    var(--color-primary);
+                                                                                <% }else{ %>
+                                                                                    var(--color-dark);
+                                                                                <% } %>
+                                                                                "
+                                                onclick="dislikeVideo(this, '<%= user._id %>', '<%= movie._id %>')">
+                                                <i class="fa fa-thumbs-down"></i>
+                                            </span>
+                                        </div>
+                                        <div style="cursor: pointer;" onclick="copyPlaylistLink('<%= getURL %>/dashboard/private/movies/<%= movie._id %>')" title="Copy Video Link">
+                                            <span>
+                                                <span id="share">Copy Link</span> 
+                                                <i class="fa fa-clipboard"></i>
+                                            </span>
+                                        </div>
+                                        <div onclick="videoSpace3('<%= movie._id %>')" title="Add to Playlist" style="cursor: pointer;">
+                                            <span>
+                                                <span id="playList">Playlist</span> 
+                                                <i class="fa fa-play-circle"></i>
+                                            </span>
+                                        </div> 
+                                    </div>
+                                </div>
+                                <hr> 
+                                <div class="channel">
+                                    <a href="/dashboard/private/movieChannel/<%= channelDetails._id %>">
+                                        <img src="<%= channelDetails.logo %>" alt="">
+                                    </a>
+                                    <div>
+                                        <a href="/dashboard/private/movieChannel/<%= channelDetails._id %>">
+                                            <p><%= channelDetails.channelName %></p>
+                                        </a>
+                                        <span><%= channelDetails.subscribers.length %> subscriber<% if(channelDetails.subscribers.length > 1){ %>s<% } %></span>
+                                    </div>
+                                    <% if(!channelAccess){ %>
+                                    <button class="btn <% if(subscribersArray.includes(user._id.toString())){ %> btn-gray <%}else{%> btn-primary<% } %>"
+                                        id="subscribe-btn" onclick="subscribe()">
+                                        <% if(subscribersArray.includes(user._id.toString())){ %> Unsubscribe <%}else{%> Subscribe <% } %>
+                                    </button>
+                                    <% } %>
+                                </div>
+                                <div class="video-description">
+                                    <h4>About Movie</h4><br>
+                                    <% var movieDescription =  movie.description %>
+                                    <pre><% if( movieDescription.length > 120){ %><span id="the-text"><%= movieDescription.slice(0,120) %>...</span><% }else{ %><%= movieDescription %><% } %> <button id="readMoreOne" class="btn btn-primary" style="border-radius: 10px; margin-top: 5px;">Read More <i class="fa fa-angle-down"></i></button></pre>
+                                    
+                                    
+                                            <br><br>
+                                    <p><i>Subscribe to <a href="/dashboard/private/movieChannel/<%= channelDetails._id %>"><%= channelDetails.channelName %></a> to get more exclusive videos</i></p>
+                                    <hr>
+                                    <h4><%= movie.comments.length %> Comment<% if(movie.comments.length > 1){ %>s<% } %></h4>
+                                    <div class="feed-video">
+                                        <div class="comment">
+                                            <img src="../../../uploads/<%= user.avatar %>" alt="">
+                                            <form id="comment-form<%= movie._id %>" style="width: 100%; display:flex; align-items:center; flex-direction: row; justify-content:space-between;">
+                                                <input type="hidden" class="movieID" name="movieID" value="<%= movie._id %>">
+                                                <textarea name="myComment" class="myComment" id="" placeholder="Write your comments..." required style="width: 90%;"></textarea>
+                                                <button class="btn btn-primary"> <i class="fa fa-paper-plane"></i></button>
+                                            </form>
+                                        </div>
+                                    
+                                        <% 
+                                            if(movie.comments.length > 0){ 
+                                                movie.comments.forEach(comment => {
+                                        %>
+                                            <div class="old-comments">
+                                                <img src="../../../uploads/<%= comment.userAvatar %>" alt="">
+                                                <div>
+                                                    <div style="cursor: pointer;" onclick="showVideoReplies('<%= user._id %>','<%= movie._id %>','<%= comment._id %>','<%= comment.uniqID %>')">
+                                                        <h3>
+                                                            <%= comment.username %> 
+                                                            <span>
+                                                    <% var timeInMS2=new Date() - new Date(comment.datePosted); 
+                                                    var secs2=timeInMS2 / 1000; 
+                                                    var mins2=timeInMS2 / (1000 * 60); 
+                                                    var hours2=timeInMS2 / (1000 * 60 * 60); 
+                                                    var days2=timeInMS2 / (1000 * 60 * 60 * 24); 
+                                                    var weeks2=timeInMS2 / (1000 * 60 * 60 * 24 * 7); 
+                                                    if( days2> 13.999){ %>
+                                                        <%= Math.round(weeks2) %> weeks
+                                                        }else if( days2> 6.999){ %>
+                                                        <%= Math.round(weeks2) %> week
+                                                            <% }else if( hours2> 35.99){ %>
+                                                                <%= Math.round(days2) %> days
+                                                            <% }else if( hours2> 23.99){ %>
+                                                                <%= Math.round(days2) %> day
+                                                                    <% }else if(mins2> 119) { %>
+                                                                        <%= Math.round(hours2) %> hrs
+                                                                    <% }else if(mins2> 59) { %>
+                                                                        <%= Math.round(hours2) %> hr
+                                                                            <% }else if(secs2> 119){ %>
+                                                                                <%= Math.round(mins2) %> mins
+                                                                            <% }else if(secs2> 59){ %>
+                                                                                <%= Math.round(mins2) %> min
+                                                                                    <% }else{ %>
+                                                                                        <%= Math.round(secs2) %> secs
+                                                                                            <% } %>
+                                                            ago</span>
+                                                        </h3>
+                                                        <p><%= comment.userComment %></p>
+                                                    </div>
+                                                    <div class="comment-widget">
+                                                        <% var likesCommentArray=[]; 
+                                                        comment.likes.forEach((like)=> {
+                                                        likesCommentArray.push(like.userID);
+                                                        }); %>
+                                                        <span style="color: 
+                                                                    <% if(likesCommentArray.includes(user._id.toString())){ %>
+                                                                        var(--color-primary);
+                                                                    <% }else{ %>
+                                                                        var(--color-dark);
+                                                                    <% } %>" onclick="likeComment(this,'<%= user._id %>','<%= comment._id %>','<%= movie._id %>')">
+                                                            <%= likesCommentArray.length %>
+                                                            <i class="fa fa-thumbs-up"></i> 
+                                                        </span>
+                                                        <span onclick="showVideoReplies('<%= user._id %>','<%= movie._id %>','<%= comment._id %>','<%= comment.uniqID %>')" style="color: var(--color-primary);">
+                                                            <%= comment.moreComments.length %> Repl<% if(comment.moreComments.length > 1){ %>ies<% }else{ %>y<% } %>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <% }) } %>
+                                    </div>
+                                    <div class="reply-container" style="display: none;"></div>
+                                </div>
+                        </div>
+                        <div class="sugested-videos">
+                            <% randomMovies.forEach(randomMovie => { %>
+                                <div class="suggested-video-list">
+                                    <a href="/dashboard/private/movies/<%= randomMovie.randomMovie._id %>" class="small-video">
+                                        <div class="thumbnail">
+                                            <img src="<%= randomMovie.randomMovie.thumbnail %>" alt="">
+                                        </div>
+                                    </a>
+                                    <div class="vid-info">
+                                        <a href="/dashboard/private/movies/<%= randomMovie.randomMovie._id %>"><%= randomMovie.randomMovie.title %></a>
+                                        <div class="flex-div">
+                                            <a href="/dashboard/private/movieChannel/<%= randomMovie.channel._id %>">
+                                                <img src="<%= randomMovie.channel.logo %>" alt="">
+                                            </a>
+                                            <div>
+                                                <p><a href=""><%= randomMovie.channel.channelName %></a></p>
+                                                <p><%= randomMovie.randomMovie.views.length %> view<% if(randomMovie.randomMovie.views.length > 1){ %>s<% } %></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Middle ends here-->
+        </div>
+    </main>
+
+    <!--=====================Add Videos to Playlist Modal Two================-->
+    <div class="video-space-modal v2-modal">
+        <div class="card">
+            <div class="close-space" onclick="closeVideoSpaceModalTwo3()">
+                <span class="fa fa-times" style="cursor:pointer;"></span>
+            </div>
+            <div class="modal-body">
+                <h3>Add Video to Playlist</h3>
+                <div class="add-to-playlist">
+                    <input type="checkbox" name="checkbox" id="add-to-playlist2" onclick="showField2()"> <label
+                        for="add-to-playlist2">Create a new Playlist</label>
+                </div>
+                <form class="space-form space-form5" style="display: none;">
+                    <input type="hidden" name="hiddenMovieID" id="hiddenMovieID3" value="">
+                    <div class="input-field" id="abc">
+                        <label for="newplaylist-name2">Name your Playlist <b>*</b></label>
+                        <input type="text" id="newplaylist-name2" name="playlist_name" maxlength="100"
+                            placeholder="Playlist Name" required>
+                    </div>
+                    <button class="btn btn-primary btn-change-2"> <i class="fa fa-plus"></i> Create Playlist and Add
+                        Movie</button>
+                </form>
+                <form class="space-form space-form6">
+                    <input type="hidden" name="hiddenMovieID" id="hiddenMovieID4" value="">
+                    <div class="select-box">
+                        <div class="selected2" onclick="toggleVideoSpace2()">
+                            Select a playlist...
+                            <span class="fa fa-angle-down angle3"></span>
+                            <span class="fa fa-angle-up angle4"></span>
+                        </div>
+                        <div class="options-container2 options-container-video-forum">
+                            <% userPlaylists.forEach(playlist=> { %>
+                                <div class="option option<%= playlist._id %>" onclick="updateVideoOption2(this)">
+                                    <input type="radio" value="<%= playlist._id %>" name="playlist2" class="radio">
+                                    <label for="<%= playlist.playlistName %>">
+                                        <%= playlist.playlistName %>
+                                    </label>
+                                </div>
+                                <% }) %>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                        <button class="btn btn-primary btn-change-1"> <i class="fa fa-plus"></i> Add Video</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--Theme Customization-->
+    <%- include ("./partials/themeCustomization") %> 
+
+    <!-- Updates -->
+    <%- include ("./partials/updates") %> 
+
+    <!-- Contact List -->
+    <%- include ("./partials/contactList") %> 
+
+    <script>
+    var successAlert = document.getElementById("alert-success");
+    var successAlertIcon = document.querySelector("#alert-success i");
+    var successMessage = document.querySelector("#alert-success .msg")
+    var dangerAlert = document.getElementById("alert-danger")
+    var dangerMessage = document.querySelector("#alert-danger .msg")
+
+    function showVideoReplies(userID, movieID, commentID, uniqID){
+        socket.emit("showVideoReplies", {userID, movieID, commentID, uniqID})
+        document.querySelector(".feed-video").style.display = "none"
+        document.querySelector(".reply-container").style.display = "block"
+
+        socket.on("replyVideoRoom", (replies) => {
+            displayReplyVideoRoom(replies);
+        });
+    }
+
+    function closeVideoReplies() {
+        document.querySelector(".feed-video").style.display = "block"
+        document.querySelector(".reply-container").style.display = "none"
+    }
+
+    function displayReplyVideoRoom(replies) {
+        const movieID = replies.movieID;
+        const newReplies = replies.result[0];
+
+        var likesCommentArray2 = [];
+        var userID = '<%= user._id.toString() %>'
+        newReplies.likes.forEach((like) => {
+            likesCommentArray2.push(like.userID);
+        })
+
+        var commentTimeInMS = new Date() - new Date(newReplies.datePosted);
+        var commentSecs = commentTimeInMS / 1000;
+        var commentMins = commentTimeInMS / (1000 * 60);
+        var commentHours = commentTimeInMS / (1000 * 60 * 60);
+        var commentDays = commentTimeInMS / (1000 * 60 * 60 * 24);
+        var commentWeeks = commentTimeInMS / (1000 * 60 * 60 * 24 * 7);
+
+        var div = document.createElement("div");
+
+        div.innerHTML = `
+                    <div class="back" onclick="closeVideoReplies()">
+                        <span class="fa fa-arrow-left"></span>
+                    </div>
+                    <h2>Replies for ${newReplies.username}</h2>
+                    <div class="caption">
+                        <div class="comment-section comment2${newReplies._id} ">
+                            <div class="single-comment">
+                                <span class="user-avatar">
+                                    <img src="../../../uploads/${newReplies.userAvatar}" alt="">
+                                </span>
+                                <span class="user">
+                                    <b>
+                                        ${newReplies.username}
+                                    </b>
+                                    <span>
+                                        ${newReplies.userComment}
+                                    </span>
+                                </span>
+                            </div>
+                            <span class="actions">
+                                <span>${commentDays > 13.999
+                                    ? Math.round(commentWeeks) + " weeks"
+                                    : commentDays > 6.999
+                                        ? Math.round(commentWeeks) + " week"
+                                        : commentHours > 35.99
+                                            ? Math.round(commentDays) + " days"
+                                            : commentHours > 23.99
+                                                ? Math.round(commentDays) + " day"
+                                                : commentMins > 119
+                                                    ? Math.round(commentHours) + " hours"
+                                                    : commentMins > 59
+                                                        ? Math.round(commentHours) + " hour"
+                                                        : commentSecs > 120
+                                                            ? Math.round(commentMins) + " mins"
+                                                            : commentSecs > 59
+                                                                ? Math.round(commentMins) + " min"
+                                                                : Math.round(commentSecs) + " secs"
+                                }</span>
+                                <span onclick="tagComment2('${newReplies._id}', '${newReplies.username}','${newReplies.userComment}', '${newReplies.uniqID}')">
+                                    Reply <i class="fa fa-reply"></i>
+                                </span>
+                            </span>
+                            ${newReplies.moreComments
+                            .map((moreComment) => {
+                                return `
+                                    <div class="under-comments">
+                                        <span class="user-avatar">
+                                            <img src="../../../uploads/${moreComment.userAvatar}" alt="">
+                                        </span>
+                                        <span>
+                                            <b style="margin-right: 5px;">
+                                                ${moreComment.username}
+                                            </b>
+                                            <span>
+                                                ${moreComment.userComment}
+                                            </span>
+                                        </span>
+                                    </div>
+                                `;
+                            })
+                            .join("")}
+                        </div>
+                    </div>
+                    <div id="newID${movieID}">
+                            <div class="tag-comment tag-comment2" style="opacity: 0;">
+                                <span><i class="fa fa-reply"></i></span>
+                                <div class="right-comment">
+                                    <div class="comment-owner"></div>
+                                    <div class="owner-comment"></div>
+                                </div>
+                                <span onclick="closeTagComment2()" style="cursor: pointer;"><i class="fa fa-times"></i></span>
+                            </div>
+                            <div class="text-muted submit-comment show-more" style="width: 100%; margin-top: 0;">
+                                <input type="hidden" class="movieID" name="movieID" value="${movieID}">
+                                <input type="hidden" class="uniqID" name="uniqID" value="${newReplies.uniqID}">
+                                <input type="hidden" class="commentID" name="commentID" value="${newReplies._id}">
+                                <i class="fa fa-smile" style="font-size: 14px;"></i>
+                                <input type="text" required id="myReply" class="myReply" name="myReply" placeholder="Type your replies..." style="width: 100%; background: transparent;">
+                                <button onclick = "submitForm2('${movieID}', '${newReplies._id}', '${newReplies.uniqID}')" style="background: transparent; color: gray; cursor: pointer;">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                      </div>
+                    `;
+        if(document.querySelector(".reply-container div")){
+            document.querySelector(".reply-container div").remove()
+        }
+        document.querySelector(".reply-container").appendChild(div);
+
+        
+    }
+
+    function likeVideo(e, userID, movieID) {
+        if(e.style.color === "var(--color-primary)"){
+            e.style.color = "var(--color-dark)"
+            socket.emit("removeLikeVideo", { userID, movieID })
+        }else{
+            e.style.color = "var(--color-primary)"
+
+            if (document.querySelector(".dislikeVideo").style.color === "var(--color-primary)") {
+                document.querySelector(".dislikeVideo").style.color = "var(--color-dark)"
+            }
+
+            socket.emit("likeVideo", { userID, movieID })
+
+            successAlert.style.display = "block"
+            successAlertIcon.className = ""
+            successAlertIcon.className = "fa fa-thumbs-up"
+            successMessage.textContent = "Liked"
+
+            setTimeout(() => {
+                successAlert.style.display = "none"
+            }, 3000)
+        }
+        
+    } 
+    function dislikeVideo(e, userID, movieID){
+        if (e.style.color === "var(--color-primary)") {
+            e.style.color = "var(--color-dark)"
+            socket.emit("removeDislikeVideo", { userID, movieID })
+        } else {
+            e.style.color = "var(--color-primary)"
+            if(document.querySelector(".likeVideo").style.color === "var(--color-primary)"){
+                document.querySelector(".likeVideo").style.color = "var(--color-dark)"
+
+                successAlert.style.display = "block"
+                successAlertIcon.className = ""
+                successAlertIcon.className = "fa fa-thumbs-down"
+                successMessage.textContent = "Removed from Liked Videos"
+
+                setTimeout(() => {
+                    successAlert.style.display = "none"
+                }, 3000)
+            }
+            socket.emit("dislikeVideo", { userID, movieID })
+        }
+    }
+    
+    document.querySelector(".space-form5").addEventListener("submit", (e) => {
+        e.preventDefault()
+
+        var movieID = document.getElementById("hiddenMovieID3").value;
+        var playlistName = document.getElementById("newplaylist-name2").value;
+
+        if (playlistName === "") {
+            dangerAlert.style.display = "block"
+            dangerMessage.textContent = "Field cannot be left blank"
+
+            setTimeout(() => {
+                dangerAlert.style.display = "none"
+            }, 5000)
+        } else {
+            var userID = '<%= user._id %>'
+
+            socket.emit("createUserPlaylistAndAddVideo", { movieID, playlistName, userID })
+
+            document.getElementById("newplaylist-name2").value = ""
+            document.getElementById("add-to-playlist2").checked = false
+            document.querySelector(".space-form6").style.display = "block"
+            document.querySelector(".space-form5").style.display = "none"
+
+            successAlert.style.display = "block"
+            successAlertIcon.className = ""
+            successAlertIcon.className = "fa fa-check-circle"
+            successMessage.textContent = "Video has been added to the new playlist"
+
+            setTimeout(() => {
+                successAlert.style.display = "none"
+            }, 3000)
+
+            var videoSpace = document.querySelector(".v2-modal");
+            videoSpace.style.display = "none";
+        }
+    })
+
+    document.querySelector(".space-form6").addEventListener("submit", (e) => {
+        e.preventDefault()
+
+        var movieID = document.getElementById("hiddenMovieID4").value;
+        var playlistID;
+        document.getElementsByName("playlist2").forEach(playlist => {
+            if (playlist.checked) playlistID = playlist.value
+        })
+        var userID = '<%= user._id %>'
+
+        socket.emit("addVideoToUserPlaylist", { movieID, playlistID, userID })
+
+        successAlert.style.display = "block"
+        successAlertIcon.className = ""
+        successAlertIcon.className = "fa fa-check-circle"
+        successMessage.textContent = "Video has been added to playlist"
+
+        setTimeout(() => {
+            successAlert.style.display = "none"
+        }, 3000)
+
+        var videoSpace = document.querySelector(".v2-modal");
+        videoSpace.style.display = "none";
+    })
+
+    const commentForm = document.getElementById("comment-form<%= movie._id %>");
+
+    commentForm.addEventListener("submit", (e) => {
+        e.preventDefault()
+
+        var moviePostID = document.querySelector("#comment-form<%= movie._id %> .movieID");
+        var myComment = document.querySelector("#comment-form<%= movie._id %> .myComment");
+
+        var movieID = moviePostID.value
+        var myReply = myComment.value
+        var user = '<%= user._id %>'
+
+        if (myReply != '') {
+
+            myComment.value = ''
+
+            socket.emit("postMovieComments", { movieID, myReply, user })
+
+            var div = document.createElement("div");
+            div.classList.add("old-comments");
+
+            div.innerHTML = `
+                <img src="../../../uploads/<%= user.avatar %>" alt="">
+                <div>
+                    <h3>
+                        <%= user.username %> <span>Just now</span>
+                    </h3>
+                    <p>${myReply}</p>
+                </div>
+            `
+
+            document.querySelector(".video-description").appendChild(div)
+
+            successAlert.style.display = "block"
+            successAlertIcon.className = ""
+            successAlertIcon.className = "fa fa-check-circle"
+            successMessage.textContent = "Your Comment has been sent"
+
+            setTimeout(() => {
+                successAlert.style.display = "none"
+
+            }, 3000)
+
+        } else {
+            dangerAlert.style.display = "block"
+            dangerMessage.textContent = "Field cannot be left blank."
+
+            setTimeout(() => {
+                dangerAlert.style.display = "none"
+            }, 5000)
+        }
+    })
+
+    function likeComment(e, userID, commentID, movieID){
+        if(e.style.color === "var(--color-primary)"){
+            //Remove from likes
+            e.style.color = "var(--color-dark)"
+            socket.emit("unlikeComment", { userID, commentID, movieID })
+        }else{
+            //Add to likes
+            e.style.color = "var(--color-primary)"
+            socket.emit("likeComment", {userID, commentID, movieID})
+        }
+    }
+
+    function submitForm2(movieID, commentID, uniqID) {
+
+        var myReply = document.querySelector(".myReply").value;
+
+        var userID = '<%= user._id %>'
+        var username = '<%= user.username %>'
+        var userAvatar = '<%= user.avatar %>'
+
+
+
+        if (myReply != '') {
+
+            document.querySelector(".myReply").value = ''
+            closeTagComment2()
+
+            socket.emit("postMoreVideoComments", { movieID, commentID, myReply, userID, uniqID})
+
+            successAlert.style.display = "block"
+            successAlertIcon.className = ""
+            successAlertIcon.className = "fa fa-check-circle"
+            successMessage.textContent = "Your Reply has been sent"
+
+            setTimeout(() => {
+                successAlert.style.display = "none"
+            }, 3000)
+
+            var div = document.createElement("div");
+
+            div.classList.add("under-comments");
+            div.innerHTML = `
+
+                <span class="user-avatar">
+                    <img src="../../../uploads/${userAvatar}" alt="">
+                </span>
+                <span>
+                    <b style="margin-right: 5px;">
+                        ${username}
+                    </b>
+                    ${myReply}
+                </span>
+
+            `;
+            document.querySelector(".comment2" + commentID).appendChild(div);
+
+        } else {
+            dangerAlert.style.display = "block"
+            dangerMessage.textContent = "Field cannot be left blank."
+
+            setTimeout(() => {
+                dangerAlert.style.display = "none"
+            }, 5000)
+        }
+
+    }
+
+    document.getElementById("readMoreOne").addEventListener("click", ()=> {
+        var readMore = document.getElementById("readMoreOne")
+        readMore.classList.toggle("read-more")
+        if(readMore.classList.contains("read-more")){
+            document.getElementById('the-text').textContent = `<%= movie.description %>`
+            document.getElementById("readMoreOne").innerHTML = `Read less <i class='fa fa-angle-up'></i>`
+        }else{
+            document.getElementById('the-text').textContent = `<%= movie.description %>`.slice(0, 120) + '...'
+            document.getElementById("readMoreOne").innerHTML = `Read More <i class='fa fa-angle-down'></i>`
+        }
+        
+    })
+
+    function readMoreOne(obj) {
+        
+    }     
+    </script>
+
+    <!--JS Script Attachment-->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../../../js/script.js"></script>
+</body>
+</html>

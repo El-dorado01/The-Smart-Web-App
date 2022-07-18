@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Header -->
+    <%- include("./partials/header") %> 
+</head>
+<body>
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %> 
+
+    <!--Main-->
+    <main>
+        <div class="container">
+            <div class="alerts">
+                <div class="alert-success" id="alert-success" style="display: none;">
+                    <span class="fa fa-times"></span>
+                    <div class="body">
+                        <i class="fa fa-check-circle"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+                <div class="alert-danger" id="alert-danger" style="display: none;">
+                    <span class="fa fa-times"></span>
+                    <div class="body">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+            </div>
+            <!-- Sidebar -->
+            <%- include ("./partials/sidebar") %> 
+            
+            <!--Middle-->
+            <div class="middle">
+                <!--==============Profile Card=================-->
+                <div class="profile-card" id="show-profile">
+                    <div class="card">
+                        <div class="user-pics">
+                            <div class="user-info">
+                                <div class="profile-pic">
+                                    <img src="../../../uploads/<%= profile.avatar %>" alt="">
+                                </div>
+                                <div class="name">
+                                    <h3><%= profile.username %></h3>
+                                    <p class="text-muted">@<%= profile.username %></p>
+                                </div>
+                            </div>
+                            <div class="scan-code">
+                                <%
+                                    var friendsArray = []
+                                    var sendersArray = []
+                                    if(friends != "empty"){
+                                        var oldFriends = []
+                                        user.friends.forEach(a => {
+                                            oldFriends.push(a.userID)
+                                        })
+
+                                        friends.forEach(item => {
+                                            friendsArray.push(item.details._id.toString())
+                                            sendersArray.push(item.sender)
+                                        })
+                                    }
+                                %>
+
+                                <%  
+                                    if(sendersArray.length > 0 ){
+                                    if(!sendersArray.includes(user._id.toString())){
+                                        if(friendsArray.includes(profile._id.toString())){ 
+                                %>
+                                            <span title="Accept Request" onclick="profileAccept(this)" class="fas fa-user-check" id="profile-accept"></span>
+                                            
+                                            <span title="Decline Request" onclick="profileDecline(this)" class="fa fa-user-times" id="profile-decline"></span>
+                                <%      
+                                        }else if(profile._id.toString() == user._id.toString()){}else { 
+                                %>
+                                            <span title="Add as Friend" onclick="addFriend('<%= user._id %>', '<%= profile._id %>', this)" class="fa fa-user-plus"></span>
+                                <%      }
+                                    }else { 
+                                        if(friendsArray.includes(profile._id.toString())){ 
+                                %>
+                                            <span title="Cancel Request" style="color: var(--color-primary);" onclick="addFriend2('<%= user._id %>', '<%= profile._id %>', this)"
+                                                 class="fa fa-user-times"></span>
+                                <%     
+                                        }else if(profile._id.toString() == user._id.toString()){}else { 
+                                %>
+                                            <span title="Add as Friend" onclick="addFriend('<%= user._id %>', '<%= profile._id %>', this)" class="fa fa-user-plus"></span>
+                                <%      }
+                                    }}else if(profile._id.toString() == user._id.toString()){}else{%>
+                                        <span title="Add as Friend" onclick="addFriend('<%= user._id %>', '<%= profile._id %>', this)"
+                                        class="fa fa-user-plus"></span>
+                                <% } %>
+                                    
+                                    <span title="Copy Profile Link" onclick="copyPlaylistLink('<%= getURL %>/dashboard/private/profile/<%= profile._id %>')" class="fa fa-clipboard"></span>
+                                <% if(profile._id == user._id){ %> 
+                                    <span title="Edit Profile" class="fa fa-edit"></span>
+                                <% } %> 
+                                <span class="fa fa-qrcode"></span>
+                            </div>
+                        </div>
+                        <div class="body">
+                            <div class="info">
+                                <p><b><i class="fa fa-exclamation-circle" style="margin-right: 20px;"></i> About</b> <em class="text-muted"><%= profile.about %></em></p>
+                                <p><i class="fa fa-check-circle" style="margin-right: 20px;"></i> Joined <span class="text-muted">November 30, 2020</span></p>
+                                <p><i class="fa fa-envelope" style="margin-right: 20px;"></i> Email <span class="text-muted"><%= profile.email %></span></p>
+                                <p><i class="fa fa-phone" style="margin-right: 20px;"></i> Phone Number <span class="text-muted"><%= profile.phoneNumber %></span></p>
+                            </div>
+                            <div class="actions">
+                                <% if(profile._id.toString() == user._id.toString()){ %>
+                                <div style="color: var(--color-primary); cursor: pointer;">
+                                    <span><i class="fa fa-edit"></i> Edit profile</span>
+                                </div>
+                                <% }else{ 
+                                    var newBlockedArray = []
+                                    if(blockedArray !="empty" ){ 
+                                        blockedArray.forEach(contact=> {
+                                            newBlockedArray.push(contact.details._id.toString())
+                                        })
+                                    }
+                                %>
+                                    <div onclick="blockUser('block')" id="block_user"
+                                        style="cursor: pointer; display: <% if(newBlockedArray.includes(profile._id.toString())){ %>none<%}else{%>block<%}%>;">
+                                        <span><i class="fa fa-ban"></i> Block <%= profile.username %></span>
+                                    </div>
+                                    <div onclick="blockUser('unblock')" id="unblock_user"
+                                        style="color: var(--color-primary); display: <% if(newBlockedArray.includes(profile._id.toString())){ %>block<%}else{%>none<%}%>; cursor: pointer;">
+                                        <span><i class="fa fa-ban"></i> Unblock <%= profile.username %></span>
+                                    </div>
+                                    
+                                    <div style="cursor: pointer;">
+                                        <span><i class="fa fa-thumbs-down"></i> Report <%= profile.username %></span>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Middle ends here-->
+
+            <!--Right-->
+            <div class="right">
+                <!--Friend Requests start here-->
+                <% if(friends !="empty" ){ %>
+                    <div class="friend-requests">
+                        <h4>Requests</h4>
+                        <% friends.forEach(request=> { 
+                            if(request.sender != user._id.toString()){
+                            %>
+                            <div class="request" id="<%= request.details._id %>">
+                                <div class="info">
+                                    <a href="/dashboard/private/profile/<%= request.details._id %>">
+                                        <div class="profile-pic">
+                                            <img src="../../../uploads/<%= request.details.avatar %>" alt="">
+                                        </div>
+                                    </a>
+                                    <div class="about">
+                                        <a href="/dashboard/private/profile/<%= request.details._id %>">
+                                            <h5><%= request.details.username %></h5>
+                                            <p class="text-muted">
+                                                <% if(request.details.about.length> 45){ %>
+                                                    <%= request.details.about.slice(0,45) %>...
+                                                        <% }else{ %>
+                                                            <%= request.details.about %>
+                                                                <% } %>
+                                            </p>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="action">
+                                    <button class="btn btn-primary"
+                                        onclick="updateFriendRequest('<%= user._id %>','<%= request.details._id %>', 'accept')">
+                                        Accept
+                                    </button>
+                                    <button class="btn"
+                                        onclick="updateFriendRequest('<%= user._id %>','<%= request.details._id %>', 'decline')">
+                                        Decline
+                                    </button>
+                                </div>
+                            </div>
+                        <%  }
+                        }) %>
+                    </div>
+                <!--Friend Request end here-->
+                <% } %>
+            </div>
+        </div>
+    </main>
+
+    <!--Theme Customization-->
+    <%- include ("./partials/themeCustomization") %> 
+
+    <!-- Updates -->
+    <%- include ("./partials/updates") %> 
+
+    <!-- Contact List -->
+    <%- include ("./partials/contactList") %> 
+
+    <!--JS Script Attachment-->
+    <script>
+        var successAlert = document.getElementById("alert-success");
+        var successAlertIcon = document.querySelector("#alert-success i");
+        var successMessage = document.querySelector("#alert-success .msg")
+        var dangerAlert = document.getElementById("alert-danger")
+        var dangerMessage = document.querySelector("#alert-danger .msg")
+
+        function profileAccept(obj){
+            obj.style.color = 'var(--color-primary)'
+            if (document.getElementById('profile-decline').style.color == 'var(--color-primary)') document.getElementById('profile-decline').style.color = ''
+
+            updateFriendRequest("<%= user._id %>", "<%= profile._id %>", "accept");
+
+            successAlert.style.display = "block"
+            successAlertIcon.className = ""
+            successAlertIcon.className = "fas fa-user-check"
+            successMessage.textContent = "Request Accepted"
+
+            setTimeout(() => {
+                successAlert.style.display = "none"
+            }, 3000)
+        } 
+        
+        function profileDecline(obj){
+            obj.style.color = 'var(--color-primary)'
+            if (document.getElementById('profile-accept').style.color == 'var(--color-primary)') document.getElementById('profile-accept').style.color = ''
+
+            updateFriendRequest("<%= user._id %>", "<%= profile._id %>", "decline");
+
+            successAlert.style.display = "block"
+            successAlertIcon.className = ""
+            successAlertIcon.className = "fa fa-user-times"
+            successMessage.textContent = "Request Declined"
+
+            setTimeout(() => {
+                successAlert.style.display = "none"
+            }, 3000)
+            
+        }
+
+        function blockUser(type){
+            if(type == "block"){
+                blockUserEmit('<%= user._id %>', '<%= profile._id %>', type)
+                document.getElementById("block_user").style.display = "none"
+                document.getElementById("unblock_user").style.display = "block"
+            }else{
+                blockUserEmit('<%= user._id %>', '<%= profile._id %>', type)
+                document.getElementById("block_user").style.display = "block"
+                document.getElementById("unblock_user").style.display = "none"
+            }
+        }
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../../../js/script.js"></script>
+</body>
+</html>

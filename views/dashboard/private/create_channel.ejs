@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Header -->
+    <%- include("./partials/header") %>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %>
+
+        <!--Main-->
+        <main>
+            <div class="body-container">
+                <div class="alerts">
+                    <div class="alert-success" id="alert-success" style="display: none;">
+                        <span class="fa fa-times"></span>
+                        <div class="body">
+                            <i class="fa fa-check-circle"></i>
+                            <p class="msg"></p>
+                        </div>
+                    </div>
+                    <div class="alert-danger" id="alert-danger" style="display: none;">
+                        <span class="fa fa-times"></span>
+                        <div class="body">
+                            <i class="fa fa-exclamation-circle"></i>
+                            <p class="msg"></p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Sidebar -->
+                <%- include ("./partials/sidebar") %>
+                    <!--Middle-->
+                    <div class="middle">
+                        <div class="movies-container">
+                            <div class="action-bar">
+                                <div class="dots-btn">
+                                    <div class="dot dot-1"></div>
+                                    <div class="dot dot-2"></div>
+                                    <div class="dot dot-3"></div>
+                                </div>
+                                <div class="nav-menu">
+                                    <a href="<%= channelRoute %> " class="nav-menu-link" title="My Channel"><i class="fa fa-video-camera"></i></a>
+                                    <a href="/dashboard/private/movies/myPlaylists" class="nav-menu-link" title="Playlists"><i
+                                            class="fa fa-play-circle-o"></i></a>
+                                    <a href="/dashboard/private/movies/uploadVideo" class="nav-menu-link" title="Upload Video"><i
+                                            class="fa fa-upload"></i></a>
+                                </div>
+                            </div>
+                            <h2 style="margin-bottom: 10px;" align="center">Create a Channel</h2>
+                            <p class="text-muted" style="margin-bottom: 50px;" align="center">Please fill the form below</p>
+                            <form class="create-channel-form">
+                                <div class="image-preview">
+                                    <img id="img-preview" alt="">
+                                </div>
+                                <div class="upload-image">
+                                    <label class="channel-logo" for="logo">
+                                        <span class="fa fa-camera"></span> 
+                                    </label>
+                                    <input type="file" name="channelLogo" id="logo" style="display: none;" accept="image/*" onchange="showPreview(event);">
+                                    Upload an image
+                                </div>
+                                <div class="input-field">
+                                    <span><i class="fa fa-user"></i></span>
+                                    <input type="text" name="channelName" id="channel-name" required placeholder="Channel Name">
+                                </div>
+                                <div class="input-field-textarea">
+                                    <span><i class="fa fa-sticky-note-o"></i></span>
+                                    <textarea name="channelDescription" id="channel-description" required placeholder="Channel Name"></textarea>
+                                </div>
+                                <button class="btn btn-primary" style="margin: 10px 0;">Create Channel</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!--Middle ends here-->
+            </div>
+        </main>
+
+        <!--Theme Customization-->
+        <%- include ("./partials/themeCustomization") %>
+
+            <!-- Updates -->
+            <%- include ("./partials/updates") %>
+
+                <!-- Contact List -->
+                <%- include ("./partials/contactList") %>
+
+                    <script>
+                        var form = document.querySelector(".create-channel-form");
+                        var successAlert = document.getElementById("alert-success");
+                        var successAlertIcon = document.querySelector("#alert-success i");
+                        var successMessage = document.querySelector("#alert-success .msg")
+                        var dangerAlert = document.getElementById("alert-danger")
+                        var dangerMessage = document.querySelector("#alert-danger .msg")
+
+                        form.addEventListener("submit", (e)=> {
+                            e.preventDefault()
+
+                            const formData = new FormData()
+                            formData.append('channelLogo', document.getElementById("logo").files[0])
+                            formData.append('channelName', document.getElementById("channel-name").value)
+                            formData.append('channelDescription', document.getElementById("channel-description").value)
+
+                            document.getElementById("channel-name").value = ""
+                            document.getElementById("channel-description").value = ""
+
+                            successAlert.style.display = "block"
+                            successAlertIcon.className = ""
+                            successAlertIcon.className = "fa fa-check-circle"
+                            successMessage.textContent = "Channel created. Redirecting in few secs..."
+
+                            setTimeout(() => {
+                                successAlert.style.display = "none"
+                            }, 5000)
+
+                            fetch("/dashboard/private/movies/channel", {
+                                method: 'POST',
+                                mode: 'cors',
+                                cache: 'no-cache',
+                                credentials: 'same-origin',
+                                redirect: 'follow',
+                                referrerPolicy: 'no-referrer',
+                                body: formData
+                            })
+                            .then(function(res){
+                                return res.json()
+                            })
+                            .then(function(json){
+                                const success = json.success
+                                location.assign("/dashboard/private/movieChannel/" + success)
+                                // window.location.href = "/dashboard/private/movieChannel/" + success
+                            })
+                            .catch(function (err) {
+                                console.log(err);
+                                dangerAlert.style.display = "block"
+                                dangerMessage.textContent = "An error occured. Please try again later"
+
+                                setTimeout(() => {
+                                    dangerAlert.style.display = "none"
+                                }, 5000)
+                            })
+                        })
+                        function showPreview(event) {
+                            if (event.target.files.length > 0) {
+                                var src = URL.createObjectURL(event.target.files[0]);
+                                var preview = document.getElementById("img-preview");
+                                preview.src = src;
+                                document.querySelector(".image-preview").style.display = "block";
+                            }
+                        }
+
+                    </script>
+
+                    <!--JS Script Attachment-->
+                    <script src="/socket.io/socket.io.js"></script>
+                    <script src="../../../js/script.js"></script>
+</body>
+
+</html>
