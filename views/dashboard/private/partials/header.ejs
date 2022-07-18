@@ -1,0 +1,95 @@
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet"> 
+
+<!--Font-awesome link-->
+<script src="https://kit.fontawesome.com/02e26faee8.js" crossorigin="anonymous"></script>
+<% 
+ let fontSize = user.themeCustomization.fontSize 
+ let fontActive = "active"
+
+ let colorTheme = user.themeCustomization.colorTheme
+ let firstHue;
+ let secondHue;
+ let thirdHue;
+ let colorActive = "active"
+ 
+ switch (colorTheme) { 
+    case "green":
+           firstHue = 173;
+           secondHue = '36%';
+           thirdHue = '55%';
+        break;
+    case "yellow":
+           firstHue = 37;
+           secondHue = '76%';
+           thirdHue = '74%';
+        break;
+    case "purple":
+           firstHue = 252;
+           secondHue = '75%';
+           thirdHue = '60%';
+        break;
+    case "red":
+           firstHue = 352;
+           secondHue = '87.2%';
+           thirdHue = '45.9%';
+        break;
+    case "blue":
+           firstHue = 209;
+           secondHue = '78%';
+           thirdHue = '57.3%';
+        break;
+
+    default: 
+        break;
+}
+
+ let background = user.themeCustomization.background
+ let darkColorLightness;
+ let lightColorLightness;
+ let whiteColorLightness;
+ let backgroundActive = "active"
+ 
+ switch (background) { 
+    case "light":
+        darkColorLightness = '17%';
+        whiteColorLightness = '100%';
+        lightColorLightness = '95%';
+        break;
+    case "dim":
+        darkColorLightness = '95%';
+        whiteColorLightness = '20%';
+        lightColorLightness = '15%';
+        break;
+    case "dark":
+        darkColorLightness = '95%';
+        whiteColorLightness = '10%';
+        lightColorLightness = '0%';
+        break;
+
+    default: 
+        break;
+}
+%>
+<style>
+    :root {
+        --first-color-hue: <%= firstHue %>;
+        --second-color-hue: <%= secondHue %>;
+        --third-color-hue: <%= thirdHue %>;
+
+        --dark-color-lightness: <%= darkColorLightness %>;
+        --light-color-lightness: <%= lightColorLightness %>;
+        --white-color-lightness: <%= whiteColorLightness %>;
+    }
+
+    html {
+        font-size: <%= fontSize %>;
+    }
+</style>
+
+<link rel="stylesheet" href="../../../style.css">
+<link rel="shortcut icon" href="../../../images/smart.ico" type="image/x-icon">
+
+<title>Smart Web App | <%= headTitle %>  </title>

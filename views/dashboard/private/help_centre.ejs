@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Header -->
+    <%- include("./partials/header") %> 
+</head>
+<body>
+    
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %> 
+
+    <!--Main-->
+    <main>
+        <div class="body-container">
+
+            <!-- Sidebar -->
+            <%- include ("./partials/sidebar") %> 
+            
+            <!--Middle-->
+            <div class="middle">
+                <div class="help-container">
+                    <div class="help-right">
+                        <div class="frequently-questions">
+                            <h3>Frequently Asked Questions</h3>
+                            <div class="bodys">
+                                <div class="question">
+                                    <div class="ask" id="question-one">
+                                        <div class="head"> 
+                                            <div></div>
+                                            <h4>Lorem ipsum dolor sit amet?</h4>
+                                        </div>
+                                        <div class="answer">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus quibusdam omnis voluptates dignissimos corrupti eligendi pariatur vero perferendis assumenda eius.
+                                        </div>
+                                    </div>
+                                    <span class="fa fa-minus" onclick="closeQuestion(this)"></span>
+                                </div>
+                                <div class="question">
+                                    <div class="ask" id="question-two">
+                                        <div class="head"> 
+                                            <div></div>
+                                            <h4>Lorem ipsum dolor sit amet?</h4>
+                                        </div>
+                                        <div class="answer" style="display: none;">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus quibusdam omnis voluptates dignissimos corrupti eligendi pariatur vero perferendis assumenda eius.
+                                        </div>
+                                    </div>
+                                    <span class="fa fa-plus" onclick="closeQuestionTwo(this)"></span>
+                                </div>
+                                <div class="question">
+                                    <div class="ask" id="question-three">
+                                        <div class="head"> 
+                                            <div></div>
+                                            <h4>Lorem ipsum dolor sit amet?</h4>
+                                        </div>
+                                        <div class="answer" style="display: none;">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus quibusdam omnis voluptates dignissimos corrupti eligendi pariatur vero perferendis assumenda eius.
+                                        </div>
+                                    </div>
+                                    <span class="fa fa-plus" onclick="closeQuestionThree(this)"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="account-info">
+                            <h3>Account Information</h3>
+                            <div class="bodys">
+                                <div class="question">
+                                    <div class="ask" id="account-one">
+                                        <div class="head"> 
+                                            <div></div>
+                                            <h4>Lorem ipsum dolor sit amet?</h4>
+                                        </div>
+                                        <div class="answer">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus quibusdam omnis voluptates dignissimos corrupti eligendi pariatur vero perferendis assumenda eius.
+                                        </div>
+                                    </div>
+                                    <span class="fa fa-minus" onclick="closeAccount(this)"></span>
+                                </div>
+                                <div class="question">
+                                    <div class="ask" id="account-two">
+                                        <div class="head"> 
+                                            <div></div>
+                                            <h4>Lorem ipsum dolor sit amet?</h4>
+                                        </div>
+                                        <div class="answer" style="display: none;">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus quibusdam omnis voluptates dignissimos corrupti eligendi pariatur vero perferendis assumenda eius.
+                                        </div>
+                                    </div>
+                                    <span class="fa fa-plus" onclick="closeAccountTwo(this)"></span>
+                                </div>
+                                <div class="question">
+                                    <div class="ask" id="account-three">
+                                        <div class="head"> 
+                                            <div></div>
+                                            <h4>Lorem ipsum dolor sit amet?</h4>
+                                        </div>
+                                        <div class="answer" style="display: none;">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus quibusdam omnis voluptates dignissimos corrupti eligendi pariatur vero perferendis assumenda eius.
+                                        </div>
+                                    </div>
+                                    <span class="fa fa-plus" onclick="closeAccountThree(this)"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="submit-ticket">
+                            <h3>Create a new Ticket <small>We suggest you check these <a href="#recommended-tickets" style="color:blue;">recommended tickets</a> before creating one</small></h3>
+                            <form action="">
+                                Your email: <b><em>adebayosodiqkolade@gmail.com</em></b>
+                                <div class="input-field">
+                                    <label for="">Would you like to get your feedback in another email? <b>*</b></label>
+                                    <div class="radio">
+                                        Yes <input type="radio" name="feedback-email" onclick="altEmail()">
+                                        No <input type="radio" name="feedback-email" onclick="closeAltEmail()">
+                                    </div>
+                                </div>
+                                <div class="input-field" id="alt-email">
+                                    <label for="alt-email">Enter an email <b>*</b></label>
+                                    <input type="email" name="alt-email" placeholder="Enter an email">
+                                </div>
+                                <div class="select-box">
+                                    <div class="options-container">
+                                        <div class="option" onclick="updateOption(this)">
+                                            <input type="radio" name="category" class="radio">
+                                            <label for="Account Information">Account Information</label>
+                                        </div>
+                                        <div class="option" onclick="updateOption(this)">
+                                            <input type="radio" name="category" class="radio">
+                                            <label for="Support">Support</label>
+                                        </div>
+                                        <div class="option" onclick="updateOption(this)">
+                                            <input type="radio" name="category" id="others" class="radio">
+                                            <label for="Others">Others</label>
+                                        </div>
+                                    </div>
+                                    <div class="selected" onclick="toggleSpace()">
+                                        --Select a category--
+                                        <span class="fa fa-angle-down angle1"></span>
+                                        <span class="fa fa-angle-up angle2"></span>
+                                    </div>
+                                    <label for="Category">Category <b>*</b></label>
+                                </div>
+                                <div class="input-field" id="category-text">
+                                    <label for="category-text">Enter a Subject <b>*</b></label>
+                                    <input type="text" name="category" placeholder="Enter a subject">
+                                </div>
+                                <div class="input-field">
+                                    <label for="">Message</label>
+                                    <textarea name="message" id="" cols="30" rows="10" placeholder="Type your message here..."></textarea>
+                                </div>
+                                <button class="btn-primary">Submit Ticket</button>
+                            </form>
+                        </div>
+                        <div class="recommended-ticket" id="recommended-tickets">
+                            <h3>Recommended Tickets</h3>
+                            <div class="bodys">
+                                <div class="question">
+                                    <div class="ask">
+                                        <div class="head"> 
+                                            <div></div>
+                                            <h4><a href="">Lorem ipsum dolor sit amet?</a></h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="question">
+                                    <div class="ask">
+                                        <div class="head"> 
+                                            <div></div>
+                                            <h4><a href="">Lorem ipsum dolor sit amet?</a></h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="question">
+                                    <div class="ask">
+                                        <div class="head"> 
+                                            <div></div>
+                                            <h4><a href="">Lorem ipsum dolor sit amet?</a></h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="question">
+                                    <div class="ask">
+                                        <div class="head"> 
+                                            <div></div>
+                                            <h4><a href="">Lorem ipsum dolor sit amet?</a></h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rules">
+                            <h3>Rules and Policies</h3>
+                            <div class="bodys">
+                                <div class="question">
+                                    <div class="ask">
+                                        <div class="head"> 
+                                            <div></div>
+                                            <h4><a href="">Lorem ipsum dolor sit amet?</a></h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="question">
+                                    <div class="ask">
+                                        <div class="head"> 
+                                            <div></div>
+                                            <h4><a href="">Lorem ipsum dolor sit amet?</a></h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="question">
+                                    <div class="ask">
+                                        <div class="head"> 
+                                            <div></div>
+                                            <h4><a href="">Lorem ipsum dolor sit amet?</a></h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="question">
+                                    <div class="ask">
+                                        <div class="head"> 
+                                            <div></div>
+                                            <h4><a href="">Lorem ipsum dolor sit amet?</a></h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="help-left">
+                        <button class="btn-user-guide btn-primary">Download User Guide</button>
+                    </div>
+                </div>
+            </div>
+            <!--Middle ends here-->
+        </div>
+    </main>
+
+    <!--Theme Customization-->
+    <%- include ("./partials/themeCustomization") %> 
+
+    <!-- Updates -->
+    <%- include ("./partials/updates") %> 
+
+    <!-- Contact List -->
+    <%- include ("./partials/contactList") %> 
+
+    <!--JS Script Attachment-->
+    <script src="../../../js/script.js"></script>
+</body>
+</html>

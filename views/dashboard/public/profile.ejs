@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Header -->
+    <%- include("./partials/header") %>
+</head>
+<body>
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %> 
+
+    <!--Main-->
+    <main>
+        <div class="body-container">
+            <!--=====================Float Button=================-->
+            <div class="float-button">
+                <span class="fa fa-plus"></span>
+            </div>
+            <!-- Sidebar -->
+            <%- include ("./partials/sidebar") %> 
+
+            <!--Middle-->
+            <div class="middle">
+                <div class="profile-container">
+                    <div class="profile-head">
+                        <div class="buttons">
+                            <div><i class="fa fa-search"></i></div>
+                            <div><i class="fa fa-ellipsis-v"></i></div>
+                        </div>
+                        <div class="profile-bg">
+                            <img src="../../../images/1.jpg" alt="">
+                        </div>
+                        <div class="profile-pic">
+                            <img src="../../../images/3.jpg" alt="">
+                        </div>
+                        <a href="/dashboard/public/settings">
+                            <div class="edit-profile">
+                                <button class="btn btn-primary">Edit Profile</button>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="profile-body">
+                        <div class="user-name">
+                            <h2>El Dorado</h3>
+                            <p class="text-muted">@eldorado</p>
+                        </div>
+                        <p><span class="fa fa-user"></span> <b>I am the motherfvckin' tech guy.</b></p>
+                        <p> <span class="fa fa-calendar"></span> <b>Account created on:</b> <span class="text-muted">January 8, 2021</span></p>
+
+                        <!--Profile Category-->
+                        <div class="category">
+                            <h3 class="active tablinks" onclick="openTab(event, 'posts')" id="defaultOpen">Posts</h3>
+                            <h3 class="tablinks" onclick="openTab(event, 'forums')">Forums</h3>
+                            <h3 class="tablinks" onclick="openTab(event, 'followers')">Followers(7)</h3>
+                            <h3 class="tablinks" onclick="openTab(event, 'following')">Following(159)</h3>
+                        </div>
+
+                        <!--=================Feed=================-->
+                        <div class="postFeeds" id="posts">
+                            <div class="post-feed">
+                                <div class="post-left">
+                                    <img src="../../../images/smart.png" alt="">
+                                </div>
+                                <div class="post-right">
+                                    <div class="user-info">
+                                        <div>
+                                            <b>The Smart Network</b> 
+                                            <i class="fa fa-certificate"></i>
+                                            <i class="text-muted">@TagName</i>
+                                            <span class="time">&bullet; 25 mins ago</span>
+                                        </div>
+                                        <span class="fa-solid fa-ellipsis-v" style="font-size: 16px;"></span>
+                                    </div>
+                                    <div class="post-body">
+                                        <div class="feed-text">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique voluptate tenetur ullam quaerat earum laborum magnam enim dolorem. Vitae quisquam fuga delectus voluptate reiciendis voluptas mollitia similique, ratione quia debitis? <br><br> Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, nisi?
+                                        </div>
+                                        <div class="action-button">
+                                            <span><i class="fa-regular fa-comment-dots"></i> 34</span>
+                                            <span><i class="fa fa-heart-o"></i> 567</span>
+                                            <span><i class="fa fa-download"></i></span>
+                                            <span><i class="fa fa-share-alt"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="post-feed">
+                                <div class="post-left">
+                                    <img src="../../../images/smart.png" alt="">
+                                </div>
+                                <div class="post-right">
+                                    <div class="user-info">
+                                        <div>
+                                            <b>The Smart Network</b> 
+                                            <i class="fa fa-certificate"></i>
+                                            <i class="text-muted">@TagName</i>
+                                            <span class="time">&bullet; 25 mins ago</span>
+                                        </div>
+                                        <span class="fa-solid fa-ellipsis-v" style="font-size: 16px;"></span>
+                                    </div>
+                                    <div class="post-body">
+                                        <div class="feed-text">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique voluptate tenetur ullam quaerat earum laborum magnam enim dolorem. Vitae quisquam fuga delectus voluptate reiciendis voluptas mollitia similique, ratione quia debitis? <br><br> Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, nisi?
+                                        </div>
+                                        <img src="../../../images/f4.jpg" alt="">
+                                        <div class="action-button">
+                                            <span><i class="fa-regular fa-comment-dots"></i> 34</span>
+                                            <span><i class="fa fa-heart-o"></i> 567</span>
+                                            <span><i class="fa fa-download"></i></span>
+                                            <span><i class="fa fa-share-alt"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="forums" class="postFeeds">
+                            <a href="">
+                                <div class="post-feed">
+                                    <div class="post-left">
+                                        <img src="../../../images/smart.png" alt="">
+                                    </div>
+                                    <div class="post-right">
+                                        <div class="post-head">
+                                            <div>
+                                                <p>
+                                                    <b>Real Matters</b> 
+                                                    <i class="fa fa-users-rays"></i>
+                                                </p>
+                                                <p class="text-muted">255 members</p>
+                                                <p class="text-muted">1785 topics</p>
+                                            </div>
+                                            <div class="profile-forum-actions">
+                                                <span><i class="fa fa-bell"></i> Notify Me</span>
+                                                <span><i class="fa fa-sign-out"></i> Exit Forum</span>
+                                            </div>
+                                        </div>
+                                        <div class="about">
+                                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates, itaque?
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="">
+                                <div class="post-feed">
+                                    <div class="post-left">
+                                        <img src="../../../images/smart.png" alt="">
+                                    </div>
+                                    <div class="post-right">
+                                        <div class="post-head">
+                                            <div>
+                                                <p>
+                                                    <b>Programming Hub</b> 
+                                                    <i class="fa fa-users-rays"></i>
+                                                </p>
+                                                <p class="text-muted">2550 members</p>
+                                                <p class="text-muted">17805 topics</p>
+                                            </div>
+                                            <div class="profile-forum-actions">
+                                                <span><i class="fa fa-bell"></i> Notify Me</span>
+                                                <span><i class="fa fa-sign-out"></i> Exit Forum</span>
+                                            </div>
+                                        </div>
+                                        <div class="about">
+                                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates, itaque?
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="">
+                                <div class="post-feed">
+                                    <div class="post-left">
+                                        <img src="../../../images/smart.png" alt="">
+                                    </div>
+                                    <div class="post-right">
+                                        <div class="post-head">
+                                            <div>
+                                                <p>
+                                                    <b>Only Football</b> 
+                                                    <i class="fa fa-users-rays"></i>
+                                                </p>
+                                                <p class="text-muted">255 members</p>
+                                                <p class="text-muted">105 topics</p>
+                                            </div>
+                                            <div class="profile-forum-actions">
+                                                <span><i class="fa fa-bell"></i> Notify Me</span>
+                                                <span><i class="fa fa-sign-out"></i> Exit Forum</span>
+                                            </div>
+                                        </div>
+                                        <div class="about">
+                                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates, itaque?
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div id="followers" class="postFeeds">
+                            <div class="post-feed">
+                                <div class="post-left">
+                                    <img src="../../../images/smart.png" alt="">
+                                </div>
+                                <div class="post-right">
+                                    <div class="post-head">
+                                        <div>
+                                            <p>
+                                                <b>The Smart Network</b> 
+                                                <i class="fa fa-certificate"></i>
+                                            </p>
+                                            <p class="text-muted">@TagName</p>
+                                        </div>
+                                        <div style="
+                                        display:flex;
+                                        flex-direction:column;
+                                        align-items:center;
+                                        ">
+                                            <button class="btn btn-primary">Follow</button>
+                                            <span ><i class="fa fa-user"></i> Follows you</span>
+                                        </div>
+                                    </div>
+                                    <div class="about">
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates, itaque?
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="post-feed">
+                                <div class="post-left">
+                                    <img src="../../../images/smart.png" alt="">
+                                </div>
+                                <div class="post-right">
+                                    <div class="post-head">
+                                        <div>
+                                            <p>
+                                                <b>The Smart Network</b> 
+                                                <i class="fa fa-certificate"></i>
+                                            </p>
+                                            <p class="text-muted">@TagName</p>
+                                        </div>
+                                        <div style="
+                                        display:flex;
+                                        flex-direction:column;
+                                        align-items:center;
+                                        ">
+                                            <button class="btn btn-transparent">Following</button>
+                                            <span ><i class="fa fa-user"></i> Follows you</span>
+                                        </div>
+                                    </div>
+                                    <div class="about">
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates, itaque?
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="post-feed">
+                                <div class="post-left">
+                                    <img src="../../../images/smart.png" alt="">
+                                </div>
+                                <div class="post-right">
+                                    <div class="post-head">
+                                        <div>
+                                            <p>
+                                                <b>The Smart Network</b> 
+                                                <i class="fa fa-certificate"></i>
+                                            </p>
+                                            <p class="text-muted">@TagName</p>
+                                        </div>
+                                        <div style="
+                                        display:flex;
+                                        flex-direction:column;
+                                        align-items:center;
+                                        ">
+                                            <button class="btn btn-transparent">Following</button>
+                                            <span ><i class="fa fa-user"></i> Follows you</span>
+                                        </div>
+                                    </div>
+                                    <div class="about">
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates, itaque?
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="post-feed">
+                                <div class="post-left">
+                                    <img src="../../../images/smart.png" alt="">
+                                </div>
+                                <div class="post-right">
+                                    <div class="post-head">
+                                        <div>
+                                            <p>
+                                                <b>The Smart Network</b> 
+                                                <i class="fa fa-certificate"></i>
+                                            </p>
+                                            <p class="text-muted">@TagName</p>
+                                        </div>
+                                        <div style="
+                                        display:flex;
+                                        flex-direction:column;
+                                        align-items:center;
+                                        ">
+                                            <button class="btn btn-primary">Follow</button>
+                                            <span ><i class="fa fa-user"></i> Follows you</span>
+                                        </div>
+                                    </div>
+                                    <div class="about">
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates, itaque?
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="following" class="postFeeds">
+                            <div class="post-feed">
+                                <div class="post-left">
+                                    <img src="../../../images/smart.png" alt="">
+                                </div>
+                                <div class="post-right">
+                                    <div class="post-head">
+                                        <div>
+                                            <p>
+                                                <b>The Smart Network</b> 
+                                                <i class="fa fa-certificate"></i>
+                                            </p>
+                                            <p class="text-muted">@TagName</p>
+                                        </div>
+                                        <div style="
+                                        display:flex;
+                                        flex-direction:column;
+                                        align-items:center;
+                                        ">
+                                            <button class="btn btn-transparent">Following</button>
+                                            <span ><i class="fa fa-user"></i> Follows you</span>
+                                        </div>
+                                    </div>
+                                    <div class="about">
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates, itaque?
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="post-feed">
+                                <div class="post-left">
+                                    <img src="../../../images/smart.png" alt="">
+                                </div>
+                                <div class="post-right">
+                                    <div class="post-head">
+                                        <div>
+                                            <p>
+                                                <b>The Smart Network</b> 
+                                                <i class="fa fa-certificate"></i>
+                                            </p>
+                                            <p class="text-muted">@TagName</p>
+                                        </div>
+                                        <div style="
+                                        display:flex;
+                                        flex-direction:column;
+                                        align-items:center;
+                                        ">
+                                            <button class="btn btn-transparent">Following</button>
+                                            <span ><i class="fa fa-user"></i> Follows you</span>
+                                        </div>
+                                    </div>
+                                    <div class="about">
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates, itaque?
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="post-feed">
+                                <div class="post-left">
+                                    <img src="../../../images/smart.png" alt="">
+                                </div>
+                                <div class="post-right">
+                                    <div class="post-head">
+                                        <div>
+                                            <p>
+                                                <b>The Smart Network</b> 
+                                                <i class="fa fa-certificate"></i>
+                                            </p>
+                                            <p class="text-muted">@TagName</p>
+                                        </div>
+                                        <div style="
+                                        display:flex;
+                                        flex-direction:column;
+                                        align-items:center;
+                                        ">
+                                            <button class="btn btn-transparent">Following</button>
+                                        </div>
+                                    </div>
+                                    <div class="about">
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates, itaque?
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="post-feed">
+                                <div class="post-left">
+                                    <img src="../../../images/smart.png" alt="">
+                                </div>
+                                <div class="post-right">
+                                    <div class="post-head">
+                                        <div>
+                                            <p>
+                                                <b>The Smart Network</b> 
+                                                <i class="fa fa-certificate"></i>
+                                            </p>
+                                            <p class="text-muted">@TagName</p>
+                                        </div>
+                                        <div style="
+                                        display:flex;
+                                        flex-direction:column;
+                                        align-items:center;
+                                        ">
+                                            <button class="btn btn-transparent">Following</button>
+                                            <span ><i class="fa fa-user"></i> Follows you</span>
+                                        </div>
+                                    </div>
+                                    <div class="about">
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates, itaque?
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Middle ends here-->
+        </div>
+    </main>
+
+    <!--Theme Customization-->
+    <%- include ("./partials/themeCustomization") %> 
+
+    <!--JS Script Attachment-->
+    <script src="../../../js/script.js"></script>
+</body>
+</html>

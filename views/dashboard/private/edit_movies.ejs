@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Header -->
+    <%- include("./partials/header") %>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %>
+
+        <!--Main-->
+        <main>
+            <div class="body-container">
+                <div class="alerts">
+                    <div class="alert-success" id="alert-success" style="display: none;">
+                        <span class="fa fa-times"></span>
+                        <div class="body">
+                            <i class="fa fa-check-circle"></i>
+                            <p class="msg"></p>
+                        </div>
+                    </div>
+                    <div class="alert-danger" id="alert-danger" style="display: none;">
+                        <span class="fa fa-times"></span>
+                        <div class="body">
+                            <i class="fa fa-exclamation-circle"></i>
+                            <p class="msg"></p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Sidebar -->
+                <%- include ("./partials/sidebar") %>
+                    <!--Middle-->
+                    <div class="middle">
+                        <div class="movies-container">
+                            <div class="action-bar">
+                                <div class="dots-btn">
+                                    <div class="dot dot-1"></div>
+                                    <div class="dot dot-2"></div>
+                                    <div class="dot dot-3"></div>
+                                </div>
+                                <div class="nav-menu">
+                                    <a href="<%= channelRoute %> " class="nav-menu-link" title="My Channel"><i
+                                            class="fa fa-video-camera"></i></a>
+                                    <a href="/dashboard/private/movies/myPlaylists" class="nav-menu-link"
+                                        title="Playlists"><i class="fa fa-play-circle-o"></i></a>
+                                    <a href="/dashboard/private/movies/uploadVideo" class="nav-menu-link"
+                                        title="Upload Video"><i class="fa fa-upload"></i></a>
+                                </div>
+                            </div>
+                            <div
+                                style="margin-bottom: 50px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                                <h2>Edit Movie</h2>
+                                <p class="text-muted">You can update your movie details below</p>
+                            </div>
+                            <form class="update-thumbnail-form">
+                                <div class="thumbnail-preview" style="display: block; margin-bottom: 20px;">
+                                    <img id="thumbnail-preview" src="<%= movie.thumbnail %>" alt="">
+                                </div>
+                                <div class="upload-image">
+                                    <label class="channel-logo" for="logo">
+                                        <span class="fa fa-camera"></span>
+                                    </label>
+                                    <input type="file" name="movieThumbnail" id="logo" style="display: none;" accept="image/*"
+                                        onchange="showPreview2(event);">
+                                    Upload an image
+                                    <button class="btn btn-primary update-logo" style="margin-left: 20px; display: none;">Update
+                                        Thumbnail</button>
+                                </div>
+                            </form>
+                            <form class="edit-movie-form">
+                                <div class="input-field">
+                                    <span><i class="fa fa-user"></i></span>
+                                    <input type="text" name="movie-title" id="movie-title" oninput="showUpdateButton2()"
+                                        placeholder="Movie Title" value="<%= movie.title %>">
+                                </div>
+                                <div class="input-field-textarea">
+                                    <span><i class="fa fa-sticky-note-o"></i></span>
+                                    <textarea name="movie-description" id="movie-description" oninput="showUpdateButton2()"
+                                        placeholder="Movie Details e.g Actors, Movie Summary, Duration..."><%= movie.description %></textarea>
+                                </div>
+                                <button class="btn btn-primary update-movie" style="margin: 10px 0; display: none;"> 
+                                    <i class="fa fa-edit"></i>
+                                    Update Movie
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <!--Middle ends here-->
+            </div>
+        </main>
+
+        <!--Theme Customization-->
+        <%- include ("./partials/themeCustomization") %>
+
+        <!-- Updates -->
+        <%- include ("./partials/updates") %>
+
+        <!-- Contact List -->
+        <%- include ("./partials/contactList") %>
+
+        <script>
+            var form = document.querySelector(".edit-movie-form");
+            var successAlert = document.getElementById("alert-success");
+            var successAlertIcon = document.querySelector("#alert-success i");
+            var successMessage = document.querySelector("#alert-success .msg")
+            var dangerAlert = document.getElementById("alert-danger")
+            var dangerMessage = document.querySelector("#alert-danger .msg")
+
+            function showPreview2(event) {
+                if (event.target.files.length > 0) {
+                    var src = URL.createObjectURL(event.target.files[0]);
+                    var preview = document.getElementById("thumbnail-preview");
+                    preview.src = src;
+                    document.querySelector(".btn.btn-primary.update-logo").style.display = "block";
+                }
+            }
+
+            function showUpdateButton2() {
+                if (
+                    (document.getElementById("movie-title").value ||
+                    document.getElementById("movie-description").value) !== ""
+                ) {
+                    document.querySelector(".update-movie").style.display = "block";
+                } else {
+                    document.querySelector(".update-movie").style.display = "none";
+                }
+            }
+
+            form.addEventListener("submit", (e) => {
+                e.preventDefault()
+
+                if ((document.getElementById("movie-title").value && document.getElementById("movie-description").value) !== "") {
+
+                    const formData = new FormData()
+                    formData.append('movieTitle', document.getElementById("movie-title").value)
+                    formData.append('movieDescription', document.getElementById("movie-description").value)
+
+                    var movieID = '<%= movie._id %>'
+                    formData.append('movieID', movieID)
+
+                    successAlert.style.display = "block"
+                    successAlertIcon.className = ""
+                    successAlertIcon.className = "fa fa-check-circle"
+                    successMessage.textContent = "Movie Information Updated"
+
+                    setTimeout(() => {
+                        successAlert.style.display = "none"
+                    }, 5000)
+
+                    fetch("/dashboard/private/editMovie", {
+                        method: 'POST',
+                        mode: 'cors',
+                        cache: 'no-cache',
+                        credentials: 'same-origin',
+                        redirect: 'follow',
+                        referrerPolicy: 'no-referrer',
+                        body: formData
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    })
+                    document.querySelector(".update-movie").style.display = "none";
+
+                }else if(document.getElementById("movie-title").value !== ""){
+                    const formData = new FormData()
+                    formData.append('movieTitle', document.getElementById("movie-title").value)
+                    var movieID = '<%= movie._id %>'
+                    formData.append('movieID', movieID)
+
+                    fetch("/dashboard/private/editMovie", {
+                        method: 'POST',
+                        mode: 'cors',
+                        cache: 'no-cache',
+                        credentials: 'same-origin',
+                        redirect: 'follow',
+                        referrerPolicy: 'no-referrer',
+                        body: formData
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    })
+
+                    successAlert.style.display = "block"
+                    successAlertIcon.className = ""
+                    successAlertIcon.className = "fa fa-check-circle"
+                    successMessage.textContent = "Movie Title Updated"
+
+                    setTimeout(() => {
+                        successAlert.style.display = "none"
+                    }, 5000)
+                    document.querySelector(".update-movie").style.display = "none";
+
+                }else if(document.getElementById("movie-description").value !== ""){
+                    const formData = new FormData()
+                    formData.append('movieDescription', document.getElementById("movie-description").value)
+                    var movieID = '<%= movie._id %>'
+                    formData.append('movieID', movieID)
+
+                    fetch("/dashboard/private/editMovie", {
+                        method: 'POST',
+                        mode: 'cors',
+                        cache: 'no-cache',
+                        credentials: 'same-origin',
+                        redirect: 'follow',
+                        referrerPolicy: 'no-referrer',
+                        body: formData
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    })
+
+                    successAlert.style.display = "block"
+                    successAlertIcon.className = ""
+                    successAlertIcon.className = "fa fa-check-circle"
+                    successMessage.textContent = "Movie Description Updated"
+
+                    setTimeout(() => {
+                        successAlert.style.display = "none"
+                    }, 5000)
+                    document.querySelector(".update-movie").style.display = "none";
+                }
+            })
+
+            document.querySelector(".update-thumbnail-form").addEventListener("submit", (e) => {
+
+                e.preventDefault()
+
+                const formData = new FormData()
+                var movieID = '<%= movie._id %>'
+                formData.append('thumbnail', document.getElementById("logo").files[0])
+                formData.append('movieID', movieID)
+
+                fetch("/dashboard/private/updateMovieThumbnail", {
+                    method: 'POST',
+                    mode: 'cors',
+                    cache: 'no-cache',
+                    credentials: 'same-origin',
+                    redirect: 'follow',
+                    referrerPolicy: 'no-referrer',
+                    body: formData
+                })
+                .then(function (res) {
+                    return res.json()
+                })
+                .then(function (json) {
+                    if (json.bigFile) {
+                        dangerAlert.style.display = "block"
+                        dangerMessage.textContent = "Thumbnail file size is too big"
+
+                        setTimeout(() => {
+                            dangerAlert.style.display = "none"
+                        }, 5000)
+                    }else if(json.success){
+                        successAlert.style.display = "block"
+                        successAlertIcon.className = ""
+                        successAlertIcon.className = "fa fa-check-circle"
+                        successMessage.textContent = "Movie Thumbnail Updated"
+
+                        setTimeout(() => {
+                            successAlert.style.display = "none"
+                        }, 3000)
+                    }
+                })
+                .catch(function (err) {
+                    console.log(err);
+                })
+
+                document.querySelector(".update-logo").style.display = "none";
+
+                
+
+            })
+
+        </script>
+
+                    <!--JS Script Attachment-->
+                    <script src="/socket.io/socket.io.js"></script>
+                    <script src="../../../js/script.js"></script>
+</body>
+
+</html>

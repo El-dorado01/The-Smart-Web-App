@@ -1,0 +1,476 @@
+<script>
+    document.querySelector(".space-form4").addEventListener("submit", (e) => {
+        e.preventDefault()
+
+        var movieID = document.getElementById("hiddenMovieID").value;
+        var playlistID;
+        document.getElementsByName("playlist").forEach(playlist => {
+            if (playlist.checked) playlistID = playlist.value
+        })
+        var channelID = '<%= channel._id %>'
+
+        socket.emit("addVideoToPlaylist", { movieID, playlistID, channelID })
+
+        successAlert.style.display = "block"
+        successAlertIcon.className = ""
+        successAlertIcon.className = "fa fa-check-circle"
+        successMessage.textContent = "Video has been added to playlist"
+
+        setTimeout(() => {
+            successAlert.style.display = "none"
+        }, 3000)
+
+        var videoSpace = document.querySelector(".video-space-modal");
+        videoSpace.style.display = "none";
+    })
+
+    document.querySelector(".space-form3").addEventListener("submit", (e) => {
+        e.preventDefault()
+
+        var movieID = document.getElementById("hiddenMovieID").value;
+        var playlistName = document.getElementById("newplaylist-name").value;
+
+        if(playlistName === ""){
+            dangerAlert.style.display = "block"
+            dangerMessage.textContent = "Field cannot be left blank"
+
+            setTimeout(() => {
+                dangerAlert.style.display = "none"
+            }, 5000)
+        }else{
+            var channelID = '<%= channel._id %>'
+
+            socket.emit("createPlaylistAndAddVideo", { movieID, playlistName, channelID })
+
+            document.getElementById("newplaylist-name").value = ""
+            document.getElementById("add-to-playlist").checked = false
+            document.querySelector(".space-form4").style.display = "block"
+            document.querySelector(".space-form3").style.display = "none"
+
+            successAlert.style.display = "block"
+            successAlertIcon.className = ""
+            successAlertIcon.className = "fa fa-check-circle"
+            successMessage.textContent = "Video has been added to the new playlist"
+
+            setTimeout(() => {
+                successAlert.style.display = "none"
+            }, 3000)
+
+            var videoSpace = document.querySelector(".video-space-modal");
+            videoSpace.style.display = "none";
+        }
+    })
+
+    document.querySelector(".space-form5").addEventListener("submit", (e) => {
+        e.preventDefault()
+
+        var movieID = document.getElementById("hiddenMovieID3").value;
+        var playlistName = document.getElementById("newplaylist-name2").value;
+
+        if (playlistName === "") {
+            dangerAlert.style.display = "block"
+            dangerMessage.textContent = "Field cannot be left blank"
+
+            setTimeout(() => {
+                dangerAlert.style.display = "none"
+            }, 5000)
+        } else {
+            var userID = '<%= user._id %>'
+
+            socket.emit("createUserPlaylistAndAddVideo", { movieID, playlistName, userID })
+
+            document.getElementById("newplaylist-name2").value = ""
+            document.getElementById("add-to-playlist2").checked = false
+            document.querySelector(".space-form6").style.display = "block"
+            document.querySelector(".space-form5").style.display = "none"
+
+            successAlert.style.display = "block"
+            successAlertIcon.className = ""
+            successAlertIcon.className = "fa fa-check-circle"
+            successMessage.textContent = "Video has been added to the new playlist"
+
+            setTimeout(() => {
+                successAlert.style.display = "none"
+            }, 3000)
+
+            var videoSpace = document.querySelector(".v2-modal");
+            videoSpace.style.display = "none";
+        }
+    })
+
+    document.querySelector(".space-form6").addEventListener("submit", (e) => {
+        e.preventDefault()
+
+        var movieID = document.getElementById("hiddenMovieID4").value;
+        var playlistID;
+        document.getElementsByName("playlist2").forEach(playlist => {
+            if (playlist.checked) playlistID = playlist.value
+        })
+        var userID = '<%= user._id %>'
+
+        socket.emit("addVideoToUserPlaylist", { movieID, playlistID, userID })
+
+        successAlert.style.display = "block"
+        successAlertIcon.className = ""
+        successAlertIcon.className = "fa fa-check-circle"
+        successMessage.textContent = "Video has been added to playlist"
+
+        setTimeout(() => {
+            successAlert.style.display = "none"
+        }, 3000)
+
+        var videoSpace = document.querySelector(".v2-modal");
+        videoSpace.style.display = "none";
+    })
+
+    var form = document.querySelector(".space-form2");
+    var successAlert = document.getElementById("alert-success");
+    var successAlertIcon = document.querySelector("#alert-success i");
+    var successMessage = document.querySelector("#alert-success .msg")
+    var dangerAlert = document.getElementById("alert-danger")
+    var dangerMessage = document.querySelector("#alert-danger .msg")
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault()
+
+        var playlistName = document.getElementById("playlist-name").value
+
+        if (playlistName != "") {
+            var channelID = '<%= channel._id %>'
+            socket.emit("postPlaylist", { playlistName, channelID });
+
+            document.getElementById("playlist-name").value = ""
+
+            successAlert.style.display = "block"
+            successAlertIcon.className = ""
+            successAlertIcon.className = "fa fa-check-circle"
+            successMessage.textContent = "Playlist Created"
+
+            setTimeout(() => {
+                successAlert.style.display = "none"
+            }, 3000)
+
+            socket.on("getPlaylist", (playlist) => {
+                displayPlaylist(playlist)
+                updatePlaylist(playlist)
+            })
+
+            function updatePlaylist(playlist) {
+                var div = document.createElement("div");
+                div.classList.add("option");
+                div.classList.add("option"+playlist._id);
+                div.setAttribute("onclick", "updateVideoOption(this)")
+
+                div.innerHTML = `
+                                        <input type="radio" value="${playlist._id}" name="playlist" class="radio">
+                                            <label for="${playlist.playlistName}">${playlist.playlistName}</label>
+                                    `
+
+                document.querySelector(".options-container2").appendChild(div);
+            }
+
+            function displayPlaylist(playlist) {
+                var div = document.createElement("div");
+                div.classList.add(`vid-list3${playlist._id}`);
+
+                div.innerHTML = `
+                                <div class="vid-list3" onclick="showPlaylistVideos('${playlist._id}')">
+                                    <div class="thumbnails"></div>
+                                    <div class="shadow">
+                                        <span style="color: var(--color-primary);" class="fa fa-play-circle-o"></span>
+                                        <h4 style="color: var(--color-primary);">${playlist.playlistName} <br> 
+                                        <span style="color: var(--color-primary);" class="text-muted">0 Video</span></h4>
+                                    </div>
+                                </div>
+                                <button class="btn" onclick="deletePlaylist('${playlist._id}')"
+                                    style="color: var(--color-danger); margin: 5px 0; width: 100%;"> 
+                                    <i class="fa fa-trash"></i> Delete Playlist
+                                </button>
+                                `
+                document.querySelector("#channelPlaylist .list-container").appendChild(div);
+            }
+        } else {
+            dangerAlert.style.display = "block"
+            dangerMessage.textContent = "Field cannot be left blank"
+
+            setTimeout(() => {
+                dangerAlert.style.display = "none"
+            }, 5000)
+        }
+    })
+
+    document.querySelector(".update-channel-form").addEventListener("submit", (e) => {
+        e.preventDefault()
+
+        if ((document.getElementById("channel-name").value && document.getElementById("channel-description").value) !== "") {
+            //Update Both Fields
+
+            const formData = new FormData()
+            var channelID = '<%= channel._id %>'
+            formData.append('channelName', document.getElementById("channel-name").value)
+            formData.append('channelDescription', document.getElementById("channel-description").value)
+            formData.append('channelID', channelID)
+
+            fetch("/dashboard/private/movies/updateChannel", {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                redirect: 'follow',
+                referrerPolicy: 'no-referrer',
+                body: formData
+            })
+            .then(function (res) {
+
+                document.getElementById("showChannelName").textContent = document.getElementById("channel-name").value
+                document.getElementById("showChannelDescription").textContent = document.getElementById("channel-description").value
+
+                successAlert.style.display = "block"
+                successAlertIcon.className = ""
+                successAlertIcon.className = "fa fa-check-circle"
+                successMessage.textContent = "Channel Information Updated"
+
+                setTimeout(() => {
+                    successAlert.style.display = "none"
+                }, 3000)
+
+                document.getElementById("channel-name").value = ""
+                document.getElementById("channel-description").value = ""
+                document.querySelector(".update-channel").style.display = "none";
+            })
+            .catch(function (err) {
+                console.log(err);
+            })
+
+        } else if (document.getElementById("channel-name").value !== "") {
+            //Update Channel Name
+
+            const formData = new FormData()
+            var channelID = '<%= channel._id %>'
+            formData.append('channelName', document.getElementById("channel-name").value)
+            formData.append('channelID', channelID)
+
+            fetch("/dashboard/private/movies/updateChannel", {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                redirect: 'follow',
+                referrerPolicy: 'no-referrer',
+                body: formData
+            })
+            .then(function (res) {
+                if (res) {
+                    document.getElementById("showChannelName").textContent = document.getElementById("channel-name").value
+
+                    successAlert.style.display = "block"
+                    successAlertIcon.className = ""
+                    successAlertIcon.className = "fa fa-check-circle"
+                    successMessage.textContent = "Channel Name Updated"
+
+                    setTimeout(() => {
+                        successAlert.style.display = "none"
+                    }, 3000)
+
+                    document.getElementById("channel-name").value = ""
+                    document.querySelector(".update-channel").style.display = "none";
+                }
+            })
+            .catch(function (err) {
+                console.log(err);
+            })
+
+        } else if (document.getElementById("channel-description").value !== "") {
+            //Update Channel Description
+
+            const formData = new FormData()
+            var channelID = '<%= channel._id %>'
+            formData.append('channelDescription', document.getElementById("channel-description").value)
+            formData.append('channelID', channelID)
+
+            fetch("/dashboard/private/movies/updateChannel", {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                redirect: 'follow',
+                referrerPolicy: 'no-referrer',
+                body: formData
+            })
+            .then(function (res) {
+                if (res) {
+                    document.getElementById("showChannelDescription").textContent = document.getElementById("channel-description").value
+
+                    successAlert.style.display = "block"
+                    successAlertIcon.className = ""
+                    successAlertIcon.className = "fa fa-check-circle"
+                    successMessage.textContent = "Channel Description Updated"
+
+                    setTimeout(() => {
+                        successAlert.style.display = "none"
+                    }, 3000)
+
+                    document.getElementById("channel-description").value = ""
+                    document.querySelector(".update-channel").style.display = "none";
+                }
+            })
+            .catch(function (err) {
+                console.log(err);
+            })
+
+        }
+
+    })
+
+    document.querySelector(".update-channelLogo-form").addEventListener("submit", (e) => {
+
+        e.preventDefault()
+
+        const formData = new FormData()
+        var channelID = '<%= channel._id %>'
+        formData.append('channelLogo', document.getElementById("logo").files[0])
+        formData.append('channelID', channelID)
+
+        fetch("/dashboard/private/movies/updateChannelLogo", {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            body: formData
+        })
+        .then(function (res) {
+            return res.json()
+        })
+        .then(function (json) {
+            if (json.bigFile) {
+                dangerAlert.style.display = "block"
+                dangerMessage.textContent = "Logo file size is too big"
+
+                setTimeout(() => {
+                    dangerAlert.style.display = "none"
+                }, 5000)
+            }
+        })
+        .catch(function (err) {
+            console.log(err);
+        })
+
+        document.querySelector(".update-logo").style.display = "none";
+
+        successAlert.style.display = "block"
+        successAlertIcon.className = ""
+        successAlertIcon.className = "fa fa-check-circle"
+        successMessage.textContent = "Channel Logo Updated"
+
+        setTimeout(() => {
+            successAlert.style.display = "none"
+        }, 3000)
+    })
+
+    function displayPlaylistVideos(results) {
+            var playlistName = results.playlistName;
+            var playlistVideos = results.movies;
+            var playlistID = results._id;
+            var channelAccess = "<%= channelAccess %>";
+            var getURL = "<%= getURL %>";
+
+            document.querySelector(".channel-body").style.display = "none";
+
+            var div = document.createElement("div");
+            div.classList.add("playlist-body");
+
+            div.innerHTML = ` 
+
+            <button class="btn btn-primary" onclick="backToPlaylists()" style="margin-bottom: 10px;"><i class="fa fa-angle-left"></i> Back to Playlists</button>
+            <div class="playlist-details" style="margin-bottom: 50px;">
+                <h3 style="margin-bottom: 20px; font-size: 1.7rem;">${playlistName}</h3>
+                <p class="text-muted"><span class="playlistLength${playlistID}">${playlistVideos.length
+                }</span> Video<span class = "the_S">${playlistVideos.length > 1 ? "s" : ""
+                }</span></p>
+            </div>
+            <div class="list-container" style="margin-bottom: 100px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); grid-row-gap: 30px;">
+                ${playlistVideos
+                    .map((movie) => {
+                        return `
+                        <div class="vid-list2 vid-list2${movie.movieID
+                            }" style="margin-bottom: 0; padding-bottom: 0;">
+                            <div class="left-movie" style="margin-bottom: 0; padding-bottom: 0;">
+                                <a href="/dashboard/private/movies/${movie.movieID
+                            }">
+                                    <div class="movie-thumbnail">
+                                        <img src="${movie.thumbnail}" alt="" />
+                                    </div>
+                                </a>
+                                <div class="movie-details" style="margin-bottom: 0; padding-bottom: 0;">
+                                    <div class="vid-info">
+                                        <a href="/dashboard/private/movies/${movie.movieID
+                            }">
+                                            ${movie.title}
+                                        </a>
+                                        <p>
+                                            ${movie.channel}
+                                        </p>
+                                        <p>20k views &bull; 5 days</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="cursor: pointer; margin-bottom: 0; padding-bottom: 0;" class="action"
+                                onclick="showActionBox2('${movie.movieID}')">
+                                <span class="fa fa-ellipsis-vertical"></span>
+                            </div>
+                            <div style="margin-bottom: 0; padding-bottom: 0;" class="action-box box2${movie.movieID
+                            }">
+                                <div>
+                                    <i class="fa fa-share"></i>
+                                    <span>Share Video</span>
+                                </div>
+                                <div onclick="copyVideoLink('${getURL}/dashboard/private/movies/${movie.movieID
+                            }', '${movie.movieID}', 'box2')">
+                                    <i class="fa fa-clipboard"></i>
+                                    <span>Copy Link</span>
+                                </div>
+                                ${channelAccess != "true"
+                                ? `
+                                    <div onclick="videoSpace3('${movie.movieID}')">
+                                        <i class="fa fa-video-camera"></i>
+                                        <span>Add to Playlist </span>
+                                    </div>`
+                                : ""
+                            }
+                                ${channelAccess === "true"
+                                ? `
+                                    <div onclick="removeFromPlaylist('${movie.movieID}','${playlistID}')">
+                                        <i class="fa fa-times"></i>
+                                        <span>Remove from Playlist</span>
+                                    </div>
+                                    <div>
+                                        <a href="/dashboard/private/editMovie/${movie.movieID}">
+                                            <i class="fa fa-edit"></i>
+                                            <span>Edit Video Info</span>
+                                        </a>
+                                    </div>
+                                    <div style="color: var(--color-danger);"
+                                        onclick="deleteMovies('${movie.movieID}')">
+                                        <i class="fa fa-trash"></i>
+                                        <span>Delete Movie</span>
+                                    </div>`
+                                : ""
+                            }
+                            </div>
+                        </div>
+                    `;
+                    })
+                    .join("")}
+            </div>
+        `;
+
+            if (document.querySelector(".playlist-body")) {
+                document.querySelector(".playlist-body").remove();
+            }
+
+            document.querySelector(".movies-container").appendChild(div);
+        }
+    
+</script>

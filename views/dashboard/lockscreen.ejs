@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../images/smart.ico" type="image/x-icon">
+    <title>Smart Web App- Welcome</title>
+    <!--Google fontawesome-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Slab:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Mono:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Convergence&display=swap" rel="stylesheet">
+
+    <!--Font awesome icon link-->
+    <script src="https://kit.fontawesome.com/02e26faee8.js" crossorigin="anonymous"></script>
+
+    <!--Main CSS file-->
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="lockscreen-container">
+        <div class="alerts">
+            <div class="alert-success" id="alert-success" style="display: none; height: 6rem; width: 18rem;">
+                <span class="fa fa-times"></span>
+                <div class="body">
+                    <i class="fa fa-check-circle"></i>
+                    <p class="msg"></p>
+                </div>
+            </div>
+            <div class="alert-danger" id="alert-danger" style="display: none; height: 6rem; width: 18rem;">
+                <span class="fa fa-times"></span>
+                <div class="body">
+                    <i class="fa fa-exclamation-circle"></i>
+                    <p class="msg"></p>
+                </div>
+            </div>
+        </div>
+        <div class="lockscreen-header">
+            <div>
+                <h1 class="lockscreen-logo"> <img src="../../images/smart.png" alt=""> Smart Web</h1>
+            </div>
+            <form action="/logout?_method=DELETE" method="post">
+                <button type="submit" title="Logout" style="border: none; outline: none; background: transparent;"><i
+                        class="fa fa-sign-out icon"></i></button>
+            </form>
+        </div>
+        <div class="lockscreen-wrapper">
+            <div class="lockscreen-card">
+                <div class="user-img">
+                    <img src="../../uploads/<%= user.avatar %> " alt="">
+                    <h3 class="user-name"><%= user.username %></h3>
+                </div>
+                <p class="text-muted">Please enter your password to sign in</p>
+                <div class="lockscreen-form">
+                    <div class="form">
+                        <div class="input-field">
+                            <div class="input">
+                                <span><i class="fa fa-lock"></i></span>
+                                <input type="password" id="password" placeholder="Enter your password">
+                            </div>
+                        </div>
+                        <button onclick="unlockScreen('<%= user._id %>')">
+                            <span class="fa fa-arrow-right"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const theUserID = "<%= user._id %>"
+        var successAlert = document.getElementById("alert-success");
+        var successAlertIcon = document.querySelector("#alert-success i");
+        var successMessage = document.querySelector("#alert-success .msg")
+        var dangerAlert = document.getElementById("alert-danger")
+        var dangerMessage = document.querySelector("#alert-danger .msg")
+
+        function unlockScreen(userID) {
+            var password = document.getElementById("password").value;
+
+            if (password == "") {
+                dangerAlert.style.display = "block";
+                dangerMessage.textContent = "Please provide a password";
+
+                setTimeout(() => {
+                    dangerAlert.style.display = "none";
+                }, 5000);
+            } else {
+                socket.emit("unlockScreen", { userID, password });
+            }
+            document.getElementById("password").value = ""
+        }
+
+            
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+</html>

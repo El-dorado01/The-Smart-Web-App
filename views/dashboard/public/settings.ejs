@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Header -->
+    <%- include("./partials/header") %>
+</head>
+<body>
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %> 
+
+    <!--Main-->
+    <main>
+        <div class="body-container">
+            <!-- Sidebar -->
+            <%- include ("./partials/sidebar") %>
+            <!--Middle-->
+            <div class="middle">
+                <div class="settings-container">
+                    <div class="change-avatar">
+                        <div class="avatar">
+                            <img src="
+                                <% if(user.avatar){ %> 
+                                    ../../../uploads/<%= user.avatar %> 
+                                <% } else { %> 
+                                    ../../../images/smart.png 
+                                <% } %>" alt="">
+                            <span class="fa fa-edit"></span>
+                        </div>
+                        <form enctype="multipart/form-data" method="post" action="/dashboard/private/upload/avatar" class="avatar-form"
+                            style="width: 7rem;">
+                            <input type="file" name="avatar" id="avatar-field" style="opacity: 0;">
+                            <button type="submit" class="btn btn-primary" id="apply-avatar" style="display: none;">Apply</button>
+                        </form>
+                    </div>
+                    <div class="change-info">
+                        <h3>Account Information</h3>
+                        <div class="input-field">
+                            <span class="fa fa-user"></span>
+                            <input type="text" placeholder="Username">
+                        </div>
+                        <div class="input-field">
+                            <span class="fa fa-envelope"></span>
+                            <input type="email" placeholder="Email Address">
+                        </div>
+                        <div class="input-field">
+                            <span class="fa fa-phone"></span>
+                            <input type="tel" placeholder="Phone Number">
+                        </div>
+                        <button class="btn btn-primary">Update Information</button>
+                    </div>
+                    <div class="change-info">
+                        <h3>Change Password</h3>
+                        <div class="input-field">
+                            <span class="fa fa-lock"></span>
+                            <input type="password" placeholder="Current Password">
+                        </div>
+                        <div class="input-field">
+                            <span class="fa fa-lock"></span>
+                            <input type="password" placeholder="New Password">
+                        </div>
+                        <div class="input-field">
+                            <span class="fa fa-lock"></span>
+                            <input type="password" placeholder="New Password">
+                        </div>
+                        <button class="btn btn-primary">Change Password</button>
+                    </div>
+                </div>
+            </div>
+            <!--Middle ends here-->
+        </div>
+    </main>
+
+    <!--Theme Customization-->
+    <%- include ("./partials/themeCustomization") %> 
+
+    <!--JS Script Attachment-->
+    <script src="../../../js/script.js"></script>
+</body>
+</html>
