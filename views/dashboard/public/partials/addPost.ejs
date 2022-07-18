@@ -1,0 +1,80 @@
+
+<!--Theme Customization-->
+<div class="add-post-modal">
+    <div class="card">
+        <div class="close-addPost" style="cursor: pointer;">
+            <span class="fa fa-times"></span>
+        </div>
+        <h2>Add a Post</h2>
+        <!-- <p class="text-muted">Manage your font-size, color and background</p> -->
+        <div class="post-form">
+            <textarea id="post-msg" oninput="countChars()" placeholder="What's on your mind?"></textarea>
+            <div class="preview"></div>
+            <div class="actions">
+                <div class="icons">
+                    <span><i class="fa fa-video"></i></span>
+                    <span><i class="fa fa-camera"></i></span>
+                    <!-- <span> <i class="fas fa-save"></i> </span>
+                    <span> <i class="fa fa-clipboard-list"></i> </span> -->
+                </div>
+                <span class="text-muted"><span id="charText">300</span> chars</span>
+            </div>
+            <div class="tags">
+                <div class="child">
+                    <label for="commentators">Who can comment?</label>
+                    <select id="commentators">
+                        <option value="">Everyone</option>
+                        <option value="">Followers</option>
+                        <option value="">People you mention</option>
+                    </select>
+                </div>
+                <div class="child">
+                    <label for="viewers">Who can see your post?</label>
+                    <select id="viewers">
+                        <option value="">Everyone</option>
+                        <option value="">Followers</option>
+                        <option value="">People you mention</option>
+                    </select>
+                </div>
+            </div>
+            <div class="buttons">
+                <div>
+                    <button class="btn" id="post-btn-save" title="Save Post"> 
+                        <i class="fas fa-save"></i> 
+                    </button>
+                    <button class="btn" title="Drafts"> 
+                        <i class="fa fa-clipboard-list"></i> 
+                    </button>
+                </div>
+                <button id="post-btn" class="btn">Post</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function countChars(){
+        var charLength = document.getElementById("post-msg").value.length
+        var charText = document.getElementById("charText")
+        var charNumber = parseInt(charText.innerText)
+        var postBtn = document.getElementById("post-btn")
+        var postBtnSave = document.getElementById("post-btn-save")
+        
+        if(charLength > 300 || charLength <= 0){
+            postBtnSave.disabled
+            postBtnSave.style.backgroundColor = "var(--color-gray)"
+            postBtnSave.style.color = "black"
+            postBtn.disabled
+            postBtn.classList.remove("btn-primary")
+        }
+        else{
+            postBtnSave.disabled = false
+            postBtnSave.style.backgroundColor = "var(--color-light)"
+            postBtnSave.style.color = "var(--color-gray)"
+            postBtn.disabled = false
+            if(!postBtn.classList.contains("btn-primary"))
+            postBtn.classList.add("btn-primary")
+        }
+        charText.innerText = 300 - charLength
+    }
+</script>

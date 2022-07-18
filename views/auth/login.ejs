@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../images/smart.ico" type="image/x-icon">
+    <title>Smart Web App - Begin Adventure</title>
+
+    <!--Google fontawesome-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Slab:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Mono:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Convergence&display=swap" rel="stylesheet">
+
+    <!--Font awesome icon link-->
+    <script src="https://kit.fontawesome.com/02e26faee8.js" crossorigin="anonymous"></script>
+
+    <!--Bootstrap link-->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
+    
+
+    <!--Main CSS file-->
+    <link rel="stylesheet" href="../css/form-style.css">
+</head>
+<body>
+    <div class="form-container">
+        <!--=====================Alerts=====================-->
+        <div class="alerts">
+            <div class="alert-success" id="alert-success" style="display: none;">
+                <span class="fa fa-times"></span>
+                <div class="body">
+                    <i class="fa fa-check-circle"></i>
+                    <p class="msg"><%# successMsg %></p>
+                </div>
+            </div>
+            <div class="alert-danger" id="alert-danger" style="display: none;">
+                <span class="fa fa-times"></span>
+                <div class="body">
+                    <i class="fa fa-exclamation-circle"></i>
+                    <p class="msg"></p>
+                </div>
+            </div>
+        </div> 
+        <div class="form-wrapper">
+            <div class="banner-right">
+                <h1><img src="../images/smart.png" alt=""> Smart Web</h1>
+                <p>Enter your details to login to your smart account</p>
+            </div>
+            <div class="golden-bg">
+                <a href="/auth/register">
+                    <button>Begin <br> Adventure</button>
+                </a>
+            </div>
+            <form class="login-form">
+                <h1>Resume Adventure</h1>
+                <div class="social-media">
+                    <i class="fab fa-facebook-f"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-twitter"></i>
+                </div>
+                <p>or use your email for login</p>
+                <div class="input-group">
+                    <i class="fa fa-user"></i>
+                    <input type="text" name="username" class="username" placeholder="Username">
+                    <span class="focus-input-resume"></span>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" class="password" placeholder="Password">
+                    <span class="focus-input-resume"></span>
+                </div>
+                <b class="resume">Wanna start an adventure? <a href="/auth/register">Click here.</a></b>
+                <button type="submit" id="submit">Login</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        const submitBTN = document.getElementById("submit")
+
+        
+        const loginForm = document.querySelector("form");
+        const userName = document.querySelector(".login-form .username")
+        const userPassword = document.querySelector(".login-form .password")
+        const dangerAlert = document.getElementById("alert-danger")
+        const dangerMessage = document.querySelector("#alert-danger .msg")
+
+        // loginForm.addEventListener("submit", ()=> alert())
+
+        loginForm.addEventListener('submit', async (e)=> {
+            e.preventDefault()
+
+            dangerAlert.style.display = 'none'
+            dangerMessage.textContent = ''
+
+            const userInfo = {
+                username: userName.value,
+                password: userPassword.value
+            }
+
+            // console.log(userInfo);
+
+            const {
+                username,
+                password
+            } = userInfo
+
+            userName.value = ''
+            userPassword.value = ''
+
+            try {
+                const response = await fetch("/auth/login", {
+                        method: "POST",
+                        body: JSON.stringify({username, password}),
+                        headers: { 'Content-Type': 'application/json' }
+                    })
+
+                const data = await response.json()
+
+                if(data.msg){
+                        dangerAlert.style.display = "flex"
+                        dangerMessage.textContent = data.msg
+
+                        setTimeout(()=> {
+                            dangerAlert.style.display = "none"
+                        },5000)
+                }
+                else{
+                    location.assign("/dashboard/index")
+                }
+                
+
+            } catch (error) {
+                console.log(error);
+                dangerAlert.style.display = "flex"
+                dangerMessage.textContent = "An error occured, please try again"
+
+                setTimeout(() => {
+                    dangerAlert.style.display = "none"
+                },5000)
+            }
+
+        })
+    </script>
+</body>
+</html>

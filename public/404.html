@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet"> 
+
+    <!--Font-awesome link-->
+    <script src="https://kit.fontawesome.com/02e26faee8.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="../images/smart.ico" type="image/x-icon">
+
+    <title>Smart Web App</title>
+</head>
+<body>
+    <style>
+        /* ======================Custom Error Page==================== */
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            outline: none;
+            list-style: none;
+            box-sizing: border-box;
+            text-decoration: none;
+            border: none;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            color: var(--color-dark);
+            background: var(--color-light);
+            min-width: 380px;
+            width: 100%;
+        }
+
+        html {
+            font-size: 13px;
+        }
+
+        hr {
+            border: 1px solid;
+        }
+
+        :root {
+            --dark-color-lightness: 17%;
+            --light-color-lightness: 95%;
+            --white-color-lightness: 100%;
+
+            --color-white: hsl(252, 30%, var(--white-color-lightness));
+            --color-dark: hsl(252, 30%, var(--dark-color-lightness));
+            --color-light: hsl(252, 30%, var(--light-color-lightness));
+
+            --border-radius: 2rem;
+            --card-border-radius: 1rem;
+            --card-padding: 1rem;
+        }
+        
+        .error-container {
+            background: var(--color-light);
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-wrapper {
+            background: var(--color-dark);
+            border-radius: var(--card-border-radius);
+            padding: var(--card-padding);
+            width: 70%;
+            height: 80%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .error-wrapper .contents {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 70%;
+        }
+
+        .error-wrapper h2 {
+            font-size: 15rem;
+            color: var(--color-white);
+            line-height: 15rem;
+        }
+
+        .error-wrapper .oops {
+            background: var(--color-white);
+            padding: 10px;
+            border-radius: 3px;
+            font-size: 2rem;
+            color: var(--color-dark);
+        }
+
+        .contents p {
+            color: var(--color-white);
+            font-size: 1.5rem;
+            margin-top: 20px;
+        }
+
+        .contents .back {
+            background: #e7331c;
+            border-radius: var(--border-radius);
+            padding: 5px;
+            width: 14rem;
+            height: 4rem;
+            font-size: 1.5rem;
+            color: var(--color-white);
+            margin-top: 50px;
+            cursor: pointer;
+        }
+    </style>
+    <!--<nav>
+        <div class="container">
+            <h2 class="logo">Smart Web</h2>
+            <div class="search-bar">
+                <span class="fa fa-search"></span>
+                <input type="search" placeholder="Search through">
+            </div>
+            <div class="create">
+                <label class="btn btn-primary" for="create-post">Switch Lifestyle</label>
+                <i class="hide-bar">
+                    <span class="fa fa-eye hidebar-icon-1" title="Show Bar"></span>
+                    <span class="fa fa-eye-slash hidebar-icon-2" title="Hide Bar"></span>
+                </i>
+                <div class="profile-pic">
+                    <img src="../images/smart.png" alt="">
+                </div>
+            </div>
+        </div>
+    </nav>-->
+
+    <div class="error-container">
+        <div class="error-wrapper">
+            <div class="contents">
+                <h2>404</h2>
+                <div class="oops">
+                    Oops! Page not found
+                </div>
+                <p>
+                    The Page you were looking for doesn't exist. You may have mistyped the address or the page has been deleted or moved 
+                </p>
+                <a href="/dashboard/index">
+                    <button class="back"><i class="fa fa-arrow-left"></i> Back to Home </button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!--JS Script Attachment-->
+    <script src="./js/script.js"></script>
+</body>
+</html>

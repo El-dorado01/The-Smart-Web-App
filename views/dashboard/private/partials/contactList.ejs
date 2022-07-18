@@ -1,0 +1,232 @@
+<%# 
+var sendersArray = []
+if(requestsArray != "empty"){
+    requestsArray.forEach(item => {
+        sendersArray.push(item.sender)
+    })
+}
+%> 
+<div class="alerts">
+    <div class="alert-success" id="alert-success" style="display: none;">
+        <span class="fa fa-times"></span>
+        <div class="body">
+            <i class="fa fa-check-circle"></i>
+            <p class="msg"></p>
+        </div>
+    </div>
+    <div class="alert-danger" id="alert-danger" style="display: none;">
+        <span class="fa fa-times"></span>
+        <div class="body">
+            <i class="fa fa-exclamation-circle"></i>
+            <p class="msg"></p>
+        </div>
+    </div>
+</div>
+<!--Contact List Modal-->
+<div class="contact-list">
+    <div class="card">
+        <div class="close-contact">
+            <span class="fa fa-times"></span>
+        </div>
+        <div class="contact-list-head">
+            <div class="category" style="width: 100%; margin-bottom: 0; padding-bottom: 0;">
+                <h6 class="active tablinks3" onclick="openTab3(event, 'friendList')" id="defaultOpen3">
+                    <div class="middle-align">
+                        <span style="margin-right: 10px;">Friends</span>
+                        <i class="fa fa-users bcon"></i>
+                        <div class="msg-archive" id="contactsArrayCount"></div>
+                        <!-- <div class="msg-archive" id="contactsArrayCount"><%# if(contactsArray !="empty" ){ %>
+                            <%#= contactsArray.length %>
+                                <%# }else{ %> 0 <%# } %></div> -->
+                    </div>
+                </h6>
+                <h6 class="tablinks3" onclick="openTab3(event, 'mayKnow')">
+                    <div class="middle-align">
+                        <span style="margin-right: 10px;">Who You May Know</span>
+                        <i class="fa-solid fa-users-viewfinder bcon"></i>
+                    </div>
+                </h6>
+                <h6 class="tablinks3" onclick="openTab3(event, 'requests')">
+                    <div class="middle-align">
+                        <span style="margin-right: 10px;">Requests</span>
+                        <i class="fa fa-users-rectangle bcon"></i>
+                        <div class="msg-archive" id="requestsArrayCount"></div>
+                        <!-- <div class="msg-archive">
+                            <%# if(requestsArray !="empty" ){ 
+                                var count = 0;
+                                for (let i = 0; i < requestsArray.length; i++) {
+                                    requestsArray[i];
+                                    if(requestsArray[i].sender !== user._id.toString()){count++}
+                                }
+                            %>
+                                <%#= count %>
+                            <%# }else{ %> 0 <%# } %>
+                        </div> -->
+                    </div>
+                </h6>
+                <h6 class="tablinks3" onclick="openTab3(event, 'outgoing')">
+                    <div class="middle-align">
+                        <span style="margin-right: 10px;">Outgoing</span>
+                        <i class="fa fa-user-clock bcon"></i>
+                        <div class="msg-archive" id="outgoingArrayCount"></div>
+                        <!-- <div class="msg-archive">
+                            <%# if(requestsArray !="empty" ){ var count=0; for (let i=0; i < requestsArray.length; i++) { requestsArray[i];
+                                if(requestsArray[i].sender === user._id.toString()){ count++ } } %>
+                                <%#= count %>
+                                    <%# }else{ %> 0 <%# } %>
+                        </div> -->
+                    </div>
+                </h6>
+                <h6 class="tablinks3" onclick="openTab3(event, 'declinedRequests')">
+                    <div class="middle-align">
+                        <span style="margin-right: 10px;">Declined</span>
+                        <i class="fa-solid fa-user-times bcon"></i>
+                        <div class="msg-archive" id="declinedArrayCount"></div>
+                        <!-- <div class="msg-archive">
+                            <%# if(declinedArray !="empty" ){ var count=0; for (let i=0; i < declinedArray.length; i++) { declinedArray[i];
+                                if(declinedArray[i].sender !== user._id.toString()){ count++ } } %>
+                                <%#= count %>
+                                    <%# }else{ %> 0 <%# } %>
+                        </div> -->
+                    </div>
+                </h6>
+                <h6 class="tablinks3" onclick="openTab3(event, 'blocked')">
+                    <div class="middle-align">
+                        <span style="margin-right: 10px;">Black Lists</span>
+                        <i class="fa-solid fa-user-large-slash bcon"></i>
+                        <div class="msg-archive" id="blockedArrayCount"></div>
+                        <!-- <div class="msg-archive"><%# if(blockedArray !="empty" ){ %>
+                            <%#= blockedArray.length %>
+                                <%# }else{ %> 0 <%# } %> </div> -->
+                    </div>
+                </h6>
+            </div>
+            
+            <!-- <div>
+                <h2>Select Contact</h2>
+                <p class="text-muted">20 Contacts</p>
+            </div>
+            <span class="fa fa-search"></span>
+            <span class="fa fa-ellipsis-v"></span> -->
+        </div>
+        <div id="contact-list-feed"></div>
+        <!-- <div class="postFeeds3" id="friendList">
+            <%# 
+                var newContactsArray = []
+                var newOutgoingArray = []
+                if(requestsArray !="empty" ){ requestsArray.forEach(contact=> {
+                    if(contact.sender === user._id.toString()){
+                        newOutgoingArray.push(contact.details._id.toString())
+                    }
+                })}
+                if(contactsArray != "empty"){ 
+                    contactsArray.forEach(contact => {  
+                        newContactsArray.push(contact.details._id.toString())
+            %> 
+                <div class="contact">
+                    <div class="contact-info">
+                        <a href="/dashboard/private/profile/<%#= contact.details._id %>" target="_blank">
+                            <div class="profile-pic">
+                                <img src="../../../uploads/<%#= contact.details.avatar %>" alt="">
+                            </div>
+                        </a>
+                        <div class="info">
+                            <a href="/dashboard/private/profile/<%#= contact.details._id %>" target="_blank">
+                                <h3><%#= contact.details.username %></h3>
+                                <p class="text-muted"><%#= contact.details.about %></p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <div><i class="fa fa-video"></i></div>
+                        <div><i class="fa fa-phone"></i></div>
+                        <div><i class="fa fa-envelope"></i></div>
+                        <div><i class="fa fa-ellipsis-v"></i></div>
+                    </div>
+                </div>
+            <%#      
+                    }) 
+                }else{ 
+            %> 
+                <div class="postFeed-body">
+                    <span class="text-muted">You have no records</span>
+                </div>
+            <%# } %>
+        </div> -->
+        
+        
+        <script>
+            var successAlert = document.getElementById("alert-success");
+            var successAlertIcon = document.querySelector("#alert-success i");
+            var successMessage = document.querySelector("#alert-success .msg")
+            var dangerAlert = document.getElementById("alert-danger")
+            var dangerMessage = document.querySelector("#alert-danger .msg")
+
+            function btnX(userID, friendID, type, obj){
+                var a = document.getElementById("btnX_" + friendID)
+                var b = document.getElementById("btnX2_" + friendID)
+
+                if(a.id == obj.id){
+                    if(b.style.color = "var(--color-primary)"){
+                        b.style.color = ""
+                    }
+                    a.style.color = "var(--color-primary)"
+                    updateFriendRequest(userID, friendID, type)
+                }else{
+                    if (a.style.color = "var(--color-primary)") {
+                        a.style.color = ""
+                    }
+                    b.style.color = "var(--color-primary)"
+                    updateFriendRequest(userID, friendID, type)
+                }
+            }    
+            function btnX2(userID, friendID, type, obj){
+                var a = document.getElementById("btnX3_" + friendID)
+                var b = document.getElementById("btnX4_" + friendID)
+
+                if(a.id == obj.id){
+                    if(b.style.color = "var(--color-primary)"){
+                        b.style.color = ""
+                    }
+                    a.style.color = "var(--color-primary)"
+                    updateFriendRequest(userID, friendID, type)
+                }else{
+                    if (a.style.color = "var(--color-primary)") {
+                        a.style.color = ""
+                    }
+                    b.style.color = "var(--color-primary)"
+                    updateFriendRequest(userID, friendID, type)
+                }
+            }    
+            
+            function deleteDeclinedRequest(userID, friendID){
+                document.getElementById("contact_" + friendID).remove()
+                socket.emit("deleteDeclinedRequest", { userID, friendID })
+            }
+
+            function blockUsers(userID, friendID, obj){
+                if(obj.classList.contains("fa-user-slash")){
+                    obj.classList.replace("fa-solid", "fa")
+                    obj.classList.replace("fa-user-slash", "fa-user")
+                    obj.style.color = ""
+                    obj.title = "Block User"
+                    if(document.getElementById("block_user")){
+                        document.getElementById("block_user").style.display = "block"
+                        document.getElementById("unblock_user").style.display = "none"
+                    }
+                    blockUserEmit(userID, friendID, "unblock")
+                }else{
+                    obj.classList.replace("fa", "fa-solid")
+                    obj.classList.replace("fa-user", "fa-user-slash")
+                    obj.style.color = "var(--color-primary)"
+                    obj.title = "Unblock User"
+                    if(document.getElementById("block_user")){
+                        document.getElementById("block_user").style.display = "none"
+                        document.getElementById("unblock_user").style.display = "block"
+                    }
+                    blockUserEmit(userID, friendID, "block")
+                }
+            }
+        </script>              
+    </div>
+</div>
