@@ -183,7 +183,7 @@ app.use('/upload', smartNetworkRoutes);
 app.use('/dashboard', authenticateUser, dashboardRoutes);
 app.use('/dashboard/private', authenticateUser, privateRoutes);
 app.use('/dashboard/public', authenticateUser, publicRoutes);
-app.use('/forums', forumRoutes);
+app.use('/forums', authenticateUser, forumRoutes);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
