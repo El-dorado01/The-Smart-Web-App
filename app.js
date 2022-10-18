@@ -1,36 +1,36 @@
 //=============================Built-in modules==========================//
-const path = require("path");
-const http = require("http");
+const path = require('path');
+const http = require('http');
 
 // ============================Express and SocketIO Server Setup========================= //
-const express = require("express");
+const express = require('express');
 const app = express();
 const server = http.createServer(app);
 
-const socketio = require("socket.io");
+const socketio = require('socket.io');
 const io = socketio(server);
-app.set("socketio", io);
+app.set('socketio', io);
 
 //==============================Installed modules=========================//
-require("dotenv").config();
-const cookieParser = require("cookie-parser");
-const moment = require("moment");
-const { StatusCodes } = require("http-status-codes");
-const { v4: uuidv4 } = require("uuid");
-const fileUpload = require("express-fileupload");
+require('dotenv').config();
+const cookieParser = require('cookie-parser');
+const moment = require('moment');
+const { StatusCodes } = require('http-status-codes');
+const { v4: uuidv4 } = require('uuid');
+const fileUpload = require('express-fileupload');
 // Require the Cloudinary library
-const cloudinary = require("cloudinary").v2;
-const jwt = require("jsonwebtoken");
+const cloudinary = require('cloudinary').v2;
+const jwt = require('jsonwebtoken');
 // const helmet = require('helmet');
-const cors = require("cors");
+const cors = require('cors');
 // const xss = require('xss-clean');
 // const rateLimiter = require('express-rate-limit');
 
 //============================DB Connection file=========================//
-const connectDB = require("./db/connect");
+const connectDB = require('./db/connect');
 
 //=======================Register View Engine===========================//
-app.set("view engine", "ejs");
+app.set('view engine', 'ejs');
 // =======================Cloudinary Config========================= //
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -48,15 +48,15 @@ app.use(
 );
 
 // =======================Middlewares===========================//
-const errorHandlerMiddleware = require("./middleware/error-handler");
-const notFoundMiddleware = require("./middleware/not-found");
-const authenticateUser = require("./middleware/authentication");
+const errorHandlerMiddleware = require('./middleware/error-handler');
+const notFoundMiddleware = require('./middleware/not-found');
+const authenticateUser = require('./middleware/authentication');
 
 //==========================Use Middlewares==============================//
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static("./public"));
-app.use(express.static("./views"));
+app.use(express.static('./public'));
+app.use(express.static('./views'));
 app.use(cookieParser());
 
 // ========================Security Packages==================== //
@@ -73,45 +73,46 @@ app.use(cors());
 // }))
 
 // =================== Models ======================= //
-const UserchatsModels = require("./models/UserchatsModel");
-const AuthModel = require("./models/AuthModel");
-const MeetingsModel = require("./models/MeetingsModel");
+const UserchatsModels = require('./models/UserchatsModel');
+const AuthModel = require('./models/AuthModel');
+const MeetingsModel = require('./models/MeetingsModel');
 
 //=============================Require Routes===============================//
-const authRoutes = require("./routes/authRoutes");
-const dashboardRoutes = require("./routes/dashboardRoute");
-const privateRoutes = require("./routes/privateRoutes");
-const publicRoutes = require("./routes/publicRoutes");
-const smartNetworkRoutes = require("./routes/smartNetworkRoutes");
-const emailVerificationRoutes = require("./routes/emailVerificationRoutes");
+const authRoutes = require('./routes/authRoutes');
+const dashboardRoutes = require('./routes/dashboardRoute');
+const privateRoutes = require('./routes/privateRoutes');
+const publicRoutes = require('./routes/publicRoutes');
+const smartNetworkRoutes = require('./routes/smartNetworkRoutes');
+const emailVerificationRoutes = require('./routes/emailVerificationRoutes');
+const forumRoutes = require('./routes/forumRoutes');
 
-app.get("/", (req, res) => {
-  res.render("index");
+app.get('/', (req, res) => {
+  res.render('index');
 });
-app.post("/logout", (req, res) => {
-  res.clearCookie("jwtAccessToken");
-  res.redirect("/auth/login");
+app.post('/logout', (req, res) => {
+  res.clearCookie('jwtAccessToken');
+  res.redirect('/auth/login');
 });
 
-const allSockets = require("./middleware/socketIO");
+const allSockets = require('./middleware/socketIO');
 // const signallingServer = require("./middleware/signalling_server");
-io.on("connection", allSockets);
+io.on('connection', allSockets);
 
 // io.sockets.on("connection", (socket) => {
 
 // });
 
-io.on("connection", (socket) => {
-  console.log("Connection established");
+io.on('connection', (socket) => {
+  console.log('Connection established');
 
-  socket.on("userChatroom", async (chatroomID) => {
+  socket.on('userChatroom', async (chatroomID) => {
     const findRoom = await UserchatsModels.findOne({
       _id: chatroomID,
     });
 
     roomMessages = findRoom.messages.map((message) => {
       var m = moment(new Date(message.dateSent));
-      var time = m.format("h:mm A");
+      var time = m.format('h:mm A');
 
       return { message, time };
     });
@@ -122,7 +123,7 @@ io.on("connection", (socket) => {
     const recipientDetails = await AuthModel.findById({
       _id: findRoom.member,
     });
-    socket.emit("chatRoomMessages", {
+    socket.emit('chatRoomMessages', {
       senderDetails,
       recipientDetails,
       findRoom,
@@ -143,7 +144,7 @@ io.on("connection", (socket) => {
     */
   });
 
-  socket.on("chatMessage", async (response) => {
+  socket.on('chatMessage', async (response) => {
     const senderID = response.senderID;
     const message = response.myMessage;
     const chatroomID = response.chatroomID;
@@ -163,7 +164,7 @@ io.on("connection", (socket) => {
     const myMessage = newMessage.messages.pop();
 
     const m = moment(new Date(myMessage.dateSent));
-    const time = m.format("h:mm A");
+    const time = m.format('h:mm A');
     /*
       - Get user message, his ID, and chatroom ID
       - Fetch chatroomID from database
@@ -172,16 +173,17 @@ io.on("connection", (socket) => {
       - Return back the sender ID and verify if they are equal to append to senders side
       - If they are not equal, append to recipient side
     */
-    io.emit("newChatMessage", { time, myMessage });
+    io.emit('newChatMessage', { time, myMessage });
   });
 });
 
-app.use("/auth", authRoutes);
-app.use("/emailVerification", emailVerificationRoutes);
-app.use("/upload", smartNetworkRoutes);
-app.use("/dashboard", authenticateUser, dashboardRoutes);
-app.use("/dashboard/private", authenticateUser, privateRoutes);
-app.use("/dashboard/public", authenticateUser, publicRoutes);
+app.use('/auth', authRoutes);
+app.use('/emailVerification', emailVerificationRoutes);
+app.use('/upload', smartNetworkRoutes);
+app.use('/dashboard', authenticateUser, dashboardRoutes);
+app.use('/dashboard/private', authenticateUser, privateRoutes);
+app.use('/dashboard/public', authenticateUser, publicRoutes);
+app.use('/forums', forumRoutes);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
