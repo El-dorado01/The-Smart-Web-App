@@ -30,6 +30,8 @@ const createForum = async (req, res) => {
     );
   }
 
+  console.log(33, req.files);
+
   if (req.files) {
     let maxSize = 100000;
 
@@ -53,7 +55,7 @@ const createForum = async (req, res) => {
 
   const forum = await Forum.create({
     ...req.body,
-    forumImage: imageUpload.secure_url,
+    forumImage: req.files && imageUpload.secure_url,
   });
 
   res.status(StatusCodes.CREATED).json({
@@ -63,15 +65,37 @@ const createForum = async (req, res) => {
   });
 };
 
-const getforums = (req, res) => {
-  const page_name = req.path;
-  res.status(StatusCodes.OK).render('./dashboard/public/forums', {
-    headTitle: 'Smart Forums',
-    page_name,
+const getforums = async (req, res) => {
+  // Still thinking what to do here
+  const forums = await Forum.find({});
+  res.status(StatusCodes.OK).json({
+    status: true,
+    count: forums.length,
+    message: 'fetched',
+    forums,
   });
 };
+
+const deleteForum = async (req, res) => {
+  const forum = await Forum.findByIdAndDelete(req.params.forumId);
+  if (!forum) {
+    throw new BadRequestError('Forum not found');
+  }
+  res.status(StatusCodes.NO_CONTENT).json({
+    status: true,
+    message: 'forum deleted',
+  });
+};
+
+const updateForum = (req, res) => {};
+
+const getForum = (req, res) => {};
 
 module.exports = {
   forums,
   createForum,
+  getforums,
+  deleteForum,
+  updateForum,
+  getForum,
 };
