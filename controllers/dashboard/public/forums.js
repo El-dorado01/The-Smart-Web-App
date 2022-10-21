@@ -87,9 +87,37 @@ const deleteForum = async (req, res) => {
   });
 };
 
-const updateForum = (req, res) => {};
+const updateForum = async (req, res) => {
+  const forum = await Forum.findByIdAndUpdate(
+    req.params.forumId,
+    { ...req.body },
+    { runValidators: true, new: true }
+  );
 
-const getForum = (req, res) => {};
+  if (!forum) {
+    throw new BadRequestError('Forum not found');
+  }
+
+  res.status(StatusCodes.OK).json({
+    status: true,
+    message: 'fetched',
+    forum,
+  });
+};
+
+const getForum = async (req, res) => {
+  const forum = await Forum.findById(req.params.forumId);
+
+  if (!forum) {
+    throw new BadRequestError('Forum not found');
+  }
+
+  res.status(StatusCodes.OK).json({
+    status: true,
+    message: 'fetched',
+    forum,
+  });
+};
 
 module.exports = {
   forums,
