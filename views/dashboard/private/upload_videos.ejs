@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Header -->
+    <%- include("./partials/header") %>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %>
+
+        <!--Main-->
+        <main>
+            <div class="body-container">
+                <div class="alerts">
+                    <div class="alert-success" id="alert-success" style="display: none;">
+                        <span class="fa fa-times"></span>
+                        <div class="body">
+                            <i class="fa fa-check-circle"></i>
+                            <p class="msg"></p>
+                        </div>
+                    </div>
+                    <div class="alert-danger" id="alert-danger" style="display: none;">
+                        <span class="fa fa-times"></span>
+                        <div class="body">
+                            <i class="fa fa-exclamation-circle"></i>
+                            <p class="msg"></p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Sidebar -->
+                <%- include ("./partials/sidebar") %>
+                    <!--Middle-->
+                    <div class="middle">
+                        <div class="movies-container">
+                            <div class="action-bar">
+                                <div class="dots-btn">
+                                    <div class="dot dot-1"></div>
+                                    <div class="dot dot-2"></div>
+                                    <div class="dot dot-3"></div>
+                                </div>
+                                <div class="nav-menu">
+                                    <a href="<%= channelRoute %> " class="nav-menu-link" title="My Channel"><i class="fa fa-video-camera"></i></a>
+                                    <a href="/dashboard/private/movies/myPlaylists" class="nav-menu-link" title="Playlists"><i
+                                            class="fa fa-play-circle-o"></i></a>
+                                    <a href="/dashboard/private/movies/uploadVideo" class="nav-menu-link" title="Upload Video"><i
+                                            class="fa fa-upload"></i></a>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 50px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                                <h2>Upload a Movie</h2>
+                                <p class="text-muted">Please fill the form below</p>
+                            </div>
+                            <div class="uploadStatus"></div>
+                            <form class="upload-movie-form">
+                                <div class="thumbnail-preview">
+                                    <img id="thumbnail-preview" alt="">
+                                </div>
+                                <div class="upload-image">
+                                    <label class="channel-logo" for="movie-thumbnail">
+                                        <span class="fa fa-camera"></span>
+                                    </label>
+                                    <input type="file" name="movie-thumbnail" id="movie-thumbnail" style="display: none;" accept="image/*"
+                                        onchange="showPreview2(event);">
+                                    Upload movie thumbnail
+                                </div>
+                                <div class="input-field">
+                                    <span><i class="fa fa-user"></i></span>
+                                    <input type="text" name="movie-title" id="movie-title" required placeholder="Movie Title">
+                                </div>
+                                <div class="input-field">
+                                    <span><i class="fa fa-calendar"></i></span>
+                                    <input type="tel" maxlength="4" minlength="4" name="releasedYear" id="releasedYear" required placeholder="Released Year (YYYY)">
+                                </div>
+                                <div class="input-movie-category">
+                                    <span class="category-icon">
+                                        <i class="fa fa-film"></i>
+                                    </span>
+                                    <div class="category-right">
+                                        <h4>Movie Category</h4>
+                                        <div class="categories">
+                                            <span onclick="addToArray(this)">
+                                                <input type="checkbox" id="categoryAction" name="movie-category" value="action"> 
+                                                <label for="categoryAction">Action</label>
+                                            </span>
+                                            <span onclick="addToArray(this)">
+                                                <input type="checkbox" name="movie-category" value="adventure" id="categoryAdventure">
+                                                <label for="categoryAdventure">Adventure</label>
+                                            </span>
+                                            <span onclick="addToArray(this)">
+                                                <input type="checkbox" name="movie-category" value="animals" id="categoryAnimals">
+                                                <label for="categoryAnimals">Animals</label>
+                                            </span>
+                                            <span onclick="addToArray(this)">
+                                                <input type="checkbox" name="movie-category" value="bollywood" id="categoryBollywood">
+                                                <label for="categoryBollywood">Bollywood</label>
+                                            </span>
+                                            <span onclick="addToArray(this)">
+                                                <input type="checkbox" name="movie-category" value="comedy" id="categoryComedy">
+                                                <label for="categoryComedy">Comedy</label>
+                                            </span>
+                                            <span onclick="addToArray(this)">
+                                                <input type="checkbox" name="movie-category" value="culture" id="categoryCulture">
+                                                <label for="categoryCulture">Culture</label>
+                                            </span>
+                                            <span onclick="addToArray(this)">
+                                                <input type="checkbox" name="movie-category" value="documentary" id="categoryDocumentary">
+                                                <label for="categoryDocumentary">Documentary</label>
+                                            </span>
+                                            <span onclick="addToArray(this)">
+                                                <input type="checkbox" name="movie-category" value="drama" id="categoryDrama">
+                                                <label for="categoryDrama">Drama</label>
+                                            </span>
+                                            <span onclick="addToArray(this)">
+                                                <input type="checkbox" name="movie-category" value="hausa" id="categoryHausa">
+                                                <label for="categoryHausa">Hausa</label>
+                                            </span>
+                                            <span onclick="addToArray(this)">
+                                                <input type="checkbox" name="movie-category" value="hollywood" id="categoryHollywood">
+                                                <label for="categoryHollywood">Hollywood</label>
+                                            </span>
+                                            <span onclick="addToArray(this)">
+                                                <input type="checkbox" name="movie-category" value="igbo" id="categoryIgbo">
+                                                <label for="categoryIgbo">Igbo</label>
+                                            </span>
+                                            <span onclick="addToArray(this)">
+                                                <input type="checkbox" name="movie-category" value="indian" id="categoryIndian">
+                                                <label for="categoryIndian">Indian</label>
+                                            </span>
+                                            <span onclick="addToArray(this)">
+                                                <input type="checkbox" name="movie-category" value="kids" id="categoryKids">
+                                                <label for="categoryKids">Kids</label>
+                                            </span>
+                                            <span onclick="addToArray(this)">
+                                                <input type="checkbox" name="movie-category" value="rom-com" id="categoryRom-com">
+                                                <label for="categoryRom-com">Rom-com</label>
+                                            </span>
+                                            <span onclick="addToArray(this)">
+                                                <input type="checkbox" name="movie-category" value="sports" id="categorySports">
+                                                <label for="categorySports">Sports</label>
+                                            </span>
+                                            <span onclick="addToArray(this)">
+                                                <input type="checkbox" name="movie-category" value="yoruba" id="categoryYoruba">
+                                                <label for="categoryYoruba">Yoruba</label>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-field-textarea">
+                                    <span><i class="fa fa-sticky-note-o"></i></span>
+                                    <textarea name="movie-description" id="movie-description" required placeholder="Movie Details e.g Actors, Movie Summary, Duration..."></textarea>
+                                </div>
+                                <div class="upload-image">
+                                    <label class="channel-logo" for="movie-file">
+                                        <span class="fa-solid fa-file-video"></span>
+                                    </label>
+                                    <input type="file" required name="movie-file" id="movie-file" accept="video/*">
+                                    Upload movie file
+                                </div>
+                                <button class="btn btn-primary" style="margin: 10px 0;"> <i class="fa fa-upload"></i> Upload Movie</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!--Middle ends here-->
+            </div>
+        </main>
+
+        <!--Theme Customization-->
+        <%- include ("./partials/themeCustomization") %>
+
+            <!-- Updates -->
+            <%- include ("./partials/updates") %>
+
+                <!-- Contact List -->
+                <%- include ("./partials/contactList") %>
+
+                    <script>
+                        var form = document.querySelector(".upload-movie-form");
+                        var successAlert = document.getElementById("alert-success");
+                        var successAlertIcon = document.querySelector("#alert-success i");
+                        var successMessage = document.querySelector("#alert-success .msg")
+                        var dangerAlert = document.getElementById("alert-danger")
+                        var dangerMessage = document.querySelector("#alert-danger .msg")
+
+                        function showPreview2(event) {
+                            if (event.target.files.length > 0) {
+                                var src = URL.createObjectURL(event.target.files[0]);
+                                var preview = document.getElementById("thumbnail-preview");
+                                preview.src = src;
+                                document.querySelector(".thumbnail-preview").style.display = "block";
+                            }
+                        }
+
+                        var categoryArray = []
+                        var movieCategory = ""
+
+                        function addToArray(obj) {
+                            var inputValue = obj.querySelector("input").value
+
+                            if (obj.querySelector("input").checked) {
+                                //Add to array
+                                categoryArray.push(inputValue)
+                            } else {
+                                //Remove from Array
+                                for (var i = 0; i < categoryArray.length; i++) {
+                                    if (categoryArray[i] === inputValue) {
+                                        categoryArray.splice(i, 1);
+                                    }
+                                }
+                            }
+
+                            movieCategory = categoryArray.map(category => {
+                                return category
+                            }).join(",")
+                        }
+
+                        form.addEventListener("submit", (e) => {
+                            e.preventDefault()
+                            
+                            if(document.getElementById("movie-thumbnail").files[0] === undefined){
+                                dangerAlert.style.display = "block"
+                                dangerMessage.textContent = "Please select a thumbnail for your movie"
+
+                                setTimeout(() => {
+                                    dangerAlert.style.display = "none"
+                                }, 5000)
+                            }else if(movieCategory !== ""){
+                                document.querySelector(".uploadStatus").style.display = "flex"
+                                document.querySelector(".uploadStatus").textContent = "Uploading your movie, please wait..."
+
+                                var channel = '<%= channel.channelName %>'
+                                var channelID = '<%= channel._id %>'
+
+                                const formData = new FormData()
+                                formData.append('channel', channel)
+                                formData.append('channelID', channelID)
+                                formData.append('thumbnail', document.getElementById("movie-thumbnail").files[0])
+                                formData.append('movieTitle', document.getElementById("movie-title").value)
+                                formData.append('releasedYear', document.getElementById("releasedYear").value)
+                                formData.append('movieDescription', document.getElementById("movie-description").value)
+                                formData.append('movieCategory', movieCategory)
+                                formData.append('fileUpload', document.getElementById("movie-file").files[0])
+
+                                form.reset()
+                                categoryArray = []
+                                movieCategory = ""
+                                document.querySelector(".thumbnail-preview").style.display = "none";
+
+                                // successAlert.style.display = "block"
+                                // successAlertIcon.className = ""
+                                // successAlertIcon.className = "fa fa-check-circle"
+                                // successMessage.textContent = "Channel created. Redirecting in few secs..."
+
+                                setTimeout(() => {
+                                    successAlert.style.display = "none"
+                                }, 5000)
+
+                                fetch("/dashboard/private/post_movies", {
+                                    method: 'POST',
+                                    mode: 'cors',
+                                    cache: 'no-cache',
+                                    credentials: 'same-origin',
+                                    redirect: 'follow',
+                                    referrerPolicy: 'no-referrer',
+                                    body: formData
+                                })
+                                .then(function (res) {
+                                    return res.json()
+                                })
+                                .then(function (json) {
+                                    if(json.bigFile){
+                                        dangerAlert.style.display = "block"
+                                        dangerMessage.textContent = "Thumbnail file size is too big"
+
+                                        setTimeout(() => {
+                                            dangerAlert.style.display = "none"
+                                        }, 5000)
+                                    }else if(json.movieFileNotAllowed){
+                                        dangerAlert.style.display = "block"
+                                        dangerMessage.textContent = "Movie filetype not allowed"
+
+                                        setTimeout(() => {
+                                            dangerAlert.style.display = "none"
+                                        }, 5000)
+                                    }else if(json.thumbnailFileNotAllowed){
+                                        dangerAlert.style.display = "block"
+                                        dangerMessage.textContent = "Thumbnail filetype not allowed"
+
+                                        setTimeout(() => {
+                                            dangerAlert.style.display = "none"
+                                        }, 5000)
+                                    }else if(json.success){
+                                        document.querySelector(".uploadStatus").style.backgroundColor = "green"
+                                        document.querySelector(".uploadStatus").textContent = "Movie Upload Complete"
+
+                                        setTimeout(() => {
+                                            document.querySelector(".uploadStatus").style.display = "none"
+                                        }, 5000)
+                                    }
+                                    
+                                })
+                                .catch(function (err) {
+                                    console.log(err);
+                                    dangerAlert.style.display = "block"
+                                    dangerMessage.textContent = "An error occured. Please try again later"
+
+                                    setTimeout(() => {
+                                        dangerAlert.style.display = "none"
+                                    }, 5000)
+                                })
+                            } else {
+                                dangerAlert.style.display = "block"
+                                dangerMessage.textContent = "Field cannot be left blank"
+
+                                setTimeout(() => {
+                                    dangerAlert.style.display = "none"
+                                }, 5000)
+                            }
+                        })
+
+
+                    </script>
+
+                    <!--JS Script Attachment-->
+                    <script src="/socket.io/socket.io.js"></script>
+                    <script src="../../../js/script.js"></script>
+</body>
+
+</html>

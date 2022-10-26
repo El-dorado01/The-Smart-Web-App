@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Header -->
+    <%- include("./partials/header") %>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %>
+
+            <!--Main-->
+        <main>
+            <div class="body-container">
+                <div class="alerts">
+                    <div class="alert-success" id="alert-success" style="display: none;">
+                        <span class="fa fa-times"></span>
+                        <div class="body">
+                            <i class="fa fa-check-circle"></i>
+                            <p class="msg"></p>
+                        </div>
+                    </div>
+                    <div class="alert-danger" id="alert-danger" style="display: none;">
+                        <span class="fa fa-times"></span>
+                        <div class="body">
+                            <i class="fa fa-exclamation-circle"></i>
+                            <p class="msg"></p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Sidebar -->
+                <%- include ("./partials/sidebar") %>
+                <!--Middle-->
+                <div class="middle">
+                    <div class="movies-container">
+                        <div class="action-bar">
+                            <div class="dots-btn">
+                                <div class="dot dot-1"></div>
+                                <div class="dot dot-2"></div>
+                                <div class="dot dot-3"></div>
+                            </div>
+                            <div class="nav-menu">
+                                <a href="<%= channelRoute %> " class="nav-menu-link" title="My Channel"><i class="fa fa-video-camera"></i></a>
+                                <a href="/dashboard/private/movies/myPlaylists" class="nav-menu-link" title="Playlists"><i
+                                        class="fa fa-play-circle-o"></i></a>
+                                <a href="/dashboard/private/movies/uploadVideo" class="nav-menu-link" title="Upload Video"><i
+                                        class="fa fa-upload"></i></a>
+                            </div>
+                        </div>
+
+                        <div class="channel-body">
+                            <div class="video-category">
+                                <h3 class="active tablinks" onclick="openTab(event, 'myPlaylists')" id="defaultOpen">
+                                    <div class="middle-align">
+                                        <span style="margin-right: 10px;">My Playlists</span>
+                                        <i class="fa fa-play-circle-o"></i>
+                                    </div>
+                                </h3>
+                                <h3 class="tablinks" onclick="openTab(event, 'subscribedChannels')">
+                                    <div class="middle-align">
+                                        <span style="margin-right: 10px;">Subscribed Channels</span>
+                                        <i class="fa fa-video-camera"></i>
+                                    </div>
+                                </h3>
+                            </div>
+                            <div class="postFeeds" id="myPlaylists">
+                                <button class="btn btn-primary" onclick="space()"> <i class="fa fa-plus"></i> Create a New Playlist</button>
+                            
+                                <div class="list-container" style="margin-bottom: 100px;">
+                                    <% myPlaylists.forEach(playlist=> {
+                                        if(playlist.movies.length > 1){
+                                        var playlistMovies2 = playlist.movies[playlist.movies.length - 2]
+                                        var playlistMovies1 = playlist.movies[playlist.movies.length - 1]
+                                        }else
+                                        if(playlist.movies.length > 0) var playlistMovies1 = playlist.movies[playlist.movies.length - 1]
+                                        %>
+                                        <div class="vid-list3<%= playlist._id %>">
+                                            <div class="vid-list3" onclick="showPlaylistVideos('<%= playlist._id %>')">
+                                                <div class="thumbnails">
+                                                    <% if(playlist.movies.length> 1){ %>
+                                                        <img src="<%= playlistMovies1.thumbnail %>" alt="" class="thumbnail-1">
+                                                        <img src="<%= playlistMovies2.thumbnail %>" alt="" class="thumbnail-2">
+                                                        <% } else if(playlist.movies.length> 0){ %>
+                                                            <img src="<%= playlistMovies1.thumbnail %>" alt="" class="thumbnail-1">
+                                                            <% } %>
+                                                </div>
+                                                <div class="shadow">
+                                                    <span style="color: var(--color-primary);" class="fa fa-play-circle-o"></span>
+                                                    <h4 style="color: var(--color-primary);">
+                                                        <%= playlist.playlistName %> <br> <span class="text-muted"
+                                                                style="color: var(--color-primary);">
+                                                                <%= playlist.movies.length %> Video<% if(playlist.movies.length> 1){%>s<% } %>
+                                                            </span>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                            <div style="margin: 5px 0;">
+                                                <button class="btn" onclick="deletePlaylist('<%= playlist._id %>')"
+                                                    style="color: var(--color-danger); width: 49%;">
+                                                    <i class="fa fa-trash"></i> Delete Playlist
+                                                </button>
+                                                <button class="btn btn-primary"
+                                                    onclick="copyPlaylistLink('<%= getURL %>/dashboard/private/playlist/<%= playlist._id %>')"
+                                                    style="width: 49%;">
+                                                    <i class="fa fa-clipboard"></i> Copy Playlist Link
+                                                </button>
+                                            </div>
+                                        </div>
+                            
+                                        <% }) %>
+                                </div>
+                            </div>
+                            <div class="postFeeds" id="subscribedChannels">
+                                <div class="list-container" style="margin-bottom: 100px;">
+                                    <% subscribedChannels.forEach(subscribedChannel=> { %>
+                                        <div class="channel-list">
+                                            <div class="list-left">
+                                                <a href="/dashboard/private/movieChannel/<%= subscribedChannel._id %>">
+                                                    <img src="<%= subscribedChannel.logo %>" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="list-right">
+                                                <a href="/dashboard/private/movieChannel/<%= subscribedChannel._id %>">
+                                                    <h4>
+                                                        <%= subscribedChannel.channelName %>
+                                                    </h4>
+                                                </a>
+                                                <p class="text-muted">
+                                                    <span id="no_subscribers<%= subscribedChannel._id %>">
+                                                        <%= subscribedChannel.subscribers.length %>
+                                                    </span> Subscriber<% if(subscribedChannel.subscribers.length> 1){%>s<% } %>
+                                                </p>
+                                                <button id="subscribe-btn<%= subscribedChannel._id %>" class="btn btn-gray"
+                                                    onclick="unSubscribe('<%= subscribedChannel._id %>','<%= user._id %>')">Unsubscribe</button>
+                                            </div>
+                                        </div>
+                                        <% }) %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Middle ends here-->
+            </div>
+        </main>
+
+<!--=====================Playlist Modal================-->
+<div class="create-space">
+    <div class="card">
+        <div class="close-space" onclick="closeSpaceModalTwo()">
+            <span class="fa fa-times" style="cursor:pointer;"></span>
+        </div>
+        <div class="modal-body">
+            <h3>Create a New Playlist</h3>
+            <form class="space-form space-form2">
+                <div class="input-field">
+                    <label for="playlist-name">Name your Playlist <b>*</b></label>
+                    <input type="text" id="playlist-name" name="playlist" maxlength="100" placeholder="Playlist Name"
+                        required>
+                </div>
+                <button class="btn btn-primary"> <i class="fa fa-plus"></i> Create</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--=====================Add Videos to Playlist Modal Two================-->
+<div class="video-space-modal v2-modal">
+    <div class="card">
+        <div class="close-space" onclick="closeVideoSpaceModalTwo3()">
+            <span class="fa fa-times" style="cursor:pointer;"></span>
+        </div>
+        <div class="modal-body">
+            <h3>Add Video to Playlist</h3>
+            <div class="add-to-playlist">
+                <input type="checkbox" name="checkbox" id="add-to-playlist2" onclick="showField2()"> <label
+                    for="add-to-playlist2">Create a new Playlist</label>
+            </div>
+            <form class="space-form space-form5" style="display: none;">
+                <input type="hidden" name="hiddenMovieID" id="hiddenMovieID3" value="">
+                <div class="input-field" id="abc">
+                    <label for="newplaylist-name2">Name your Playlist <b>*</b></label>
+                    <input type="text" id="newplaylist-name2" name="playlist_name" maxlength="100"
+                        placeholder="Playlist Name" required>
+                </div>
+                <button class="btn btn-primary btn-change-2"> <i class="fa fa-plus"></i> Create Playlist and Add
+                    Movie</button>
+            </form>
+            <form class="space-form space-form6">
+                <input type="hidden" name="hiddenMovieID" id="hiddenMovieID4" value="">
+                <div class="select-box">
+                    <div class="selected2" onclick="toggleVideoSpace2()">
+                        Select a playlist...
+                        <span class="fa fa-angle-down angle3"></span>
+                        <span class="fa fa-angle-up angle4"></span>
+                    </div>
+                    <div class="options-container2 options-container-video-forum">
+                        <% userPlaylists.forEach(playlist=> { %>
+                            <div class="option option<%= playlist._id %>" onclick="updateVideoOption2(this)">
+                                <input type="radio" value="<%= playlist._id %>" name="playlist2" class="radio">
+                                <label for="<%= playlist.playlistName %>">
+                                    <%= playlist.playlistName %>
+                                </label>
+                            </div>
+                            <% }) %>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <button class="btn btn-primary btn-change-1"> <i class="fa fa-plus"></i> Add Video</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+        <!--Theme Customization-->
+        <%- include ("./partials/themeCustomization") %>
+        
+        <!-- Updates -->
+        <%- include ("./partials/updates") %>
+    
+        <!-- Contact List -->
+        <%- include ("./partials/contactList") %>
+
+        <script>
+            document.querySelector(".space-form5").addEventListener("submit", (e) => {
+                e.preventDefault()
+
+                var movieID = document.getElementById("hiddenMovieID3").value;
+                var playlistName = document.getElementById("newplaylist-name2").value;
+
+                if (playlistName === "") {
+                    dangerAlert.style.display = "block"
+                    dangerMessage.textContent = "Field cannot be left blank"
+
+                    setTimeout(() => {
+                        dangerAlert.style.display = "none"
+                    }, 5000)
+                } else {
+                    var userID = '<%= user._id %>'
+
+                    socket.emit("createUserPlaylistAndAddVideo", { movieID, playlistName, userID })
+
+                    document.getElementById("newplaylist-name2").value = ""
+                    document.getElementById("add-to-playlist2").checked = false
+                    document.querySelector(".space-form6").style.display = "block"
+                    document.querySelector(".space-form5").style.display = "none"
+
+                    successAlert.style.display = "block"
+                    successAlertIcon.className = ""
+                    successAlertIcon.className = "fa fa-check-circle"
+                    successMessage.textContent = "Video has been added to the new playlist"
+
+                    setTimeout(() => {
+                        successAlert.style.display = "none"
+                    }, 3000)
+
+                    var videoSpace = document.querySelector(".v2-modal");
+                    videoSpace.style.display = "none";
+                }
+            })
+
+            document.querySelector(".space-form6").addEventListener("submit", (e) => {
+                e.preventDefault()
+
+                var movieID = document.getElementById("hiddenMovieID4").value;
+                var playlistID;
+                document.getElementsByName("playlist2").forEach(playlist => {
+                    if (playlist.checked) playlistID = playlist.value
+                })
+                var userID = '<%= user._id %>'
+
+                socket.emit("addVideoToUserPlaylist", { movieID, playlistID, userID })
+
+                successAlert.style.display = "block"
+                successAlertIcon.className = ""
+                successAlertIcon.className = "fa fa-check-circle"
+                successMessage.textContent = "Video has been added to playlist"
+
+                setTimeout(() => {
+                    successAlert.style.display = "none"
+                }, 3000)
+
+                var videoSpace = document.querySelector(".v2-modal");
+                videoSpace.style.display = "none";
+            })
+
+
+            var form = document.querySelector(".space-form2");
+            var successAlert = document.getElementById("alert-success");
+            var successAlertIcon = document.querySelector("#alert-success i");
+            var successMessage = document.querySelector("#alert-success .msg")
+            var dangerAlert = document.getElementById("alert-danger")
+            var dangerMessage = document.querySelector("#alert-danger .msg")
+
+            function unSubscribe(channelID, userID){
+                var subscribeBtn = document.getElementById("subscribe-btn"+channelID);
+
+                if (subscribeBtn.classList.contains("btn-primary")) {
+                    subscribeBtn.textContent = "Unsubscribe";
+                    subscribeBtn.classList.replace("btn-primary", "btn-gray");
+
+                    var oldSubscribers = Number(
+                        document.getElementById("no_subscribers" + channelID).textContent
+                    );
+                    var newSubscribers = (oldSubscribers += 1);
+
+                    document.getElementById("no_subscribers" + channelID).textContent = newSubscribers;
+
+                    socket.emit("subscribe", { userID, channelID });
+                } else {
+                    subscribeBtn.textContent = "Subscribe";
+                    subscribeBtn.classList.replace("btn-gray", "btn-primary");
+
+                    var oldSubscribers = Number(
+                        document.getElementById("no_subscribers" + channelID).textContent
+                    );
+                    var newSubscribers = oldSubscribers - 1;
+
+                    document.getElementById("no_subscribers" + channelID).textContent = newSubscribers;
+
+                    socket.emit("unSubscribe", { userID, channelID });
+                }
+            }
+
+            form.addEventListener("submit", (e) => {
+                e.preventDefault()
+
+                var playlistName = document.getElementById("playlist-name").value
+
+                if (playlistName != "") {
+                    var userID = '<%= user._id %>'
+                    socket.emit("postUserPlaylist", { playlistName, userID });
+
+                    document.getElementById("playlist-name").value = ""
+                    document.querySelector(".create-space").style.display = "none"
+
+                    successAlert.style.display = "block"
+                    successAlertIcon.className = ""
+                    successAlertIcon.className = "fa fa-check-circle"
+                    successMessage.textContent = "Playlist Created"
+
+                    setTimeout(() => {
+                        successAlert.style.display = "none"
+                    }, 3000)
+
+                    socket.on("getUserPlaylist", (playlist) => {
+                        displayUserPlaylist(playlist)
+                    })
+
+                    function displayUserPlaylist(playlist) {
+                        var getURL = '<%= getURL %>'
+                        var div = document.createElement("div");
+                        div.classList.add(`vid-list3${playlist._id}`);
+
+                        div.innerHTML = `
+                            <div class="vid-list3" onclick="showPlaylistVideos('${playlist._id}')">
+                                <div class="thumbnails"></div>
+                                <div class="shadow">
+                                    <span style="color: var(--color-primary);" class="fa fa-play-circle-o"></span>
+                                    <h4 style="color: var(--color-primary);">${playlist.playlistName} <br> 
+                                    <span style="color: var(--color-primary);" class="text-muted">0 Video</span></h4>
+                                </div>
+                            </div>
+                            <div style="margin: 5px 0;">
+                                <button class="btn" onclick="deletePlaylist('${playlist._id}')"
+                                style="color: var(--color-danger); width: 49%;"> 
+                                    <i class="fa fa-trash"></i> Delete Playlist
+                                </button>
+                                <button class="btn btn-primary" onclick="copyPlaylistLink('${getURL}/dashboard/private/playlist/${playlist._id}')" style="width: 49%;"> 
+                                    <i class="fa fa-clipboard"></i> Copy Playlist Link
+                                </button>
+                            </div>
+                            `
+                        document.querySelector("#myPlaylists .list-container").appendChild(div);
+                    }
+                } else {
+                    dangerAlert.style.display = "block"
+                    dangerMessage.textContent = "Field cannot be left blank"
+
+                    setTimeout(() => {
+                        dangerAlert.style.display = "none"
+                    }, 5000)
+                }
+            })
+        
+            function displayPlaylistVideos(results) {
+                    var playlistName = results.playlistName;
+                    var playlistVideos = results.movies;
+                    var playlistID = results._id;
+                    var channelAccess = "<%= channelAccess %>";
+                    var getURL = "<%= getURL %>";
+
+                    document.querySelector(".channel-body").style.display = "none";
+
+                    var div = document.createElement("div");
+                    div.classList.add("playlist-body");
+
+                    div.innerHTML = ` 
+
+            <button class="btn btn-primary" onclick="backToPlaylists()" style="margin-bottom: 10px;"><i class="fa fa-angle-left"></i> Back to Playlists</button>
+            <div class="playlist-details" style="margin-bottom: 50px;">
+                <h3 style="margin-bottom: 20px; font-size: 1.7rem;">${playlistName}</h3>
+                <p class="text-muted"><span class="playlistLength${playlistID}">${playlistVideos.length
+                        }</span> Video<span class = "the_S">${playlistVideos.length > 1 ? "s" : ""
+                        }</span></p>
+            </div>
+            <div class="list-container" style="margin-bottom: 100px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); grid-row-gap: 30px;">
+                ${playlistVideos
+                            .map((movie) => {
+                                var timeInMS = new Date() - new Date(movie.createdAt); var secs = timeInMS / 1000; var mins = timeInMS / (1000 * 60); var
+                                    hours = timeInMS / (1000 * 60 * 60); var days = timeInMS / (1000 * 60 * 60 * 24); var weeks = timeInMS / (1000 * 60 * 60 *
+                                        24 * 7);
+                                return `
+                        <div class="vid-list2 vid-list2${movie.movieID
+                                    }" style="margin-bottom: 0; padding-bottom: 0;">
+                            <div class="left-movie" style="margin-bottom: 0; padding-bottom: 0;">
+                                <a href="/dashboard/private/movies/${movie.movieID
+                                    }">
+                                    <div class="movie-thumbnail">
+                                        <img src="${movie.thumbnail}" alt="" />
+                                    </div>
+                                </a>
+                                <div class="movie-details" style="margin-bottom: 0; padding-bottom: 0;">
+                                    <div class="vid-info">
+                                        <a href="/dashboard/private/movies/${movie.movieID
+                                    }">
+                                            ${movie.title}
+                                        </a>
+                                        <p>
+                                            ${movie.channel}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="cursor: pointer; margin-bottom: 0; padding-bottom: 0;" class="action"
+                                onclick="showActionBox2('${movie.movieID}')">
+                                <span class="fa fa-ellipsis-vertical"></span>
+                            </div>
+                            <div style="margin-bottom: 0; padding-bottom: 0;" class="action-box box2${movie.movieID
+                                    }">
+                                <div>
+                                    <i class="fa fa-share"></i>
+                                    <span>Share Video</span>
+                                </div>
+                                <div onclick="copyVideoLink('${getURL}/dashboard/private/movies/${movie.movieID
+                                    }', '${movie.movieID}', 'box2')">
+                                    <i class="fa fa-clipboard"></i>
+                                    <span>Copy Link</span>
+                                </div>
+                                ${channelAccess != "true"
+                                        ? `
+                                    <div onclick="videoSpace3('${movie.movieID}')">
+                                        <i class="fa fa-video-camera"></i>
+                                        <span>Add to Playlist </span>
+                                    </div>`
+                                        : ""
+                                    }
+                                ${channelAccess === "true"
+                                        ? `
+                                    <div onclick="removeFromPlaylist('${movie.movieID}','${playlistID}')">
+                                        <i class="fa fa-times"></i>
+                                        <span>Remove from Playlist</span>
+                                    </div>
+                                    <div>
+                                        <a href="/dashboard/private/editMovie/${movie.movieID}">
+                                            <i class="fa fa-edit"></i>
+                                            <span>Edit Video Info</span>
+                                        </a>
+                                    </div>
+                                    <div style="color: var(--color-danger);"
+                                        onclick="deleteMovies('${movie.movieID}')">
+                                        <i class="fa fa-trash"></i>
+                                        <span>Delete Movie</span>
+                                    </div>`
+                                        : ""
+                                    }
+                            </div>
+                        </div>
+                    `;
+                            })
+                            .join("")}
+            </div>
+        `;
+
+                    if (document.querySelector(".playlist-body")) {
+                        document.querySelector(".playlist-body").remove();
+                    }
+
+                    document.querySelector(".movies-container").appendChild(div);
+                }
+        </script>
+
+        <!--JS Script Attachment-->
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="../../../js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Header -->
+    <%- include("./partials/header") %>
+</head>
+<body>
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %> 
+
+    <!--Main-->
+    <main>
+        <div class="body-container">
+            <!-- Sidebar -->
+            <%- include ("./partials/sidebar") %> 
+
+            <!--Middle-->
+            <div class="middle">
+                <div class="space-container">
+                    <div class="space-body">
+                        <div class="space-head">
+                            <h2>Live Spaces <i class="fa-brands fa-creative-commons-sampling-plus"></i></h3>
+                            <p class="text-muted">Audio and Video Live Spaces</p>
+                        </div>
+                        <!--Space Category-->
+                        <div class="category">
+                            <h3 class="active tablinks" onclick="openTab(event, 'audio_space')" id="defaultOpen">Audio Spaces</h3>
+                            <h3 class="tablinks" onclick="openTab(event, 'video_space')">Video Spaces</h3>
+                            <h3 class="tablinks" onclick="openTab(event, 'favourites')">Favourites</h3>
+                            <h3 class="tablinks" onclick="openTab(event, 'mySpaces')">My Spaces</h3>
+                        </div>
+                        <!--=================Audio Spaces=================-->
+                        <div id="audio_space" class="postFeeds">
+                            <div class="space-button">
+                                <div class="flex">
+                                    <div class="search-bar2">
+                                    <i class="fa fa-search"></i>
+                                    <input type="search" placeholder="Search" id="message-searchs">
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" onclick="space()">Create a Space</button>
+                            </div>
+                            <div class="audio-space">
+                                <div class="audio-space-body" style="background: var(--color-gray);">
+                                    <div class="heading">
+                                        <div class="schedule">
+                                            <span class="fa fa-calendar"></span> 30th Apr @ 12:00PM
+                                        </div>
+                                        <span class="fa fa-ellipsis-v"></span>
+                                    </div>
+                                    <div class="body">
+                                        <h3>Come Let's Discuss this once and for all</h3>
+                                        <p>
+                                            Health &bull;
+                                            Social &bull;
+                                            Lifestyle 
+                                        </p>
+                                    </div>
+                                    <div class="foot">
+                                        <div class="user">
+                                            <img src="../../../images/smart.png" alt="">
+                                            <b>El Dorado</b>
+                                            <span>Host</span>
+                                            <div class="star">
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                        </div>
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti, minima.</p>
+                                    </div>
+                                </div>
+                                <div class="audio-space-body" style="background: var(--color-gray);">
+                                    <div class="heading">
+                                        <div class="schedule">
+                                            <span class="fa fa-calendar"></span> 30th Apr @ 12:00PM
+                                        </div>
+                                        <span class="fa fa-ellipsis-v"></span>
+                                    </div>
+                                    <div class="body">
+                                        <h3>Real Matters at hand</h3>
+                                        <p>
+                                            Health &bull;
+                                            Social &bull;
+                                            Lifestyle 
+                                        </p>
+                                        <div class="liked-by">
+                                            <span><img src="../../../images/smart.png" alt=""></span>
+                                            <span><img src="../../../images/smart.png" alt=""></span>
+                                            <span><img src="../../../images/smart.png" alt=""></span>
+                                            <p>Listening <b>Karimu Abija</b> and <b>20 others</b></p>
+                                        </div>
+                                    </div>
+                                    <div class="foot">
+                                        <div class="user">
+                                            <img src="../../../images/smart.png" alt="">
+                                            <b>El Dorado</b>
+                                            <span>Host</span>
+                                            <div class="star">
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                        </div>
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti, minima.</p>
+                                    </div>
+                                </div>
+                                <div class="audio-space-body" style="background: var(--color-gray);">
+                                    <div class="heading">
+                                        <div class="schedule">
+                                            <span class="fa fa-calendar"></span> 30th Apr @ 12:00PM
+                                        </div>
+                                        <span class="fa fa-ellipsis-v"></span>
+                                    </div>
+                                    <div class="body">
+                                        <h3>Crypto and Lithosphere Age</h3>
+                                        <p>
+                                            Health &bull;
+                                            Social &bull;
+                                            Lifestyle 
+                                        </p>
+                                    </div>
+                                    <div class="foot">
+                                        <div class="user">
+                                            <img src="../../../images/smart.png" alt="">
+                                            <b>El Dorado</b>
+                                            <span>Host</span>
+                                            <div class="star">
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                        </div>
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti, minima.</p>
+                                    </div>
+                                </div>
+                                <div class="audio-space-body" style="background: aqua;">
+                                    <div class="heading">
+                                        <div class="schedule">
+                                            <span class="fa fa-calendar"></span> 30th Apr @ 12:00PM
+                                        </div>
+                                        <span class="fa fa-ellipsis-v"></span>
+                                    </div>
+                                    <div class="body">
+                                        <h3>Alabosi ninu ere faaji</h3>
+                                        <p>
+                                            Health &bull;
+                                            Social &bull;
+                                            Lifestyle 
+                                        </p>
+                                    </div>
+                                    <div class="foot">
+                                        <div class="user">
+                                            <img src="../../../images/smart.png" alt="">
+                                            <b>El Dorado</b>
+                                            <span>Host</span>
+                                        </div>
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti, minima.</p>
+                                    </div>
+                                </div>
+                                <div class="audio-space-body" style="background: var(--color-primary);">
+                                    <div class="heading">
+                                        <div class="schedule">
+                                            <span class="fa fa-calendar"></span> 30th Apr @ 12:00PM
+                                        </div>
+                                        <span class="fa fa-ellipsis-v"></span>
+                                    </div>
+                                    <div class="body">
+                                        <h3>Come Let's Discuss this once and for all</h3>
+                                        <p>
+                                            Health &bull;
+                                            Social &bull;
+                                            Lifestyle 
+                                        </p>
+                                    </div>
+                                    <div class="foot">
+                                        <div class="user">
+                                            <img src="../../../images/smart.png" alt="">
+                                            <b>El Dorado</b>
+                                            <span>Host</span>
+                                        </div>
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti, minima.</p>
+                                    </div>
+                                </div>
+                                <div class="audio-space-body" style="background: gray;">
+                                    <div class="heading">
+                                        <div class="schedule">
+                                            <span class="fa fa-calendar"></span> 30th Apr @ 12:00PM
+                                        </div>
+                                        <span class="fa fa-ellipsis-v"></span>
+                                    </div>
+                                    <div class="body">
+                                        <h3>Come Let's Discuss this once and for all</h3>
+                                        <p>
+                                            Health &bull;
+                                            Social &bull;
+                                            Lifestyle 
+                                        </p>
+                                    </div>
+                                    <div class="foot">
+                                        <div class="user">
+                                            <img src="../../../images/smart.png" alt="">
+                                            <b>El Dorado</b>
+                                            <span>Host</span>
+                                            <div class="star">
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                        </div>
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti, minima.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--=====================Video Spaces=====================-->
+                        <div id="video_space" class="postFeeds">
+                            <div class="space-button">
+                                <div class="flex">
+                                    <div class="search-bar2">
+                                    <i class="fa fa-search"></i>
+                                    <input type="search" placeholder="Search" id="message-searchs">
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" onclick="videoSpace()">Create a Space</button>
+                            </div>
+                            <div class="video-space">
+                                <a href="video_space.html" class="v-body">
+                                    <div class="video-space-body" style="background: var(--color-gray);">
+                                        <video>
+                                            <source src="../../../videos/video2.mp4">
+                                        </video>
+                                        <div class="heading">
+                                            <div class="schedule">
+                                                <span class="fas fa-stream fa-spin"></span> Live
+                                            </div>
+                                            <span class="fa fa-ellipsis-v"></span>
+                                        </div>
+                                        <div class="foot">
+                                            <h3>Real Matters</h3>
+                                            <div class="footer">
+                                                <div class="user">
+                                                    <img src="../../../images/smart.png" alt="">
+                                                    <b>El Dorado</b>
+                                                    <span>Host</span>
+                                                </div>
+                                                <div class="star">
+                                                    <i class="fas fa-clock"></i> Watch later
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <a href="video_space.html" class="v-body">
+                                    <div class="video-space-body" style="background: var(--color-gray);">
+                                        <video>
+                                            <source src="../../../videos/video1.mp4">
+                                        </video>
+                                        <div class="heading">
+                                            <div class="schedule">
+                                                <span class="fas fa-stream fa-spin"></span> Live
+                                            </div>
+                                            <span class="fa fa-ellipsis-v"></span>
+                                        </div>
+                                        <div class="foot">
+                                            <h3>Lorem ipsum dolor sit amet consectetur adipisicing elit.</h3>
+                                            <div class="footer">
+                                                <div class="user">
+                                                    <img src="../../../images/smart.png" alt="">
+                                                    <b>El Dorado</b>
+                                                    <span>Host</span>
+                                                </div>
+                                                <div class="star">
+                                                    <i class="fas fa-clock"></i> Watch later
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <a href="video_space.html" class="v-body">
+                                    <div class="video-space-body" style="background: var(--color-gray);">
+                                        <video>
+                                            <source src="../../../videos/video3.mp4">
+                                        </video>
+                                        <div class="heading">
+                                            <div class="schedule">
+                                                <span class="fas fa-stream fa-spin"></span> Live
+                                            </div>
+                                            <span class="fa fa-ellipsis-v"></span>
+                                        </div>
+                                        <div class="foot">
+                                            <h3>Come Let's Discuss this once and for all</h3>
+                                            <div class="footer">
+                                                <div class="user">
+                                                    <img src="../../../images/smart.png" alt="">
+                                                    <b>El Dorado</b>
+                                                    <span>Host</span>
+                                                </div>
+                                                <div class="star">
+                                                    <i class="fas fa-clock"></i> Watch later
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div id="favourites" class="postFeeds">
+                            C
+                        </div>
+                        <!--======================My Spaces======================-->
+                        <div id="mySpaces" class="postFeeds">
+                            <div class="space-button">
+                                <div class="flex"></div>
+                                <button class="btn btn-primary" onclick="space()">Create a Space</button>
+                            </div>
+                            <div class="audio-space">
+                                <div class="audio-space-body" style="background: var(--color-gray);">
+                                    <div class="heading">
+                                        <div class="schedule">
+                                            <span class="fa fa-calendar"></span> 30th Apr @ 12:00PM
+                                        </div>
+                                        <span class="fa fa-ellipsis-v"></span>
+                                    </div>
+                                    <div class="body">
+                                        <h3>Come Let's Discuss this once and for all</h3>
+                                        <p>
+                                            Health &bull;
+                                            Social &bull;
+                                            Lifestyle 
+                                        </p>
+                                    </div>
+                                    <div class="foot">
+                                        <div class="user">
+                                            <img src="../../../images/smart.png" alt="">
+                                            <b>El Dorado</b>
+                                            <span>Host</span>
+                                            <div class="star">
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                        </div>
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti, minima.</p>
+                                    </div>
+                                </div>
+                                <div class="audio-space-body" style="background: var(--color-gray);">
+                                    <div class="heading">
+                                        <div class="schedule">
+                                            <span class="fa fa-calendar"></span> 30th Apr @ 12:00PM
+                                        </div>
+                                        <span class="fa fa-ellipsis-v"></span>
+                                    </div>
+                                    <div class="body">
+                                        <h3>Come Let's Discuss this once and for all</h3>
+                                        <p>
+                                            Health &bull;
+                                            Social &bull;
+                                            Lifestyle 
+                                        </p>
+                                        <div class="liked-by">
+                                            <span><img src="../../../images/smart.png" alt=""></span>
+                                            <span><img src="../../../images/smart.png" alt=""></span>
+                                            <span><img src="../../../images/smart.png" alt=""></span>
+                                            <p>Listening <b>Karimu Abija</b> and <b>20 others</b></p>
+                                        </div>
+                                    </div>
+                                    <div class="foot">
+                                        <div class="user">
+                                            <img src="../../../images/smart.png" alt="">
+                                            <b>El Dorado</b>
+                                            <span>Host</span>
+                                            <div class="star">
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                        </div>
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti, minima.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Middle ends here-->
+        </div>
+    </main>
+
+    <!--==============Video space Modal==================-->
+    <div class="video-space-modal">
+        <div class="card">
+            <div class="close-space" onclick="closeVideoSpaceModalTwo()">
+                <span class="fa fa-times" style="cursor:pointer;"></span>
+            </div>
+            <div class="modal-body">
+                <h3>Create a space for your forum or followers. You can choose to restrict your space.</h3>
+                <form action="" class="space-form">
+                    <div class="input-field">
+                        <label for="Name Space">Name your Space <b>*</b></label>
+                        <input type="text" name="space" placeholder="Create a title for your space">
+                    </div>
+                    <div class="select-box">
+                        <div class="options-container2">
+                            <div class="option" onclick="updateVideoOption(this)">
+                                <input type="radio" name="spaceFor" class="radio">
+                                <label for="everyone">Everyone</label>
+                            </div>
+                            <div class="option" onclick="updateVideoOption(this)">
+                                <input type="radio" name="spaceFor" class="radio" id="myVideoForum">
+                                <label for="myForum">My Forum</label>
+                            </div>
+                            <div class="option" onclick="updateVideoOption(this)">
+                                <input type="radio" name="spaceFor" class="radio">
+                                <label for="myFollowers">My Followers</label>
+                            </div>
+                        </div>
+                        <div class="selected" onclick="toggleVideoSpace()">
+                            This space is for...
+                            <span class="fa fa-angle-down angle1"></span>
+                            <span class="fa fa-angle-up angle2"></span>
+                        </div>
+                    </div>
+                    <div class="select-box2" id="myVideoForums" style="display: none;">
+                        <div class="selected2" onclick="toggleVideoSpace2()">
+                            Select a forum you'd like to create a space for...
+                            <span class="fa fa-angle-down angle3"></span>
+                            <span class="fa fa-angle-up angle4"></span>
+                        </div>
+                        <div class="options-container-video-forum">
+                            <div class="option" onclick="updateVideoOption2(this)">
+                                <input type="radio" name="forum" class="radio">
+                                <label for="Real Matters">Real Matters</label>
+                            </div>
+                            <div class="option" onclick="updateVideoOption2(this)">
+                                <input type="radio" name="forum" class="radio">
+                                <label for="Football Only">Football Only</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-video-action">
+                        <div class="input-field">
+                            <label for="">
+                                <span class="temp">This space should be restricted for children</span>
+                            </label>
+                            <input type="checkbox" name="action" id="checks" hidden>
+                            <label for="checks" class="toggle-checkbox">
+                                <div class="circle"></div>
+                            </label>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary">Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--=====================Audio Space Modal================-->
+    <div class="create-space">
+        <div class="card">
+            <div class="close-space" onclick="closeSpaceModalTwo()">
+                <span class="fa fa-times" style="cursor:pointer;"></span>
+            </div>
+            <div class="modal-body">
+                <h3>Create a space for your forum or followers. Permanent spaces cannot be recorded.</h3>
+                <form action="" class="space-form">
+                    <div class="input-field">
+                        <label for="Name Space">Name your Space <b>*</b></label>
+                        <input type="text" name="space" placeholder="What is your space all about?">
+                    </div>
+                    <div class="select-box">
+                        <div class="options-container">
+                            <div class="option" onclick="updateOption(this)">
+                                <input type="radio" name="spaceFor" class="radio">
+                                <label for="everyone">Everyone</label>
+                            </div>
+                            <div class="option" onclick="updateOption(this)">
+                                <input type="radio" name="spaceFor" class="radio" id="myForum">
+                                <label for="myForum">My Forum</label>
+                            </div>
+                            <div class="option" onclick="updateOption(this)">
+                                <input type="radio" name="spaceFor" class="radio">
+                                <label for="myFollowers">My Followers</label>
+                            </div>
+                        </div>
+                        <div class="selected" onclick="toggleSpace()">
+                            This space is for...
+                            <span class="fa fa-angle-down angle1"></span>
+                            <span class="fa fa-angle-up angle2"></span>
+                        </div>
+                    </div>
+                    <div class="select-box2" id="myForums" style="display: none;">
+                        <div class="selected2" onclick="toggleSpace2()">
+                            Select a forum you'd like to create a space for...
+                            <span class="fa fa-angle-down angle3"></span>
+                            <span class="fa fa-angle-up angle4"></span>
+                        </div>
+                        <div class="options-container-forum">
+                            <div class="option" onclick="updateOption2(this)">
+                                <input type="radio" name="forum" class="radio">
+                                <label for="Real Matters">Real Matters</label>
+                            </div>
+                            <div class="option" onclick="updateOption2(this)">
+                                <input type="radio" name="forum" class="radio">
+                                <label for="Football Only">Football Only</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="schedule">
+                        <label>Schedule your space <b>(optional)</b></label>
+                        <input type="date" name="" id="">
+                    </div>
+                    <div class="modal-action">
+                        <div class="input-field">
+                            <label for="">
+                                <span class="temp">This space is going to be</span> Permanent 
+                                <i class="fas fa-question-circle help" onmouseover="displayHelpBox()" onmouseout="undisplayHelpBox()"></i>
+                            </label>
+                            <input type="checkbox" name="action" id="check" hidden onclick="a()">
+                            <label for="check" class="toggle-checkbox">
+                                <div class="circle"></div>
+                            </label>
+                        </div>
+                        <div class="input-field">
+                            <label for="">Record Space</label>
+                            <input type="checkbox" name="action" id="record" hidden onclick="b()">
+                            <label for="record" class="toggle-checkbox">
+                                <div class="circle"></div>
+                            </label>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary">Create</button>
+                    <div class="help-box">
+                        <span>Recommended for Radio stations and Audio channels</span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--Theme Customization-->
+    <%- include ("./partials/themeCustomization") %> 
+    
+    <!--JS Script Attachment-->
+    <script src="../../../js/script.js"></script>
+</body>
+</html>

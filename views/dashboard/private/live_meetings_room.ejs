@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Header -->
+    <%- include("./partials/header") %>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %>
+
+        <!--Main-->
+        <main>
+            <div class="container">
+                <div class="channel-chat-float">
+                    <div class="channel-chat-container">
+                        <div class="heading">
+                            <div style="display: flex; gap: 10px;">
+                                <h4>Live Chats</h4>
+                                <i class="fa fa-users"></i>
+                            </div>
+                            <span onclick="minimize()" style="cursor: pointer;"><i class="fa fa-angle-down"></i></span>
+                        </div>
+                        <div class="category">
+                            <h6 class="active tablinks" onclick="openTab(event, 'channel-container1')" id="defaultOpen">
+                                <div class="middle-align">
+                                    <span style="margin-right: 10px;">Messages</span>
+                                    <span class="fa fa-envelope"></span>
+                                </div>
+                            </h6>
+                            <h6 class="tablinks" onclick="openTab(event, 'channel-participants1')">
+                                <div class="middle-align">
+                                    <span style="margin-right: 10px;">Participants</span>
+                                    <i class="fa fa-users"></i>
+                                    <div class="msg-archive" id="msg-archive2">0</div>
+                                </div>
+                            </h6>
+                        </div>
+                        <div class="postFeeds channel-container" id="channel-container1">
+                            <div class="bodys"></div>
+                            <div class="send-panel">
+                                <input type="text" placeholder="Type a message here..." id="channel_message2" required>
+                                <span class="fa fa-paper-plane" onclick="sendChannelMessage2()"></span>
+                            </div>
+                        </div>
+                        <div class="postFeeds participant-body" id="channel-participants1"></div>
+                    </div>
+                    <div class="button">
+                        <div onclick="showChannelchat(this)" style="cursor: pointer;">
+                            <i class="fa fa-comment icon-1" style="display: block;"></i>
+                            <i class="fa fa-times icon-2" style="display: none;"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Sidebar -->
+                <%- include ("./partials/sidebar") %>
+
+                    <!--Middle-->
+                    <div class="middle">
+                        <div class="video-frames">
+                            <div class="host-frame"></div>
+                            <div class="member-frames"></div>
+                            <div class="buttons">
+                                <span title="Disable Video" class="active" id="camera-btn"><i class="fa-solid fa-video-camera"></i></span>
+                                <span title="Mute Audio" class="active" id="mic-btn"><i class="fa fa-microphone-lines"></i></span>
+                                <span id="screen-btn" title="Share Screen"><i class="fa fa-desktop"></i></span>
+                                <% if(roomDetails.Host == user._id){ %>
+                                    <span title="End Meeting" onclick="endRoom('<%= roomDetails._id %>')" style="background-color: var(--color-danger)">
+                                        <i class="fa fa-sign-out"></i>
+                                    </span>
+                                <% }else{ %>
+                                    <span title="Leave Meeting" onclick="leaveRoom()" style="background-color: var(--color-danger)"><i class="fa-solid fa-phone-slash"></i></span>
+                                <% } %> 
+                            </div>
+                        </div>
+                    </div>
+                    <!--Middle ends here-->
+
+                    <!--Right-->
+                    <div class="right">
+                        <!--Messages-->
+                        <div class="messages-channel">
+                            <div class="heading">
+                                <h4>Live Chats</h4>
+                                <i class="fa fa-users"></i>
+                            </div>
+                            <div class="category">
+                                <h6 class="active tablinks" onclick="openTab(event, 'channel-container')" id="defaultOpen2">
+                                    <div class="middle-align">
+                                        <span style="margin-right: 10px;">Messages</span>
+                                        <span class="fa fa-envelope"></span>
+                                    </div>
+                                </h6>
+                                <h6 class="tablinks" onclick="openTab(event, 'channel-participants')">
+                                    <div class="middle-align">
+                                        <span style="margin-right: 10px;">Participants</span>
+                                        <i class="fa fa-users"></i>
+                                        <div class="msg-archive" id="msg-archive1">0</div>
+                                    </div>
+                                </h6>
+                            </div>
+                            <div class="postFeeds channel-container" id="channel-container">
+                                <div class="bodys"></div>
+                                <div class="send-panel">
+                                    <input type="text" placeholder="Type a message here..." id="channel_message" required>
+                                    <span class="fa fa-paper-plane" onclick="sendChannelMessage()"></span>
+                                </div>
+                            </div>
+                            <div class="postFeeds participant-body" id="channel-participants"></div>
+                        </div>
+                        <!--Messages end here-->
+
+                        <!--Friend Requests start here-->
+                        <% if(friends !="empty" ){ %>
+                            <div class="friend-requests">
+                                <h4>Requests</h4>
+                                <% friends.forEach(request=> {
+                                    if(request.sender != user._id.toString()){
+                                    %>
+                                    <div class="request" id="<%= request.details._id %>">
+                                        <div class="info">
+                                            <a href="/dashboard/private/profile/<%= request.details._id %>">
+                                                <div class="profile-pic">
+                                                    <img src="../../../uploads/<%= request.details.avatar %>" alt="">
+                                                </div>
+                                            </a>
+                                            <div class="about">
+                                                <a href="/dashboard/private/profile/<%= request.details._id %>">
+                                                    <h5>
+                                                        <%= request.details.username %>
+                                                    </h5>
+                                                    <p class="text-muted">
+                                                        <% if(request.details.about.length> 45){ %>
+                                                            <%= request.details.about.slice(0,45) %>...
+                                                                <% }else{ %>
+                                                                    <%= request.details.about %>
+                                                                        <% } %>
+                                                    </p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="action">
+                                            <button class="btn btn-primary"
+                                                onclick="updateFriendRequest('<%= user._id %>','<%= request.details._id %>', 'accept')">
+                                                Accept
+                                            </button>
+                                            <button class="btn"
+                                                onclick="updateFriendRequest('<%= user._id %>','<%= request.details._id %>', 'decline')">
+                                                Decline
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <% } }) %>
+                            </div>
+                            <!--Friend Request end here-->
+                            <% } %>
+                    </div>
+            </div>
+        </main>
+
+        <!--Theme Customization-->
+        <%- include ("./partials/themeCustomization") %>
+
+            <!-- Updates -->
+        <%- include ("./partials/updates") %>
+
+        <!-- Contact List -->
+        <%- include ("./partials/contactList") %>
+        <script>
+            const verifiedRoomID = '<%= roomDetails._id %>'
+            const myAvatar =  '<%= user.avatar %>'
+            const myUsername = '<%= user.username %>'
+            const myID = '<%= user._id %>'
+            const roomCapacity = '<%= roomDetails.roomCapacity %>'
+            const roomHost = '<%= roomDetails.Host %>'
+            document.getElementById("defaultOpen").click() 
+        </script>
+
+        <!--JS Script Attachment-->
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="../../../js/AgoraRTC_N-4.12.0.js"></script>
+        <script src="../../../js/agora-rtm-sdk-1.4.5.js"></script>
+        <script src="../../../js/script.js"></script>
+        <script src="../../../js/live_meeting.js"></script>
+</body>
+
+</html>

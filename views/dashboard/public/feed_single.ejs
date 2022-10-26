@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Header -->
+    <%- include("./partials/header") %>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %>
+
+        <!--Main-->
+        <main>
+            <div class="body-container">
+                <!-- Sidebar -->
+                <%- include ("./partials/sidebar") %>
+
+                    <!--Middle-->
+                    <div class="middle">
+                        <div class="feeds">
+                            <div class="post-feed-single" style="border-top: 0;">
+                                <div class="user-info">
+                                    <img src="../../../images/f1.jpg" alt="">
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 1.5px; justify-content: center;">
+                                        <b>The Smart Network <i class="fa fa-certificate"></i>
+                                        </b>
+                                        <i class="text-muted">@TagName</i>
+                                    </div>
+                                    <span class="fa-solid fa-ellipsis" style="font-size: 16px;"></span>
+                                </div>
+                                <div class="post-body">
+                                    <div class="feed-text">
+                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique
+                                        voluptate tenetur ullam quaerat earum laborum magnam enim dolorem. Vitae
+                                        quisquam fuga delectus voluptate reiciendis voluptas mollitia similique,
+                                        ratione quia debitis? <br><br> Lorem ipsum dolor sit amet consectetur
+                                        adipisicing elit. Nulla, nisi?
+                                    </div>
+                                    <img src="../../../images/f4.jpg" alt="">
+                                    <div class="action">
+                                        <span> 26 tagged comments</span> &bullet;
+                                        <span> iPhone </span>
+                                    </div>
+                                    <div class="action-button">
+                                        <span style="display: flex; align-items: center; justify-content: space-between; gap: 20px;">
+                                            <span><i class="fa-regular fa-comment-dots"></i> 34</span>
+                                            <span><i class="fa fa-heart-o"></i> 567</span>
+                                            <span><i class="fa fa-reply"></i></span>
+                                        </span>
+                                        <span class="text-muted" style="font-size: 12px;"> 10:00 AM &bullet; 13 Apr 20</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="comment-feed">
+                                <div class="post-feed">
+                                    <div class="post-left">
+                                        <img src="../../../images/short2.jpg" alt="">
+                                        <div class="line"></div>
+                                    </div>
+                                    <div class="post-right">
+                                        <div class="user-info">
+                                            <div>
+                                                <b>The Smart Network</b>
+                                                <i class="fa fa-certificate"></i>
+                                                <i class="text-muted">@TagName</i>
+                                                <span class="time">&bullet; 25 mins</span>
+                                            </div>
+                                            <span class="fa-solid fa-ellipsis" style="font-size: 16px;"></span>
+                                        </div>
+                                        <div class="post-body">
+                                            <div class="feed-text">
+                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique voluptate tenetur ullam quaerat earum
+                                                laborum magnam enim dolorem. Vitae quisquam fuga delectus voluptate reiciendis voluptas mollitia similique,
+                                                ratione quia debitis? <br><br> Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, nisi?
+                                            </div>
+                                            <!-- <img src="../../../images/f3.jpg" alt=""> -->
+                                            <div class="action-button">
+                                                <span><i class="fa-regular fa-comment-dots"></i> 34</span>
+                                                <span><i class="fa fa-heart-o"></i> 567</span>
+                                                <span><i class="fa fa-reply"></i></span>
+                                                <span><i class="fa-solid fa-heart-circle-plus"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mini-feed">
+                                    <div class="post-feed">
+                                        <div class="post-left-mini-feed">
+                                            <div style="width: 50px; display: flex; justify-content: flex-end;"><span class="line"></span></div>
+                                            <img src="../../../images/short2.jpg" alt="">
+                                        </div>
+                                        <div class="post-right">
+                                            <div class="user-info">
+                                                <div>
+                                                    <b>The Smart Network</b>
+                                                    <i class="fa fa-certificate"></i>
+                                                    <i class="text-muted">@TagName</i>
+                                                    <span class="time">&bullet; 25 mins</span>
+                                                </div>
+                                                <span class="fa-solid fa-ellipsis" style="font-size: 16px;"></span>
+                                            </div>
+                                            <div class="post-body">
+                                                <div class="feed-text">
+                                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique voluptate tenetur ullam quaerat
+                                                    earum
+                                                    laborum magnam enim dolorem. Vitae quisquam fuga delectus voluptate reiciendis voluptas mollitia
+                                                    similique,
+                                                    ratione quia debitis? <br><br> Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, nisi?
+                                                </div>
+                                                <!-- <img src="../../../images/f3.jpg" alt=""> -->
+                                                <div class="action-button">
+                                                    <span><i class="fa-regular fa-comment-dots"></i> 34</span>
+                                                    <span><i class="fa fa-heart-o"></i> 567</span>
+                                                    <span><i class="fa fa-reply"></i></span>
+                                                    <span><i class="fa-solid fa-heart-circle-plus"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="comment-feed">
+                                <div class="post-feed">
+                                    <div class="post-left">
+                                        <img src="../../../images/short2.jpg" alt="">
+                                        <div class="line"></div>
+                                    </div>
+                                    <div class="post-right">
+                                        <div class="user-info">
+                                            <div>
+                                                <b>The Smart Network</b>
+                                                <i class="fa fa-certificate"></i>
+                                                <i class="text-muted">@TagName</i>
+                                                <span class="time">&bullet; 25 mins</span>
+                                            </div>
+                                            <span class="fa-solid fa-ellipsis" style="font-size: 16px;"></span>
+                                        </div>
+                                        <div class="post-body">
+                                            <div class="feed-text">
+                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique voluptate tenetur ullam quaerat earum
+                                                laborum magnam enim dolorem. Vitae quisquam fuga delectus voluptate reiciendis voluptas mollitia similique,
+                                                ratione quia debitis? <br><br> Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, nisi?
+                                            </div>
+                                            <div class="action-button">
+                                                <span><i class="fa-regular fa-comment-dots"></i> 34</span>
+                                                <span><i class="fa fa-heart-o"></i> 567</span>
+                                                <span><i class="fa fa-reply"></i></span>
+                                                <span><i class="fa-solid fa-heart-circle-plus"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mini-feed">
+                                    <div class="post-feed">
+                                        <div class="post-left-mini-feed">
+                                            <div style="width: 50px; display: flex; justify-content: flex-end;"><span class="line"></span></div>
+                                            <img src="../../../images/short2.jpg" alt="">
+                                        </div>
+                                        <div class="post-right">
+                                            <div class="user-info">
+                                                <div>
+                                                    <b>The Smart Network</b>
+                                                    <i class="fa fa-certificate"></i>
+                                                    <i class="text-muted">@TagName</i>
+                                                    <span class="time">&bullet; 25 mins</span>
+                                                </div>
+                                                <span class="fa-solid fa-ellipsis" style="font-size: 16px;"></span>
+                                            </div>
+                                            <div class="post-body">
+                                                <div class="feed-text">
+                                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique voluptate tenetur ullam quaerat
+                                                    earum
+                                                    laborum magnam enim dolorem. Vitae quisquam fuga delectus voluptate reiciendis voluptas mollitia
+                                                    similique,
+                                                    ratione quia debitis? <br><br> Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, nisi?
+                                                </div>
+                                                <div class="action-button">
+                                                    <span><i class="fa-regular fa-comment-dots"></i> 34</span>
+                                                    <span><i class="fa fa-heart-o"></i> 567</span>
+                                                    <span><i class="fa fa-reply"></i></span>
+                                                    <span><i class="fa-solid fa-heart-circle-plus"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                    <!--Middle ends here-->
+            </div>
+        </main>
+
+        <!--Theme Customization-->
+        <%- include ("./partials/themeCustomization") %>
+
+            <!--JS Script Attachment-->
+            <script src="/socket.io/socket.io.js"></script>
+            <script src="../../../js/script.js"></script>
+</body>
+
+</html>

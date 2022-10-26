@@ -1,0 +1,154 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet"> 
+
+    <!--Font-awesome link-->
+    <script src="https://kit.fontawesome.com/02e26faee8.js" crossorigin="anonymous"></script>
+    <link rel="shortcut icon" href="../images/smart.ico" type="image/x-icon">
+
+    <title>Smart Web App</title>
+</head>
+<body>
+    <style>
+        /* ======================Custom Error Page==================== */
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            outline: none;
+            list-style: none;
+            box-sizing: border-box;
+            text-decoration: none;
+            border: none;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            color: var(--color-dark);
+            background: var(--color-light);
+            min-width: 380px;
+            width: 100%;
+        }
+
+        html {
+            font-size: 13px;
+        }
+
+        hr {
+            border: 1px solid;
+        }
+
+        :root {
+            --dark-color-lightness: 17%;
+            --light-color-lightness: 95%;
+            --white-color-lightness: 100%;
+
+            --color-white: hsl(252, 30%, var(--white-color-lightness));
+            --color-dark: hsl(252, 30%, var(--dark-color-lightness));
+            --color-light: hsl(252, 30%, var(--light-color-lightness));
+            --color-success: hsl(120, 95%, 65%);
+
+            --border-radius: 2rem;
+            --card-border-radius: 1rem;
+            --card-padding: 1rem;
+        }
+        
+        .container {
+            background: var(--color-light);
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wrapper {
+            background: var(--color-white);
+            border-radius: var(--card-border-radius);
+            width: 50%;
+            height: 40%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .wrapper .contents {
+            border-radius: var(--card-border-radius);
+            width: 100%;
+            border: 1px solid;
+        }
+
+        .contents .head {
+            border-radius: var(--card-border-radius) var(--card-border-radius) 0 0;
+            height: 20%;
+            width: 100%;
+            background: var(--color-success);
+            padding: var(--card-padding);
+            display: flex;
+            align-items: center;
+        }
+
+        .contents .head h2 {
+            font-size: 1.5rem;
+            color: var(--color-dark);
+            text-transform: uppercase;
+        }
+
+        .contents .body {
+            padding: var(--card-padding);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--color-dark);
+            margin-top: 30px;
+        }
+
+        .contents .body p {
+            margin-top: 10px;
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        .contents .resend-link {
+            margin-top: 50px;
+            display: flex;
+        }
+
+        .resend-link button {
+            background: var(--color-light);
+            border-radius: var(--border-radius);
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="container">
+        <div class="wrapper">
+            <div class="contents">
+                <div class="head">
+                    <h2>Email Verification Link Sent</h2>
+                </div>
+                <div class="body">
+                    We have sent an email verification link to:
+                    <p>
+                        <% if(email) { %>
+                        <%= email %>
+                        <% } %>
+                    </p>
+                    <div class="resend-link">
+                        Didn't receive any email? <button>Resend</button> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

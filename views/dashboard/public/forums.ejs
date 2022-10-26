@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Header -->
+    <%- include("./partials/header") %>
+</head>
+<body>
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %> 
+
+    <!--Main-->
+    <main>
+        <div class="container">
+            <!-- Sidebar -->
+            <%- include ("./partials/sidebar") %> 
+
+            <!--Middle-->
+            <div class="middle">
+                <!--Forums-->
+                <div class="messages">
+                    <div class="heading" id="forum-heading" onclick="closeTag()" style="margin-bottom: 0.3rem;">
+                        <div style="display:flex;">
+                            <h4 style="margin-right: 10px;">Forums</h4>
+                            <i class="fa fa-users-rays"></i>
+                        </div>
+                        <i class="fa fa-angle-down angle1" style="display: none; font-size: 18px; padding-right: 10px; cursor: pointer;"></i>
+                        <i class="fa fa-angle-left angle2" style="font-size: 18px; padding-right: 10px; cursor: pointer;"></i>
+                    </div>
+                    <div id="close-forums">
+                        <!--Serach Bar-->
+                        <div class="search-bar">
+                            <i class="fa fa-search"></i>
+                            <input type="search" placeholder="Search" id="message-searchs">
+                        </div>
+                        <div class="scroll-bar">
+                            <div class="message">
+                                <div class="profile-pic">
+                                    <img src="../../../images/smart.png" alt="">
+                                </div>
+                                <div class="message-body">
+                                    <h5 style="font-size: 13px; font-weight: 600;">Real Matters</h5>
+                                    <p class="text-muted">255 members</p>
+                                </div>
+                            </div>
+                            <div class="message">
+                                <div class="profile-pic">
+                                    <img src="../../../images/smart.png" alt="">
+                                </div>
+                                <div class="message-body">
+                                    <h5 style="font-size: 13px; font-weight: 600;">Quick Invasion of Hughes</h5>
+                                    <p class="text-muted">1055 members</p>
+                                </div>
+                            </div>
+                            <div class="message">
+                                <div class="profile-pic">
+                                    <img src="../../../images/smart.png" alt="">
+                                </div>
+                                <div class="message-body">
+                                    <h5 style="font-size: 13px; font-weight: 600;">What a woman does in her...</h5>
+                                    <p class="text-muted">12 members</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="forum-container">
+                    <div class="forum-header">
+                        <div class="forum-pic">
+                            <img src="../../../images/5.jpg" alt="">
+                        </div>
+                        <div class="forum-info">
+                            <h3>Real Matters</h3>
+                            <p>Lorem, ipsum dolor sit amet consectetur adipisicing...</p>
+                            <p><span class="fa fa-users-rays"></span> 1056 members</p>
+                        </div>
+                        <div class="action-icons">
+                            <div><span>Add Topic</span> <i class="fa fa-plus"></i></div>
+                            <div><span>Notify Me</span> <i class="fa fa-bell"></i></div>
+                            <div><span>Exit Forum</span> <i class="fa fa-sign-out"></i></div>
+                            <div><span>Settings</span> <i class="fa fa-cog"></i></div>
+                        </div>
+                    </div>
+                    <div class="forum-body">
+                        <a href="forum_single.html" style="display: block; text-decoration: none; color: var(--color-dark);">
+                            <div class="topic">
+                                <div class="topic-left">
+                                    <p><span class="fa fa-eye"></span> 23 Views</p>
+                                    <p><span class="fa fa-comment"></span> 199 Comments</p>
+                                    <p><span class="fa fa-arrow-up"></span> 43 Upvotes</p>
+                                </div>
+                                <div class="topic-middle">
+                                    <h4>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates, non! Lorem ipsum dolor sit, amet consectetur</h4>
+                                    <div class="tags">
+                                        <div>
+                                            <span class="fa fa-tag"></span>
+                                            Lifestyle
+                                        </div>
+                                        <div>
+                                            <span class="fa fa-tag"></span>
+                                            Education
+                                        </div>
+                                        <div>
+                                            <span class="fa fa-tag"></span>
+                                            Children
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="topic-right">
+                                    <div class="user-info">
+                                        <div class="profile-pic">
+                                            <img src="../../../images/smart.png" alt="">
+                                        </div>
+                                        <h5>El Dorado Kolade <span class="text-muted">20 upvotes, 2 hours ago</span></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="forum_single.html" style="display: block; text-decoration: none; color: var(--color-dark);">
+                            <div class="topic">
+                                <div class="topic-left">
+                                    <p><span class="fa fa-eye"></span> 23 Views</p>
+                                    <p><span class="fa fa-comment"></span> 9 Comments</p>
+                                    <p><span class="fa fa-arrow-up"></span> 43 Upvotes</p>
+                                </div>
+                                <div class="topic-middle">
+                                    <h4>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates, non!</h4>
+                                    <div class="tags">
+                                        <div>
+                                            <span class="fa fa-tag"></span>
+                                            Lifestyle
+                                        </div>
+                                        <div>
+                                            <span class="fa fa-tag"></span>
+                                            Education
+                                        </div>
+                                        <div>
+                                            <span class="fa fa-tag"></span>
+                                            Children
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="topic-right">
+                                    <div class="user-info">
+                                        <div class="profile-pic">
+                                            <img src="../../../images/2.jpg" alt="">
+                                        </div>
+                                        <h5>El Dorado Kolade <span class="text-muted">20 upvotes, 2 hours ago</span></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="forum_single.html" style="display: block; text-decoration: none; color: var(--color-dark);">
+                            <div class="topic">
+                                <div class="topic-left">
+                                    <p><span class="fa fa-eye"></span> 23 Views</p>
+                                    <p><span class="fa fa-comment"></span> 9 Comments</p>
+                                    <p><span class="fa fa-arrow-up"></span> 43 Upvotes</p>
+                                </div>
+                                <div class="topic-middle">
+                                    <h4>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates, non!</h4>
+                                    <div class="tags">
+                                        <div>
+                                            <span class="fa fa-tag"></span>
+                                            Lifestyle
+                                        </div>
+                                        <div>
+                                            <span class="fa fa-tag"></span>
+                                            Education
+                                        </div>
+                                        <div>
+                                            <span class="fa fa-tag"></span>
+                                            Children
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="topic-right">
+                                    <div class="user-info">
+                                        <div class="profile-pic">
+                                            <img src="../../../images/1.jpg" alt="">
+                                        </div>
+                                        <h5>El Dorado Kolade <span class="text-muted">20 upvotes, 2 hours ago</span></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="forum_single.html" style="display: block; text-decoration: none; color: var(--color-dark);">
+                            <div class="topic">
+                                <div class="topic-left">
+                                    <p><span class="fa fa-eye"></span> 23 Views</p>
+                                    <p><span class="fa fa-comment"></span> 9 Comments</p>
+                                    <p><span class="fa fa-arrow-up"></span> 43 Upvotes</p>
+                                </div>
+                                <div class="topic-middle">
+                                    <h4>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates, non!</h4>
+                                    <div class="tags">
+                                        <div>
+                                            <span class="fa fa-tag"></span>
+                                            Lifestyle
+                                        </div>
+                                        <div>
+                                            <span class="fa fa-tag"></span>
+                                            Education
+                                        </div>
+                                        <div>
+                                            <span class="fa fa-tag"></span>
+                                            Children
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="topic-right">
+                                    <div class="user-info">
+                                        <div class="profile-pic">
+                                            <img src="../../../images/5.jpg" alt="">
+                                        </div>
+                                        <h5>El Dorado Kolade <span class="text-muted">20 upvotes, 2 hours ago</span></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="messages">
+                    <h3 style="margin: 5px 0; padding-bottom: 15px;" class="text-muted">Forum Topics <i class="fa-regular fa-comment-dots"></i></h3>
+                    <!--Messages Category-->
+                    <div class="category">
+                        <h6 class="active" class="archive">Trending</h6>
+                        <h6>Newest</h6>
+                        <h6>Oldest</h6>
+                    </div>
+                    <div class="scroll-bar">
+                        <div class="message">
+                            <div class="profile-pic">
+                                <img src="../../../images/smart.png" alt="">
+                            </div>
+                            <div class="message-body">
+                                <h5 style="font-size: 13px; font-weight: 600;">What a woman does in her...</h5>
+                                <p class="text-muted">By <span>Ariyike</span></p>
+                                <p><b>2 mins ago</b> <span class="fa fa-clock"></span></p>
+                            </div>
+                        </div>
+                        <div class="message">
+                            <div class="profile-pic">
+                                <img src="../../../images/smart.png" alt="">
+                            </div>
+                            <div class="message-body">
+                                <h5 style="font-size: 13px; font-weight: 600;">What a woman does in her...</h5>
+                                <p class="text-muted">By <span>Ariyike</span></p>
+                                <p><b>2 mins ago</b> <span class="fa fa-clock"></span></p>
+                            </div>
+                        </div>
+                        <div class="message">
+                            <div class="profile-pic">
+                                <img src="../../../images/smart.png" alt="">
+                            </div>
+                            <div class="message-body">
+                                <h5 style="font-size: 13px; font-weight: 600;">What a woman does in her...</h5>
+                                <p class="text-muted">By <span>Ariyike</span></p>
+                                <p><b>2 mins ago</b> <span class="fa fa-clock"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Forum box end here-->
+            </div>
+            <!--Middle ends here-->
+
+            <!--Right-->
+            <div class="right">
+                <!--Forums-->
+                <div class="messages">
+                    <div class="heading">
+                        <h4>Forums</h4>
+                        <i class="fa fa-users-rays"></i>
+                    </div>
+                    <!--Serach Bar-->
+                    <div class="search-bar">
+                        <i class="fa fa-search"></i>
+                        <input type="search" placeholder="Search" id="message-searchs">
+                    </div>
+                    <div class="scroll-bar">
+                        <div class="message">
+                            <div class="profile-pic">
+                                <img src="../../../images/smart.png" alt="">
+                            </div>
+                            <div class="message-body">
+                                <h5 style="font-size: 13px; font-weight: 600;">Real Matters</h5>
+                                <p class="text-muted">255 members</p>
+                            </div>
+                        </div>
+                        <div class="message">
+                            <div class="profile-pic">
+                                <img src="../../../images/smart.png" alt="">
+                            </div>
+                            <div class="message-body">
+                                <h5 style="font-size: 13px; font-weight: 600;">Quick Invasion of Hughes</h5>
+                                <p class="text-muted">1055 members</p>
+                            </div>
+                        </div>
+                        <div class="message">
+                            <div class="profile-pic">
+                                <img src="../../../images/smart.png" alt="">
+                            </div>
+                            <div class="message-body">
+                                <h5 style="font-size: 13px; font-weight: 600;">What a woman does in her...</h5>
+                                <p class="text-muted">12 members</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Forums end here-->
+
+                <!--Forum box-->
+                <h3 style="margin:20px 0 10px 0;" class="text-muted">Forum Topics <i class="fa-regular fa-comment-dots"></i></h3>
+                <div class="messages">
+                    <!--Messages Category-->
+                    <div class="category">
+                        <h6 class="active" class="archive">Trending</h6>
+                        <h6>Newest</h6>
+                        <h6>Oldest</h6>
+                    </div>
+                    <div class="scroll-bar">
+                        <div class="message">
+                            <div class="profile-pic">
+                                <img src="../../../images/smart.png" alt="">
+                            </div>
+                            <div class="message-body">
+                                <h5 style="font-size: 13px; font-weight: 600;">What a woman does in her...</h5>
+                                <p class="text-muted">By <span>Ariyike</span></p>
+                                <p><b>2 mins ago</b> <span class="fa fa-clock"></span></p>
+                            </div>
+                        </div>
+                        <div class="message">
+                            <div class="profile-pic">
+                                <img src="../../../images/smart.png" alt="">
+                            </div>
+                            <div class="message-body">
+                                <h5 style="font-size: 13px; font-weight: 600;">What a woman does in her...</h5>
+                                <p class="text-muted">By <span>Ariyike</span></p>
+                                <p><b>2 mins ago</b> <span class="fa fa-clock"></span></p>
+                            </div>
+                        </div>
+                        <div class="message">
+                            <div class="profile-pic">
+                                <img src="../../../images/smart.png" alt="">
+                            </div>
+                            <div class="message-body">
+                                <h5 style="font-size: 13px; font-weight: 600;">What a woman does in her...</h5>
+                                <p class="text-muted">By <span>Ariyike</span></p>
+                                <p><b>2 mins ago</b> <span class="fa fa-clock"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Forum box end here-->
+            </div>
+        </div>
+    </main>
+
+    <!--Theme Customization-->
+    <%- include ("./partials/themeCustomization") %> 
+
+    <!--JS Script Attachment-->
+    <script src="../../../js/script.js"></script>
+</body>
+</html>
