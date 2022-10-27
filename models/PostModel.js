@@ -12,6 +12,31 @@ const PostSchema = new mongoose.Schema(
       trim: true,
       required: [true, 'The text name must be provided'],
     },
+    tags: {
+      type: Array,
+      default: [],
+    },
+    upvotes: {
+      type: Array,
+      default: [],
+    },
+    countViews: {
+      type: Array,
+      default: [],
+    },
+    comments: [
+      {
+        comment: String,
+        upvotes: {
+          type: Array,
+          default: [],
+        },
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+      },
+    ],
     forumId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Forum',
