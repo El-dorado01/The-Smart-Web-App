@@ -1,0 +1,10 @@
+Sign Up - Email Verification
+
+Smart Network - User's images and Comment's time
+User's avatar
+Settings file (socket io library inclusion)
+Live Meeting (doesn't display well on devices with smaller screen resolution)
+404 page customization
+
+Error response sending in controllers
+Destroy media from cloudinary

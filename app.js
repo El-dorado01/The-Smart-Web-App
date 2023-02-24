@@ -77,13 +77,13 @@ const UserchatsModels = require("./models/UserchatsModel");
 const AuthModel = require("./models/AuthModel");
 const MeetingsModel = require("./models/MeetingsModel");
 
-//=============================Require Routes===============================//
+//=============================Required Routes===============================//
 const authRoutes = require("./routes/authRoutes");
+const emailVerificationRoutes = require("./routes/emailVerificationRoutes");
 const dashboardRoutes = require("./routes/dashboardRoute");
+const smartNetworkRoutes = require("./routes/smartNetworkRoutes");
 const privateRoutes = require("./routes/privateRoutes");
 const publicRoutes = require("./routes/publicRoutes");
-const smartNetworkRoutes = require("./routes/smartNetworkRoutes");
-const emailVerificationRoutes = require("./routes/emailVerificationRoutes");
 
 app.get("/", (req, res) => {
   res.render("index");
@@ -93,7 +93,8 @@ app.post("/logout", (req, res) => {
   res.redirect("/auth/login");
 });
 
-const allSockets = require("./middleware/socketIO");
+const allSockets = require("./middleware/sockets/socketIO");
+// const allSockets = require("./middleware/socketIO");
 // const signallingServer = require("./middleware/signalling_server");
 io.on("connection", allSockets);
 
