@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Header -->
+    <%- include("./partials/header") %>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %>
+
+    <!--Main-->
+    <main>
+        <div class="body-container">
+            <div class="alerts">
+                <div class="alert-success" id="alert-success" style="display: none;">
+                    <span class="fa fa-times"></span>
+                    <div class="body">
+                        <i class="fa fa-check-circle"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+                <div class="alert-danger" id="alert-danger" style="display: none;">
+                    <span class="fa fa-times"></span>
+                    <div class="body">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+            </div>
+            <!-- Sidebar -->
+            <%- include ("./partials/sidebar") %>
+
+            <!--Middle-->
+            <div class="middle">
+                <div class="settings-container">
+                    <div class="change-avatar">
+                        <div class="avatar">
+                            <img src="
+                            <% if(user.avatar){ %> 
+                                ../../../uploads/<%= user.avatar %> 
+                            <% } else { %> 
+                                ../../../images/smart.png 
+                            <% } %>" alt="">
+                            <span class="fa fa-edit"></span>
+                        </div>
+                        <form enctype="multipart/form-data" method="post" action="/dashboard/private/upload/avatar"
+                            class="avatar-form" style="width: 7rem;">
+                            <input type="file" name="avatar" id="avatar-field" style="opacity: 0;">
+                            <button type="submit" class="btn btn-primary" id="apply-avatar"
+                                style="display: none;">Apply</button>
+                        </form>
+                    </div>
+                    <div class="change-info">
+                        <h3>Account Information</h3>
+                        <div class="input-field">
+                            <span class="fa fa-user"></span>
+                            <input type="text" placeholder="Username">
+                        </div>
+                        <div class="input-field">
+                            <span class="fa fa-envelope"></span>
+                            <input type="email" placeholder="Email Address">
+                        </div>
+                        <div class="input-field">
+                            <span class="fa fa-phone"></span>
+                            <input type="tel" placeholder="Phone Number">
+                        </div>
+                        <button class="btn btn-primary">Update Information</button>
+                    </div>
+                    <div class="change-info">
+                        <h3>Change Password</h3>
+                        <div class="input-field">
+                            <span class="fa fa-lock"></span>
+                            <input type="password" placeholder="Current Password">
+                        </div>
+                        <div class="input-field">
+                            <span class="fa fa-lock"></span>
+                            <input type="password" placeholder="New Password">
+                        </div>
+                        <div class="input-field">
+                            <span class="fa fa-lock"></span>
+                            <input type="password" placeholder="New Password">
+                        </div>
+                        <button class="btn btn-primary">Change Password</button>
+                    </div>
+                </div>
+            </div>
+            <!--Middle ends here-->
+        </div>
+    </main>
+
+    <!--Theme Customization-->
+    <%- include ("./partials/themeCustomization") %>
+
+    <!-- Updates -->
+    <%- include ("./partials/updates") %>
+
+    <!-- Contact List -->
+    <%- include ("./partials/contactList") %>
+
+    <script>
+        var avatarField = document.getElementById("avatar-field")
+        var editBtn = document.querySelector(".settings-container .change-avatar .avatar span")
+        var applyAvatar = document.getElementById("apply-avatar")
+
+        // const successAlert = document.getElementById("alert-success");
+        // const successMessage = document.querySelector("#alert-success .msg")
+        // const dangerAlert = document.getElementById("alert-danger")
+        // const dangerMessage = document.querySelector("#alert-danger .msg")
+
+        editBtn.addEventListener("click", () => {
+            avatarField.click()
+            applyAvatar.style.display = "block"
+        })
+
+        const avatarForm = document.querySelector(".avatar-form")
+
+        // avatarForm.addEventListener("submit", async(e) => {
+        //     e.preventDefault()
+
+        //     dangerAlert.style.display = 'none'
+        //     dangerMessage.textContent = ''
+
+        //     const userAvatar = avatarField.value
+
+        //     console.log(userAvatar);
+
+        //     try {
+
+        //         if(avatarField.value != '') {
+
+        //             const response = await fetch("/dashboard/private/upload/avatar", {
+        //                 method: "POST",
+        //                 // files: userAvatar,
+        //                 body: JSON.stringify({userAvatar}),
+        //                 headers: { 'Content-Type': 'application/json' }
+        //             })
+
+        //             // const data = await response.json()
+
+        //             // if(data.msg && data.msg === "A username must be provided,An email must be provided,A password must be provided"){
+        //             //     dangerAlert.style.display = "block"
+        //             //     dangerMessage.textContent = "Fields cannot be left blank"
+
+        //             //     setTimeout(()=> {
+        //             //         dangerAlert.style.display = "none"
+        //             //     },5000)
+        //             // } else
+
+        //             // if(data.msg && data.msg != "A username must be provided,An email must be provided,A password must be provided"){
+        //             //     dangerAlert.style.display = "block"
+        //             //     dangerMessage.textContent = data.msg
+
+        //             //     setTimeout(()=> {
+        //             //         dangerAlert.style.display = "none"
+        //             //     },5000)
+        //             // } else {
+        //             //     successAlert.style.display = "block"
+        //             //     successMessage.textContent = "Account created successfully"
+
+        //             //     setTimeout(() => {
+        //             //         successAlert.style.display = "none"
+        //             //         location.assign("/dashboard/index")
+        //             //     },3000)
+        //             // }
+
+        //         } else {
+        //             dangerAlert.style.display = "block"
+        //             dangerMessage.textContent = "Please select an avatar"
+
+        //             setTimeout(() => {
+        //                 dangerAlert.style.display = "none"
+        //             },5000)
+        //         }
+
+        //     } catch (error) {
+        //         console.log(error);
+        //         dangerAlert.style.display = "block"
+        //         dangerMessage.textContent = "An error occured, please try again"
+
+        //         setTimeout(() => {
+        //             dangerAlert.style.display = "none"
+        //         },5000)
+        //     }
+        // })
+    </script>
+
+    <!--JS Script Attachment-->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../../../js/script.js"></script>
+</body>
+
+</html>

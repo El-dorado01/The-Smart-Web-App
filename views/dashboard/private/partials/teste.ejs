@@ -1,0 +1,186 @@
+<div class="postFeeds3" id="mayKnow">
+    <% if(mayKnow !="empty" ){ mayKnow.forEach(contact=> {
+        if(contact._id.toString() !== user._id.toString()
+        && !newContactsArray.includes(contact._id.toString())
+        && !newOutgoingArray.includes(contact._id.toString())){
+        %>
+        <div class="contact">
+            <div class="contact-info">
+                <a href="/dashboard/private/profile/<%= contact._id %>" target="_blank">
+                    <div class="profile-pic">
+                        <img src="../../../uploads/<%= contact.avatar %>" alt="">
+                    </div>
+                </a>
+                <div class="info">
+                    <a href="/dashboard/private/profile/<%= contact._id %>" target="_blank">
+                        <h3>
+                            <%= contact.username %>
+                        </h3>
+                        <p class="text-muted">
+                            <%= contact.about %>
+                        </p>
+                    </a>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <div><i title="Add as Friend" onclick="addFriend('<%= user._id %>', '<%= contact._id %>', this)"
+                        class="fa fa-user-plus"></i></div>
+            </div>
+        </div>
+        <% } }) } else{ %>
+            <div class="postFeed-body">
+                <span class="text-muted">You have no records</span>
+            </div>
+            <% } %>
+</div>
+<div class="postFeeds3" id="requests">
+    <% if(requestsArray !="empty" ){ requestsArray.forEach(contact=> {
+        if(contact.sender !== user._id.toString()){
+        %>
+        <div class="contact">
+            <div class="contact-info">
+                <a href="/dashboard/private/profile/<%= contact.details._id %>" target="_blank">
+                    <div class="profile-pic">
+                        <img src="../../../uploads/<%= contact.details.avatar %>" alt="">
+                    </div>
+                </a>
+                <div class="info">
+                    <a href="/dashboard/private/profile/<%= contact.details._id %>" target="_blank">
+                        <h3>
+                            <%= contact.details.username %>
+                        </h3>
+                        <p class="text-muted">
+                            <%= contact.details.about %>
+                        </p>
+                    </a>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <div>
+                    <i class="fas fa-user-check" title="Accept Request" id="btnX_<%= contact.details._id %>"
+                        onclick="btnX('<%= user._id %>','<%= contact.details._id %>', 'accept', this)"></i>
+                </div>
+                <div>
+                    <i class="fa fa-user-times" title="Decline Request" id="btnX2_<%= contact.details._id %>"
+                        onclick="btnX('<%= user._id %>','<%= contact.details._id %>', 'decline', this)"></i>
+                </div>
+            </div>
+        </div>
+        <% } }) } else{ %>
+            <div class="postFeed-body">
+                <span class="text-muted">You have no records</span>
+            </div>
+            <% } %>
+</div>
+<div class="postFeeds3" id="outgoing">
+    <% if(requestsArray !="empty" ){ requestsArray.forEach(contact=> {
+        if(contact.sender === user._id.toString()){
+        %>
+        <div class="contact">
+            <div class="contact-info">
+                <a href="/dashboard/private/profile/<%= contact.details._id %>" target="_blank">
+                    <div class="profile-pic">
+                        <img src="../../../uploads/<%= contact.details.avatar %>" alt="">
+                    </div>
+                </a>
+                <div class="info">
+                    <a href="/dashboard/private/profile/<%= contact.details._id %>" target="_blank">
+                        <h3>
+                            <%= contact.details.username %>
+                        </h3>
+                        <p class="text-muted">
+                            <%= contact.details.about %>
+                        </p>
+                    </a>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <div><i class="fa fa-user-times" style="color: var(--color-primary);" title="Cancel Request"
+                        onclick="addFriend2('<%= user._id %>', '<%= contact.details._id %>', this)"></i></div>
+            </div>
+        </div>
+        <% } }) } else{ %>
+            <div class="postFeed-body">
+                <span class="text-muted">You have no records</span>
+            </div>
+            <% } %>
+</div>
+<div class="postFeeds3" id="declinedRequests">
+
+    <% if(declinedArray !="empty" ){ %>
+        <!--<div style="width: 100%; display: flex; align-items: center; justify-content: flex-end;">
+                    <button class="btn btn-danger" onclick="clearDeclined()"> <i class="fa fa-trash"></i> Clear All</button>
+                </div>-->
+        <% declinedArray.forEach(contact=> {
+            if(contact.sender !== user._id.toString()){
+            %>
+            <div class="contact" id="contact_<%= contact.details._id %>">
+                <div class="contact-info">
+                    <a href="/dashboard/private/profile/<%= contact.details._id %>" target="_blank">
+                        <div class="profile-pic">
+                            <img src="../../../uploads/<%= contact.details.avatar %>" alt="">
+                        </div>
+                    </a>
+                    <div class="info">
+                        <a href="/dashboard/private/profile/<%= contact.details._id %>" target="_blank">
+                            <h3>
+                                <%= contact.details.username %>
+                            </h3>
+                            <p class="text-muted">
+                                <%= contact.details.about %>
+                            </p>
+                        </a>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <div>
+                        <i class="fas fa-user-check" title="Accept Request" id="btnX3_<%= contact.details._id %>"
+                            onclick="btnX2('<%= user._id %>','<%= contact.details._id %>', 'accept', this)"></i>
+                    </div>
+                    <div>
+                        <i class="fa fa-user-times" style="color: var(--color-primary);" title="Decline Request"
+                            id="btnX4_<%= contact.details._id %>"
+                            onclick="btnX2('<%= user._id %>','<%= contact.details._id %>', 'decline', this)"></i>
+                    </div>
+                    <div><i class="fa fa-trash"
+                            onclick="deleteDeclinedRequest('<%= user._id %>','<%= contact.details._id %>')"></i></div>
+                </div>
+            </div>
+            <% } }) } else{ %>
+                <div class="postFeed-body">
+                    <span class="text-muted">You have no records</span>
+                </div>
+                <% } %>
+</div>
+<div class="postFeeds3" id="blocked">
+    <% if(blockedArray !="empty" ){ blockedArray.forEach(contact=> {
+        %>
+        <div class="contact">
+            <div class="contact-info">
+                <a href="/dashboard/private/profile/<%= contact.details._id %>" target="_blank">
+                    <div class="profile-pic">
+                        <img src="../../../uploads/<%= contact.details.avatar %>" alt="">
+                    </div>
+                </a>
+                <div class="info">
+                    <a href="/dashboard/private/profile/<%= contact.details._id %>" target="_blank">
+                        <h3>
+                            <%= contact.details.username %>
+                        </h3>
+                        <p class="text-muted">
+                            <%= contact.details.about %>
+                        </p>
+                    </a>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <div><i title="Unblock User" onclick="blockUsers('<%= user._id %>', '<%= contact.details._id %>', this)"
+                        style="color: var(--color-primary);" class="fa-solid fa-user-slash"></i></div>
+            </div>
+        </div>
+        <% }) }else{ %>
+            <div class="postFeed-body">
+                <span class="text-muted">You have no records</span>
+            </div>
+            <% } %>
+</div>

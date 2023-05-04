@@ -1,0 +1,31 @@
+<div class="create-forum">
+    <button class="btn btn-primary close-create-forum" onclick="closeCreateForum()"><i
+            class="fa-solid fa-angle-left"></i><span>Close</span></button>
+    <h3 align="center" style="margin: 50px 0 30px; font-size: 1.4rem; text-transform: uppercase;">Create
+        a Forum of your own</h3>
+    <div class="image-preview">
+        <div class="pic">
+            <img id="img-preview2" alt="">
+        </div>
+    </div>
+    <div class="info">
+        <h4>Upload Forum Display Picture</h4>
+        <label for="display-pic" style="cursor: pointer;"><span><i class="fa-solid fa-camera"></i></span></label>
+        <input type="file" name="" id="display-pic" style="display: none;" accept="image/*"
+            onchange="showPreview3(event);">
+    </div>
+    <!-- <div class="info">
+        <h4>Available for Look-up</h4>
+        <input type="checkbox" name="" id="availableForLookup" checked>
+    </div> -->
+    <div class="input-field">
+        <label>Forum Name</label>
+        <input type="text" name="forumName" id="forumName" required placeholder="Forum Name">
+    </div>
+    <div class="input-field-textarea">
+        <label>Forum Description</label>
+        <textarea name="forumDesc" id="forumDesc" required placeholder="Forum Description"></textarea>
+    </div>
+    <button class="btn btn-gray" style="display: flex; gap: 7px; align-items: center; justify-content: center;"
+        onclick="createForum()" type="submit"><i class="fa-solid fa-plus"></i><span>Create Forum</span></button>
+</div>

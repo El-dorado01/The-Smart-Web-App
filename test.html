@@ -1,0 +1,169 @@
+<% smartNetworkFeeds.forEach(feed => { %>
+    
+
+                    <div class="feed">
+                        <a href="/dashboard/private/smart_network/<%= feed._id %>" class="feed-link">
+                            <div class="head">
+                                <div class="user">
+                                    <div class="profile-pic">
+                                        <img src="../../../images/smart.png" alt="">
+                                    </div>
+                                    <div class="info">
+                                        <h3>The Smart Network <span class="fa fa-certificate"></span></h3>
+                                        <small>Technology, 25 mins ago</small>
+                                    </div>
+                                </div>
+                                <span class="fa fa-ellipsis"></span>
+                            </div>
+                            <div class="feed-body">
+                                <img src="<%= feed.fileUploads %>" alt="">
+                            </div>
+                            <div class="feed-text">
+                                <%= feed.notes %>
+                            </div>
+                            <div class="action-button">
+                                <div class="interaction-button">
+                                    <span><i class="fa fa-heart-o"></i></span>
+                                    <span><i class="fa-regular fa-comment-dots"></i></span>
+                                    <span><i class="fa fa-share-alt"></i></span>
+                                </div>
+                                <div class="bookmark">
+                                    <span><i class="fa fa-bookmark-o"></i></span>
+                                </div>
+                            </div>
+                            <div class="liked-by">
+                                <span><img src="../../../images/smart.png" alt=""></span>
+                                <span><img src="../../../images/smart.png" alt=""></span>
+                                <span><img src="../../../images/smart.png" alt=""></span>
+                                <p>Liked by <b>Karimu Abija</b> and <b>20 others</b></p>
+                            </div>
+                            <div class="caption">
+                                <% 
+                                        let comments = feed.comments.slice(-2)
+                                        comments.forEach(comment => { 
+                                %>
+                                
+                                    
+                                            <div class="single-comment">
+                                                <span class="user-avatar">
+                                                    <img src="../../../uploads/<%= comment.avatar %>" alt="">
+                                                </span>
+                                                <span>
+                                                    <b style="margin-right: 5px;"><%= comment.username %></b> <%= comment.message %>
+                                                </span>
+                                            </div>
+                                <%      }) %>
+                            </div>
+                            <% if(feed.comments.length > 2) { %>
+                                <div class="text-muted">
+                                    View all <%= feed.comments.length %> comments
+                                </div>
+                            <% } %>
+                        </a>
+                        <form id="comment-form<%= feed._id %>">
+                            <div class="text-muted submit-comment" style="margin-top: 10px;">
+                                <input type="hidden" class="postID" name="postID" value="<%= feed._id %>">
+                                <i class="fa fa-smile"></i>
+                                <input type="text" class="myReply" name="myReply" required placeholder="Type your comments...">
+                                <button id="<%= feed._id %>" style="background: transparent; color: gray; cursor: pointer;">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <script>
+                            var button = document.getElementById("<%= feed._id %>");
+                            
+
+                            button.addEventListener('click', async (e) => {
+                                e.preventDefault()
+
+                                var successAlert = document.getElementById("alert-success");
+                                var successMessage = document.querySelector("#alert-success .msg")
+                                var dangerAlert = document.getElementById("alert-danger")
+                                var dangerMessage = document.querySelector("#alert-danger .msg")
+
+                                var commentForm = document.getElementById("comment-form<%= feed._id %>");
+                                var commentpostID = document.querySelector("#comment-form<%= feed._id %> .postID");
+                                var myComment = document.querySelector("#comment-form<%= feed._id %> .myReply");
+
+                                var postID = commentpostID.value
+                                var myReply = myComment.value
+
+                                
+
+                                if(myReply != ''){
+
+                                    myComment.value = ''
+
+                                    try {
+                                        const response = await fetch("/dashboard/private/smart_network", {
+                                            method: "POST",
+                                            body: JSON.stringify({ postID, myReply }),
+                                            headers: { 'Content-Type': 'application/json' }
+                                        })
+
+                                        const data = await response.json()
+                                        
+
+                                        if(data.status === "OK"){
+                                            successAlert.style.display = "block"
+                                            successMessage.textContent = "Your Comment has been sent"
+
+                                            setTimeout(() => {
+                                                successAlert.style.display = "none"
+                                                
+                                            }, 3000)
+                                        }else {
+                                            console.log(error);
+                                            dangerAlert.style.display = "block"
+                                            dangerMessage.textContent = "Couldn't complete your request, please try again"
+
+                                            setTimeout(() => {
+                                                dangerAlert.style.display = "none"
+                                            }, 5000)
+                                        }
+                                    } catch (error) {
+                                        console.log(error);
+                                        dangerAlert.style.display = "block"
+                                        dangerMessage.textContent = "An error occured, please try again"
+
+                                        setTimeout(() => {
+                                            dangerAlert.style.display = "none"
+                                        }, 5000)
+                                    }
+                                } else {
+                                    dangerAlert.style.display = "block"
+                                    dangerMessage.textContent = "Field cannot be left blank."
+
+                                    setTimeout(() => {
+                                        dangerAlert.style.display = "none"
+                                    }, 5000)
+                                }
+
+                            })  
+                        </script>
+                        
+                        
+                    </div>
+
+                    
+<%  }); %>
+
+
+<div class="caption">
+    <% let comments=feed.comments.slice(-2) comments.forEach((comment)=> { %>
+
+        <div class="single-comment">
+            <span class="user-avatar">
+                <img src="../../../uploads/<%= comment.avatar %>" alt="">
+            </span>
+            <span>
+                <b style="margin-right: 5px;">
+                    <%= comment.username %>
+                </b>
+                <%= comment.message %>
+            </span>
+        </div>
+        <% }) %>
+</div>

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Header -->
+    <%- include("./partials/header") %> 
+</head>
+<body>
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %> 
+
+    <!--Main-->
+    <main>
+        <div class="container">
+            <!-- Sidebar -->
+            <%- include ("./partials/sidebar") %> 
+
+            <!--Middle-->
+            <div class="middle">
+                <!--Story starts here-->
+                <div class="stories">
+                    <div class="story" style="background: url(../../../images/1.jpg) no-repeat center center/cover;">
+                        <div class="profile-pic">
+                            <img src="../../../images/smart.png" alt="">
+                        </div>
+                        <p class="name">Your Story</p>
+                    </div>
+                    <div class="story" style="background: url(../../../images/2.jpg) no-repeat center center/cover;">
+                        <div class="profile-pic">
+                            <img src="../../../images/smart.png" alt="">
+                        </div>
+                        <p class="name">El Dorado Dave</p>
+                    </div>
+                    <div class="story" style="background: url(../../../images/3.jpg) no-repeat center center/cover;">
+                        <div class="profile-pic">
+                            <img src="../../../images/smart.png" alt="">
+                        </div>
+                        <p class="name">Arike Ayanfe</p>
+                    </div>
+                    <div class="story" style="background: url(../../../images/4.jpg) no-repeat center center/cover;">
+                        <div class="profile-pic">
+                            <img src="../../../images/smart.png" alt="">
+                        </div>
+                        <p class="name">Ibrahim Adekunle</p>
+                    </div>
+                    <div class="story" style="background: url(../../../images/5.jpg) no-repeat center center/cover;">
+                        <div class="profile-pic">
+                            <img src="../../../images/smart.png" alt="">
+                        </div>
+                        <p class="name">Asmau Musa</p>
+                    </div>
+                    <div class="story" style="background: url(../../../images/6.jpg) no-repeat center center/cover;">
+                        <div class="profile-pic">
+                            <img src="../../../images/smart.png" alt="">
+                        </div>
+                        <p class="name">Rabiat Ajagbe</p>
+                    </div>
+                    <div class="story" style="background: url(../../../images/6.jpg) no-repeat center center/cover;">
+                        <div class="profile-pic">
+                            <img src="../../../images/smart.png" alt="">
+                        </div>
+                        <p class="name">Rabiat Ajagbe</p>
+                    </div>
+                    <div class="story" style="background: url(../../../images/6.jpg) no-repeat center center/cover;">
+                        <div class="profile-pic">
+                            <img src="../../../images/smart.png" alt="">
+                        </div>
+                        <p class="name">Rabiat Ajagbe</p>
+                    </div>
+                    <div class="story" style="background: url(../../../images/6.jpg) no-repeat center center/cover;">
+                        <div class="profile-pic">
+                            <img src="../../../images/smart.png" alt="">
+                        </div>
+                        <p class="name">Rabiat Ajagbe</p>
+                    </div>
+                    <div class="story" style="background: url(../../../images/6.jpg) no-repeat center center/cover;">
+                        <div class="profile-pic">
+                            <img src="../../../images/smart.png" alt="">
+                        </div>
+                        <p class="name">Rabiat Ajagbe</p>
+                    </div>
+                    <div class="story" style="background: url(../../../images/6.jpg) no-repeat center center/cover;">
+                        <div class="profile-pic">
+                            <img src="../../../images/smart.png" alt="">
+                        </div>
+                        <p class="name">Rabiat Ajagbe</p>
+                    </div>
+                </div>
+                <!--Story ends here-->
+                <form class="create-post">
+                    <div class="profile-pic">
+                        <img src="../../../images/smart.png" alt="">
+                    </div>
+                    <input type="text" id="create-post" placeholder="Update your stories...">
+                    <input type="submit" value="Post" class="btn btn-primary">
+                </form>
+
+                <!--Messages-->
+                <div class="messages">
+                    <div class="heading">
+                        <h4>Chats</h4>
+                        <i class="fa fa-edit"></i>
+                    </div>
+                    <!--Search Bar-->
+                    <div class="search-bar2" style="margin-bottom: 10px;">
+                        <i class="fa fa-search" style="font-size: 13px"></i>
+                        <input type="search" placeholder="Search" id="message-search">
+                    </div>
+                    <!--Messages Category-->
+                    <div class="category">
+                        <h6 class="active tablinks2" onclick="openTab2(event, 'middleMessages')" id="defaultOpen2">
+                            <div class="middle-align">
+                                <span style="margin-right: 10px;">Messages</span>
+                                <i class="fa fa-envelope"></i>
+                            </div>
+                        </h6>
+                        <h6 class="tablinks2" onclick="openTab2(event, 'middleGroups')">
+                            <div class="middle-align">
+                                <span style="margin-right: 10px;">Groups</span>
+                                <i class="fa fa-users"></i>
+                            </div>
+                        </h6>
+                        <h6 class="tablinks2" onclick="openTab2(event, 'middleArchive')">
+                            <div class="middle-align">
+                                <span style="margin-right: 10px;">Archived</span>
+                                <i class="fas fa-archive"></i> 
+                                <div class="msg-archive">7</div>
+                            </div>
+                        </h6>
+                        <h6 class="tablinks2" onclick="openTab2(event, 'middleMsgRequests')">
+                            <div class="middle-align">
+                                <i class="fa fa-envelope-square"></i>
+                                <div class="msg-requests">3</div>
+                            </div>
+                        </h6>
+                    </div>
+                    <div class="scroll-bar">
+                        <div class="postFeeds2" id="middleMessages">
+                            <div class="message">
+                                <div class="profile-pic">
+                                    <img src="../../../images/smart.png" alt="">
+                                </div>
+                                <div class="message-body" onclick="openChatRoom('62a27f7e85c2eec612c6d922')">
+                                    <h5>Abdul Salaam Banks</h5>
+                                    <p class="text-muted">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi quod praesentium, quis omnis nesciunt quidem nulla!...</p>
+                                </div>
+                                <div class="msg-counts">
+                                    <span class="fa fa-ellipsis"></span>
+                                    <div class="msg-archive">5</div>
+                                </div>
+                            </div>
+                            <!-- 
+                                El Dorado's ID = 6291559c31d568855d21b265
+                                Adebayo's ID = 6285027b2d754b7bc5ab323c
+                                <div class="message">
+                                <div class="profile-pic">
+                                    <img src="../../../images/smart.png" alt="">
+                                    <div class="active"></div>
+                                </div>
+                                <div class="message-body">
+                                    <h5>Banky W</h5>
+                                    <p class="text-bold">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi quod praesentium, quis omnis nesciunt quidem nulla!...</p>
+                                </div>
+                                <div class="msg-counts">
+                                    <span class="fa fa-ellipsis"></span>
+                                    <div class="msg-archive">5</div>
+                                </div>
+                            </div> -->
+                        </div>
+                        <div class="postFeeds2" id="middleGroups">
+                            <div class="message">
+                                <div class="profile-pic">
+                                    <img src="../../../images/1.jpg" alt="">
+                                    <div class="active"></div>
+                                </div>
+                                <div class="message-body">
+                                    <h5>100L github</h5>
+                                    <p class="text-bold">Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium dolores nam...</p>
+                                </div>
+                                <div class="msg-counts">
+                                    <span class="fa fa-ellipsis"></span>
+                                    <div class="msg-archive">5</div>
+                                </div>
+                            </div>
+                            <div class="message">
+                                <div class="profile-pic">
+                                    <img src="../../../images/short3.jpg" alt="">
+                                    <div class="active"></div>
+                                </div>
+                                <div class="message-body">
+                                    <h5>Vlog Gets Fish</h5>
+                                    <p class="text-bold">Lorem consectetur adipisicing elit. Praesentium ipsum numquam perspiciatis dolores nam...</p>
+                                </div>
+                                <div class="msg-counts">
+                                    <span class="fa fa-ellipsis"></span>
+                                    <div class="msg-archive">5</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="postFeeds2" id="middleArchive">
+                            B
+                        </div>
+                        <div class="postFeeds2" id="middleMsgRequests">
+                            C
+                        </div>
+                    </div>
+                </div>
+                <div class="user-chatroom">
+                    <!--==============Profile Card=================-->
+                    <div class="profile-card" id="show-profile">
+                        <div class="card">
+                            <div class="user-pics">
+                                <div class="bg">
+                                    <img src="../../../images/banner.jpg" alt="">
+                                    <div class="icons">
+                                        <span class="fa fa-arrow-left" onclick="closeProfile()"></span>
+                                        <span class="fa fa-share-alt"></span>
+                                    </div>
+                                </div>
+                                <div class="user-info">
+                                    <div class="profile-pic">
+                                        <img src="../../../images/full2.jpg" alt="">
+                                    </div>
+                                    <div class="name">
+                                        <h3>El Dorado</h3>
+                                        <p class="text-muted">@eldorado</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="body">
+                                <div class="info">
+                                    <p><b>About</b>: <em class="text-muted">Lorem ipsum dolor sit amet.</em></p>
+                                    <p>Joined: <span class="text-muted">November 30, 2020</span></p>
+                                    <p>Email: <span class="text-muted">eldorado@gmail.com</span></p>
+                                    <p>Phone Number: <span class="text-muted">+2349064138822</span></p>
+                                </div>
+                                <div class="widgets">
+                                    <p onclick="closeProfile()">
+                                        <i class="fa fa-comment"></i>
+                                        <span>Chat</span>
+                                    </p>
+                                    <p>
+                                        <i class="fa fa-phone"></i>
+                                        <span>Audio</span>
+                                    </p>
+                                    <p>
+                                        <i class="fa fa-video"></i>
+                                        <span>Video</span>
+                                    </p>
+                                    <p>
+                                        <i class="fa fa-search"></i>
+                                        <span>Search</span>
+                                    </p>
+                                </div>
+                                <div class="actions">
+                                    <div>
+                                        <span><i class="fa fa-ban"></i> Block El dorado</span>
+                                    </div>
+                                    <div>
+                                        <span><i class="fa fa-thumbs-down"></i> Report El Dorado</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Chat Container-->
+                    <div class="chatroom">
+                        <div class="chat-head">
+                            <!-- <a class="close-chat">
+                                <span class="fa fa-arrow-left chat-icon"></span>
+                            </a> -->
+                            <div style="width: 100%;" class="user-details" onclick="showProfile()">
+                                <!-- <img src="../../../images/smart.png" class="profile-pic" alt=""> -->
+                                <div>
+                                    <h4>Welcome to the Chats</h4>
+                                    <!-- <div align="center" class="online-status">
+                                        <span>Online</span> 
+                                        <div class="status"></div>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>                            
+                        <div class="chat-body" style="display: flex; flex-direction: column; align-items:center; justify-content:center; row-gap: 10px;">
+                            <div style="display: flex; align-items: flex-start; column-gap: 5px;">
+                                <i class="fa fa-star"></i> Your chats are displayed here.
+                            </div>
+                            <div style="display: flex; align-items: flex-start; column-gap: 5px;">
+                                <i class="fa fa-star"></i> You can select a message in the chats menu at the right side
+                            </div>
+                            <div style="display: flex; align-items: flex-start; column-gap: 5px;">
+                                <i class="fa fa-star"></i> All messages in a chat are encrypted
+                            </div>
+                        </div>
+
+                        <!--<p class="lead emoji-picker-container">
+                            <input type="email" class="form-control" placeholder="Input field" data-emojiable="true">
+                        </p>-->
+                        <!-- 
+                                    ////////// <span class="fa fa-image widgets-icon"></span> ////////
+                                 -->
+                    </div>
+                </div>
+                
+            </div>
+            <!--Middle ends here-->
+
+            <!--Right-->
+            <div class="right">
+                <!--Messages-->
+                <div class="messages">
+                    <div class="heading">
+                        <h4>Chats</h4>
+                        <i class="fa fa-edit"></i>
+                    </div>
+                    <!--Search Bar-->
+                    <div class="search-bar2" style="margin-bottom: 10px;">
+                        <i class="fa fa-search" style="font-size: 13px;"></i>
+                        <input type="search" placeholder="Search" id="message-searchs">
+                    </div>
+                    <!--Messages Category-->
+                    <div class="category">
+                        <h6 class="active tablinks" onclick="openTab(event, 'rightMessages')" id="defaultOpen">
+                            <div class="middle-align">
+                                <i class="fa fa-envelope"></i>
+                                <div class="msg-archive">134</div>
+                            </div>
+                        </h6>
+                        <h6 class="tablinks" onclick="openTab(event, 'rightGroups')">
+                            <div class="middle-align">
+                                <i class="fa fa-users"></i>
+                                <div class="msg-archive">27</div>
+                            </div>
+                        </h6>
+                        <h6 class="tablinks" onclick="openTab(event, 'rightArchive')">
+                            <div class="middle-align">
+                                <i class="fas fa-archive"></i> 
+                                <div class="msg-archive">7</div>
+                            </div>
+                        </h6>
+                        <h6 class="tablinks" onclick="openTab(event, 'rightMsgRequests')">
+                            <div class="middle-align">
+                                <i class="fa fa-envelope-square"></i>
+                                <div class="msg-requests">3</div>
+                            </div>
+                        </h6>
+                    </div>
+                    <div class="scroll-bar">
+                        <div class="postFeeds" id="rightMessages">
+                        <% messages.forEach(message => { %>
+                            <div class="message">
+                                <div class="profile-pic">
+                                    <img src="../../../uploads/<%= message.chatWith.avatar %>" alt="">
+                                </div>
+                                <div class="message-body" onclick="openChatRoom('<%= message.chatRoom._id %>')">
+                                    <h5><%= message.chatWith.username %></h5>
+                                    <p class="text-muted">
+                                        <%
+                                            var lastMsg = message.chatRoom.messages.pop().message
+                                            if(lastMsg.length > 40){  %>
+                                                <%= lastMsg.slice(0,40) %>...
+                                            <% }else { %>
+                                                <%= lastMsg %>
+                                            <% }%>
+                                            
+                                    </p>
+                                </div>
+                                <div class="msg-counts">
+                                    <span class="fa fa-ellipsis"></span>
+                                    <div class="msg-archive">5</div>
+                                </div>
+                            </div>
+                        <% }) %>
+                            
+                            <!-- <div class="message">
+                                <div class="profile-pic">
+                                    <img src="../../../images/smart.png" alt="">
+                                    <div class="active"></div>
+                                </div>
+                                <div class="message-body">
+                                    <h5>Banky W</h5>
+                                    <p class="text-bold">Lorem ipsum dolor sit amet.</p>
+                                </div>
+                                <div class="msg-counts">
+                                    <span class="fa fa-ellipsis"></span>
+                                    <div class="msg-archive">5</div>
+                                </div>
+                            </div> -->
+                            
+                        </div>
+                        <div class="postFeeds" id="rightGroups">
+                            A
+                        </div>
+                        <div class="postFeeds" id="rightArchive">
+                            B
+                        </div>
+                        <div class="postFeeds" id="rightMsgRequests">
+                            C
+                        </div>
+                    </div>
+                </div>
+                <!--Messages end here-->
+
+                <!--Friend Requests start here-->
+                <% if(friends !="empty" ){ %>
+                    <div class="friend-requests">
+                        <h4>Requests</h4>
+                        <% friends.forEach(request=> {
+                            if(request.sender != user._id.toString()){
+                            %>
+                            <div class="request" id="<%= request.details._id %>">
+                                <div class="info">
+                                    <a href="/dashboard/private/profile/<%= request.details._id %>">
+                                        <div class="profile-pic">
+                                            <img src="../../../uploads/<%= request.details.avatar %>" alt="">
+                                        </div>
+                                    </a>
+                                    <div class="about">
+                                        <a href="/dashboard/private/profile/<%= request.details._id %>">
+                                            <h5>
+                                                <%= request.details.username %>
+                                            </h5>
+                                            <p class="text-muted">
+                                                <% if(request.details.about.length> 45){ %>
+                                                    <%= request.details.about.slice(0,45) %>...
+                                                        <% }else{ %>
+                                                            <%= request.details.about %>
+                                                                <% } %>
+                                            </p>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="action">
+                                    <button class="btn btn-primary"
+                                        onclick="updateFriendRequest('<%= user._id %>','<%= request.details._id %>', 'accept')">
+                                        Accept
+                                    </button>
+                                    <button class="btn"
+                                        onclick="updateFriendRequest('<%= user._id %>','<%= request.details._id %>', 'decline')">
+                                        Decline
+                                    </button>
+                                </div>
+                            </div>
+                            <% } }) %>
+                    </div>
+                    <!--Friend Request end here-->
+                    <% } %>
+            </div>
+        </div>
+    </main>
+
+    <!--Theme Customization-->
+    <%- include ("./partials/themeCustomization") %> 
+
+    <!-- Updates -->
+    <%- include ("./partials/updates") %> 
+
+    <!-- Contact List -->
+    <%- include ("./partials/contactList") %> 
+
+    <script>
+        function openChatRoom(chatroomID){
+            socket.emit("userChatroom", chatroomID)
+        }
+
+        function displayChatRoom(response) {
+            const chatroom = document.querySelector(".chatroom")
+            const myID = '<%= user._id %>'
+            chatroom.innerHTML = `
+                <div class="chat-head">
+                    <a class="close-chat">
+                        <span class="fa fa-arrow-left chat-icon"></span>
+                    </a>
+                    <div href="" class="user-details" onclick="showProfile()">
+                        <img src="../../../uploads/${
+                            response.recipientDetails._id === myID 
+                            ? response.senderDetails.avatar
+                            : response.recipientDetails.avatar
+                        }" class="profile-pic" alt="">
+                        <div>
+                            <h4>${
+                                    response.recipientDetails._id === myID
+                                    ? response.senderDetails.username
+                                    : response.recipientDetails.username
+                                }
+                            </h4>
+                            <div align="center" class="online-status">
+                                <span>Online</span> 
+                                <div class="status"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="">
+                        <span class="fa fa-video-camera chat-icon"></span>
+                    </a>
+                    <a href="">
+                        <span class="fa fa-phone chat-icon"></span>
+                    </a>
+                    <a href="">
+                        <span class="fa fa-ellipsis-v chat-icon"></span>
+                    </a>
+                </div>
+                <div class="chat-body">
+                    ${
+                        response.roomMessages.map ((roomMessage) => {
+                            return `
+                                    ${roomMessage.message.sender === myID 
+                                    ? `
+                                        <div class="chat">
+                                            <div class="sp id${response.senderDetails._id}"></div>
+                                            <div class="sender">
+                                                <div class="sender-box"></div>
+                                                <p class="chat-msg">
+                                                    ${roomMessage.message.message}
+                                                </p>
+                                                <p align="right" class="chat-time">
+                                                    <span>${roomMessage.time}</span>
+                                                    <span class="fa fa-check-double msg-status"></span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    `
+                                    : `
+                                        <div class="chat">
+                                            <div class="recipient">
+                                                <div class="recipient-box"></div>
+                                                <p class="chat-msg">
+                                                    ${roomMessage.message.message}
+                                                </p>
+                                                <p align="right" class="chat-time">
+                                                    <span>${roomMessage.time}</span>
+                                                    <span class="fa fa-check-double msg-status"></span>
+                                                </p>
+                                            </div>
+                                            <div class="sp id${response.recipientDetails._id}"></div>
+                                        </div>
+                                    `}
+                                `
+                        }).join("")
+                    }
+                </div>
+                <div class="chat-widgets">
+                    <div class="msg-textarea">
+                        <button>
+                            <span class="fa fa-smile widgets-icon"></span>
+                        </button>
+                        <textarea name="message" id="myMessage${response.findRoom._id}" placeholder="Type a message..."></textarea data-emojiable="true">
+                        <button>
+                            <span class="fa-solid fa-paperclip widgets-icon"></span>
+                            <!-- <span class="fa fa-image widgets-icon"></span> -->
+                        </button>
+                        <button onclick="submitMessage('${response.findRoom._id}')">
+                            <i class="fas fa-paper-plane widgets-icon"></i>
+                        </button>
+                    </div>
+                    <button class="mic">
+                        <span class="fa fa-microphone widgets-mic"></span>
+                    </button>
+                </div>
+            `
+        }
+
+        function submitMessage(chatroomID) {
+            const myMessage = document.getElementById("myMessage"+chatroomID).value
+            const senderID = "<%= user.id %>"
+            document.getElementById("myMessage"+chatroomID).value = ""
+
+            // socket.emit("chatMessage", { myMessage, senderID, chatroomID })
+            socket.emit("chatMessage", { myMessage, senderID, chatroomID })
+        }
+
+        function displayMessage(response){
+            const allChats = document.querySelectorAll(".chat")
+            const lastChat = allChats[allChats.length - 1]
+            var chatClass = lastChat.querySelector(".sp").classList
+
+            const chatBody = document.querySelector(".chat-body");
+
+            // console.log(response.user);
+            const div = document.createElement("div");
+            div.classList.add("chat");
+
+            if (response.myMessage.sender === '<%= user._id %>') {
+                div.innerHTML = `
+                    <div class="sp"></div>
+                    <div class="sender">
+                        ${
+                            chatClass.contains("id<%= user._id %>")
+                            ? ""
+                            : `<div class="sender-box"></div>`
+                        }
+                        <p class="chat-msg">
+                            ${response.myMessage.message}
+                        </p>
+                        <p align="right" class="chat-time">
+                            <span>${response.time}</span>
+                            <span class="fa fa-check-double msg-status"></span>
+                        </p>
+                    </div>
+                `;
+            } else {
+                div.innerHTML = `
+                    <div class="recipient">
+                        ${
+                            chatClass.contains("id<%= user._id %>")
+                            ? `<div class="recipient-box"></div>`
+                            : ""
+                        }
+                        <p class="chat-msg">
+                            ${response.myMessage.message}
+                        </p>
+                        <p align="right" class="chat-time">
+                            <span>${response.time}</span>
+                            <span class="fa fa-check-double msg-status"></span>
+                        </p>
+                    </div>
+                    <div class="sp"></div>
+                `;
+            }
+
+            chatBody.appendChild(div);
+        }
+    </script>
+    <!--JS Script Attachment-->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../../../js/script.js"></script>
+</body>
+</html>

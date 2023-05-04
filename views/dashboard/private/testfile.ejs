@@ -1,0 +1,333 @@
+<script>
+    const myPeer = new Peer(myID);
+        myPeer.on("open", (myID) => {
+            socket.emit("joinRoom", roomID, myID);
+        });
+        // }
+
+        if (roomID) {
+            if (myID === roomHost) {
+                navigator.mediaDevices
+                    .getUserMedia({
+                        video: true,
+                        audio: true,
+                    })
+                    .then((stream) => {
+                        addHostStream(stream);
+                        myPeer.on("call", (call) => {
+                            call.answer(stream);
+
+                            call.on("stream", (userVideoStream) => {
+                                addMemberStream(userVideoStream);
+                            });
+                        });
+
+                        socket.on("userJoined", (response) => {
+                            connectToMembers(response.myID, stream);
+                            // console.log("User Connected: " + response.myID);
+                        });
+                    });
+            } else {
+                navigator.mediaDevices
+                    .getUserMedia({
+                        video: true,
+                        audio: true,
+                    })
+                    .then((stream) => {
+                        addMemberStream(stream);
+                        myPeer.on("call", (call) => {
+                            call.answer(stream);
+
+                            call.on("stream", (userVideoStream) => {
+                                addMemberStream(userVideoStream);
+                            });
+                        });
+                        socket.on("userJoined", (response) => {
+                            connectToMembers(response.myID, stream);
+                            // console.log("User Connected: " + response.myID);
+                        });
+                    });
+            }
+        }
+
+        function addHostStream(stream) {
+            const hostVideo = document.getElementById("host-frame");
+            hostVideo.muted = true;
+
+            hostVideo.srcObject = stream;
+            hostVideo.addEventListener("loadedmetadata", () => {
+                hostVideo.play();
+            });
+            const hostFrame = document.querySelector(".host-frame");
+            hostFrame.style.display = "block";
+        }
+
+        function addMemberStream(stream) {
+            const allMembersFrame = document.querySelector(".member-frames");
+
+            const memberFrame = document.createElement("div");
+            memberFrame.classList.add("member-frame");
+            memberFrame.setAttribute("id", myID);
+            memberFrame.setAttribute(
+                "onmouseenter",
+                `showVideoButtons2('show', ${myID})`
+            );
+            memberFrame.setAttribute(
+                "onmouseleave",
+                `showVideoButtons2('hide', ${myID})`
+            );
+            memberFrame.innerHTML = `
+<div class="actions">
+    <span><i class="fa-solid fa-phone-slash"></i></span>
+    <span><i class="fa-solid fa-video-slash"></i></span>
+    <span><i class="fa fa-microphone-lines"></i></span>
+</div>
+`;
+
+            const memberVideo = document.createElement("video");
+            memberVideo.muted = true;
+
+            memberVideo.srcObject = stream;
+            memberVideo.addEventListener("loadedmetadata", () => {
+                memberVideo.play();
+            });
+
+            memberFrame.appendChild(memberVideo);
+            allMembersFrame.appendChild(memberFrame);
+        }
+
+        function connectToMembers(myID, stream) {
+            const call = myPeer.call(myID, stream);
+            if (myID === roomHost) {
+                call.on("stream", (userVideoStream) => {
+                    addMemberStream(userVideoStream);
+                });
+            } else {
+                call.on("stream", (userVideoStream) => {
+                    addHostStream(userVideoStream);
+                });
+            }
+
+            // call.on("close", () => {});
+        }
+
+        function joinRoom(userID) {
+            const roomID = document.getElementById("joinRoomID").value;
+
+            socket.emit("verifyRoomID", { roomID, userID });
+        }
+
+        socket.on("roomVerified", ({ roomID, userID }) => {
+            window.location.href = "/dashboard/private/live_meeting/" + roomID;
+        });
+// function userJoinedRoom(stream) {
+//
+// }
+
+// function startRoomMeeting(roomID, hostID) {
+// //Initiate Peer with Host ID
+// peer = new Peer(hostID);
+
+// //Send Host ID and Room ID to server
+// socket.emit("startRoom", { roomID, hostID });
+// // conn = peer.connect(userID);
+// // conn.on("open", () => {
+// // conn.send("hi!");
+// // });
+// // peer.on("connection", (conn) => {
+// // conn.on("data", (data) => {
+// // // Will print 'hi!'
+// // console.log(data);
+// // });
+// // conn.on("open", () => {
+// // conn.send("hello!");
+// // });
+// // });
+// }
+
+//Start Room Meeting and Get users ID
+// socket.on("startMeetingRoom", (userID) => {
+// //Connect to users
+
+// //Host calls
+// navigator.mediaDevices.getUserMedia(
+// { video: true, audio: true },
+// (stream) => {
+// //Initiate call from host and send host streams
+// const call = peer.call(userID, stream);
+
+// //Host gets members streams
+// call.on("stream", (remoteStream) => {
+// const hostVideo = document.getElementById("host-frame");
+// hostVideo.muted = true;
+
+// hostVideo.srcObject = stream;
+// hostVideo.addEventListener("loadedmetadata", () => {
+// hostVideo.play();
+// });
+// const hostFrame = document.querySelector(".host-frame");
+// hostFrame.style.display = "block";
+// // Show stream in some <video> element.
+    // });
+    // },
+    // (err) => {
+    // console.error("Failed to get local stream", err);
+    // }
+    // );
+
+    // //Member receives call from Host
+    // peer.on("call", (call) => {
+    // navigator.mediaDevices.getUserMedia(
+    // { video: true, audio: true },
+    // (stream) => {
+    // // Answer the call with an A/V stream and send back members streams to host
+    // call.answer(stream);
+    // //Members Gets host streams
+    // call.on("stream", (remoteStream) => {
+    // // Show stream in some <video> element.
+        // const allMembersFrame = document.querySelector(".member-frames");
+
+        // const memberFrame = document.createElement("div");
+        // memberFrame.classList.add("member-frame");
+        // memberFrame.setAttribute("id", userID);
+        // memberFrame.setAttribute(
+        // "onmouseenter",
+        // `showVideoButtons2('show', ${userID})`
+        // );
+        // memberFrame.setAttribute(
+        // "onmouseleave",
+        // `showVideoButtons2('hide', ${userID})`
+        // );
+        // memberFrame.innerHTML = `
+        // <div class="actions">
+            // <span><i class="fa-solid fa-phone-slash"></i></span>
+            // <span><i class="fa-solid fa-video-slash"></i></span>
+            // <span><i class="fa fa-microphone-lines"></i></span>
+            // </div>
+        // `;
+
+        // const memberVideo = document.createElement("video");
+
+        // call.on("stream", (memberVideoStream) => {
+        // // memberVideo
+        // memberVideo.srcObject = stream;
+        // memberVideo.addEventListener("loadedmetadata", () => {
+        // memberVideo.play();
+        // });
+        // });
+
+        // memberFrame.appendChild(memberVideo);
+        // allMembersFrame.appendChild(memberFrame);
+        // });
+        // },
+        // (err) => {
+        // console.error("Failed to get local stream", err);
+        // }
+        // );
+        // });
+        // });
+
+        // Get users that joined
+        // socket.on("user-JoinedRoom", (userID) => {
+        // console.log("User connected:" + userID);
+        // });
+
+        // function joinRoom(userID) {
+        // const roomID = document.getElementById("joinRoomID").value;
+        // socket.emit("joinRoom", { roomID, userID });
+        // // myPeer = new Peer(userID);
+        // // myPeer.on("open", (userID) => {
+        // // });
+        // }
+
+        // function startRoomMeeting(roomID, userID) {
+        // // socket.emit("startRoomMeeting", userID);
+        // myPeer = new Peer(userID);
+        // myPeer.on("open", (userID) => {
+        // socket.emit("startRoom", { roomID, userID });
+        // });
+
+        // navigator.mediaDevices
+        // .getUserMedia({
+        // video: true,
+        // audio: true,
+        // })
+        // .then((stream) => {
+        // // addHostVideoStream(stream);
+        // const hostVideo = document.getElementById("host-frame");
+        // hostVideo.muted = true;
+
+        // hostVideo.srcObject = stream;
+        // hostVideo.addEventListener("loadedmetadata", () => {
+        // hostVideo.play();
+        // });
+        // const hostFrame = document.querySelector(".host-frame");
+        // hostFrame.style.display = "block";
+
+        // // startRoom(stream)
+        // socket.on("startMeetingRoom", (response) => {
+        // // connectToMembers(userID, stream);
+        // const call = myPeer.call(userID, stream);
+        // const allMembersFrame = document.querySelector(".member-frames");
+
+        // const memberFrame = document.createElement("div");
+        // memberFrame.classList.add("member-frame");
+        // memberFrame.setAttribute("id", userID);
+        // memberFrame.setAttribute(
+        // "onmouseenter",
+        // `showVideoButtons2('show', ${userID})`
+        // );
+        // memberFrame.setAttribute(
+        // "onmouseleave",
+        // `showVideoButtons2('hide', ${userID})`
+        // );
+        // memberFrame.innerHTML = `
+        // <div class="actions">
+            // <span><i class="fa-solid fa-phone-slash"></i></span>
+            // <span><i class="fa-solid fa-video-slash"></i></span>
+            // <span><i class="fa fa-microphone-lines"></i></span>
+            // </div>
+        // `;
+
+        // const memberVideo = document.createElement("video");
+
+        // call.on("stream", (memberVideoStream) => {
+        // // memberVideo
+        // memberVideo.srcObject = stream;
+        // memberVideo.addEventListener("loadedmetadata", () => {
+        // memberVideo.play();
+        // });
+        // });
+
+        // memberFrame.appendChild(memberVideo);
+        // allMembersFrame.appendChild(memberFrame);
+
+        // call.on("close", () => {
+        // memberVideo.remove();
+        // });
+        // });
+
+        // // userJoinedRoom(stream);
+        // socket.on("user-JoinedRoom", (userID) => {
+        // console.log("User Connected: " + userID);
+        // });
+
+        // // answerMemberCalls(stream);
+        // myPeer.on("call", (call) => {
+        // call.answer(stream);
+        // });
+        // });
+        // }
+
+        // function startRoom(stream) {
+
+        // }
+
+        // function connectToMembers(userID, stream) {
+
+        // }
+
+        // function answerMemberCalls(stream) {
+
+        // }
+</script>

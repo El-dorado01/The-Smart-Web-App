@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Header -->
+    <%- include("../partials/header") %>
+    <script>
+        //const forumID = "";
+    </script>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <%- include ("../partials/navBar") %>
+
+    <!--Main-->
+    <main>
+        <div class="container">
+            <div class="alerts">
+                <div class="alert-primary" id="alert-primary" style="display: none;">
+                    <span class="fa fa-times"></span>
+                    <div class="body">
+                        <i class="fa-solid fa-spinner"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+                <div class="alert-success" id="alert-success" style="display: none;">
+                    <span class="fa fa-times"></span>
+                    <div class="body">
+                        <i class="fa fa-check-circle"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+                <div class="alert-danger" id="alert-danger" style="display: none;">
+                    <span class="fa fa-times"></span>
+                    <div class="body">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+            </div>
+            <!-- Sidebar -->
+            <%- include ("../partials/sidebar") %>
+
+            <!--Middle-->
+            <div class="middle">
+                <!--Forums-->
+                <%- include ("./my_forums_middle") %>
+                <%- include ("./create_forum") %>
+                <div class="forum-profile">
+                    <div class="forum-header">
+                        <div class="avatar">
+                            <img src="<%= forumInfo.displayPic %>" alt="Forum Display Picture">
+                        </div>
+                        <div class="info">
+                            <h3><%= forumInfo.forumName %></h3>
+                            <p class="forum-desc">
+                                <% if(forumInfo.forumDesc.length > 100){%><%= forumInfo.forumDesc.substr(0, 100) %>...<%}else{%><%= forumInfo.forumDesc %><%} %>
+                            </p>
+                            <p class="name" style="margin-top: 5px;">
+                                <span style="padding: 5px; background-color: var(--color-light);"><i
+                                        class="fa fa-users-rays"></i> <span
+                                        class="forum-member"><% if(forumInfo.members.length <= 0){%>1
+                                        member<%}else{%><%= forumInfo.members.length %> members<%} %></span></span>
+                            </p>
+                            <div class="action-icons">
+                                <div class="btn btn-primary"
+                                    onclick="document.querySelector('.add-topic-modal').style.display = 'grid';"
+                                    title=" Add a new topic">
+                                    <i class="fa-solid fa-plus"></i> <span>Add</span>
+                                </div>
+                                <div class="other-icons">
+                                    <span title="Turn on notifications"><i class="fa fa-bell"></i></span>
+                                    <span onclick="toggleSettings()" title="Toggle to show and hide settings"><i
+                                            class="fa fa-cog"></i></span>
+                                    <span title="Exit Forum"><i class="fa-solid fa-sign-out"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="forum-body">
+                        <div class="topic-title">
+                            <div class="first">
+                                <div class="title">
+                                    <%= topicInfo.subject  %>
+                                </div>
+                                <div class="action">
+                                    <div class="upvotes">
+                                        <i class="fa fa-arrow-up"></i> <b><%= topicInfo.upvotes %></b>
+                                        <span class="text">upvote<% if(topicInfo.upvotes > 1){%>s<% } %></span>
+                                    </div>
+                                    <% if(user._id == topicInfo.userID){%>
+                                    <div style="background-color: var( --color-danger);"><i
+                                            class="fa-solid fa-trash"></i>
+                                        <span class="text">Delete
+                                        </span></div>
+                                    <%} %>
+                                </div>
+                            </div>
+                            <div class="tags">
+                                <% topicInfo.topicTags.forEach(tag => {%>
+                                <a
+                                    href="/dashboard/public/forum_topic_categories/<%= tag %>/key?forumID=<%= forumID %>">
+                                    <div class="tag">
+                                        <i class="fa-solid fa-tag"></i>
+                                        <span><%= tag %></span>
+                                    </div>
+                                </a>
+                                <%})%>
+                            </div>
+                            <div class="second">
+                                <div class="user-info">
+                                    <img src="../../../../uploads/<%= questionnaire.userInfo.avatar %>" alt="">
+                                    <div>
+                                        <h5>By <%= questionnaire.userInfo.username %>,</h5>
+                                        <span class="text-muted"><%= topicInfo.upvotes %>
+                                            upvote<% if(topicInfo.upvotes > 1){%>s<% } %>,
+                                            <%= new Date(topicInfo.createdAt).toDateString() %></span>
+                                    </div>
+                                </div>
+                                <div class="action">
+                                    <div>
+                                        <span class="fa fa-share"></span> Share
+                                    </div>
+                                    <div class="flex">
+                                        <span><i class="fa fa-eye"></i> &nbsp; <span class="text">Views</span></span>
+                                        <div class="count"><%= topicInfo.__v %></div>
+                                    </div>
+                                    <div class="flex">
+                                        <span><i class="fa fa-comment"></i>&nbsp; <span
+                                                class="text">Comments</span></span>
+                                        <div class="count"><%= responses.length %></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Questionnaire-->
+                        <div class="q-box" id="<%= topicInfo._id %>">
+                            <div class="q-box-main">
+                                <div class="q-box-left">
+                                    <div class="user-info">
+                                        <h4><%= questionnaire.userInfo.username %></h4>
+                                        <img src="../../../../uploads/<%= questionnaire.userInfo.avatar %>" alt="">
+                                        <div class="upvotes"><%= questionnaire.memberUpvotes %>
+                                            upvote<% if(questionnaire.memberUpvotes > 1){%>s<% } %></div>
+                                        <span>Posted: <i
+                                                class="text-muted"><%= new Date(topicInfo.createdAt).toDateString() %></i></span>
+                                    </div>
+                                </div>
+                                <div class="q-box-right" id="field_<%= topicInfo._id %>">
+                                    <div class="field-one">
+                                        <div class="response-field">
+                                            <%- topicInfo.topicText %>
+                                        </div>
+                                        <!-- Topic Media -->
+                                        <% if(topicInfo.topicMedia.length > 0){%>
+                                        <div class="media">
+                                            <% 
+                                            var imagesExtensions = ["jpg", "gif", "png"];
+                                            var videosExtensions = ["mp4", "3gp", "ogg"];
+
+                                            topicInfo.topicMedia.forEach(media => {
+                                                var url = new URL(media)
+                                                var extension = url.pathname.split(".")[1]
+
+                                                if (imagesExtensions.includes(extension)) { 
+                                        %>
+                                            <div class="img">
+                                                <img id="forumImg" src="<%= url %>" alt="">
+                                            </div>
+                                            <% } else if (videosExtensions.includes(extension)) { %>
+                                            <div class="video">
+                                                <video controls>
+                                                    <source src="<%= url %>" type="video/<%= extension %>">
+                                                </video>
+                                            </div>
+                                            <% }
+                                            });
+                                        %>
+                                        </div>
+                                        <% } %>
+                                    </div>
+                                    <div class="actions">
+                                        <p
+                                            onclick="tagAResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>', '<%= topicInfo._id %>', '<%= JSON.stringify(forumInfo.wordsFilter) %>')">
+                                            <i class="fa-solid fa-quote-right"></i> <span>Quote</span></p>
+                                        <p><i class="fa fa-arrow-up"></i><span><%= topicInfo.upvotes %>
+                                                upvote<% if(topicInfo.upvotes > 1){%>s<% } %></span></p>
+                                        <p><i class="fa fa-share-alt"></i> <span>Share</span> </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Loop through each responses -->
+                        <div class="responses" style="width: 100%; padding: 0;">
+                            <%- include ("./topic_responses") %>
+                        </div>
+
+                        <div class="response-area">
+                            <div class="tagged-msg">
+                                <span class="icon"><i class="fa-solid fa-times"></i></span>
+                                <div></div>
+                            </div>
+                            <div class="preview"></div>
+                            <textarea name="" id="response-text"></textarea>
+                            <div class="actions">
+                                <div class="icons">
+                                    <span onclick="createResponseImg()" title="Add Images"><i
+                                            class="fa-regular fa-image"></i></span>
+                                    <span onclick="createResponseVideo()" title="Add Video"><i
+                                            class="fa-solid fa-video"></i></span>
+                                    <!--<span title="Add File"><i class="fa-solid fa-paperclip"></i></span>-->
+                                </div>
+                                <button class="btn btn-primary" type="submit" onclick="submitForumResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>',
+                                    '<%= JSON.stringify(forumInfo.wordsFilter) %>', '')"><i
+                                        class="fa-solid fa-paper-plane"></i><span>Send</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%- include ("./topic_category_middle") %>
+            </div>
+            <!--Middle ends here-->
+
+            <!--Right-->
+            <div class="right">
+                <!--Forums-->
+                <%- include ("./my_forums_right") %>
+                <!--Forums end here-->
+
+                <!-- ===============FORUM PROFILE=========================== -->
+                <%- include ("./my_profile") %>
+                <!-- ===============FORUM PROFILE ENDS HERE=========================== -->
+
+                <!--Forum box-->
+                <%- include ("./topic_category_right") %>
+                <!--Forum box end here-->
+            </div>
+            <div id="myImgModal" class="img-modal">
+                <button class="close-imgModal btn btn-primary"><i class="fa fa-angle-left"></i> Close</button>
+                <img id="modal-img" class="modal-content"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQS2ol73JZj6-IqypxPZXYS3rRiPwKteoD8vezk9QsRdkjt3jEn&usqp=CAU">
+            </div>
+        </div>
+    </main>
+
+    <!--Theme Customization-->
+    <%- include ("../partials/themeCustomization") %>
+
+    <!--JS Script Attachment-->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../../../../build/ckeditor.js"></script>
+    <script>
+        var successAlert = document.getElementById("alert-success");
+        var successAlertIcon = document.querySelector("#alert-success i");
+        var successMessage = document.querySelector("#alert-success .msg")
+        var primaryAlert = document.getElementById("alert-primary")
+        var primaryMessage = document.querySelector("#alert-primary .msg")
+        var dangerAlert = document.getElementById("alert-danger")
+        var dangerMessage = document.querySelector("#alert-danger .msg")
+
+        let myEditor;
+
+        function tagAResponse(forumID, topicID, taggedResponseID, filterArray) {
+            var taggedText = document.querySelector("#field_" + taggedResponseID + " .response-field").innerHTML
+            document.querySelector(".tagged-msg div").innerHTML = taggedText
+            document.querySelector(".tagged-msg").style.display = "block"
+            document.querySelector(".tagged-msg .icon").setAttribute("onclick",
+                "removeTagResponse('" + forumID + "', '" + topicID + "', '" + taggedResponseID + "', '" +
+                filterArray + "')")
+
+            myEditor.editing.view.focus();
+
+            document.querySelector('.response-area .actions button').setAttribute("onclick",
+                "submitForumResponse('" + forumID + "', '" + topicID + "', '" + filterArray +
+                "', '" + taggedResponseID + "')")
+        }
+
+        function removeTagResponse(forumID, topicID, taggedResponseID, filterArray) {
+            document.querySelector(".tagged-msg div").innerHTML = ""
+            document.querySelector(".tagged-msg").style.display = "none"
+            document.querySelector(".tagged-msg .icon").removeAttribute("onclick")
+
+            document.querySelector('.response-area .actions button').setAttribute("onclick",
+                "submitForumResponse('" + forumID + "', '" + topicID + "', '" + filterArray +
+                "', '')")
+        }
+
+        let responseImgFilesObj = {
+            fileArray: [],
+        };
+        let responseVideoFilesObj = {
+            fileArray: [],
+        };
+
+        ClassicEditor
+            .create(document.querySelector('#response-text'), {
+                toolbar: {
+                    // items: []
+                    shouldNotGroupWhenFull: true
+                },
+            })
+            .then(editor => {
+                myEditor = editor;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        function submitForumResponse(forumID, topicID, arrayValue, taggedResponseID) {
+            const filterArray = JSON.parse(arrayValue);
+
+            var valuesArray = [];
+            var unwantedWords = []
+            var invalidWordsPresent = false
+
+            var responseText = myEditor.getData()
+
+            var splitTexts = responseText.split(/[ ,.?]/)
+            for (let i = 0; i < splitTexts.length; i++) {
+                const text = splitTexts[i];
+                if (filterArray.includes(text)) {
+                    unwantedWords.push(text)
+                    invalidWordsPresent = true
+                }
+            }
+
+            if (invalidWordsPresent) {
+                dangerAlert.style.display = "block";
+                if (unwantedWords.length > 1) {
+                    dangerMessage.textContent = "These words [" + unwantedWords.toString() +
+                        "] are not allowed in this forum";
+                } else {
+                    dangerMessage.textContent = "This word [" + unwantedWords.toString() +
+                        "] is not allowed in this forum";
+                }
+
+                setTimeout(() => {
+                    dangerAlert.style.display = "none";
+                }, 5000);
+            } else {
+                const formData = new FormData();
+
+                if (responseText == "") {
+                    dangerAlert.style.display = "block";
+                    dangerMessage.textContent = "Text field cannot be left empty!";
+
+                    setTimeout(() => {
+                        dangerAlert.style.display = "none";
+                    }, 5000);
+                } else {
+                    var field = document.querySelector(".response-area");
+
+                    var fileKeyArray = [];;
+                    var abc = "fileArray";
+
+                    if (field.querySelector(".preview .sub-img")) {
+                        for (let key = 0; key < responseImgFilesObj[abc].length; key++) {
+                            fileKeyArray.push(responseImgFilesObj[abc][key].id);
+                            formData.append(responseImgFilesObj[abc][key].id, responseImgFilesObj[abc][key].file);
+                        }
+                        var fieldObj = {
+                            files: fileKeyArray,
+                        };
+                        valuesArray.push(fieldObj);
+                    } else if (field.querySelector(".preview .sub-video")) {
+                        fileKeyArray.push(responseVideoFilesObj[abc][0].id);
+                        formData.append(responseVideoFilesObj[abc][0].id, responseVideoFilesObj[abc][0].file);
+
+                        var fieldObj = {
+                            files: fileKeyArray,
+                        };
+                        valuesArray.push(fieldObj);
+                    }
+
+                    //Set input values to empty
+                    myEditor.setData('')
+                    document.querySelector(".tagged-msg div").innerHTML = ""
+                    document.querySelector(".tagged-msg").style.display = "none"
+                    document.querySelector(".tagged-msg .icon").removeAttribute("onclick")
+
+                    document.querySelector('.response-area .actions button').setAttribute("onclick",
+                        "submitForumResponse('" + forumID + "', '" + topicID + "', '" + arrayValue +
+                        "', '')")
+                    //Remove all image and video previews
+                    if (field.querySelector(".preview .sub-img")) {
+                        field.querySelectorAll(".preview .sub-img").forEach((item) => {
+                            item.remove();
+                        });
+                    } else if (field.querySelector(".preview .sub-video")) {
+                        field.querySelector(".preview .sub-video").remove();
+                    }
+
+                    primaryAlert.style.display = "block";
+                    primaryMessage.textContent = "Processing your post, please wait!";
+
+                    formData.append("topicID", topicID);
+                    formData.append("forumID", forumID);
+                    formData.append("taggedResponseID", taggedResponseID);
+                    formData.append("replyText", responseText);
+                    formData.append("responseMediaFiles", JSON.stringify(valuesArray));
+
+                    fetch("/dashboard/public/replyToATopic", {
+                            method: "POST",
+                            mode: "cors",
+                            cache: "no-cache",
+                            credentials: "same-origin",
+                            redirect: "follow",
+                            referrerPolicy: "no-referrer",
+                            body: formData,
+                        })
+                        .then(function (res) {
+                            return res.json();
+                        })
+                        .then(function (json) {
+                            if (json.success) {
+                                primaryAlert.style.display = "none";
+                                successAlert.style.display = "block";
+                                successAlertIcon.className = "";
+                                successAlertIcon.className = "fa fa-check-circle";
+                                successMessage.textContent = json.msg;
+
+                                const replyInfo = json.replyInfo;
+                                const topicInfo = replyInfo.topicInfo;
+                                const forumInfo = replyInfo.forumInfo;
+                                const responses = replyInfo.topicInfo.responses;
+
+                                // ===============CREATE QUESTIONNAIRE BOX================= //
+                                var QBox = document.createElement("div")
+                                QBox.id = replyInfo.response._id
+                                QBox.style.display = "none"
+                                QBox.innerHTML = ``
+
+                                if (replyInfo.response.userID == topicInfo.userID) {
+                                    QBox.classList.add("q-box")
+                                    QBox.innerHTML += `
+                                    <div class="q-box-main">
+                                        <div class="q-box-left">
+                                            <div class="user-info">
+                                                <h4>${replyInfo.userInfo.username}</h4>
+                                                <img src="../../../../uploads/${replyInfo.userInfo.avatar}" alt="">
+                                                <div class="upvotes">${replyInfo.memberUpvotes}
+                                                    upvote${replyInfo.memberUpvotes > 1 ? "s" : ""}</div>
+                                                <span>Posted: <i class="text-muted">${new
+                                                        Date(replyInfo.response.dateReplied).toDateString()}</i></span>
+                                            </div>
+                                        </div>
+                                        <div class="q-box-right" id="field_${replyInfo.response._id}"></div>
+                                    </div>`
+                                } else {
+                                    QBox.classList.add("c-box")
+                                    QBox.innerHTML += `
+                                    <div class="c-box-main">
+                                        <div class="c-box-left">
+                                            <div class="user-info">
+                                                <h4>${replyInfo.userInfo.username}</h4>
+                                                <img src="../../../../uploads/${replyInfo.userInfo.avatar}" alt="">
+                                                <div class="upvotes">${replyInfo.memberUpvotes}
+                                                    upvote${replyInfo.memberUpvotes > 1 ? "s" : ""}</div>
+                                                <span>Posted: <i class="text-muted">${new
+                                                        Date(replyInfo.response.dateReplied).toDateString()}</i></span>
+                                            </div>
+                                        </div>
+                                        <div class="c-box-right" id="field_${replyInfo.response._id}"></div>
+                                    </div>`
+                                }
+                                // APPEND HIDDEN QUESTIONNAIRE BOX
+                                document.querySelector('.forum-body .responses').appendChild(QBox)
+
+                                //SELECT APPENDED QBOX
+                                var appendedBox = document.getElementById(replyInfo.response._id)
+
+                                // IF THERE IS ANY TAGGED STATEMENT, CREATE A DIV AND APPEND
+                                if (replyInfo.response.taggedResponseID != '') {
+                                    var tagStatement = document.createElement("div")
+                                    tagStatement.classList.add("tag-statement")
+
+                                    if (replyInfo.response.taggedResponseID == topicInfo._id) {
+                                        tagStatement.innerHTML = `
+                                            <div class="statement">
+                                                <div class="head">
+                                                    <span class="fa fa-angle-down"></span>
+                                                    On ${new Date(topicInfo.createdAt).toDateString()},
+                                                    ${replyInfo.userInfo.username} said:
+                                                </div>
+                                                <a href="#${replyInfo.response.taggedResponseID}">
+                                                    <div class="body">
+                                                        ${topicInfo.topicText}
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        `
+                                    } else {
+                                        for (let i = 0; i < responses.length; i++) {
+                                            const reply = responses[i];
+                                            if (replyInfo.response.taggedResponseID == reply._id) {
+                                                tagStatement.innerHTML = `
+                                                    <div class="statement">
+                                                        <div class="head">
+                                                            <span class="fa fa-angle-down"></span>
+                                                            On ${new Date(reply.dateReplied).toDateString()},
+                                                            ${replyInfo.userInfo.username} said:
+                                                        </div>
+                                                        <a href="#${replyInfo.response.taggedResponseID}">
+                                                            <div class="body">
+                                                                ${reply.replyText}
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                `
+                                            }
+                                        }
+                                    }
+
+                                    // ========APPEND TAGGED STATEMENT==============
+                                    if (replyInfo.response.userID == topicInfo.userID) {
+                                        appendedBox.querySelector('.q-box-main .q-box-right').appendChild(
+                                            tagStatement)
+                                    } else {
+                                        appendedBox.querySelector('.c-box-main .c-box-right').appendChild(
+                                            tagStatement)
+                                    }
+                                }
+
+                                // ================CREATE RESPONSE FIELD AND APPEND===============
+
+                                var responseField = document.createElement("div")
+                                responseField.classList.add("field-one")
+                                responseField.innerHTML = `
+                                    <div class="response-field">
+                                        ${replyInfo.response.replyText}
+                                    </div>
+                                    ${replyInfo.response.replyMedia.length > 0 
+                                        ? `<div class="media"></div>`
+                                        : ``
+                                    }
+                                `
+                                // APPEND RESPONSE FIELD
+                                if (replyInfo.response.userID == topicInfo.userID) {
+                                    appendedBox.querySelector('.q-box-main .q-box-right').appendChild(
+                                        responseField)
+                                } else {
+                                    appendedBox.querySelector('.c-box-main .c-box-right').appendChild(
+                                        responseField)
+                                }
+
+                                if (replyInfo.response.replyMedia.length > 0) {
+                                    var imagesExtensions = ["jpg", "gif", "png"];
+                                    var videosExtensions = ["mp4", "3gp", "ogg"];
+
+                                    replyInfo.response.replyMedia.forEach(media => {
+                                        var url = new URL(media)
+                                        var extension = url.pathname.split(".")[1]
+
+                                        if (imagesExtensions.includes(extension)) {
+                                            var ImgMedia = document.createElement("div")
+                                            ImgMedia.classList.add("img")
+                                            ImgMedia.innerHTML = `
+                                                    <img id="forumImg" src="${url}" alt="">
+                                                `
+                                            // APPEND MEDIA
+                                            if (replyInfo.response.userID == topicInfo.userID) {
+                                                appendedBox.querySelector('.q-box-main .q-box-right .media')
+                                                    .appendChild(
+                                                        ImgMedia)
+                                            } else {
+                                                appendedBox.querySelector('.c-box-main .c-box-right .media')
+                                                    .appendChild(
+                                                        ImgMedia)
+                                            }
+
+                                        } else if (videosExtensions.includes(extension)) {
+                                            var videoMedia = document.createElement("div")
+                                            videoMedia.classList.add("video")
+                                            videoMedia.innerHTML = `
+                                                <video controls>
+                                                    <source src="${url}" type="video/${extension}">
+                                                </video>
+                                                `
+
+                                            // APPEND MEDIA
+                                            if (replyInfo.response.userID == topicInfo.userID) {
+                                                appendedBox.querySelector('.q-box-main .q-box-right .media')
+                                                    .appendChild(
+                                                        videoMedia)
+                                            } else {
+                                                appendedBox.querySelector('.c-box-main .c-box-right .media')
+                                                    .appendChild(
+                                                        videoMedia)
+                                            }
+                                        }
+                                    })
+                                }
+
+                                // CREATE ACTIONS FIELD AND APPEND
+                                var actionsField = document.createElement("div")
+                                actionsField.classList.add("actions")
+                                actionsField.innerHTML = `
+                                    <p onclick="tagAResponse('${topicInfo.forumID}', '${topicInfo._id}', '${replyInfo.response._id}', '${JSON.stringify(forumInfo.wordsFilter)}')">
+                                        <i class="fa-solid fa-quote-right"></i> <span>Quote</span></p>
+                                    <p><i class="fa fa-arrow-up"></i><span>${replyInfo.response.upvotes}
+                                            upvote${replyInfo.response.upvotes > 1 ? "s" : ""} </span></p>
+                                    <p><i class="fa fa-share-alt"></i> <span>Share</span> </p>
+                                `
+
+                                // APPEND ACTIONS FIELD
+                                if (replyInfo.response.userID == topicInfo.userID) {
+                                    appendedBox.querySelector('.q-box-main .q-box-right').appendChild(
+                                        actionsField)
+                                } else {
+                                    appendedBox.querySelector('.c-box-main .c-box-right').appendChild(
+                                        actionsField)
+                                }
+
+                                // DISPLAY APPENDED BOX
+                                appendedBox.style.display = "block"
+
+                                setTimeout(() => {
+                                    successAlert.style.display = "none";
+                                }, 3000);
+                            } else {
+                                dangerAlert.style.display = "block";
+                                dangerMessage.textContent = json.msg;
+
+                                setTimeout(() => {
+                                    dangerAlert.style.display = "none";
+                                }, 5000);
+                            }
+                        })
+                        .catch(function (err) {
+                            console.log(err);
+                        });
+                }
+
+            }
+        }
+
+        function createResponseImg() {
+            var field = document.querySelector(".response-area .preview");
+
+            //Count Number of images
+            if (field.querySelector("img")) {
+                var imgNo = field.querySelectorAll("img").length;
+            } else {
+                var imgNo = 0;
+            }
+
+            if (field.querySelector("video")) {
+                // Can't select more than a video
+                dangerAlert.style.display = "block";
+                dangerMessage.textContent = "You can't select a video with images";
+
+                setTimeout(() => {
+                    dangerAlert.style.display = "none";
+                }, 5000);
+            } else if (imgNo > 2) {
+                dangerAlert.style.display = "block";
+                dangerMessage.textContent = "You can't select more than two images";
+
+                setTimeout(() => {
+                    dangerAlert.style.display = "none";
+                }, 5000);
+            } else {
+                var remainder = 2 - imgNo;
+                let randID = Math.random() * 10;
+
+                var img = document.createElement("input");
+                img.setAttribute("type", "file");
+                img.setAttribute("onchange", "showResponseImg(this)");
+                img.className = remainder;
+                img.setAttribute("style", "display: none;");
+                img.accept = "image/*";
+                img.id = randID;
+                img.multiple = true;
+
+                field.appendChild(img);
+                // field.querySelector(".preview").appendChild(div)
+
+                var image = document.getElementById(randID);
+
+                image.click();
+            }
+        }
+
+        function showResponseImg(image) {
+            var abc = "fileArray";
+
+            var remainder = parseInt(image.className);
+            if (image.files.length > 0 && image.files.length <= remainder) {
+                var field = document.querySelector(".response-area .preview");
+                for (let i = 0; i < image.files.length; i++) {
+                    let randID = Math.random() * 10;
+                    var
+                        div = document.createElement("div");
+                    div.className = "sub-img";
+                    div.setAttribute("style", "display: none;");
+                    div.id = "responseImgPreview_" + randID;
+                    div.innerHTML = ` <span
+                        onclick="removeResponseImg('${randID}')"><i class="fa-solid fa-trash"></i></span>
+                        <img src="" alt="">
+                    `;
+
+                    if (image.files[i].size > 7000000) {
+                        dangerAlert.style.display = "block";
+                        dangerMessage.textContent = "File size is too big";
+
+                        setTimeout(() => {
+                            dangerAlert.style.display = "none";
+                        }, 5000);
+                    } else {
+                        var obj = {
+                            id: randID,
+                            file: image.files[i],
+                        };
+
+                        responseImgFilesObj[abc].push(obj);
+
+                        field.appendChild(div);
+
+                        var src = URL.createObjectURL(image.files[i]);
+                        var preview = document.getElementById("responseImgPreview_" + randID);
+                        preview.style.display = "block";
+                        preview.querySelector("img").src = src;
+                    }
+                }
+            } else {
+                if (image.files.length < 1) {
+                    dangerAlert.style.display = "block";
+                    dangerMessage.textContent = "You didn't select any image file";
+                    setTimeout(() => {
+                        dangerAlert.style.display = "none";
+                    }, 5000);
+                } else {
+                    //Can't select more than 2
+                    dangerAlert.style.display = "block";
+                    dangerMessage.textContent = "You can't select more than two images";
+
+                    setTimeout(() => {
+                        dangerAlert.style.display = "none";
+                    }, 5000);
+                }
+            }
+        }
+
+        function removeResponseImg(id) {
+            var abc = "fileArray";
+
+            for (var i = 0; i < responseImgFilesObj[abc].length; i++) {
+                if (responseImgFilesObj[abc][i].id.toString() === id) {
+                    responseImgFilesObj[abc].splice(i, 1);
+                }
+            }
+            document.getElementById("responseImgPreview_" + id).remove();
+        }
+
+        function createResponseVideo() {
+            var field = document.querySelector(".response-area .preview");
+            if (field.querySelector(".sub-img")) {
+                // Can't select a video with images
+                dangerAlert.style.display = "block";
+                dangerMessage.textContent = "You can't select a video with images";
+                setTimeout(() => {
+                    dangerAlert.style.display = "none";
+                }, 5000);
+            } else if (field.querySelector(".sub-video")) {
+                // var imgNo = field.querySelectorAll(".preview .sub-img").length;
+                // Can't select more than a video
+                dangerAlert.style.display = "block";
+                dangerMessage.textContent = "You can't select more than a video";
+
+                setTimeout(() => {
+                    dangerAlert.style.display = "none";
+                }, 5000);
+            } else {
+                // var remainder = 4 - imgNo;
+                let randID = Math.random() * 10;
+
+                var video = document.createElement("input");
+                video.setAttribute("type", "file");
+                video.setAttribute("onchange", "showResponseVideo(this)");
+                video.setAttribute("style", "display: none;");
+                video.accept = "video/*";
+                video.id = randID;
+
+                field.appendChild(video);
+
+                var videoInput = document.getElementById(randID);
+
+                videoInput.click();
+            }
+        }
+
+        function showResponseVideo(video) {
+            var abc = "fileArray";
+            let randID = Math.random() * 10;
+            var id = video.id;
+            // var remainder = parseInt(video.className);
+            if (video.files.length > 0) {
+                var field = document.querySelector(".response-area .preview");
+
+                div = document.createElement("div");
+                div.className = "sub-video";
+                div.setAttribute("style", "display: none;");
+                div.id = "videoPreview_" + randID;
+                div.innerHTML = ` <span onclick="removeResponseVideo('${randID}')"><i class="fa fa-times"></i></span>
+                    <video src="" controls></video>
+                `;
+
+                if (video.files[0].size > 10000000) {
+                    dangerAlert.style.display = "block";
+                    dangerMessage.textContent = "Video file size is too big";
+
+                    setTimeout(() => {
+                        dangerAlert.style.display = "none";
+                    }, 5000);
+                } else {
+                    field.appendChild(div);
+
+                    // var duration;
+                    var src = URL.createObjectURL(video.files[0]);
+                    var preview = document.getElementById("videoPreview_" + randID);
+                    preview.style.display = "block";
+                    preview.querySelector("video").src = src;
+
+                    var obj = {
+                        id: randID,
+                        file: video.files[0],
+                    };
+
+                    responseVideoFilesObj[abc].push(obj);
+                }
+
+                //Delete the input type file
+                document.getElementById(id).remove();
+            } else {
+                //Can't select more than 4
+                dangerAlert.style.display = "block";
+                dangerMessage.textContent = "No video file has been selected";
+
+                setTimeout(() => {
+                    dangerAlert.style.display = "none";
+                }, 5000);
+            }
+        }
+
+        function removeResponseVideo(id) {
+            var abc = "fileArray";
+
+            for (var i = 0; i < responseVideoFilesObj[abc].length; i++) {
+                if (responseVideoFilesObj[abc][i].id.toString() === id) {
+                    responseVideoFilesObj[abc].splice(i, 1);
+                }
+            }
+            document.getElementById("videoPreview_" + id).remove();
+        }
+
+        function closeTagText() {
+            var closeTags = document.querySelectorAll(".statement .head");
+            //var closeTagBodies = document.querySelectorAll(".statement .body");
+
+            closeTags.forEach(item => {
+                var closeTag = document.getElementById("tag-text1");
+
+                if (closeTag.style.display === "block") {
+                    closeTag.style.display = "none";
+                    item.style.height = "100%";
+                } else {
+                    closeTag.style.display = "block";
+                    item.style.height = "30%";
+                }
+            })
+
+            //var closeTag = document.getElementById("tag-text1");
+
+            /*if(closeTag.style.display === "block"){
+            closeTag.style.display = "none";
+            document.getElementById("head1").style.height = "100%";
+            }else{
+            closeTag.style.display = "block";
+            document.getElementById("head1").style.height = "30%";
+            }*/
+        }
+
+        var modal = document.getElementById("myImgModal");
+
+        var modalImg = document.getElementById("modal-img");
+
+        document.addEventListener("click", (e) => {
+            const elem = e.target;
+            if (elem.id === "forumImg") {
+                modal.style.display = "block";
+                modalImg.src = elem.dataset.biggerSrc || elem.src;
+            }
+        })
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close-imgModal")[0];
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+    </script>
+    <script src="../../../../js/script.js"></script>
+</body>
+
+</html>

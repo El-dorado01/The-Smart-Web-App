@@ -1,0 +1,247 @@
+<div class="rank-modal">
+    <div class="card">
+        <div class="close-rank" onclick="document.querySelector('.rank-modal').style.display = 'none';"
+            style="cursor: pointer;">
+            <span class="fa fa-times"></span>
+        </div>
+        <h3>Update Forum Ranking System</h3>
+        <div class="ranks">
+            <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
+                onmouseout='this.querySelector(".edit").style.display="none";'>
+                <div class="rank-info">
+                    <div class="rank-name">
+                        <div class="pic">
+                            <img src="../../../images/3.jpg" alt="">
+                        </div>
+                        <h4>Newbie</h4>
+                    </div>
+                    <span><i class="fa-solid fa-right-long"></i></span>
+                    <input type="text" class="upvote upvote-newbie" value="1500" disabled>
+                </div>
+                <span class="edit" onclick="editRank('newbie', '<%= forumID %>')"><i class="fa-solid fa-pen"></i></span>
+            </div>
+            <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
+                onmouseout='this.querySelector(".edit").style.display="none";'>
+                <div class="rank-info">
+                    <div class="rank-name">
+                        <div class="pic">
+                            <img src="../../../images/3.jpg" alt="">
+                        </div>
+                        <h4>Rookie</h4>
+                    </div>
+                    <span><i class="fa-solid fa-right-long"></i></span>
+                    <input type="text" class="upvote upvote-rookie" value="1500" disabled>
+                </div>
+                <span class="edit" onclick="editRank('rookie', '<%= forumID %>')"><i class="fa-solid fa-pen"></i></span>
+            </div>
+            <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
+                onmouseout='this.querySelector(".edit").style.display="none";'>
+                <div class="rank-info">
+                    <div class="rank-name">
+                        <div class="pic">
+                            <img src="../../../images/3.jpg" alt="">
+                        </div>
+                        <h4>Apprentice</h4>
+                    </div>
+                    <span><i class="fa-solid fa-right-long"></i></span>
+                    <input type="text" class="upvote upvote-apprentice" value="1500" disabled>
+                </div>
+                <span class="edit" onclick="editRank('apprentice', '<%= forumID %>')"><i
+                        class="fa-solid fa-pen"></i></span>
+            </div>
+            <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
+                onmouseout='this.querySelector(".edit").style.display="none";'>
+                <div class="rank-info">
+                    <div class="rank-name">
+                        <div class="pic">
+                            <img src="../../../images/3.jpg" alt="">
+                        </div>
+                        <h4>Explorer</h4>
+                    </div>
+                    <span><i class="fa-solid fa-right-long"></i></span>
+                    <input type="text" class="upvote upvote-explorer" value="1500" disabled>
+                </div>
+                <span class="edit" onclick="editRank('explorer', '<%= forumID %>')"><i
+                        class="fa-solid fa-pen"></i></span>
+            </div>
+            <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
+                onmouseout='this.querySelector(".edit").style.display="none";'>
+                <div class="rank-info">
+                    <div class="rank-name">
+                        <div class="pic">
+                            <img src="../../../images/3.jpg" alt="">
+                        </div>
+                        <h4>Contributor</h4>
+                    </div>
+                    <span><i class="fa-solid fa-right-long"></i></span>
+                    <input type="text" class="upvote upvote-contributor" value="1500" disabled>
+                </div>
+                <span class="edit" onclick="editRank('contributor', '<%= forumID %>')"><i
+                        class="fa-solid fa-pen"></i></span>
+            </div>
+            <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
+                onmouseout='this.querySelector(".edit").style.display="none";'>
+                <div class="rank-info">
+                    <div class="rank-name">
+                        <div class="pic">
+                            <img src="../../../images/3.jpg" alt="">
+                        </div>
+                        <h4>Enthusiast</h4>
+                    </div>
+                    <span><i class="fa-solid fa-right-long"></i></span>
+                    <input type="text" class="upvote upvote-enthusiast" value="1500" disabled>
+                </div>
+                <span class="edit" onclick="editRank('enthusiast', '<%= forumID %>')"><i
+                        class="fa-solid fa-pen"></i></span>
+            </div>
+            <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
+                onmouseout='this.querySelector(".edit").style.display="none";'>
+                <div class="rank-info">
+                    <div class="rank-name">
+                        <div class="pic">
+                            <img src="../../../images/3.jpg" alt="">
+                        </div>
+                        <h4>Collaborator</h4>
+                    </div>
+                    <span><i class="fa-solid fa-right-long"></i></span>
+                    <input type="text" class="upvote upvote-collaborator" value="1500" disabled>
+                </div>
+                <span class="edit" onclick="editRank('collaborator', '<%= forumID %>')"><i
+                        class="fa-solid fa-pen"></i></span>
+            </div>
+            <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
+                onmouseout='this.querySelector(".edit").style.display="none";'>
+                <div class="rank-info">
+                    <div class="rank-name">
+                        <div class="pic">
+                            <img src="../../../images/3.jpg" alt="">
+                        </div>
+                        <h4>Community Regular</h4>
+                    </div>
+                    <span><i class="fa-solid fa-right-long"></i></span>
+                    <input type="text" class="upvote upvote-communityRegular" value="1500" disabled>
+                </div>
+                <span class="edit" onclick="editRank('communityRegular', '<%= forumID %>')"><i
+                        class="fa-solid fa-pen"></i></span>
+            </div>
+            <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
+                onmouseout='this.querySelector(".edit").style.display="none";'>
+                <div class="rank-info">
+                    <div class="rank-name">
+                        <div class="pic">
+                            <img src="../../../images/3.jpg" alt="">
+                        </div>
+                        <h4>Rising Star</h4>
+                    </div>
+                    <span><i class="fa-solid fa-right-long"></i></span>
+                    <input type="text" class="upvote upvote-risingStar" value="1500" disabled>
+                </div>
+                <span class="edit" onclick="editRank('risingStar', '<%= forumID %>')"><i
+                        class="fa-solid fa-pen"></i></span>
+            </div>
+            <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
+                onmouseout='this.querySelector(".edit").style.display="none";'>
+                <div class="rank-info">
+                    <div class="rank-name">
+                        <div class="pic">
+                            <img src="../../../images/3.jpg" alt="">
+                        </div>
+                        <h4>Proficient</h4>
+                    </div>
+                    <span><i class="fa-solid fa-right-long"></i></span>
+                    <input type="text" class="upvote upvote-proficient" value="1500" disabled>
+                </div>
+                <span class="edit" onclick="editRank('proficient', '<%= forumID %>')"><i
+                        class="fa-solid fa-pen"></i></span>
+            </div>
+            <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
+                onmouseout='this.querySelector(".edit").style.display="none";'>
+                <div class="rank-info">
+                    <div class="rank-name">
+                        <div class="pic">
+                            <img src="../../../images/3.jpg" alt="">
+                        </div>
+                        <h4>Experienced</h4>
+                    </div>
+                    <span><i class="fa-solid fa-right-long"></i></span>
+                    <input type="text" class="upvote upvote-experienced" value="1500" disabled>
+                </div>
+                <span class="edit" onclick="editRank('experienced', '<%= forumID %>')"><i
+                        class="fa-solid fa-pen"></i></span>
+            </div>
+            <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
+                onmouseout='this.querySelector(".edit").style.display="none";'>
+                <div class="rank-info">
+                    <div class="rank-name">
+                        <div class="pic">
+                            <img src="../../../images/3.jpg" alt="">
+                        </div>
+                        <h4>Mentor</h4>
+                    </div>
+                    <span><i class="fa-solid fa-right-long"></i></span>
+                    <input type="text" class="upvote upvote-mentor" value="1500" disabled>
+                </div>
+                <span class="edit" onclick="editRank('mentor', '<%= forumID %>')"><i class="fa-solid fa-pen"></i></span>
+            </div>
+            <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
+                onmouseout='this.querySelector(".edit").style.display="none";'>
+                <div class="rank-info">
+                    <div class="rank-name">
+                        <div class="pic">
+                            <img src="../../../images/3.jpg" alt="">
+                        </div>
+                        <h4>Veteran</h4>
+                    </div>
+                    <span><i class="fa-solid fa-right-long"></i></span>
+                    <input type="text" class="upvote upvote-veteran" value="1500" disabled>
+                </div>
+                <span class="edit" onclick="editRank('veteran', '<%= forumID %>')"><i
+                        class="fa-solid fa-pen"></i></span>
+            </div>
+            <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
+                onmouseout='this.querySelector(".edit").style.display="none";'>
+                <div class="rank-info">
+                    <div class="rank-name">
+                        <div class="pic">
+                            <img src="../../../images/3.jpg" alt="">
+                        </div>
+                        <h4>Master</h4>
+                    </div>
+                    <span><i class="fa-solid fa-right-long"></i></span>
+                    <input type="text" class="upvote upvote-master" value="1500" disabled>
+                </div>
+                <span class="edit" onclick="editRank('master', '<%= forumID %>')"><i class="fa-solid fa-pen"></i></span>
+            </div>
+            <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
+                onmouseout='this.querySelector(".edit").style.display="none";'>
+                <div class="rank-info">
+                    <div class="rank-name">
+                        <div class="pic">
+                            <img src="../../../images/3.jpg" alt="">
+                        </div>
+                        <h4>Grandmaster</h4>
+                    </div>
+                    <span><i class="fa-solid fa-right-long"></i></span>
+                    <input type="text" class="upvote upvote-grandmaster" value="1500" disabled>
+                </div>
+                <span class="edit" onclick="editRank('grandmaster', '<%= forumID %>')"><i
+                        class="fa-solid fa-pen"></i></span>
+            </div>
+            <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
+                onmouseout='this.querySelector(".edit").style.display="none";'>
+                <div class="rank-info">
+                    <div class="rank-name">
+                        <div class="pic">
+                            <img src="../../../images/3.jpg" alt="">
+                        </div>
+                        <h4>Legendary</h4>
+                    </div>
+                    <span><i class="fa-solid fa-right-long"></i></span>
+                    <input type="text" class="upvote upvote-legendary" value="1500" disabled>
+                </div>
+                <span class="edit" onclick="editRank('legendary', '<%= forumID %>')"><i
+                        class="fa-solid fa-pen"></i></span>
+            </div>
+        </div>
+    </div>
+</div>

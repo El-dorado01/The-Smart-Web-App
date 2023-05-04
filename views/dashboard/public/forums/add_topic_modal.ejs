@@ -1,0 +1,903 @@
+<div class="add-topic-modal">
+    <div class="card">
+        <div class="close-topic" onclick="closeTopicModalTwo()" style="cursor: pointer;">
+            <span class="fa fa-times"></span>
+        </div>
+        <h3>Update Forum Ranking System</h3>
+        <!-- Subjects, topicText, topicMedia, userID, forumID -->
+        <div class="post-area">
+            <div class="field">
+                <label for="subject">Subject</label>
+                <input type="text" id="subjectTopic" placeholder="Subject" required>
+            </div>
+            <!-- <label for="standard-select">Standard Select</label>
+            <div class="select">
+                <select id="standard-select">
+                    <option value="Option 1">Text</option>
+                    <option value="Option 2">Code Block</option>
+                    <option value="Option 3">Blockquote</option>
+                </select>
+                <span class="focus"></span>
+            </div> -->
+            <div class="field">
+                <label for="tag-value">Tags (While you can select a maximum of five tags, you can add words separated
+                    with comma
+                    and press enter key)</label>
+                <div class="word-tags">
+                    <div class="up"></div>
+                    <div class="down">
+                        <textarea name="" id="tag-value"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <label for="editor">Your message</label>
+                <textarea name="" required id="editor" placeholder="Type your message here (in details) ..."></textarea>
+            </div>
+            <div id="field_1234" class="field">
+                <div class="preview"></div>
+            </div>
+            <div class="actions">
+                <div class="icons">
+                    <span onclick="createTopicImg('1234')" title="Add Images"><i class="fa-regular fa-image"></i></span>
+                    <span onclick="createTopicVideo('1234')" title="Add Video"><i class="fa-solid fa-video"></i></span>
+                    <!--<span title="Add File"><i class="fa-solid fa-paperclip"></i></span>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../../../../build/ckeditor.js"></script>
+<script>
+    let myEditor;
+
+    let topicImgFilesObj = {
+        fileArray_1234: [],
+    };
+    let topicVideoFilesObj = {
+        fileArray_1234: [],
+    };
+
+    const addTopicModal = document.querySelector(".add-topic-modal");
+
+    const closeTopicModal = (e) => {
+        if (e.target.classList.contains("add-topic-modal")) {
+            if (myEditor.getData() != "") {
+                if (confirm("Discard this topic?")) {
+                    document.getElementById("subjectTopic").value = ""
+                    myEditor.setData('')
+                    //Remove all tags
+                    if (document.querySelectorAll(".field .word-tags .up .tag")) {
+                        document.querySelectorAll(".field .word-tags .up .tag").forEach(tag => {
+                            tag.remove()
+                        })
+                    }
+                    var field = document.querySelector("#field_1234");
+                    //Remove all image and video previews
+                    if (field.querySelector(".preview .sub-img")) {
+                        field.querySelectorAll(".preview .sub-img").forEach((item) => {
+                            item.remove();
+                        });
+                    } else if (field.querySelector(".preview .sub-video")) {
+                        field.querySelector(".preview .sub-video").remove();
+                    }
+                    addTopicModal.style.display = "none";
+                }
+            } else {
+                document.getElementById("subjectTopic").value = ""
+                //Remove all tags
+                if (document.querySelectorAll(".field .word-tags .up .tag")) {
+                    document.querySelectorAll(".field .word-tags .up .tag").forEach(tag => {
+                        tag.remove()
+                    })
+                }
+                var field = document.querySelector("#field_1234");
+                //Remove all image and video previews
+                if (field.querySelector(".preview .sub-img")) {
+                    field.querySelectorAll(".preview .sub-img").forEach((item) => {
+                        item.remove();
+                    });
+                } else if (field.querySelector(".preview .sub-video")) {
+                    field.querySelector(".preview .sub-video").remove();
+                }
+                addTopicModal.style.display = "none";
+            }
+        }
+
+    };
+    addTopicModal.addEventListener("click", closeTopicModal);
+
+    function closeTopicModalTwo() {
+        if (myEditor.getData() != "") {
+            if (confirm("Discard this topic?")) {
+                document.getElementById("subjectTopic").value = ""
+                myEditor.setData('')
+                //Remove all tags
+                if (document.querySelectorAll(".field .word-tags .up .tag")) {
+                    document.querySelectorAll(".field .word-tags .up .tag").forEach(tag => {
+                        tag.remove()
+                    })
+                }
+                var field = document.querySelector("#field_1234");
+                //Remove all image and video previews
+                if (field.querySelector(".preview .sub-img")) {
+                    field.querySelectorAll(".preview .sub-img").forEach((item) => {
+                        item.remove();
+                    });
+                } else if (field.querySelector(".preview .sub-video")) {
+                    field.querySelector(".preview .sub-video").remove();
+                }
+                addTopicModal.style.display = "none";
+            }
+        } else {
+            document.getElementById("subjectTopic").value = ""
+            //Remove all tags
+            if (document.querySelectorAll(".field .word-tags .up .tag")) {
+                document.querySelectorAll(".field .word-tags .up .tag").forEach(tag => {
+                    tag.remove()
+                })
+            }
+            var field = document.querySelector("#field_1234");
+            //Remove all image and video previews
+            if (field.querySelector(".preview .sub-img")) {
+                field.querySelectorAll(".preview .sub-img").forEach((item) => {
+                    item.remove();
+                });
+            } else if (field.querySelector(".preview .sub-video")) {
+                field.querySelector(".preview .sub-video").remove();
+            }
+            addTopicModal.style.display = "none";
+        }
+    }
+
+    function submitForumTopic(forumID, arrayValue) {
+        const filterArray = JSON.parse(arrayValue)
+
+        var valuesArray = [];
+        var unwantedWords = []
+        var invalidWordsPresent = false
+
+        var subject = document.getElementById("subjectTopic").value
+        var topicText = myEditor.getData()
+
+        var splitTexts = topicText.split(/[ ,.?]/)
+        for (let i = 0; i < splitTexts.length; i++) {
+            const text = splitTexts[i];
+            if (filterArray.includes(text)) {
+                unwantedWords.push(text)
+                invalidWordsPresent = true
+            }
+        }
+
+        if (invalidWordsPresent) {
+            dangerAlert.style.display = "block";
+            if (unwantedWords.length > 1) {
+                dangerMessage.textContent = "These words [" + unwantedWords.toString() +
+                    "] are not allowed in this forum";
+            } else {
+                dangerMessage.textContent = "This word [" + unwantedWords.toString() + "] is not allowed in this forum";
+            }
+
+            setTimeout(() => {
+                dangerAlert.style.display = "none";
+            }, 5000);
+        } else {
+            var tags = document.querySelectorAll(".field .word-tags .up .tag")
+            if (tags.length > 0) {
+                const formData = new FormData();
+                var topicTags = []
+                for (let i = 0; i < tags.length; i++) {
+                    const tag = tags[i];
+                    var tagValue = tag.querySelector("p").innerText
+                    topicTags.push(tagValue)
+                }
+
+                if (subject == "" || topicText == "") {
+                    dangerAlert.style.display = "block";
+                    dangerMessage.textContent = "All fields must be filled!";
+
+                    setTimeout(() => {
+                        dangerAlert.style.display = "none";
+                    }, 5000);
+                } else {
+                    var field = document.querySelector("#field_1234");
+
+                    var theID = "1234";
+                    var fileKeyArray = [];;
+                    var abc = "fileArray_" + theID;
+
+                    if (field.querySelector(".preview .sub-img")) {
+                        for (let key = 0; key < topicImgFilesObj[abc].length; key++) {
+                            fileKeyArray.push(topicImgFilesObj[abc][key].id);
+                            formData.append(topicImgFilesObj[abc][key].id, topicImgFilesObj[abc][key].file);
+                        }
+                        var fieldObj = {
+                            files: fileKeyArray,
+                        };
+                        valuesArray.push(fieldObj);
+                    } else if (field.querySelector(".preview .sub-video")) {
+                        fileKeyArray.push(topicVideoFilesObj[abc][0].id);
+                        formData.append(topicVideoFilesObj[abc][0].id, topicVideoFilesObj[abc][0].file);
+
+                        var fieldObj = {
+                            files: fileKeyArray,
+                        };
+                        valuesArray.push(fieldObj);
+                    }
+
+                    //Set input values to empty
+                    document.getElementById("subjectTopic").value = ""
+                    myEditor.setData('')
+                    //Remove all tags
+                    document.querySelectorAll(".field .word-tags .up .tag").forEach(tag => {
+                        tag.remove()
+                    })
+                    //Remove all image and video previews
+                    if (field.querySelector(".preview .sub-img")) {
+                        field.querySelectorAll(".preview .sub-img").forEach((item) => {
+                            item.remove();
+                        });
+                    } else if (field.querySelector(".preview .sub-video")) {
+                        field.querySelector(".preview .sub-video").remove();
+                    }
+
+
+                    addTopicModal.style.display = "none";
+
+                    primaryAlert.style.display = "block";
+                    primaryMessage.textContent = "Processing your post, please wait!";
+
+                    formData.append("forumID", forumID);
+                    formData.append("subject", subject);
+                    formData.append("topicText", topicText);
+                    formData.append("topicTags", topicTags);
+                    formData.append("topicMediaFiles", JSON.stringify(valuesArray));
+
+                    fetch("/dashboard/public/createATopic", {
+                            method: "POST",
+                            mode: "cors",
+                            cache: "no-cache",
+                            credentials: "same-origin",
+                            redirect: "follow",
+                            referrerPolicy: "no-referrer",
+                            body: formData,
+                        })
+                        .then(function (res) {
+                            return res.json();
+                        })
+                        .then(function (json) {
+                            if (json.success) {
+                                primaryAlert.style.display = "none";
+                                successAlert.style.display = "block";
+                                successAlertIcon.className = "";
+                                successAlertIcon.className = "fa fa-check-circle";
+                                successMessage.textContent = json.msg;
+
+                                setTimeout(() => {
+                                    successAlert.style.display = "none";
+                                    const topicInfo = json.topicInfo;
+                                    location.assign("/dashboard/public/forum/" + topicInfo.forumID +
+                                        "/key?topicID=" +
+                                        topicInfo._id);
+                                }, 3000);
+                            } else {
+                                dangerAlert.style.display = "block";
+                                dangerMessage.textContent = json.msg;
+
+                                setTimeout(() => {
+                                    dangerAlert.style.display = "none";
+                                }, 5000);
+                            }
+                        })
+                        .catch(function (err) {
+                            console.log(err);
+                        });
+                }
+            } else {
+                dangerAlert.style.display = "block";
+                dangerMessage.textContent = "You must enter at least one tag for your topic!";
+
+                setTimeout(() => {
+                    dangerAlert.style.display = "none";
+                }, 5000);
+            }
+
+        }
+
+    }
+
+    ClassicEditor
+        .create(document.querySelector('#editor'), {
+            toolbar: {
+                // items: [
+                //     'heading',
+                //     '|',
+                //     'bold',
+                //     'italic',
+                //     'underline',
+                //     'strikethrough',
+                //     'superscript',
+                //     'subscript',
+                //     '|',
+                //     'horizontalLine',
+                //     'link',
+                //     'bulletedList',
+                //     'numberedList',
+                //     '|',
+                //     'code',
+                //     'codeBlock',
+                //     'blockQuote',
+                //     '|',
+                //     'outdent',
+                //     'indent',
+                //     '|',
+                //     'undo',
+                //     'redo'
+                // ],
+                shouldNotGroupWhenFull: true
+            },
+        })
+        .then(editor => {
+            myEditor = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    function createTopicImg(id) {
+        var field = document.getElementById("field_" + id);
+
+        //Count Number of images
+        if (field.querySelector(".preview .sub-img")) {
+            var imgNo = field.querySelectorAll(".preview .sub-img").length;
+        } else {
+            var imgNo = 0;
+        }
+
+        if (field.querySelector(".preview .sub-video")) {
+            // Can't select more than a video
+            dangerAlert.style.display = "block";
+            dangerMessage.textContent = "You can't select a video with images";
+
+            setTimeout(() => {
+                dangerAlert.style.display = "none";
+            }, 5000);
+        } else if (imgNo > 2) {
+            dangerAlert.style.display = "block";
+            dangerMessage.textContent = "You can't select more than two images";
+
+            setTimeout(() => {
+                dangerAlert.style.display = "none";
+            }, 5000);
+        } else {
+            var remainder = 2 - imgNo;
+            let randID = Math.random() * 10;
+
+            var img = document.createElement("input");
+            img.setAttribute("type", "file");
+            img.setAttribute("onchange", "showTopicImg(this, " + id + ")");
+            img.className = remainder;
+            img.setAttribute("style", "display: none;");
+            img.accept = "image/*";
+            img.id = randID;
+            img.multiple = true;
+
+            field.appendChild(img);
+            // field.querySelector(".preview").appendChild(div)
+
+            var image = document.getElementById(randID);
+
+            image.click();
+        }
+    }
+
+    function showTopicImg(image, fieldID) {
+        var abc = "fileArray_" + fieldID;
+
+        var remainder = parseInt(image.className);
+        if (image.files.length > 0 && image.files.length <= remainder) {
+            var field = document.getElementById("field_" +
+                fieldID);
+            for (let i = 0; i < image.files.length; i++) {
+                let randID = Math.random() * 10;
+                var
+                    div = document.createElement("div");
+                div.className = "sub-img";
+                div.setAttribute("style", "display: none;");
+                div.id = "topicImgPreview_" + randID;
+                div.innerHTML = ` <span onclick="removeTopicImg('${randID}', '${fieldID}')"><i
+            class="fa fa-times"></i></span>
+        <img src="" alt="">
+        `;
+
+                if (image.files[i].size > 7000000) {
+                    dangerAlert.style.display = "block";
+                    dangerMessage.textContent = "File size is too big";
+
+                    setTimeout(() => {
+                        dangerAlert.style.display = "none";
+                    }, 5000);
+                } else {
+                    var obj = {
+                        id: randID,
+                        file: image.files[i],
+                    };
+
+                    topicImgFilesObj[abc].push(obj);
+
+                    field.querySelector(".preview").appendChild(div);
+
+                    var src = URL.createObjectURL(image.files[i]);
+                    var preview = document.getElementById("topicImgPreview_" + randID);
+                    preview.style.display = "block";
+                    preview.querySelector("img").src = src;
+                }
+            }
+        } else {
+            if (image.files.length < 1) {
+                dangerAlert.style.display = "block";
+                dangerMessage.textContent = "You didn't select any image file";
+                setTimeout(() => {
+                    dangerAlert.style.display = "none";
+                }, 5000);
+            } else {
+                //Can't select more than 2
+                dangerAlert.style.display = "block";
+                dangerMessage.textContent = "You can't select more than two images";
+
+                setTimeout(() => {
+                    dangerAlert.style.display = "none";
+                }, 5000);
+            }
+        }
+    }
+
+    function removeTopicImg(id, inputID) {
+        var abc = "fileArray_" + inputID;
+
+        for (var i = 0; i < topicImgFilesObj[abc].length; i++) {
+            if (topicImgFilesObj[abc][i].id.toString() === id) {
+                topicImgFilesObj[abc].splice(i, 1);
+            }
+        }
+        document.getElementById("topicImgPreview_" + id).remove();
+    }
+
+    function
+    createTopicVideo(id) {
+        var field = document.getElementById("field_" + id);
+        if (field.querySelector(".preview .sub-img")) { // Can't select a video with images
+            dangerAlert.style.display = "block";
+            dangerMessage.textContent = "You can't select a video with images";
+            setTimeout(() => {
+                dangerAlert.style.display = "none";
+            }, 5000);
+        } else if (field.querySelector(".preview .sub-video")) {
+            // var imgNo = field.querySelectorAll(".preview .sub-img").length;
+            // Can't select more than a video
+            dangerAlert.style.display = "block";
+            dangerMessage.textContent = "You can't select more than a video";
+
+            setTimeout(() => {
+                dangerAlert.style.display = "none";
+            }, 5000);
+        } else {
+            // var remainder = 4 - imgNo;
+            let randID = Math.random() * 10;
+
+            var video = document.createElement("input");
+            video.setAttribute("type", "file");
+            video.setAttribute("onchange", "showTopicVideo(this, " + id + ")");
+            video.setAttribute("style", "display: none;");
+            video.accept = "video/*";
+            video.id = randID;
+
+            field.appendChild(video);
+
+            var videoInput = document.getElementById(randID);
+
+            videoInput.click();
+        }
+    }
+
+    function showTopicVideo(video, fieldID) {
+        var abc = "fileArray_" + fieldID;
+        let randID = Math.random() * 10;
+        var id = video.id;
+        // var remainder = parseInt(video.className);
+        if (video.files.length > 0) {
+            var field = document.getElementById("field_" + fieldID);
+
+            div = document.createElement("div");
+            div.className = "sub-video";
+            div.setAttribute("style", "display: none;");
+            div.id = "videoPreview_" + randID;
+            div.innerHTML = ` <span onclick="removeTopicVideo('${randID}', '${fieldID}')"><i
+                        class="fa fa-times"></i></span>
+                <video src="" controls></video>
+                `;
+
+            if (video.files[0].size > 10000000) {
+                dangerAlert.style.display = "block";
+                dangerMessage.textContent = "Video file size is too big";
+
+                setTimeout(() => {
+                    dangerAlert.style.display = "none";
+                }, 5000);
+            } else {
+                field.querySelector(".preview").appendChild(div);
+
+                // var duration;
+                var src = URL.createObjectURL(video.files[0]);
+                var preview = document.getElementById("videoPreview_" + randID);
+                preview.style.display = "block";
+                preview.querySelector("video").src = src;
+
+                var obj = {
+                    id: randID,
+                    file: video.files[0],
+                };
+
+                topicVideoFilesObj[abc].push(obj);
+            }
+
+            //Delete the input type file
+            document.getElementById(id).remove();
+        } else {
+            //Can't select more than 4
+            dangerAlert.style.display = "block";
+            dangerMessage.textContent = "No video file has been selected";
+
+            setTimeout(() => {
+                dangerAlert.style.display = "none";
+            }, 5000);
+        }
+    }
+
+    function removeTopicVideo(id, inputID) {
+        var abc = "fileArray_" + inputID;
+
+        for (var i = 0; i < topicVideoFilesObj[abc].length; i++) {
+            if (topicVideoFilesObj[abc][i].id.toString() === id) {
+                topicVideoFilesObj[abc].splice(i, 1);
+            }
+        }
+        document.getElementById("videoPreview_" + id).remove();
+    }
+
+    var tagInput = document.getElementById("tag-value")
+
+    tagInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault()
+
+            var valuesArray = tagInput.value.split(",")
+            var allTags = document.querySelectorAll(".field .word-tags .up div")
+            var allowedNumberOfTags = 5 - allTags.length
+
+            if (valuesArray.length <= allowedNumberOfTags) {
+                for (let i = 0; i < valuesArray.length; i++) {
+                    var div = document.createElement("div");
+                    div.classList.add("tag")
+                    div.classList.add(valuesArray[i])
+                    div.innerHTML =
+                        ` <span class="remove-tag"
+                                onclick="removeTagWord('${valuesArray[i]}')">
+                                <i class="fa-solid fa-times"></i>
+                                </span>
+                                <p>${valuesArray[i]}</p>
+                            `
+                    document.querySelector(".field .word-tags .up").appendChild(div)
+                }
+                tagInput.value = ""
+            } else {
+                dangerAlert.style.display = "block";
+                dangerMessage.textContent = "You can't enter more than five tags for your topic!";
+
+                setTimeout(() => {
+                    dangerAlert.style.display = "none";
+                }, 5000);
+            }
+
+        }
+    })
+
+    function removeTagWord(obj) {
+        document.querySelector(".tag." + obj).remove()
+    }
+    // (function (window) {
+    //     window.htmlentities = {
+    //         /**
+    //          * Converts a string to its html characters completely.
+    //          *
+    //          * @param {String} str String with unescaped HTML characters
+    //          **/
+    //         encode: function (str) {
+    //             var buf = [];
+
+    //             for (var i = str.length - 1; i >= 0; i--) {
+    //                 buf.unshift(['&#', str[i].charCodeAt(), ';'].join(''));
+    //             }
+
+    //             return buf.join('');
+    //         },
+    //         /**
+    //          * Converts an html characterSet into its original character.
+    //          *
+    //          * @param {String} str htmlSet entities
+    //          **/
+    //         decode: function (str) {
+    //             return str.replace(/&#(\d+);/g, function (match, dec) {
+    //                 return String.fromCharCode(dec);
+    //             });
+    //         }
+    //     };
+    // })(window);
+
+
+    // if (typeof escapeHtmlEntities == 'undefined') {
+
+    //     escapeHtmlEntities = function (text) {
+    //         return text.replace(/[\u00A0-\u2666<>\&]/g, function (c) {
+    //             return '&' +
+    //                 (escapeHtmlEntities.entityTable[c.charCodeAt(0)] || '#' + c.charCodeAt(0)) + ';';
+    //         });
+    //     };
+
+    //     escapeHtmlEntities.entityTable = {
+    //         34: 'quot',
+    //         38: 'amp',
+    //         39: 'apos',
+    //         60: 'lt',
+    //         62: 'gt',
+    //         160: 'nbsp',
+    //         161: 'iexcl',
+    //         162: 'cent',
+    //         163: 'pound',
+    //         164: 'curren',
+    //         165: 'yen',
+    //         166: 'brvbar',
+    //         167: 'sect',
+    //         168: 'uml',
+    //         169: 'copy',
+    //         170: 'ordf',
+    //         171: 'laquo',
+    //         172: 'not',
+    //         173: 'shy',
+    //         174: 'reg',
+    //         175: 'macr',
+    //         176: 'deg',
+    //         177: 'plusmn',
+    //         178: 'sup2',
+    //         179: 'sup3',
+    //         180: 'acute',
+    //         181: 'micro',
+    //         182: 'para',
+    //         183: 'middot',
+    //         184: 'cedil',
+    //         185: 'sup1',
+    //         186: 'ordm',
+    //         187: 'raquo',
+    //         188: 'frac14',
+    //         189: 'frac12',
+    //         190: 'frac34',
+    //         191: 'iquest',
+    //         192: 'Agrave',
+    //         193: 'Aacute',
+    //         194: 'Acirc',
+    //         195: 'Atilde',
+    //         196: 'Auml',
+    //         197: 'Aring',
+    //         198: 'AElig',
+    //         199: 'Ccedil',
+    //         200: 'Egrave',
+    //         201: 'Eacute',
+    //         202: 'Ecirc',
+    //         203: 'Euml',
+    //         204: 'Igrave',
+    //         205: 'Iacute',
+    //         206: 'Icirc',
+    //         207: 'Iuml',
+    //         208: 'ETH',
+    //         209: 'Ntilde',
+    //         210: 'Ograve',
+    //         211: 'Oacute',
+    //         212: 'Ocirc',
+    //         213: 'Otilde',
+    //         214: 'Ouml',
+    //         215: 'times',
+    //         216: 'Oslash',
+    //         217: 'Ugrave',
+    //         218: 'Uacute',
+    //         219: 'Ucirc',
+    //         220: 'Uuml',
+    //         221: 'Yacute',
+    //         222: 'THORN',
+    //         223: 'szlig',
+    //         224: 'agrave',
+    //         225: 'aacute',
+    //         226: 'acirc',
+    //         227: 'atilde',
+    //         228: 'auml',
+    //         229: 'aring',
+    //         230: 'aelig',
+    //         231: 'ccedil',
+    //         232: 'egrave',
+    //         233: 'eacute',
+    //         234: 'ecirc',
+    //         235: 'euml',
+    //         236: 'igrave',
+    //         237: 'iacute',
+    //         238: 'icirc',
+    //         239: 'iuml',
+    //         240: 'eth',
+    //         241: 'ntilde',
+    //         242: 'ograve',
+    //         243: 'oacute',
+    //         244: 'ocirc',
+    //         245: 'otilde',
+    //         246: 'ouml',
+    //         247: 'divide',
+    //         248: 'oslash',
+    //         249: 'ugrave',
+    //         250: 'uacute',
+    //         251: 'ucirc',
+    //         252: 'uuml',
+    //         253: 'yacute',
+    //         254: 'thorn',
+    //         255: 'yuml',
+    //         402: 'fnof',
+    //         913: 'Alpha',
+    //         914: 'Beta',
+    //         915: 'Gamma',
+    //         916: 'Delta',
+    //         917: 'Epsilon',
+    //         918: 'Zeta',
+    //         919: 'Eta',
+    //         920: 'Theta',
+    //         921: 'Iota',
+    //         922: 'Kappa',
+    //         923: 'Lambda',
+    //         924: 'Mu',
+    //         925: 'Nu',
+    //         926: 'Xi',
+    //         927: 'Omicron',
+    //         928: 'Pi',
+    //         929: 'Rho',
+    //         931: 'Sigma',
+    //         932: 'Tau',
+    //         933: 'Upsilon',
+    //         934: 'Phi',
+    //         935: 'Chi',
+    //         936: 'Psi',
+    //         937: 'Omega',
+    //         945: 'alpha',
+    //         946: 'beta',
+    //         947: 'gamma',
+    //         948: 'delta',
+    //         949: 'epsilon',
+    //         950: 'zeta',
+    //         951: 'eta',
+    //         952: 'theta',
+    //         953: 'iota',
+    //         954: 'kappa',
+    //         955: 'lambda',
+    //         956: 'mu',
+    //         957: 'nu',
+    //         958: 'xi',
+    //         959: 'omicron',
+    //         960: 'pi',
+    //         961: 'rho',
+    //         962: 'sigmaf',
+    //         963: 'sigma',
+    //         964: 'tau',
+    //         965: 'upsilon',
+    //         966: 'phi',
+    //         967: 'chi',
+    //         968: 'psi',
+    //         969: 'omega',
+    //         977: 'thetasym',
+    //         978: 'upsih',
+    //         982: 'piv',
+    //         8226: 'bull',
+    //         8230: 'hellip',
+    //         8242: 'prime',
+    //         8243: 'Prime',
+    //         8254: 'oline',
+    //         8260: 'frasl',
+    //         8472: 'weierp',
+    //         8465: 'image',
+    //         8476: 'real',
+    //         8482: 'trade',
+    //         8501: 'alefsym',
+    //         8592: 'larr',
+    //         8593: 'uarr',
+    //         8594: 'rarr',
+    //         8595: 'darr',
+    //         8596: 'harr',
+    //         8629: 'crarr',
+    //         8656: 'lArr',
+    //         8657: 'uArr',
+    //         8658: 'rArr',
+    //         8659: 'dArr',
+    //         8660: 'hArr',
+    //         8704: 'forall',
+    //         8706: 'part',
+    //         8707: 'exist',
+    //         8709: 'empty',
+    //         8711: 'nabla',
+    //         8712: 'isin',
+    //         8713: 'notin',
+    //         8715: 'ni',
+    //         8719: 'prod',
+    //         8721: 'sum',
+    //         8722: 'minus',
+    //         8727: 'lowast',
+    //         8730: 'radic',
+    //         8733: 'prop',
+    //         8734: 'infin',
+    //         8736: 'ang',
+    //         8743: 'and',
+    //         8744: 'or',
+    //         8745: 'cap',
+    //         8746: 'cup',
+    //         8747: 'int',
+    //         8756: 'there4',
+    //         8764: 'sim',
+    //         8773: 'cong',
+    //         8776: 'asymp',
+    //         8800: 'ne',
+    //         8801: 'equiv',
+    //         8804: 'le',
+    //         8805: 'ge',
+    //         8834: 'sub',
+    //         8835: 'sup',
+    //         8836: 'nsub',
+    //         8838: 'sube',
+    //         8839: 'supe',
+    //         8853: 'oplus',
+    //         8855: 'otimes',
+    //         8869: 'perp',
+    //         8901: 'sdot',
+    //         8968: 'lceil',
+    //         8969: 'rceil',
+    //         8970: 'lfloor',
+    //         8971: 'rfloor',
+    //         9001: 'lang',
+    //         9002: 'rang',
+    //         9674: 'loz',
+    //         9824: 'spades',
+    //         9827: 'clubs',
+    //         9829: 'hearts',
+    //         9830: 'diams',
+    //         338: 'OElig',
+    //         339: 'oelig',
+    //         352: 'Scaron',
+    //         353: 'scaron',
+    //         376: 'Yuml',
+    //         710: 'circ',
+    //         732: 'tilde',
+    //         8194: 'ensp',
+    //         8195: 'emsp',
+    //         8201: 'thinsp',
+    //         8204: 'zwnj',
+    //         8205: 'zwj',
+    //         8206: 'lrm',
+    //         8207: 'rlm',
+    //         8211: 'ndash',
+    //         8212: 'mdash',
+    //         8216: 'lsquo',
+    //         8217: 'rsquo',
+    //         8218: 'sbquo',
+    //         8220: 'ldquo',
+    //         8221: 'rdquo',
+    //         8222: 'bdquo',
+    //         8224: 'dagger',
+    //         8225: 'Dagger',
+    //         8240: 'permil',
+    //         8249: 'lsaquo',
+    //         8250: 'rsaquo',
+    //         8364: 'euro'
+    //     };
+    // }
+</script>

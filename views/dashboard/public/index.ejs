@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Header -->
+    <%- include("./partials/header") %>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %>
+
+    <!--Main-->
+    <main>
+        <div class="body-container">
+            <div class="alerts">
+                <div class="alert-success" id="alert-success" style="display: none;">
+                    <span class="fa fa-times"></span>
+                    <div class="body">
+                        <i class="fa fa-check-circle"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+                <div class="alert-primary" id="alert-primary" style="display: none;">
+                    <div class="body">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+                <div class="alert-danger" id="alert-danger" style="display: none;">
+                    <span class="fa fa-times"></span>
+                    <div class="body">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+            </div>
+            <!--=====================Float Button=================-->
+            <div class="float-button" id="addPost">
+                <span class="fa fa-plus"></span>
+            </div>
+            <!-- Sidebar -->
+            <%- include ("./partials/sidebar") %>
+
+            <!--Middle-->
+            <div class="middle">
+                <div class="feeds postsFeed">
+                    <div class="post-feed">
+                        <div class="post-left">
+                            <img src="../../../images/smart.png" alt="">
+                        </div>
+                        <div class="post-right">
+                            <div class="user-info">
+                                <div>
+                                    <b>The Smart Network</b>
+                                    <i class="fa fa-certificate"></i>
+                                    <i class="text-muted">@TagName</i>
+                                    <span class="time">&bullet; 25 mins ago</span>
+                                </div>
+                                <span class="fa-solid fa-ellipsis-v" style="font-size: 16px;"></span>
+                            </div>
+                            <div class="post-body">
+                                <div class="feed-text postText_randomClass">
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique voluptate
+                                    tenetur ullam quaerat earum laborum magnam enim dolorem. Vitae quisquam fuga
+                                    delectus voluptate reiciendis voluptas mollitia similique, ratione quia debitis?
+                                    <br><br> Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, nisi?
+                                </div>
+                                <div class="two-images-grid">
+                                    <div class="first-img">
+                                        <img src="../../../images/f4.jpg" alt="" id="postImg" class="randomClass">
+                                    </div>
+                                    <div class="second-img">
+                                        <img src="../../../images/f2.jpg" alt="" id="postImg" class="randomClass">
+                                    </div>
+                                </div>
+                                <div class="action-button">
+                                    <span><i class="fa-regular fa-comment-dots"></i> 34</span>
+                                    <span style="position: relative;" id="requote-body-randomClass">
+                                        <span onclick="showReqoute('randomClass')">
+                                            <i class="fa-solid fa-retweet"></i> 34
+                                        </span>
+                                    </span>
+                                    <span><i class="fa fa-heart-o"></i> 567</span>
+                                    <span><i class="fa-solid fa-heart-circle-plus"></i></span>
+                                    <span><i class="fa fa-clipboard"></i></span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-feed">
+                        <div class="post-left">
+                            <img src="../../../images/1.jpg" alt="">
+                        </div>
+                        <div class="post-right">
+                            <div class="user-info">
+                                <div>
+                                    <b>The Smart Network</b>
+                                    <i class="fa fa-certificate"></i>
+                                    <i class="text-muted">@TagName</i>
+                                    <span class="time">&bullet; 25 mins ago</span>
+                                </div>
+                                <span class="fa-solid fa-ellipsis-v" style="font-size: 16px;"></span>
+                            </div>
+                            <div class="post-body">
+                                <div class="feed-text">
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique voluptate
+                                    tenetur ullam quaerat earum laborum magnam enim dolorem. Vitae quisquam fuga
+                                    delectus voluptate reiciendis voluptas mollitia similique, ratione quia debitis?
+                                    <br><br> Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, nisi?
+                                </div>
+                                <div class="action-button">
+                                    <span><i class="fa-regular fa-comment-dots"></i> 34</span>
+                                    <span><i class="fa fa-heart-o"></i> 567</span>
+                                    <span><i class="fa fa-download"></i></span>
+                                    <span><i class="fa fa-share-alt"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-feed">
+                        <div class="post-left">
+                            <img src="../../../images/smart.png" alt="">
+                        </div>
+                        <div class="post-right">
+                            <div class="user-info">
+                                <div>
+                                    <b>The Smart Network</b>
+                                    <i class="fa fa-certificate"></i>
+                                    <i class="text-muted">@TagName</i>
+                                    <span class="time">&bullet; 25 mins ago</span>
+                                </div>
+                                <span class="fa-solid fa-ellipsis-v" style="font-size: 16px;"></span>
+                            </div>
+                            <div class="post-body">
+                                <div class="feed-text postText_randomClass2">
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique voluptate
+                                    tenetur ullam quaerat earum laborum magnam enim dolorem. Vitae quisquam fuga
+                                    delectus voluptate reiciendis voluptas mollitia similique, ratione quia debitis?
+                                    <br><br> Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, nisi?
+                                </div>
+                                <div class="three-images-grid">
+                                    <div class="first-img">
+                                        <img src="../../../images/f1.jpg" alt="" id="postImg" class="randomClass2">
+                                    </div>
+                                    <div class="second-img">
+                                        <img src="../../../images/f2.jpg" alt="" id="postImg" class="randomClass2">
+                                    </div>
+                                    <div class="third-img">
+                                        <img src="../../../images/f3.jpg" alt="" id="postImg" class="randomClass2">
+                                    </div>
+                                </div>
+                                <div class="action-button">
+                                    <span><i class="fa-regular fa-comment-dots"></i> 34</span>
+                                    <span><i class="fa fa-heart-o"></i> 567</span>
+                                    <span><i class="fa fa-download"></i></span>
+                                    <span><i class="fa fa-share-alt"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-feed">
+                        <div class="post-left">
+                            <img src="../../../images/smart.png" alt="">
+                        </div>
+                        <div class="post-right">
+                            <div class="user-info">
+                                <div>
+                                    <b>The Smart Network</b>
+                                    <i class="fa fa-certificate"></i>
+                                    <i class="text-muted">@TagName</i>
+                                    <span class="time">&bullet; 25 mins ago</span>
+                                </div>
+                                <span class="fa-solid fa-ellipsis-v" style="font-size: 16px;"></span>
+                            </div>
+                            <div class="post-body">
+                                <div class="feed-text postText_randomClass3">
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique voluptate
+                                    tenetur ullam quaerat earum laborum magnam enim dolorem. Vitae quisquam fuga
+                                    delectus voluptate reiciendis voluptas mollitia similique, ratione quia debitis?
+                                    <br><br> Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, nisi?
+                                </div>
+                                <div class="fourth-images-grid">
+                                    <div class="first-img">
+                                        <img src="../../../images/f1.jpg" alt="" id="postImg" class="randomClass3">
+                                    </div>
+                                    <div class="second-img">
+                                        <img src="../../../images/f2.jpg" alt="" id="postImg" class="randomClass3">
+                                    </div>
+                                    <div class="third-img">
+                                        <img src="../../../images/f3.jpg" alt="" id="postImg" class="randomClass3">
+                                    </div>
+                                    <div class="fourth-img">
+                                        <img src="../../../images/f4.jpg" alt="" id="postImg" class="randomClass3">
+                                    </div>
+                                </div>
+                                <div class="action-button">
+                                    <span><i class="fa-regular fa-comment-dots"></i> 34</span>
+                                    <span><i class="fa fa-heart-o"></i> 567</span>
+                                    <span><i class="fa fa-download"></i></span>
+                                    <span><i class="fa fa-share-alt"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-feed">
+                        <div class="post-left">
+                            <img src="../../../images/smart.png" alt="">
+                        </div>
+                        <div class="post-right">
+                            <div class="user-info">
+                                <div>
+                                    <b>The Smart Network</b>
+                                    <i class="fa fa-certificate"></i>
+                                    <i class="text-muted">@TagName</i>
+                                    <span class="time">&bullet; 25 mins ago</span>
+                                </div>
+                                <span class="fa-solid fa-ellipsis-v" style="font-size: 16px;"></span>
+                            </div>
+                            <div class="post-body">
+                                <div class="feed-text postText_randomClass4">
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique voluptate
+                                    tenetur ullam quaerat earum laborum magnam enim dolorem. Vitae quisquam fuga
+                                    delectus voluptate reiciendis voluptas mollitia similique, ratione quia debitis?
+                                    <br><br> Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, nisi?
+                                </div>
+                                <div class="one-image-grid">
+                                    <img src="../../../images/f3.jpg" alt="" id="postImg" class="randomClass4">
+                                </div>
+                                <div class="action-button">
+                                    <span><i class="fa-regular fa-comment-dots"></i> 34</span>
+                                    <span><i class="fa fa-heart-o"></i> 567</span>
+                                    <span><i class="fa fa-download"></i></span>
+                                    <span><i class="fa fa-share-alt"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="myImgModal" class="img-modal">
+                <button class="close-imgModal btn btn-primary"><i class="fa fa-angle-left"></i> Close</button>
+                <img id="modal-img" class="modal-content"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQS2ol73JZj6-IqypxPZXYS3rRiPwKteoD8vezk9QsRdkjt3jEn&usqp=CAU">
+
+
+                <div id="caption"></div>
+            </div>
+            <!--Middle ends here-->
+        </div>
+    </main>
+    <script>
+        // Get the modal
+        var modal = document.getElementById("myImgModal");
+
+        var modalImg = document.getElementById("modal-img");
+        var captionText = document.getElementById("caption");
+
+        document.addEventListener("click", (e) => {
+            const elem = e.target;
+            var postText = document.querySelector(".postText_" + elem.classList)
+            if (elem.id === "postImg") {
+                modal.style.display = "block";
+                modalImg.src = elem.dataset.biggerSrc || elem.src;
+                captionText.innerHTML = postText.innerHTML;
+            }
+        })
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close-imgModal")[0];
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        function showReqoute(id) {
+            var requoteBody = document.getElementById("requote-body-" + id)
+            var requote = document.getElementById("requote-" + id)
+            var requoteModal = document.getElementById("requote-modal-" + id)
+
+            if (!requoteBody.querySelector("#requote-" + id)) {
+                var div = document.createElement("div")
+                div.innerHTML = `
+                    <div class="requote" id="requote-${id}">
+                        <div class="one">
+                            <i class="fa-solid fa-retweet"></i>
+                            <span>Quote</span>
+                        </div>
+                        <div class="two" onclick="qouteWithComment('${id}')">
+                            <i class="fa fa-reply"></i>
+                            <span>Qoute with comment</span>
+                        </div>
+                    </div>
+                    <div class="requote-modal" id="requote-modal-${id}" onclick="closeRequote(this, '${id}')"></div>
+                `
+
+                requoteBody.appendChild(div)
+            } else {
+                requote.style.display = "block"
+                requoteModal.style.display = "block"
+            }
+        }
+
+        function closeRequote(obj, id) {
+            // var requoteBody = document.querySelector("#requote-body-" + id)
+            var requote = document.getElementById("requote-" + id)
+            obj.style.display = "none"
+            requote.style.display = "none"
+        }
+
+        function qouteWithComment(id) {
+            //Get the add Post Panel
+            const addPostModal = document.querySelector(".add-post-modal");
+
+            //Display the add post panel
+            addPostModal.style.display = "grid";
+
+            var requote = document.getElementById("requote-" + id)
+            var requoteModal = document.getElementById("requote-modal-" + id)
+            requoteModal.style.display = "none"
+            requote.style.display = "none"
+        }
+    </script>
+    <!--Theme Customization-->
+    <%- include ("./partials/themeCustomization") %>
+    <%- include ("./partials/addPost") %>
+
+    <!--JS Script Attachment-->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../../../js/script.js"></script>
+    <script>
+        const userAvatar = '<%= user.avatar %>'
+        var successAlert = document.getElementById("alert-success");
+        var successAlertIcon = document.querySelector("#alert-success i");
+        var successMessage = document.querySelector("#alert-success .msg");
+        var infoAlert = document.getElementById("alert-primary");
+        // var infoAlertIcon = document.querySelector("#alert-primary i");
+        var infoMessage = document.querySelector("#alert-primary .msg");
+        var dangerAlert = document.getElementById("alert-danger");
+        var dangerMessage = document.querySelector("#alert-danger .msg");
+    </script>
+</body>
+
+</html>

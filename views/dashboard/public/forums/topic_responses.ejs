@@ -1,0 +1,205 @@
+<% 
+                        // responses.forEach(response => { 
+                            for (let i = 0; i < responses.length; i++) {
+                                const response = responses[i];
+                                if(response.response.userID == topicInfo.userID){
+                                // }
+                        %>
+<!-- Check if user that posted response is the questionnaire-->
+<!--Questionnaire-->
+<div class="q-box" id="<%= response.response._id %>">
+    <div class="q-box-main">
+        <div class="q-box-left">
+            <div class="user-info">
+                <h4><%= questionnaire.userInfo.username %></h4>
+                <img src="../../../../uploads/<%= questionnaire.userInfo.avatar %>" alt="">
+                <div class="upvotes"><%= questionnaire.memberUpvotes %>
+                    upvote<% if(questionnaire.memberUpvotes > 1){%>s<% } %></div>
+                <span>Posted: <i
+                        class="text-muted"><%= new Date(response.response.dateReplied).toDateString() %></i></span>
+            </div>
+        </div>
+        <div class="q-box-right" id="field_<%= response.response._id %>">
+            <% if(response.response.taggedResponseID != ''){
+                                        if (response.response.taggedResponseID == topicInfo._id) { %>
+            <div class="tag-statement">
+                <div class="statement">
+                    <div class="head">
+                        <span class="fa fa-angle-down"></span>
+                        On <%= new Date(topicInfo.createdAt).toDateString() %>,
+                        <%= questionnaire.userInfo.username %> said:
+                    </div>
+                    <a href="#<%= response.response.taggedResponseID %>">
+                        <div class="body">
+                            <%- topicInfo.topicText %>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <%  } else {
+                                            for (let i = 0; i < responses.length; i++) {
+                                                const reply = responses[i];
+                                                if (response.response.taggedResponseID == reply.response._id) { %>
+            <div class="tag-statement">
+                <div class="statement">
+                    <div class="head">
+                        <span class="fa fa-angle-down"></span>
+                        On <%= new Date(reply.response.dateReplied).toDateString() %>,
+                        <%= questionnaire.userInfo.username %> said:
+                    </div>
+                    <a href="#<%= response.response.taggedResponseID %>">
+                        <div class="body">
+                            <%- reply.response.replyText %>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <%          }
+                                            }
+                                        }
+                                        %>
+
+            <%} %>
+            <div class="field-one">
+                <div class="response-field">
+                    <%- response.response.replyText %>
+                </div>
+                <% if(response.response.replyMedia.length > 0){%>
+                <div class="media">
+                    <% 
+                                                var imagesExtensions = ["jpg", "gif", "png"];
+                                                var videosExtensions = ["mp4", "3gp", "ogg"];
+    
+                                                response.response.replyMedia.forEach(media => {
+                                                    var url = new URL(media)
+                                                    var extension = url.pathname.split(".")[1]
+    
+                                                    if (imagesExtensions.includes(extension)) { 
+                                            %>
+                    <div class="img">
+                        <img id="forumImg" src="<%= url %>" alt="">
+                    </div>
+                    <% } else if (videosExtensions.includes(extension)) { %>
+                    <div class="video">
+                        <video controls>
+                            <source src="<%= url %>" type="video/<%= extension %>">
+                        </video>
+                    </div>
+                    <% }
+                                                });
+                                            %>
+                </div>
+                <% } %>
+            </div>
+            <div class="actions">
+                <p onclick="tagAResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>',
+                                            '<%= response.response._id %>',
+                                            '<%= JSON.stringify(forumInfo.wordsFilter) %>')">
+                    <i class="fa-solid fa-quote-right"></i> <span>Quote</span></p>
+                <p><i class="fa fa-arrow-up"></i><span><%= response.response.upvotes %>
+                        upvote<% if(response.response.upvotes > 1){%>s<% } %></span></p>
+                <p><i class="fa fa-share-alt"></i> <span>Share</span> </p>
+            </div>
+        </div>
+    </div>
+</div>
+<% }else{ %>
+<!--Commentators-->
+<div class="c-box">
+    <div class="c-box-main">
+        <div class="c-box-left">
+            <div class="user-info">
+                <h4><%= response.userInfo.username %></h4>
+                <img src="../../../../uploads/<%= response.userInfo.avatar %>" alt="">
+                <div class="upvotes"><%= response.memberUpvotes %>
+                    upvote<% if(response.memberUpvotes > 1){%>s<% } %></div>
+                <span>Posted: <i
+                        class="text-muted"><%= new Date(response.response.dateReplied).toDateString() %></i></span>
+            </div>
+        </div>
+        <div class="c-box-right" id="field_<%= response.response._id %>">
+            <% if(response.response.taggedResponseID != ''){
+                                        if (response.response.taggedResponseID == topicInfo._id) { %>
+            <div class="tag-statement">
+                <div class="statement">
+                    <div class="head">
+                        <span class="fa fa-angle-down"></span>
+                        On <%= new Date(topicInfo.createdAt).toDateString() %>,
+                        <%= questionnaire.userInfo.username %> said:
+                    </div>
+                    <a href="#<%= response.response.taggedResponseID %>">
+                        <div class="body">
+                            <%- topicInfo.topicText %>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <%  } else {
+                                            for (let i = 0; i < responses.length; i++) {
+                                                const reply = responses[i];
+                                                if (response.response.taggedResponseID == reply.response._id) { %>
+            <div class="tag-statement">
+                <div class="statement">
+                    <div class="head">
+                        <span class="fa fa-angle-down"></span>
+                        On <%= new Date(reply.response.dateReplied).toDateString() %>,
+                        <%= questionnaire.userInfo.username %> said:
+                    </div>
+                    <a href="#<%= response.response.taggedResponseID %>">
+                        <div class="body">
+                            <%- reply.response.replyText %>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <%          }
+                                            }
+                                        }
+                                        %>
+
+            <%} %>
+            <div class="field-one">
+                <div class="response-field">
+                    <%- response.response.replyText %>
+                </div>
+                <% if(response.response.replyMedia.length > 0){%>
+                <div class="media">
+                    <% 
+                                                var imagesExtensions = ["jpg", "gif", "png"];
+                                                var videosExtensions = ["mp4", "3gp", "ogg"];
+    
+                                                response.response.replyMedia.forEach(media => {
+                                                    var url = new URL(media)
+                                                    var extension = url.pathname.split(".")[1]
+    
+                                                    if (imagesExtensions.includes(extension)) { 
+                                            %>
+                    <div class="img">
+                        <img id="forumImg" src="<%= url %>" alt="">
+                    </div>
+                    <% } else if (videosExtensions.includes(extension)) { %>
+                    <div class="video">
+                        <video controls>
+                            <source src="<%= url %>" type="video/<%= extension %>">
+                        </video>
+                    </div>
+                    <% }
+                                                });
+                                            %>
+                </div>
+                <% } %>
+            </div>
+            <div class="actions">
+                <p onclick="tagAResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>',
+                                            '<%= response.response._id %>',
+                                            '<%= JSON.stringify(forumInfo.wordsFilter) %>')">
+                    <i class="fa-solid fa-quote-right"></i> <span>Quote</span></p>
+                <p><i class="fa fa-arrow-up"></i><span><%= response.response.upvotes %>
+                        upvote<% if(response.response.upvotes > 1){%>s<% } %></span></p>
+                <p><i class="fa fa-share-alt"></i> <span>Share</span> </p>
+            </div>
+        </div>
+    </div>
+</div>
+<%}
+                            } %>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Header -->
+    <%- include("./partials/header") %>
+  </head>
+  <body>
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %>
+
+    <!--Main-->
+    <main>
+      <div class="body-container">
+        <!-- Sidebar -->
+        <%- include ("./partials/sidebar") %>
+        <!--Middle-->
+        <div class="middle">
+          <div class="movies-container">
+            <div class="action-bar">
+              <div class="dots-btn">
+                <div class="dot dot-1"></div>
+                <div class="dot dot-2"></div>
+                <div class="dot dot-3"></div>
+              </div>
+              <div class="nav-menu">
+                <a href="<%= channelRoute %>" class="nav-menu-link" title="My Channel"><i class="fa fa-video-camera"></i></a>
+                <a href="/dashboard/private/movies/myPlaylists" class="nav-menu-link" title="Playlists"><i class="fa fa-play-circle-o"></i></a>
+                <a href="/dashboard/private/movies/uploadVideo" class="nav-menu-link" title="Upload Video"><i class="fa fa-upload"></i></a>
+              </div>
+            </div>
+            <div class="categories">
+              <div class="category">
+                <button class="btn" onclick="openMoviesTab('All')">All</button>
+              </div>
+              <div class="category">
+                <button class="btn" onclick="openMoviesTab('Action')">Action</button>
+              </div>
+              <div class="category">
+                <button class="btn" onclick="openMoviesTab('Adventure')">Adventure</button>
+              </div>
+              <div class="category">
+                <button class="btn" onclick="openMoviesTab('Sci-fi')">Sci-fi</button>
+              </div>
+              <div class="category">
+                <button class="btn" onclick="openMoviesTab('Drama')">Drama</button>
+              </div>
+              <div class="category">
+                <button class="btn" onclick="openMoviesTab('K-Drama')">K-Drama</button>
+              </div>
+              <div class="category">
+                <button class="btn" onclick="openMoviesTab('Comedy')">Comedy</button>
+              </div>
+              <div class="category">
+                <button class="btn" onclick="openMoviesTab('Kids')">Kids</button>
+              </div>
+              <div class="category">
+                <button class="btn" onclick="openMoviesTab('Documentary')">Documentary</button>
+              </div>
+              <div class="category">
+                <button class="btn" onclick="openMoviesTab('Biography')">Biography</button>
+              </div>
+              <div class="category">
+                <button class="btn" onclick="openMoviesTab('Sports')">Sports</button>
+              </div>
+              <div class="category">
+                <button class="btn" onclick="openMoviesTab('Animals')">Animals</button>
+              </div>
+              <div class="category">
+                <button class="btn" onclick="openMoviesTab('Indian')">Indian</button>
+              </div>
+              <div class="category">
+                <button class="btn" onclick="openMoviesTab('Bollywood')">Bollywood</button>
+              </div>
+              <div class="category">
+                <button class="btn" onclick="openMoviesTab('Yoruba')">Yoruba</button>
+              </div>
+              <div class="category">
+                <button class="btn" onclick="openMoviesTab('Igbo')">Igbo</button>
+              </div>
+              <div class="category">
+                <button class="btn" onclick="openMoviesTab('Hausa')">Hausa</button>
+              </div>
+            </div>
+            <div
+              class="banner"
+              style="
+                background: url(../../../images/banner.jpg) no-repeat center
+                  center/cover;
+              "
+            ></div>
+            <div class="list-container">
+              <% smartMovies.forEach(movie => { %>
+                <div class="vid-list">
+                    <a href="/dashboard/private/movies/<%= movie._id %>">
+                        <div class="thumbnail">
+                            <img src="<%= movie.thumbnail %>" alt="" />
+                        </div>
+                    </a>
+                    <div class="flex-div">
+                        <img src="../../../images/smart.png" alt="" />
+                        <div class="vid-info">
+                            <a href="/dashboard/private/movies/<%= movie._id %>">
+                                <%= movie.title %>
+                            </a>
+                            <p><%= movie.channel %></p>
+                            <p><%= movie.views.length %> view<% if(movie.views.length> 1){ %>s<% } %> &bull; <% var timeInMS=new Date() - new Date(movie.createdAt); var secs=timeInMS / 1000; var mins=timeInMS / (1000 * 60); var
+                              hours=timeInMS / (1000 * 60 * 60); var days=timeInMS / (1000 * 60 * 60 * 24); var weeks=timeInMS / (1000 * 60 * 60 *
+                              24 * 7); if( days> 13.999){ %>
+                              <%= Math.round(weeks) %> weeks
+                                <%  }else if( days> 6.999){ %>
+                                <%= Math.round(weeks) %> week
+                                  <% }else if( hours> 35.99){ %>
+                                    <%= Math.round(days) %> days
+                                      <% }else if( hours> 23.99){ %>
+                                        <%= Math.round(days) %> day
+                                          <% }else if(mins> 119) { %>
+                                            <%= Math.round(hours) %> hrs
+                                              <% }else if(mins> 59) { %>
+                                                <%= Math.round(hours) %> hr
+                                                  <% }else if(secs> 119){ %>
+                                                    <%= Math.round(mins) %> mins
+                                                      <% }else if(secs> 59){ %>
+                                                        <%= Math.round(mins) %> min
+                                                          <% }else{ %>
+                                                            <%= Math.round(secs) %> secs
+                                                              <% } %>
+                                                                ago</p>
+                        </div>
+                    </div>
+                </div>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+        <!--Middle ends here-->
+      </div>
+    </main>
+
+    <!--Theme Customization-->
+    <%- include ("./partials/themeCustomization") %>
+
+    <!-- Updates -->
+    <%- include ("./partials/updates") %>
+
+    <!-- Contact List -->
+    <%- include ("./partials/contactList") %>
+
+    <script>
+      function openMoviesTab(obj){
+        socket.emit("openMoviesTab", obj)
+      }
+    </script>
+
+    <!--JS Script Attachment-->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../../../js/script.js"></script>
+  </body>
+</html>

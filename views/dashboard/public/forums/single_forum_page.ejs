@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Header -->
+    <%- include("../partials/header") %>
+    <script>
+        const forumID = "<%= forumID %>";
+    </script>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <%- include ("../partials/navBar") %>
+
+    <!--Main-->
+    <main>
+        <div class="container">
+            <div class="alerts">
+                <div class="alert-primary" id="alert-primary" style="display: none;">
+                    <span class="fa fa-times"></span>
+                    <div class="body">
+                        <i class="fa-solid fa-spinner"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+                <div class="alert-success" id="alert-success" style="display: none;">
+                    <span class="fa fa-times"></span>
+                    <div class="body">
+                        <i class="fa fa-check-circle"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+                <div class="alert-danger" id="alert-danger" style="display: none;">
+                    <span class="fa fa-times"></span>
+                    <div class="body">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+            </div>
+            <!-- Sidebar -->
+            <%- include ("../partials/sidebar") %>
+
+            <!--Middle-->
+            <div class="middle">
+                <!--Forums-->
+                <%- include ("./my_forums_middle") %>
+                <%- include ("./create_forum") %>
+
+                <div class="forum-profile">
+                    <div class="forum-header">
+                        <div class="avatar">
+                            <img src="" alt="">
+                        </div>
+                        <div class="info">
+                            <h3></h3>
+                            <p class="forum-desc"></p>
+                            <p class="name" style="margin-top: 5px;">
+                                <span style="padding: 5px; background-color: var(--color-light);"><i
+                                        class="fa fa-users-rays"></i> <span class="forum-member"></span></span>
+                            </p>
+                            <div class="action-icons">
+                                <div class="btn btn-primary"
+                                    onclick="document.querySelector('.add-topic-modal').style.display = 'grid';"
+                                    title=" Add a new topic">
+                                    <i class="fa-solid fa-plus"></i> <span>Add</span>
+                                </div>
+                                <div class="other-icons">
+                                    <span title="Turn on notifications"><i class="fa fa-bell"></i></span>
+                                    <span onclick="toggleSettings()" title="Toggle to show and hide settings"><i
+                                            class="fa fa-cog"></i></span>
+                                    <span title="Exit Forum"><i class="fa-solid fa-sign-out"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <%- include ("./forum_settings") %>
+                    <%- include ("./forum_info") %>
+                    <div class="forum-body" id="forumTopics">
+                        <% if(topics.length < 1){%>
+                        <div
+                            style="width: 100%; height: 15rem; display: flex; align-items: center; justify-content: center;">
+                            <span class="text-muted">There are no topics in this forum</span>
+                        </div>
+                        <%} %>
+                        <% topics.forEach(topic => { %>
+                        <div class="topic">
+                            <div class="topic-left">
+                                <p><span class="fa fa-eye"></span> <%= topic.topic.__v %>
+                                    View<% if(topic.topic.__v > 1){ %>s<% } %></p>
+                                <p><span class="fa fa-comment"></span> <%= topic.topic.responses.length %>
+                                    Comment<% if(topic.topic.responses.length > 1){ %>s<% } %></p>
+                                <p><span class="fa-solid fa-up-long"></span> <%= topic.topic.upvotes %>
+                                    Upvote<% if(topic.topic.upvotes > 1){ %>s<% } %></p>
+                            </div>
+                            <div class="topic-middle">
+                                <a href="/dashboard/public/forum/<%= forumID %>/key?topicID=<%= topic.topic._id %>"
+                                    style="color: var(--color-dark);">
+                                    <h4><% if(topic.topic.subject.length > 100){%><%= topic.topic.subject.substr(0, 100) %>...<%}else{%><%= topic.topic.subject %><%}
+                                        %>
+                                    </h4>
+                                </a>
+                                <div class="tags">
+                                    <% topic.topic.topicTags.forEach(tag => {%>
+                                    <a
+                                        href="/dashboard/public/forum_topic_categories/<%= tag %>/key?forumID=<%= forumID %>">
+                                        <div>
+                                            <span class="fa fa-tag"></span>
+                                            <%= tag %>
+                                        </div>
+                                    </a>
+                                    <%})%>
+                                </div>
+                            </div>
+                            <div class="topic-right">
+                                <div class="user-info">
+                                    <a
+                                        href="/dashboard/public/member_profile/<%= forumID %>/key?memberID=<%= topic.userInfo._id %>">
+                                        <div class="profile-pic">
+                                            <img src="../../../../uploads/<%= topic.userInfo.avatar %>" alt="">
+                                        </div>
+                                    </a>
+                                    <h5><a
+                                            href="/dashboard/public/member_profile/<%= forumID %>/key?memberID=<%= topic.userInfo._id %>"><%= topic.userInfo.username %></a>
+                                        <span class="text-muted"><%= topic.memberUpvotes %> upvote
+                                            <% if(topic.memberUpvotes > 1){ %>s<%}%>,
+                                                <%= new Date(topic.topic.createdAt).toDateString() %></span>
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                        <% }) %>
+                        <div class="pagination">
+                            <% 
+                                for(var i = 1; i < 4; i++){
+                                    %>
+                            <div onclick="goToNewPage('<%= i %>','<%= totalPages %>','<%= forumID %>')" <% if(i == 1){%>
+                                class="active" <%}%>>
+                                <%= i %> </div> <%  } 
+                            if(totalPages > 3){%> <div style="cursor: auto;">...</div>
+                            <div onclick="goToNewPage('<%= totalPages %>','<%= totalPages %>','<%= forumID %>')">
+                                <%= totalPages %></div>
+                            <% } %>
+                            <div class="next" onclick="goToNewPage('2','<%= totalPages %>','<%= forumID %>')">
+                                <span>Next</span><i class="fa-solid fa-angle-right"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <%- include ("./topic_category_middle") %>
+                <!--Forum box end here-->
+            </div>
+            <!--Middle ends here-->
+
+            <!--Right-->
+            <div class="right">
+                <!--Forums-->
+                <%- include ("./my_forums_right") %>
+                <!--Forums end here-->
+
+                <!-- ===============FORUM PROFILE=========================== -->
+                <%- include ("./my_profile") %>
+                <!-- ===============FORUM PROFILE ENDS HERE=========================== -->
+
+                <!--Forum box-->
+                <%- include ("./topic_category_right") %>
+                <!--Forum box end here-->
+            </div>
+        </div>
+    </main>
+    <!--Ranking System-->
+    <%- include ("./rank_modal") %>
+    <!--Add Moderator Modal-->
+    <%- include ("./moderator_modal") %>
+    <!--Add Topic Modal-->
+    <%- include ("./add_topic_modal") %>
+    <!--Theme Customization-->
+    <%- include ("../partials/themeCustomization") %>
+
+    <!--JS Script Attachment-->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var successAlert = document.getElementById("alert-success");
+        var successAlertIcon = document.querySelector("#alert-success i");
+        var successMessage = document.querySelector("#alert-success .msg")
+        var primaryAlert = document.getElementById("alert-primary")
+        var primaryMessage = document.querySelector("#alert-primary .msg")
+        var dangerAlert = document.getElementById("alert-danger")
+        var dangerMessage = document.querySelector("#alert-danger .msg")
+
+        const rankModal = document.querySelector(".rank-modal");
+
+        const closeRankModal = (e) => {
+            if (e.target.classList.contains("rank-modal")) {
+                rankModal.style.display = "none";
+            }
+        };
+
+        rankModal.addEventListener("click", closeRankModal);
+
+        const memberModal = document.querySelector(".member-modal");
+
+        const closeMemberModal = (e) => {
+            if (e.target.classList.contains("member-modal")) {
+                memberModal.style.display = "none";
+            }
+        };
+
+        memberModal.addEventListener("click", closeMemberModal);
+
+        var filterInput = document.getElementById("filter-value")
+
+        filterInput.addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault()
+
+                var valuesArray = filterInput.value.split(",")
+
+                for (let i = 0; i < valuesArray.length; i++) {
+                    var div = document.createElement("div");
+                    div.classList.add("tag")
+                    div.classList.add(valuesArray[i])
+                    div.innerHTML =
+                        ` <span class="remove-tag"
+                            onclick="removeFilterWord('${valuesArray[i]}')">
+                            <i class="fa-solid fa-times"></i>
+                            </span>
+                            <p>${valuesArray[i]}</p>
+                        `
+                    document.querySelector(".word-tags .up").appendChild(div)
+                }
+                filterInput.value = ""
+            }
+        })
+
+        function removeFilterWord(obj) {
+            document.querySelector(".tag." + obj).remove()
+        }
+
+        const members = document.querySelectorAll(".member-modal .members .member");
+        if (document.querySelector("#search-member")) {
+            const memberSearch = document.querySelector("#search-member");
+            const searchMember = () => {
+                const value = memberSearch.value.toLowerCase();
+                members.forEach((member) => {
+                    let username = member.querySelector("h4").textContent.toLowerCase();
+                    let rank = member.querySelector("p").textContent.toLowerCase();
+
+                    if (username.indexOf(value) != -1 || rank.indexOf(value) != -1) {
+                        member.style.display = "flex";
+                    } else {
+                        member.style.display = "none";
+                    }
+                });
+            };
+            memberSearch.addEventListener("keyup", searchMember);
+        }
+    </script>
+    <script src="../../../../js/script.js"></script>
+</body>
+
+</html>

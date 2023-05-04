@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Header -->
+    <%- include("./partials/header") %>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %>
+
+        <!--Main-->
+        <main>
+            <div class="container">
+                <div class="alerts">
+                    <div class="alert-success" id="alert-success" style="display: none;">
+                        <span class="fa fa-times"></span>
+                        <div class="body">
+                            <i class="fa fa-check-circle"></i>
+                            <p class="msg"></p>
+                        </div>
+                    </div>
+                    <div class="alert-danger" id="alert-danger" style="display: none;">
+                        <span class="fa fa-times"></span>
+                        <div class="body">
+                            <i class="fa fa-exclamation-circle"></i>
+                            <p class="msg"></p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Sidebar -->
+                <%- include ("./partials/sidebar") %>
+<% 
+const newColorsArray=["#dd4b39", "yellowgreen" , "burlywood" , "brown" , "goldenrod"
+    , "greenyellow" , "plum" , "powderblue" , "peru" , "peachpuff" ] 
+function getRandomItem(arr) {
+const randomIndex=Math.floor(Math.random() * arr.length); 
+const item=arr[randomIndex]; 
+return item; } 
+%>
+                        <!--Middle-->
+                        <div class="middle">
+
+                            <div class="messages" style="margin-bottom: 20px;">
+                                <div class="heading" id="forum-heading" onclick="closeTag()"
+                                    style="margin-bottom: 0.3rem;">
+                                    <div style="display:flex;">
+                                        <h4 style="margin-right: 10px;">Scheduled Meetings</h4>
+                                        <i class="fa fa-clock"></i>
+                                    </div>
+                                    <i class="fa fa-angle-down angle1"
+                                        style="display: none; font-size: 18px; padding-right: 10px; cursor: pointer;"></i>
+                                    <i class="fa fa-angle-left angle2"
+                                        style="font-size: 18px; padding-right: 10px; cursor: pointer;"></i>
+                                </div>
+                                <div id="close-forums">
+                                    <% if(meetings==false){ %>
+                                        <div class="body" style="display: flex;">
+                                            <span class="text-muted">You have no scheduled meetings</span>
+                                        </div>
+                                        <div class="meeting-body" style="display: none;"></div>
+                                        <% }else{ %>
+                                            <div class="meeting-body">
+                                                <% meetings.forEach(meeting=> {
+                                                    var bgColor = getRandomItem(newColorsArray);
+                                                    %>
+                                                    <div class="meeting" id="<%= meeting._id %>"
+                                                        onclick="showMeetingDetails('<%= meeting._id %>')">
+                                                        <div class="body-left"
+                                                            style="background-color: <%= bgColor %>;"></div>
+                                                        <div class="body-right">
+                                                            <h4>
+                                                                <%= meeting.roomName %>
+                                                            </h4>
+                                                            <p class="text-muted">Scheduled for <b>
+                                                                    <%= meeting.roomTime %> on <%= meeting.roomDate %>
+                                                                </b></p>
+                                                        </div>
+                                                    </div>
+                                                    <% }) %>
+                                            </div>
+                                            <% } %>
+                                                <button class="btn btn-primary" style="margin-top: 10px;"
+                                                    onclick="showCreateMeeting()">
+                                                    <span class="fa fa-plus"></span>
+                                                    Create a Schedule
+                                                </button>
+                                </div>
+                            </div>
+                            <div class="view-meeting" style="display: none;"></div>
+                            <div class="join-meeting">
+                                <h3>Enter the Room ID to Join a Meeting</h3>
+                                <div class="input-field">
+                                    <input type="text" name="" id="joinRoomID" placeholder="Enter Room ID">
+                                </div>
+                                <button class="btn btn-primary" onclick="joinRoomMeeting('<%= user._id %>')">Join
+                                    Meeting</button>
+                            </div>
+                            <div class="create-meeting" style="display: none;">
+                                <div class="button-container">
+                                    <button class="btn btn-primary" style="width: 30%;" onclick="showCreateMeeting()"><i
+                                            class="fa fa-angle-left"></i> Back</button>
+                                </div>
+                                <h3>Create a meeting</h3>
+                                <p class="text-muted">You can choose to schedule a meeting for later events</p>
+                                <form class="create-meeting-form" style="width: 100%;">
+                                    <div class="field">
+                                        <div class="input-field">
+                                            <label for="roomName">Headline</label>
+                                            <input type="text" id="roomName"
+                                                placeholder="Give a headline to your meeting">
+                                        </div>
+                                        <div class="input-field">
+                                            <label for="date">Schedule a Date</label>
+                                            <input type="date" id="date">
+                                        </div>
+                                        <div class="input-field">
+                                            <label for="time">Schedule Time</label>
+                                            <input type="time" id="time">
+                                        </div>
+                                        <div class="input-field">
+                                            <label>Room Capacity</label>
+                                            <div class="capacity">
+                                                <span>
+                                                    <label for="25">25</label><input type="radio" name="capacity"
+                                                        value="25" id="25">
+                                                </span>
+                                                <span>
+                                                    <label for="50">50</label><input type="radio" name="capacity"
+                                                        value="50" id="50">
+                                                </span>
+                                                <span>
+                                                    <label for="100">100</label><input type="radio" name="capacity"
+                                                        value="100" id="100">
+                                                </span>
+                                                <span>
+                                                    <label for="200">200</label><input type="radio" name="capacity"
+                                                        value="200" id="200">
+                                                </span>
+                                                <span>
+                                                    <label for="unlimited">Unlimited</label><input type="radio"
+                                                        value="unlimited" name="capacity" id="unlimited">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary">Create Meeting</button>
+                                </form>
+                            </div>
+                            <!-- <div class="video-frames">
+                            <div class="host-frame" style="display: none;" onmouseenter="showVideoButtons('show')" onmouseleave="showVideoButtons('hide')">
+                                <video id="host-frame"></video>
+                                <div class="actions">
+                                    <span><i class="fa-solid fa-phone-slash"></i></span>
+                                    <span><i class="fa-solid fa-video-slash"></i></span>
+                                    <span><i class="fa fa-microphone-lines"></i></span>
+                                </div>
+                            </div>
+                            <div class="member-frames"></div>
+                        </div> -->
+                        </div>
+                        <!--Middle ends here-->
+
+                        <!--Right-->
+                        <div class="right">
+                            <!--Messages-->
+                            <div class="messages">
+                                <div class="heading">
+                                    <h4>Scheduled Meetings</h4>
+                                    <i class="fa fa-clock"></i>
+                                </div>
+                                <% if(meetings==false){ %>
+                                    <div class="body" style="display: flex;">
+                                        <span class="text-muted">You have no scheduled meetings</span>
+                                    </div>
+                                    <div class="meeting-body" style="display: none;"></div>
+                                    <% }else{ %>
+                                        <div class="meeting-body">
+                                            <% meetings.forEach(meeting=> {
+                                                var bgColor = getRandomItem(newColorsArray);
+                                                %>
+                                                <div class="meeting" id="<%= meeting._id %>"
+                                                    onclick="showMeetingDetails('<%= meeting._id %>')">
+                                                    <div class="body-left" style="background-color: <%= bgColor %>;">
+                                                    </div>
+                                                    <div class="body-right">
+                                                        <h4>
+                                                            <%= meeting.roomName %>
+                                                        </h4>
+                                                        <p class="text-muted">Scheduled for <b>
+                                                                <%= meeting.roomTime %> on <%= meeting.roomDate %>
+                                                            </b></p>
+                                                    </div>
+                                                </div>
+                                                <% }) %>
+                                        </div>
+                                        <% } %>
+                                            <button class="btn btn-primary" style="margin-top: 10px;"
+                                                onclick="showCreateMeeting()"><span class="fa fa-plus"></span> Create a
+                                                Schedule</button>
+                            </div>
+                            <!--Messages end here-->
+
+                            <!--Friend Requests start here-->
+                            <% if(friends !="empty" ){ %>
+                                <div class="friend-requests">
+                                    <h4>Requests</h4>
+                                    <% friends.forEach(request=> {
+                                        if(request.sender != user._id.toString()){
+                                        %>
+                                        <div class="request" id="<%= request.details._id %>">
+                                            <div class="info">
+                                                <a href="/dashboard/private/profile/<%= request.details._id %>">
+                                                    <div class="profile-pic">
+                                                        <img src="../../../uploads/<%= request.details.avatar %>" alt="">
+                                                    </div>
+                                                </a>
+                                                <div class="about">
+                                                    <a href="/dashboard/private/profile/<%= request.details._id %>">
+                                                        <h5>
+                                                            <%= request.details.username %>
+                                                        </h5>
+                                                        <p class="text-muted">
+                                                            <% if(request.details.about.length> 45){ %>
+                                                                <%= request.details.about.slice(0,45) %>...
+                                                                    <% }else{ %>
+                                                                        <%= request.details.about %>
+                                                                            <% } %>
+                                                        </p>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="action">
+                                                <button class="btn btn-primary"
+                                                    onclick="updateFriendRequest('<%= user._id %>','<%= request.details._id %>', 'accept')">
+                                                    Accept
+                                                </button>
+                                                <button class="btn"
+                                                    onclick="updateFriendRequest('<%= user._id %>','<%= request.details._id %>', 'decline')">
+                                                    Decline
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <% } }) %>
+                                </div>
+                                <!--Friend Request end here-->
+                                <% } %>
+                        </div>
+            </div>
+        </main>
+
+        <!--Theme Customization-->
+        <%- include ("./partials/themeCustomization") %>
+
+            <!-- Updates -->
+            <%- include ("./partials/updates") %>
+
+                <!-- Contact List -->
+                <%- include ("./partials/contactList") %>
+
+                    <script>
+                        const getURL = '<%= getURL %>'
+                        const headMsg = '<%= headMsg %>'
+                        var form = document.querySelector(".create-channel-form");
+                        var successAlert = document.getElementById("alert-success");
+                        var successAlertIcon = document.querySelector("#alert-success i");
+                        var successMessage = document.querySelector("#alert-success .msg")
+                        var dangerAlert = document.getElementById("alert-danger")
+                        var dangerMessage = document.querySelector("#alert-danger .msg")
+
+                        dangerAlert.style.display = "block"
+                        if(headMsg === "end"){
+                            dangerMessage.textContent = "This meeting has ended already."
+                        }else if(headMsg == "room_full"){
+                            dangerMessage.textContent = "Room Capacity is reached."
+                        }else{
+                            dangerMessage.textContent = "Meeting has not commenced. Check back later."
+                        }
+                        setTimeout(() => {
+                            dangerAlert.style.display = "none"
+                        }, 5000)
+
+                        function showVideoButtons(obj) {
+                            var action = document.querySelector(".host-frame .actions")
+                            if (obj === "show") {
+                                action.style.animationName = "previewButtons"
+                                action.style.display = "flex"
+                            } else {
+                                action.style.display = "none"
+                                action.style.animationName = ""
+                            }
+                        }
+                        function showVideoButtons2(obj, event) {
+                            var memberFrame = document.getElementById(event)
+                            var action = memberFrame.querySelector(".actions")
+                            if (obj === "show") {
+                                action.style.animationName = "previewButtonsTwo"
+                                action.style.display = "flex"
+                            } else {
+                                action.style.display = "none"
+                                action.style.animationName = ""
+                            }
+                        }
+                        function showCreateMeeting() {
+                            const createMeeting = document.querySelector(".create-meeting")
+                            const joinMeeting = document.querySelector(".join-meeting")
+
+                            if (createMeeting.style.display === "none") {
+                                createMeeting.style.display = "flex"
+                                joinMeeting.style.display = "none"
+                            } else {
+                                createMeeting.style.display = "none"
+                                joinMeeting.style.display = "flex"
+                            }
+                        }
+
+                        const createMeetingForm = document.querySelector(".create-meeting-form");
+                        createMeetingForm.addEventListener("submit", (e) => {
+                            e.preventDefault();
+
+                            const formData = new FormData()
+                            const roomName = document.getElementById("roomName").value;
+                            const roomDate = document.getElementById("date").value;
+                            const roomTime = document.getElementById("time").value;
+                            var roomCapacity;
+
+                            document.getElementsByName("capacity").forEach((item) => {
+                                if (item.checked) {
+                                    roomCapacity = item.value;
+                                }
+                            });
+
+                            if (roomCapacity !== "") {
+
+                                formData.append('roomName', roomName)
+                                formData.append('roomDate', roomDate)
+                                formData.append('roomTime', roomTime)
+                                formData.append('roomCapacity', roomCapacity)
+                                formData.append('Host', '<%= user._id %>')
+
+                                createMeetingForm.reset()
+
+                                fetch("/dashboard/private/create_meeting", {
+                                    method: 'POST',
+                                    mode: 'cors',
+                                    cache: 'no-cache',
+                                    credentials: 'same-origin',
+                                    redirect: 'follow',
+                                    referrerPolicy: 'no-referrer',
+                                    body: formData
+                                })
+                                    .then(function (res) {
+                                        return res.json()
+                                    })
+                                    .then(function (json) {
+                                        const meetings = json.meeting
+                                        if (meetings) {
+                                            successAlert.style.display = "block"
+                                            successAlertIcon.className = ""
+                                            successAlertIcon.className = "fa fa-check-circle"
+                                            successMessage.textContent = "A meeting has been scheduled."
+
+                                            setTimeout(() => {
+                                                successAlert.style.display = "none"
+                                            }, 5000)
+                                        }
+
+                                        const colorsArray = ["#dd4b39", "yellowgreen", "burlywood", "brown", "goldenrod", "greenyellow", "plum", "powderblue", "peru", "peachpuff"]
+
+                                        function getRandomItem(arr) {
+                                            const randomIndex = Math.floor(Math.random() * arr.length);
+                                            const item = arr[randomIndex];
+                                            return item;
+                                        }
+
+                                        var newMeetings = meetings.map(meeting => {
+                                            var color = getRandomItem(colorsArray);
+                                            return `
+                            <div class="meeting" id="${meeting._id}" onclick="showMeetingDetails('${meeting._id}')">
+                                <div class="body-left" style="background-color: ${color};"></div>
+                                <div class="body-right">
+                                    <h4>${meeting.roomName}</h4>
+                                    <p class="text-muted">Scheduled for <b>${meeting.roomTime} on ${meeting.roomDate}</b></p>
+                                </div>
+                            </div>
+                        `
+                                        }).join("")
+
+                                        var meetingBodies = document.querySelectorAll(".meeting-body .meeting")
+                                        meetingBodies.forEach(body => {
+                                            body.remove()
+                                        })
+
+                                        if (document.querySelector(".messages .body")) {
+                                            var otherBody = document.querySelectorAll(".messages .body")
+                                            otherBody.forEach(item => {
+                                                if (item.style.display == "flex") {
+                                                    item.style.display = "none"
+                                                }
+                                            })
+                                        }
+
+                                        const rightMeetingBody = document.querySelector(".right .messages .meeting-body")
+                                        rightMeetingBody.style.display = "block"
+                                        rightMeetingBody.innerHTML = newMeetings
+                                        const middleMeetingBody = document.querySelector(".middle .messages .meeting-body")
+                                        middleMeetingBody.style.display = "block"
+                                        middleMeetingBody.innerHTML = newMeetings
+
+
+                                    })
+                                    .catch(function (err) {
+                                        console.log(err);
+                                        dangerAlert.style.display = "block"
+                                        dangerMessage.textContent = "An error occured. Please try again later"
+
+                                        setTimeout(() => {
+                                            dangerAlert.style.display = "none"
+                                        }, 5000)
+                                    })
+                            } else {
+                                dangerAlert.style.display = "block"
+                                dangerMessage.textContent = "Please Select a Room Capacity"
+
+                                setTimeout(() => {
+                                    dangerAlert.style.display = "none"
+                                }, 5000)
+                            }
+                        });
+                    </script>
+
+                    <!--JS Script Attachment-->
+                    <script src="/socket.io/socket.io.js"></script>
+                    <script src="../../../js/script.js"></script>
+</body>
+
+</html>

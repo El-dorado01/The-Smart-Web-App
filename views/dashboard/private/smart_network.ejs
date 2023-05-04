@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Header -->
+    <%- include("./partials/header") %> 
+</head>
+<body>
+    <!-- NavBar -->
+    <%- include ("./partials/navBar") %> 
+
+    <!--Main-->
+    <main>
+        <div class="container">
+            <!--=====================Alerts=====================-->
+            <div class="alerts">
+                <div class="alert-success" id="alert-success" style="display: none;">
+                    <span class="fa fa-times"></span>
+                    <div class="body">
+                        <i class="fa fa-check-circle"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+                <div class="alert-danger" id="alert-danger" style="display: none;">
+                    <span class="fa fa-times"></span>
+                    <div class="body">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <%- include ("./partials/sidebar") %> 
+
+            <!--Middle-->
+            <div class="middle">
+                <div class="feeds">
+
+                    <% var likesArray2=[];
+                        smartNetworkFeeds.forEach(feed=> { %>
+                        <div class="feed feedpost<%= feed._id %>">
+                            <div class="head">
+                                <div class="user">
+                                    <div class="profile-pic">
+                                        <img src="../../../images/smart.png" alt="">
+                                    </div>
+                                    <div class="info">
+                                        <h3>The Smart Network <span class="fa fa-certificate"></span></h3>
+                                        <small><%= feed.category %>, 
+                                            <% 
+                                            var timeInMS = new Date() - new Date(feed.createdAt);
+                                            var secs = timeInMS / 1000;
+                                            var mins = timeInMS / (1000 * 60);
+                                            var hours = timeInMS / (1000 * 60 * 60);
+                                            var days = timeInMS / (1000 * 60 * 60 * 24);
+                                            var weeks = timeInMS / (1000 * 60 * 60 * 24 * 7);
+
+                                            if( days> 13.999){ %>
+                                            <%= Math.round(weeks) %> weeks
+                                            <% }else if( days> 6.999){ %>
+                                            <%= Math.round(weeks) %> week
+                                                <% }else if( hours> 47.99){ %>
+                                                    <%= Math.round(days) %> days
+                                                <% }else if( hours> 23.99){ %>
+                                                    <%= Math.round(days) %> day
+                                                        <% }else if(mins> 119) { %>
+                                                            <%= Math.round(hours) %> hrs
+                                                        <% }else if(mins> 59) { %>
+                                                            <%= Math.round(hours) %> hr
+                                                                <% }else if(secs> 119){ %>
+                                                                    <%= Math.round(mins) %> mins
+                                                                <% }else if(secs> 59){ %>
+                                                                    <%= Math.round(mins) %> min
+                                                                        <% }else{ %>
+                                                                            <%= Math.round(secs) %> secs
+                                                                                <% } %>
+                                             ago
+                                        </small>
+                                    </div>
+                                </div>
+                                <span class="fa fa-ellipsis" style="cursor: pointer;" onclick="showActionBox('<%= feed._id %>')"></span>
+                            </div>
+                            <div class="action-box box<%= feed._id %>">
+                                <div>
+                                    <i class="fa fa-share"></i>
+                                    <span>Share Post</span>
+                                </div>
+                                <div onclick="copyPlaylistLink('<%= getURL %>/dashboard/private/smart_network/<%= feed._id %>')">
+                                    <i class="fa fa-clipboard"></i>
+                                    <span>Copy Link</span>
+                                </div>
+                                <div class="report">
+                                    <i class="fa fa-flag"></i>
+                                    <span>Report Post</span>
+                                </div>
+                            </div>
+                            <a href="/dashboard/private/smart_network/<%= feed._id %>" class="feed-link">
+                                <div class="feed-body">
+                                    <% if(feed.fileUploads. indexOf('https://res.cloudinary.com/eldoradotechguy/video/') > -1){ %>
+                                        <video class="videoInsert" controls autoplay>
+                                            <source src="<%= feed.fileUploads %>" type="video/mp4">
+                                        </video>
+                                    <% }else{ %>
+                                        <img src="<%= feed.fileUploads %>" alt="File Uploaded">
+                                    <% } %>
+                                </div>
+                                <div class="feed-text">
+                                    <%= feed.notes %>
+                                </div>
+                            </a>
+                            <div class="action-button">
+                                <% var likesArray=[]; feed.likes.forEach((feed)=> {
+                                    likesArray.push(feed.user);
+                                    likesArray2.push(feed.user);
+                                    });
+                                %>
+                                <div class="interaction-button">
+                                    <span style="cursor: pointer;">
+                                        <i class="fa 
+                                        <% if(likesArray.includes(user._id.toString())){ %> 
+                                            fa-heart
+                                        <% }else{ %> 
+                                            fa-heart-o
+                                        <% } %>" 
+                                        style="color: var(--color-primary);" onclick="likePost(this, '<%= user._id %>', '<%= feed._id %>')"></i>
+                                    </span>
+                                    <span>
+                                        <i class="fa-regular fa-comment-dots" style="color: var(--color-primary);" onclick="focusReply('<%= feed.id %>')"></i>
+                                    </span>
+                                    <span><i class="fa fa-share-alt" style="color: var(--color-primary);"></i></span>
+                                </div>
+                                <div class="bookmark" style="cursor: pointer;">
+                                    <span><i class="fa 
+                                        <% if(bookmarks){
+                                            if(bookmarks.includes(feed._id.toString())){ %> 
+                                            fa-bookmark
+                                        <% }else{ %> 
+                                            fa-bookmark-o
+                                        <% 
+                                            } 
+                                        } else {%>
+                                            fa-bookmark-o
+                                        <% } %>"
+                                        style="color: var(--color-primary);"
+                                        onclick="bookmark(this, '<%= user._id %>', '<%= feed._id %>')"></i>
+                                    </span>
+                                </div>
+                                
+                            </div>
+                            <div class="liked-by">
+                                <!--<span><img src="../../../images/smart.png" alt=""></span>
+                                <span><img src="../../../images/smart.png" alt=""></span>
+                                <span><img src="../../../images/smart.png" alt=""></span>
+                                <p>Liked by <b>Karimu Abija</b> and <b>20 others</b></p>-->
+                                <% if(likesArray.length > 0){ %>
+                                <p><i class="fa fa-dot-circle-o"></i></p>
+                                <p><%= likesArray.length %> like<% if(likesArray.length > 1){%>s<%}%></p>
+                                <% } %>
+                            </div>
+                            <a href="/dashboard/private/smart_network/<%= feed._id %>" class="feed-link">
+                                <div class="caption">
+                                    <% let 
+                                    comments=feed.comments.slice(-2) 
+                                    comments.forEach((comment)=> { 
+                                    %>
+                                        <div class="single-comment">
+                                            <span class="user-avatar">
+                                                <img src="../../../uploads/<%= comment.avatar %>" alt="">
+                                            </span>
+                                            <span class="user">
+                                                <p>
+                                                    <b><%= comment.username %></b>
+                                                </p>
+                                                <span>
+                                                    <%= comment.message %>
+                                                </span>
+                                            </span>
+                                        </div>
+                                    <% }) %>
+                                </div>
+                            </a>
+                            <% if(feed.comments.length> 2) { %>
+                                <div class="text-muted">
+                                    View all <%= feed.comments.length %> comments
+                                </div>
+                            <% } %>
+                            <form id="comment-form<%= feed._id %>">
+                                <div class="text-muted submit-comment" style="margin-top: 10px;">
+                                    <input type="hidden" class="postID" name="postID" value="<%= feed._id %>">
+                                    <i class="fa fa-smile"></i>
+                                    <input type="text" class="myReply myReply<%= feed.id %>" name="myReply" required placeholder="Type your comments...">
+                                    <button id="<%= feed._id %>" style="background: transparent; color: gray; cursor: pointer;">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </form>
+                            <script>
+                                var button = document.getElementById("<%= feed._id %>");
+
+                                button.addEventListener('click', async (e) => {
+                                    e.preventDefault()
+
+                                    var successAlert = document.getElementById("alert-success");
+                                    var successAlertIcon = document.querySelector("#alert-success i");
+                                    var successMessage = document.querySelector("#alert-success .msg")
+                                    var dangerAlert = document.getElementById("alert-danger")
+                                    var dangerMessage = document.querySelector("#alert-danger .msg")
+
+                                    var commentForm = document.getElementById("comment-form<%= feed._id %>");
+                                    var commentpostID = document.querySelector("#comment-form<%= feed._id %> .postID");
+                                    var myComment = document.querySelector("#comment-form<%= feed._id %> .myReply");
+
+                                    var postID = commentpostID.value
+                                    var myReply = myComment.value
+                                    var user = '<%= user._id %>'
+
+
+
+                                    if (myReply != '') {
+
+                                        myComment.value = ''
+
+                                        socket.emit("postComments", { postID, myReply, user })
+
+                                        successAlert.style.display = "block"
+                                        successAlertIcon.className = ""
+                                        successAlertIcon.className = "fa fa-check-circle"
+                                        successMessage.textContent = "Your Comment has been sent"
+
+                                        setTimeout(() => {
+                                            successAlert.style.display = "none"
+
+                                        }, 3000)
+                                        
+                                    } else {
+                                        dangerAlert.style.display = "block"
+                                        dangerMessage.textContent = "Field cannot be left blank."
+
+                                        setTimeout(() => {
+                                            dangerAlert.style.display = "none"
+                                        }, 5000)
+                                    }
+
+                                })  
+                            </script>
+                        </div>
+                    <% }); %>
+                </div>                
+            </div>
+            <!--Middle ends here-->
+
+            <!--Right-->
+            <div class="right">
+                <div class="messages">
+                    <div class="heading">
+                        <h4>Actions</h4>
+                        <i class="fa fa-cog"></i>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 10px;" onclick="actionRedirect('<%= bookmarks %>', 'bookmarks')">
+                        <span class="fa fa-bookmark"></span>
+                        Bookmarks
+                    </button>
+                    <button class="btn btn-primary" style="margin-top: 10px;"
+                        onclick="actionRedirect('<%= likesArray2.length %>', 'likes')">
+                        <span class="fa fa-heart"></span>
+                        Likes
+                    </button>
+                </div>
+                <!--Friend Requests start here-->
+                <% if(friends !="empty" ){ %>
+                    <div class="friend-requests">
+                        <h4>Requests</h4>
+                        <% friends.forEach(request=> {
+                            if(request.sender != user._id.toString()){
+                            %>
+                            <div class="request" id="<%= request.details._id %>">
+                                <div class="info">
+                                    <a href="/dashboard/private/profile/<%= request.details._id %>">
+                                        <div class="profile-pic">
+                                            <img src="../../../uploads/<%= request.details.avatar %>" alt="">
+                                        </div>
+                                    </a>
+                                    <div class="about">
+                                        <a href="/dashboard/private/profile/<%= request.details._id %>">
+                                            <h5>
+                                                <%= request.details.username %>
+                                            </h5>
+                                            <p class="text-muted">
+                                                <% if(request.details.about.length> 45){ %>
+                                                    <%= request.details.about.slice(0,45) %>...
+                                                        <% }else{ %>
+                                                            <%= request.details.about %>
+                                                                <% } %>
+                                            </p>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="action">
+                                    <button class="btn btn-primary"
+                                        onclick="updateFriendRequest('<%= user._id %>','<%= request.details._id %>', 'accept')">
+                                        Accept
+                                    </button>
+                                    <button class="btn"
+                                        onclick="updateFriendRequest('<%= user._id %>','<%= request.details._id %>', 'decline')">
+                                        Decline
+                                    </button>
+                                </div>
+                            </div>
+                            <% } }) %>
+                    </div>
+                    <!--Friend Request end here-->
+                    <% } %>
+            </div>
+
+            <div class="channel-chat-float" style="height: auto;">
+                <div class="channel-chat-container">
+                    <div class="heading">
+                        <div style="display: flex; gap: 10px;">
+                            <h4>Actions</h4>
+                            <i class="fa fa-cog"></i>
+                        </div>
+                        <span onclick="minimize()" style="cursor: pointer;"><i class="fa fa-angle-down"></i></span>
+                    </div>
+                    <div style="display: flex; flex-direction: column;">
+                        <button class="btn btn-primary" style="margin-top: 10px; width: 100%;"
+                            onclick="actionRedirect('<%= bookmarks %>', 'bookmarks')">
+                            <span class="fa fa-bookmark"></span>
+                            Bookmarks
+                        </button>
+                        <button class="btn btn-primary" style="margin-top: 10px; width: 100%;"
+                            onclick="actionRedirect('<%= likesArray2.length %>', 'likes')">
+                            <span class="fa fa-heart"></span>
+                            Likes
+                        </button>
+                    </div>
+                </div>
+                <div class="button">
+                    <div onclick="showChannelchat(this)" style="cursor: pointer;">
+                        <i class="fa fa-cog icon-1" style="display: block;"></i>
+                        <i class="fa fa-times icon-2" style="display: none;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!--Theme Customization-->
+    <%- include ("./partials/themeCustomization") %> 
+
+    <!-- Updates -->
+    <%- include ("./partials/updates") %> 
+
+    <!-- Contact List -->
+    <%- include ("./partials/contactList") %>     
+
+    <!--JS Script Attachment-->
+    <script>
+        function showActionBox(id) {
+            if (document.querySelector(".box" + id).style.display === "none") {
+                document.querySelector(".box" + id).style.display = "block"
+            } else {
+                document.querySelector(".box" + id).style.display = "none"
+            }
+        }
+        function focusReply(id) {
+            document.querySelector(".myReply" + id).focus()
+        }
+        function likePost(e, userID, postID) {
+            var likePostClass = e.classList
+
+            if (likePostClass.contains("fa-heart-o")) {
+                e.classList.replace("fa-heart-o", "fa-heart")
+
+                socket.emit("likePost", { userID, postID })
+
+                var successAlert = document.getElementById("alert-success");
+                var successAlertIcon = document.querySelector("#alert-success i");
+                var successMessage = document.querySelector("#alert-success .msg")
+
+                successAlert.style.display = "block"
+                successAlertIcon.className = ""
+                successAlertIcon.className = "fa fa-thumbs-up"
+                successMessage.textContent = "Liked"
+
+                setTimeout(() => {
+                    successAlert.style.display = "none"
+
+                }, 3000)
+            } else {
+                e.classList.replace("fa-heart", "fa-heart-o")
+
+                socket.emit("unlikePost", { userID, postID })
+            }
+        }
+        function bookmark(e, userID, postID) {
+            var bookmarkClass = e.classList
+
+            if (bookmarkClass.contains("fa-bookmark-o")) {
+                e.classList.replace("fa-bookmark-o", "fa-bookmark")
+
+                socket.emit("bookmarkPost", { userID, postID })
+
+                var successAlert = document.getElementById("alert-success");
+                var successAlertIcon = document.querySelector("#alert-success i");
+                var successMessage = document.querySelector("#alert-success .msg")
+
+                successAlert.style.display = "block"
+                successAlertIcon.className = ""
+                successAlertIcon.className = "fa fa-bookmark"
+                successMessage.textContent = "Bookmarked"
+
+                setTimeout(() => {
+                    successAlert.style.display = "none"
+
+                }, 3000)
+            } else {
+                e.classList.replace("fa-bookmark", "fa-bookmark-o")
+
+                socket.emit("unBookmarkPost", { userID, postID })
+            }
+        }
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../../../js/script.js"></script>
+</body>
+</html>

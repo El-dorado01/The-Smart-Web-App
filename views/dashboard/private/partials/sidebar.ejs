@@ -1,0 +1,118 @@
+<script>
+    var lockMyScreen = '<%= lockScreen %>'
+    if (lockMyScreen == "true") {
+        window.location.href = "/dashboard/lockscreen"
+    }
+</script>
+<div class="left">
+    <a class="profile" href="/dashboard/private/profile/<%= user._id %>">
+        <div class="profile-pic">
+            <% if(user.avatar){ %>
+            <img src="../../../uploads/<%= user.avatar %>" alt="">
+            <% } else { %>
+            <img src="../../../images/smart.png" alt="">
+            <% } %>
+        </div>
+        <div class="handle">
+            <h4><%= user.username %></h4>
+            <p class="text-muted">
+                @<%= user.username %>
+            </p>
+        </div>
+    </a>
+
+    <!--Sidebar-->
+    <div class="sidebar">
+        <a class="menu-item <% if(page_name === "/" || page_name === "/index"){ %> active <%}%>" href="/dashboard/private/">
+            <span><i class="fa fa-house icon"></i></span> <h3>Home</h3>
+        </a>
+        <a class="menu-item" id="my-updates">
+            <span><i class="fa fa-refresh"></i></span> <h3>My Updates</h3>
+        </a>
+        <a class="menu-item"id="contact-list">
+            <span><i class="fa fa-address-book"></i></span> <h3>Contact List</h3>
+        </a>
+        <a class="menu-item <% if(page_name === "/live_meeting" || (page_name. indexOf('/live_meeting') > -1)){ %> active <%}%>" href="/dashboard/private/live_meeting">
+            <span><i class="fa fa-podcast"></i></span> <h3>Live Meeting</h3>
+        </a>
+        <a class="menu-item <% if(page_name === "/movies" || (page_name. indexOf('/movies') > -1)){ %> active <%}%>" href="/dashboard/private/movies">
+            <span><i class="fa fa-film"></i></span> <h3>Smart Movies</h3>
+        </a>
+        <a class="menu-item <% if(page_name === "/smart_network" || (page_name. indexOf('/smart_network') > -1)){ %> active <%}%> " href="/dashboard/private/smart_network">
+            <span><i class="fa fa-network-wired"></i></span><h3>Smart Network</h3>
+        </a>
+        <a class="menu-item" id="notifications">
+            <span><i class="fa fa-bell"><small class="notification-count">9+</small></i></span> <h3>Notifications</h3>
+            <!--Notification pop-up-->
+            <div class="notifications-popup">
+                <div>
+                    <div class="profile-pic">
+                        <img src="../../../images/smart.png" alt="">
+                    </div>
+                    <div class="notification-body">
+                        <b>Arike Imagery</b> accepted your friend request
+                        <small class="text-muted">2 DAYS AGO</small>
+                    </div>
+                </div>
+                <div>
+                    <div class="profile-pic">
+                        <img src="../../../images/smart.png" alt="">
+                    </div>
+                    <div class="notification-body">
+                        <b>Arike Imagery</b> accepted your friend request
+                        <small class="text-muted">2 DAYS AGO</small>
+                    </div>
+                </div>
+                <div>
+                    <div class="profile-pic">
+                        <img src="../../../images/smart.png" alt="">
+                    </div>
+                    <div class="notification-body">
+                        <b>Arike Imagery</b> accepted your friend request
+                        <small class="text-muted">2 DAYS AGO</small>
+                    </div>
+                </div>
+                <div>
+                    <div class="profile-pic">
+                        <img src="../../../images/smart.png" alt="">
+                    </div>
+                    <div class="notification-body">
+                        <b>Arike Imagery</b> accepted your friend request
+                        <small class="text-muted">2 DAYS AGO</small>
+                    </div>
+                </div>
+                <div>
+                    <div class="profile-pic">
+                        <img src="../../../images/smart.png" alt="">
+                    </div>
+                    <div class="notification-body">
+                        <b>Arike Imagery</b> accepted your friend request
+                        <small class="text-muted">2 DAYS AGO</small>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a class="menu-item" id="theme">
+            <span><i class="fa fa-themeisle"></i></span> <h3>Theme</h3>
+        </a>
+        <a class="menu-item <% if(page_name === "/settings"){ %> active <%}%>" href="/dashboard/private/settings">
+            <span><i class="fa fa-cog"></i></span> <h3>Settings</h3>
+        </a>
+        <a class="menu-item" onclick="lockScreen('<%= user._id %>')">
+            <span><i class="fa fa-lock"></i></span>
+            <h3>Lockscreen</h3>
+        </a>
+        <a class="menu-item">
+            <form action="/logout?_method=DELETE" method="post">
+                <button type="submit">
+                    <span><i class="fa fa-sign-out icon"></i></span>
+                    <h3 style="color: var(--color-gray);">Logout</h3>
+                </button>
+            </form>
+        </a>
+    </div>
+    <label for="create-post" class="btn btn-primary">Private</label>
+    <script>
+        const theUserID = '<%= user._id %>'
+    </script>
+</div>
