@@ -7,7 +7,7 @@
                         %>
 <!-- Check if user that posted response is the questionnaire-->
 <!--Questionnaire-->
-<div class="q-box" id="<%= response.response._id %>">
+<div class="q-box responseBox_<%= response.response.responseID %>" id="<%= response.response._id %>">
     <div class="q-box-main">
         <div class="q-box-left">
             <div class="user-info">
@@ -98,14 +98,35 @@
                     <i class="fa-solid fa-quote-right"></i> <span>Quote</span></p>
                 <p><i class="fa fa-arrow-up"></i><span><%= response.response.upvotes %>
                         upvote<% if(response.response.upvotes > 1){%>s<% } %></span></p>
-                <p><i class="fa fa-share-alt"></i> <span>Share</span> </p>
+                <!--<p><i class="fa fa-share-alt"></i> <span>Share</span> </p>-->
+                <% 
+                if(response.response.userID == user._id){
+                %>
+                <p
+                    onclick="deleteTopicResponse('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response.responseID %>','<%= response.response.userID %>')">
+                    <i class="fa-solid fa-trash"></i>
+                    <span>Delete</span> </p>
+                <% }else if(forumInfo.creator == user._id){ %>
+                <p
+                    onclick="deleteTopicResponse('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response.responseID %>','<%= response.response.userID %>')">
+                    <i class="fa-solid fa-trash"></i> <span>Delete</span> </p>
+                <%} else { 
+                        for (let i = 0; i < forumInfo.moderators.length; i++) { if
+                            (forumInfo.moderators[i].userID==user._id ) { %>
+                <p
+                    onclick="deleteTopicResponse('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response.responseID %>','<%= response.response.userID %>')">
+                    <i class="fa-solid fa-trash"></i> <span>Delete</span> </p>
+
+                <% }
+                        }
+                    }%>
             </div>
         </div>
     </div>
 </div>
 <% }else{ %>
 <!--Commentators-->
-<div class="c-box">
+<div class="c-box responseBox_<%= response.response.responseID %>">
     <div class="c-box-main">
         <div class="c-box-left">
             <div class="user-info">
@@ -196,7 +217,28 @@
                     <i class="fa-solid fa-quote-right"></i> <span>Quote</span></p>
                 <p><i class="fa fa-arrow-up"></i><span><%= response.response.upvotes %>
                         upvote<% if(response.response.upvotes > 1){%>s<% } %></span></p>
-                <p><i class="fa fa-share-alt"></i> <span>Share</span> </p>
+                <!--<p><i class="fa fa-share-alt"></i> <span>Share</span> </p>-->
+                <% 
+                if(response.response.userID == user._id){
+                %>
+                <p
+                    onclick="deleteTopicResponse('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response.responseID %>','<%= response.response.userID %>')">
+                    <i class="fa-solid fa-trash"></i>
+                    <span>Delete</span> </p>
+                <% }else if(forumInfo.creator == user._id){ %>
+                <p
+                    onclick="deleteTopicResponse('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response.responseID %>','<%= response.response.userID %>')">
+                    <i class="fa-solid fa-trash"></i> <span>Delete</span> </p>
+                <%} else { 
+                        for (let i = 0; i < forumInfo.moderators.length; i++) { if
+                            (forumInfo.moderators[i].userID==user._id ) { %>
+                <p
+                    onclick="deleteTopicResponse('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response.responseID %>','<%= response.response.userID %>')">
+                    <i class="fa-solid fa-trash"></i> <span>Delete</span> </p>
+
+                <% }
+                        }
+                    }%>
             </div>
         </div>
     </div>

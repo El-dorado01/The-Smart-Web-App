@@ -250,7 +250,7 @@
                     formData.append("forumID", forumID);
                     formData.append("subject", subject);
                     formData.append("topicText", topicText);
-                    formData.append("topicTags", topicTags);
+                    formData.append("newTopicTags", topicTags);
                     formData.append("topicMediaFiles", JSON.stringify(valuesArray));
 
                     fetch("/dashboard/public/createATopic", {

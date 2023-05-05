@@ -89,12 +89,31 @@
                                         <i class="fa fa-arrow-up"></i> <b><%= topicInfo.upvotes %></b>
                                         <span class="text">upvote<% if(topicInfo.upvotes > 1){%>s<% } %></span>
                                     </div>
-                                    <% if(user._id == topicInfo.userID){%>
-                                    <div style="background-color: var( --color-danger);"><i
-                                            class="fa-solid fa-trash"></i>
+                                    <% 
+                                    if(user._id == topicInfo.userID || user._id == forumInfo.creator){ %>
+                                    <div style="background-color: var( --color-danger);"
+                                        onclick="deleteForumTopic('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= topicInfo.userID %>')">
+                                        <i class="fa-solid fa-trash"></i>
                                         <span class="text">Delete
                                         </span></div>
-                                    <%} %>
+                                    <%} else if(forumInfo.creator == user._id){%>
+                                    <div style="background-color: var( --color-danger);"
+                                        onclick="deleteForumTopic('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= topicInfo.userID %>')">
+                                        <i class="fa-solid fa-trash"></i>
+                                        <span class="text">Delete
+                                        </span></div>
+                                    <%} else {
+                                    for (let i = 0; i < forumInfo.moderators.length; i++) { 
+                                        if(forumInfo.moderators[i].userID==user._id ) { 
+                                    %>
+                                    <div style="background-color: var( --color-danger);"
+                                        onclick="deleteForumTopic('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= topicInfo.userID %>')">
+                                        <i class="fa-solid fa-trash"></i>
+                                        <span class="text">Delete
+                                        </span></div>
+                                    <% } 
+                                        }
+                                     } %>
                                 </div>
                             </div>
                             <div class="tags">
@@ -129,7 +148,7 @@
                                     <div class="flex">
                                         <span><i class="fa fa-comment"></i>&nbsp; <span
                                                 class="text">Comments</span></span>
-                                        <div class="count"><%= responses.length %></div>
+                                        <div class="count" id="comment-count"><%= responses.length %></div>
                                     </div>
                                 </div>
                             </div>

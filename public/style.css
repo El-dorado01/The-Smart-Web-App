@@ -114,6 +114,7 @@ pre, code {
 }
 code {
     max-height: 15rem;
+    max-width: 27vw;
 }
 .hljs {
     display: inline-block;
@@ -6419,6 +6420,10 @@ main .container .right {
         max-width: 60vw;
     }
 
+    code {
+        max-width: 42vw;
+    }
+
     main .body-container {
         grid-template-columns: 5rem 85vw;
         gap: 1rem;
@@ -6457,8 +6462,8 @@ main .container .right {
 
 @media screen and (max-width: 1110px) {
     .middle {
-            max-width: 58vw;
-        }
+        max-width: 58vw;
+    }
 }
 
 @media screen and (max-width: 992px) {
@@ -6500,6 +6505,9 @@ main .container .right {
     }
     .middle {
         max-width: 90vw;
+    }
+    code {
+        max-width: 74vw;
     }
 
     main .container.sidebar-close, main .body-container.sidebar-close{ 
@@ -6640,6 +6648,9 @@ main .container .right {
     .lockscreen-card {
         width: 60vw;
     }
+    code {
+        max-width: 64vw;
+    }
 }
 
 @media screen and (max-width: 730px){
@@ -6678,6 +6689,9 @@ main .container .right {
 
     .middle {
         max-width: 95vw;
+    }
+    code {
+        max-width: 62vw;
     }
 }
 

@@ -3640,7 +3640,7 @@ function loadTopicsPage(newTopics, page, totalPages, nextPage, previousPage) {
   document.querySelectorAll("#forumTopics .topic").forEach((item) => {
     item.remove();
   });
-  // //Loop through each new topics and append them
+  //Loop through each new topics and append them
   newTopics.forEach((topic) => {
     var a = document.createElement("div");
     a.classList.add("topic");
@@ -3668,16 +3668,18 @@ function loadTopicsPage(newTopics, page, totalPages, nextPage, previousPage) {
                   : topic.topic.subject
               }</h4>
             </a>
-            <div class="tags">` +
-      topic.topic.topicTags.forEach((tag) => {
-        `<a href="/dashboard/public/forum_topic_categories/${tag}/key?forumID=${forumID}">
-                  <div>
-                    <span class="fa fa-tag"></span>
-                    ${tag}
-                  </div>
-                </a>`;
-      }) +
-      ` </div>
+            <div class="tags" id="topicTags_${topic.topic._id}">` +
+      topic.topic.topicTags
+        .map((tag) => {
+          return `<a href="/dashboard/public/forum_topic_categories/${tag}/key?forumID=${forumID}">
+                      <div>
+                      <span class="fa fa-tag"></span>
+                      ${tag}
+                      </div>
+                    </a>`;
+        })
+        .join("") +
+      `</div>
           </div>
           <div class="topic-right">
               <div class="user-info">
@@ -4230,4 +4232,100 @@ function loadAForumInfo(
       `;
     document.querySelector("#requests-to-join .moderators").appendChild(div);
   }
+}
+
+function deleteForumTopic(forumID, topicID, topicCreator) {
+  const formData = new FormData();
+
+  formData.append("topicID", topicID);
+  formData.append("forumID", forumID);
+  formData.append("topicCreator", topicCreator);
+
+  fetch("/dashboard/public/deleteATopic", {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: formData,
+  })
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (json) {
+      if (json.success) {
+        successAlert.style.display = "block";
+        successAlertIcon.className = "";
+        successAlertIcon.className = "fa fa-check-circle";
+        successMessage.textContent = json.msg;
+
+        setTimeout(() => {
+          successAlert.style.display = "none";
+          location.assign("/dashboard/public/forum/" + forumID);
+        }, 1000);
+      } else {
+        dangerAlert.style.display = "block";
+        dangerMessage.textContent = json.msg;
+
+        setTimeout(() => {
+          dangerAlert.style.display = "none";
+        }, 5000);
+      }
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
+}
+
+function deleteTopicResponse(forumID, topicID, responseID, responseCreator) {
+  const formData = new FormData();
+
+  formData.append("topicID", topicID);
+  formData.append("forumID", forumID);
+  formData.append("responseID", responseID);
+  formData.append("responseCreator", responseCreator);
+
+  fetch("/dashboard/public/deleteAResponse", {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: formData,
+  })
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (json) {
+      if (json.success) {
+        // Remove response box panel
+        document.querySelector(".responseBox_" + responseID).remove();
+        var newCommentCount = parseInt(
+          document.getElementById("comment-count").innerHTML
+        );
+        document.getElementById("comment-count").innerText =
+          newCommentCount - 1;
+
+        successAlert.style.display = "block";
+        successAlertIcon.className = "";
+        successAlertIcon.className = "fa fa-check-circle";
+        successMessage.textContent = json.msg;
+
+        setTimeout(() => {
+          successAlert.style.display = "none";
+        }, 3000);
+      } else {
+        dangerAlert.style.display = "block";
+        dangerMessage.textContent = json.msg;
+
+        setTimeout(() => {
+          dangerAlert.style.display = "none";
+        }, 5000);
+      }
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
 }
