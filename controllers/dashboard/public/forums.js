@@ -1042,7 +1042,7 @@ const createATopic = asyncWrapper(async (req, res) => {
       });
 
       if (userActivity) {
-        ForumsActivityModel.findOneAndUpdate(
+        await ForumsActivityModel.findOneAndUpdate(
           { userID: user.userId },
           {
             $push: {
@@ -1203,7 +1203,7 @@ const createATopic = asyncWrapper(async (req, res) => {
         });
 
         if (userActivity) {
-          ForumsActivityModel.findOneAndUpdate(
+          await ForumsActivityModel.findOneAndUpdate(
             { userID: user.userId },
             {
               $push: {
@@ -1266,83 +1266,81 @@ const deleteATopic = asyncWrapper(async (req, res) => {
 
   const forumInfo = await ForumsModel.findById({ _id: forumID });
   const forumOwner = forumInfo.creator;
-  
+
   // Delete a Topic as a topic creator
   if (topicCreator == user.userId) {
-      const topicDeleted = await ForumsTopicsModel.findByIdAndDelete({
-        _id: topicID,
-      });
+    const topicDeleted = await ForumsTopicsModel.findByIdAndDelete({
+      _id: topicID,
+    });
 
-      ForumsActivityModel.findOneAndUpdate(
-        { userID: user.userId },
-        {
-          $pull: {
-            activities: {
-              forumID,
-              topicID,
-            },
+    await ForumsActivityModel.findOneAndUpdate(
+      { userID: user.userId },
+      {
+        $pull: {
+          activities: {
+            forumID,
+            topicID,
           },
-        }
+        },
+      }
+    );
+
+    if (topicDeleted) {
+      console.log(
+        "Topic " + topicID + " has been deleted from the forum " + forumID
       );
 
-      if (topicDeleted) {
-        console.log(
-          "Topic " + topicID + " has been deleted from the forum " + forumID
+      res.status(StatusCodes.OK).json({
+        success: true,
+        msg: "Your topic has been deleted!",
+      });
+    }
+  } else {
+    for (let i = 0; i < forumInfo.moderators.length; i++) {
+      // Delete a topic as a moderator or forum owner
+      if (
+        forumInfo.moderators[i].userID == user.userId ||
+        forumOwner == user.userId
+      ) {
+        const topicDeleted = await ForumsTopicsModel.findByIdAndDelete({
+          _id: topicID,
+        });
+
+        await ForumsActivityModel.findOneAndUpdate(
+          { userID: user.userId },
+          {
+            $pull: {
+              activities: {
+                forumID,
+                topicID,
+              },
+            },
+          }
         );
 
-        res.status(StatusCodes.OK).json({
-          success: true,
-          msg: "Your topic has been deleted!",
+        if (topicDeleted) {
+          console.log(
+            "Moderator " +
+              user.userId +
+              " has deleted topic " +
+              topicID +
+              " from the forum " +
+              forumID
+          );
+
+          res.status(StatusCodes.OK).json({
+            success: true,
+            msg: "Topic has been deleted!",
+          });
+        }
+      } else {
+        res.status(StatusCodes.FORBIDDEN).json({
+          success: false,
+          msg: "You are not allowed to perform this action because you are not a member of this forum",
         });
       }
-    }else {
-      for (let i = 0; i < forumInfo.moderators.length; i++) {
-        // Delete a topic as a moderator or forum owner
-        if (
-          forumInfo.moderators[i].userID == user.userId ||
-          forumOwner == user.userId
-        ) {
-          const topicDeleted = await ForumsTopicsModel.findByIdAndDelete({
-            _id: topicID,
-          });
-    
-          ForumsActivityModel.findOneAndUpdate(
-            { userID: user.userId },
-            {
-              $pull: {
-                activities: {
-                  forumID,
-                  topicID,
-                },
-              },
-            }
-          );
-    
-          if (topicDeleted) {
-            console.log(
-              "Moderator " +
-                user.userId +
-                " has deleted topic " +
-                topicID +
-                " from the forum " +
-                forumID
-            );
-    
-            res.status(StatusCodes.OK).json({
-              success: true,
-              msg: "Topic has been deleted!",
-            });
-          }
-        }
-        else {
-          res.status(StatusCodes.FORBIDDEN).json({
-            success: false,
-            msg: "You are not allowed to perform this action because you are not a member of this forum",
-          });
-        }
-      }
     }
-
+  }
 });
 
 const replyToATopic = asyncWrapper(async (req, res) => {
@@ -1508,7 +1506,7 @@ const replyToATopic = asyncWrapper(async (req, res) => {
       });
 
       if (userActivity) {
-        ForumsActivityModel.findOneAndUpdate(
+        await ForumsActivityModel.findOneAndUpdate(
           { userID: user.userId },
           {
             $push: {
@@ -1516,7 +1514,7 @@ const replyToATopic = asyncWrapper(async (req, res) => {
                 activity: "response",
                 forumID,
                 topicID,
-                responseID: replyPosted.response.responseID,
+                responseID: replyPosted.response._id,
               },
             },
           }
@@ -1529,7 +1527,7 @@ const replyToATopic = asyncWrapper(async (req, res) => {
               activity: "response",
               forumID,
               topicID,
-              responseID: replyPosted.response.responseID,
+              responseID: replyPosted.response._id,
             },
           ],
         });
@@ -1540,7 +1538,7 @@ const replyToATopic = asyncWrapper(async (req, res) => {
           "Your response on topic " +
             topicID +
             " has been posted with an ID " +
-            replyPosted.response.responseID
+            replyPosted.response._id
         );
 
       res.status(StatusCodes.OK).json({
@@ -1701,7 +1699,7 @@ const replyToATopic = asyncWrapper(async (req, res) => {
         });
 
         if (userActivity) {
-          ForumsActivityModel.findOneAndUpdate(
+          await ForumsActivityModel.findOneAndUpdate(
             { userID: user.userId },
             {
               $push: {
@@ -1709,7 +1707,7 @@ const replyToATopic = asyncWrapper(async (req, res) => {
                   activity: "response",
                   forumID,
                   topicID,
-                  responseID: replyPosted.response.responseID,
+                  responseID: replyPosted.response._id,
                 },
               },
             }
@@ -1722,7 +1720,7 @@ const replyToATopic = asyncWrapper(async (req, res) => {
                 activity: "response",
                 forumID,
                 topicID,
-                responseID: replyPosted.response.responseID,
+                responseID: replyPosted.response._id,
               },
             ],
           });
@@ -1733,7 +1731,7 @@ const replyToATopic = asyncWrapper(async (req, res) => {
             "Your response on topic " +
               topicID +
               " has been posted with an ID " +
-              replyPosted.response.responseID
+              replyPosted.response._id
           );
 
         res.status(StatusCodes.OK).json({
@@ -1766,86 +1764,81 @@ const deleteAResponse = asyncWrapper(async (req, res) => {
   const forumOwner = forumInfo.creator;
 
   // Delete a response as a response creator
-    if (responseCreator == user.userId) {
-      const responseDeleted = await ForumsTopicsModel.findByIdAndUpdate(
-        { _id: topicID },
-        { $pull: { responses: { responseID } } }
-      );
+  if (responseCreator == user.userId) {
+    const responseDeleted = await ForumsTopicsModel.findByIdAndUpdate(
+      { _id: topicID },
+      { $pull: { responses: { responseID } } }
+    );
 
-      ForumsActivityModel.findOneAndUpdate(
-        { userID: user.userId },
-        {
-          $pull: {
-            activities: {
-              forumID,
-              responseID,
-            },
+    await ForumsActivityModel.findOneAndUpdate(
+      { userID: user.userId },
+      {
+        $pull: {
+          activities: {
+            forumID,
+            responseID,
           },
-        }
+        },
+      }
+    );
+
+    if (responseDeleted) {
+      console.log(
+        "Response " + responseID + " has been deleted from the forum " + forumID
       );
 
-      if (responseDeleted) {
-        console.log(
-          "Response " +
-            responseID +
-            " has been deleted from the forum " +
-            forumID
+      res.status(StatusCodes.OK).json({
+        success: true,
+        msg: "Your response has been deleted!",
+      });
+    }
+  } else {
+    for (let i = 0; i < forumInfo.moderators.length; i++) {
+      // Delete a response as a moderator or forum owner
+      if (
+        forumInfo.moderators[i].userID == user.userId ||
+        forumOwner == user.userId
+      ) {
+        const responseDeleted = await ForumsTopicsModel.findByIdAndUpdate(
+          { _id: topicID },
+          { $pull: { responses: { responseID } } }
         );
 
-        res.status(StatusCodes.OK).json({
-          success: true,
-          msg: "Your response has been deleted!",
-        });
-      }
-    }else{
-      for (let i = 0; i < forumInfo.moderators.length; i++) {
-        // Delete a response as a moderator or forum owner
-        if (
-          forumInfo.moderators[i].userID == user.userId ||
-          forumOwner == user.userId
-        ) {
-          const responseDeleted = await ForumsTopicsModel.findByIdAndUpdate(
-            { _id: topicID },
-            { $pull: { responses: { responseID } } }
-          );
-    
-          ForumsActivityModel.findOneAndUpdate(
-            { userID: user.userId },
-            {
-              $pull: {
-                activities: {
-                  forumID,
-                  responseID,
-                },
+        await ForumsActivityModel.findOneAndUpdate(
+          { userID: user.userId },
+          {
+            $pull: {
+              activities: {
+                forumID,
+                responseID,
               },
-            }
-          );
-    
-          if (responseDeleted) {
-            console.log(
-              "Moderator " +
-                user.userId +
-                " has deleted response " +
-                responseID +
-                " from the forum " +
-                forumID
-            );
-    
-            res.status(StatusCodes.OK).json({
-              success: true,
-              msg: "Your response has been deleted!",
-            });
+            },
           }
-        }
-         else {
-          res.status(StatusCodes.FORBIDDEN).json({
-            success: false,
-            msg: "You are not allowed to perform this action because you are not a member of this forum",
+        );
+
+        if (responseDeleted) {
+          console.log(
+            "Moderator " +
+              user.userId +
+              " has deleted response " +
+              responseID +
+              " from the forum " +
+              forumID
+          );
+
+          res.status(StatusCodes.OK).json({
+            success: true,
+            msg: "Your response has been deleted!",
           });
         }
+      } else {
+        res.status(StatusCodes.FORBIDDEN).json({
+          success: false,
+          msg: "You are not allowed to perform this action because you are not a member of this forum",
+        });
       }
     }
-
+  }
 });
 
 const visitMemberProfile = asyncWrapper(async (req, res) => {
@@ -1885,14 +1878,36 @@ const visitMemberProfile = asyncWrapper(async (req, res) => {
     }
   }
 
+  //Fetch User's forums
+  const fetchAllForums = await ForumsModel.find({
+    $or: [{ creator: user.userId }, { "members.userID": user.userId }],
+  });
+  // Fetch user's forum invites
+  const invites = await ForumsModel.find({
+    $and: [{ "invites.userID": user.userId }, { "invites.incoming": false }],
+  });
+  const recentActivities = await ForumsActivityModel.findOne({
+    userID: user.userId,
+  });
+
+  // res.locals.forumID = forumID;
+  // res.locals.forumInfo = forumInfo;
+  // res.locals.topicInfo = topicInfo;
+  // res.locals.questionnaire = questionnaire;
+  // res.locals.responses = responses;
+  res.locals.forums = fetchAllForums;
+  res.locals.invites = invites;
   res.locals.profileInfo = profileInfo;
   res.locals.memberInfo = memberInfo;
+  res.locals.recentActivities = recentActivities;
 
   //Render Member Profile Page
-  res.status(StatusCodes.OK).render("./dashboard/public/forum_member_profile", {
-    headTitle: "Forum - " + forumInfo.forumName,
-    page_name,
-  });
+  res
+    .status(StatusCodes.OK)
+    .render("./dashboard/public/forums/user_profile_page", {
+      headTitle: "Forum - " + forumInfo.forumName,
+      page_name,
+    });
 });
 
 module.exports = {

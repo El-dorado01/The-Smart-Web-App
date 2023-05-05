@@ -453,6 +453,7 @@
 
                                 if (replyInfo.response.userID == topicInfo.userID) {
                                     QBox.classList.add("q-box")
+                                    QBox.classList.add("responseBox_" + replyInfo.response._id)
                                     QBox.innerHTML += `
                                     <div class="q-box-main">
                                         <div class="q-box-left">
@@ -469,6 +470,7 @@
                                     </div>`
                                 } else {
                                     QBox.classList.add("c-box")
+                                    QBox.classList.add("responseBox_" + replyInfo.response._id)
                                     QBox.innerHTML += `
                                     <div class="c-box-main">
                                         <div class="c-box-left">
@@ -620,7 +622,6 @@
                                         <i class="fa-solid fa-quote-right"></i> <span>Quote</span></p>
                                     <p><i class="fa fa-arrow-up"></i><span>${replyInfo.response.upvotes}
                                             upvote${replyInfo.response.upvotes > 1 ? "s" : ""} </span></p>
-                                    <p><i class="fa fa-share-alt"></i> <span>Share</span> </p>
                                 `
 
                                 // APPEND ACTIONS FIELD
