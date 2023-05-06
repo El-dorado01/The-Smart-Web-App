@@ -19,83 +19,47 @@
             <!--Middle-->
             <div class="middle">
                 <!--Forums-->
-                <div class="messages">
-                    <div class="heading" id="forum-heading" onclick="closeTag()" style="margin-bottom: 0.3rem;">
-                        <div style="display:flex;">
-                            <h4 style="margin-right: 10px;">Forums</h4>
-                            <i class="fa fa-users-rays"></i>
-                        </div>
-                        <i class="fa fa-angle-down angle1"
-                            style="display: none; font-size: 18px; padding-right: 10px; cursor: pointer;"></i>
-                        <i class="fa fa-angle-left angle2"
-                            style="font-size: 18px; padding-right: 10px; cursor: pointer;"></i>
-                    </div>
-                    <div id="close-forums">
-                        <!--Serach Bar-->
-                        <div class="search-bar">
-                            <i class="fa fa-search"></i>
-                            <input type="search" placeholder="Search" id="message-searchs">
-                        </div>
-                        <div class="scroll-bar">
-                            <div class="message">
-                                <div class="profile-pic">
-                                    <img src="../../../../images/smart.png" alt="">
-                                </div>
-                                <div class="message-body">
-                                    <h5 style="font-size: 13px; font-weight: 600;">Real Matters</h5>
-                                    <p class="text-muted">255 members</p>
-                                </div>
-                            </div>
-                            <div class="message">
-                                <div class="profile-pic">
-                                    <img src="../../../../images/smart.png" alt="">
-                                </div>
-                                <div class="message-body">
-                                    <h5 style="font-size: 13px; font-weight: 600;">Quick Invasion of Hughes</h5>
-                                    <p class="text-muted">1055 members</p>
-                                </div>
-                            </div>
-                            <div class="message">
-                                <div class="profile-pic">
-                                    <img src="../../../../images/smart.png" alt="">
-                                </div>
-                                <div class="message-body">
-                                    <h5 style="font-size: 13px; font-weight: 600;">What a woman does in her...</h5>
-                                    <p class="text-muted">12 members</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <%- include ("./my_forums_middle") %>
+                <%- include ("./create_forum") %>
 
                 <div class="user-profile-page">
                     <div class="header">
                         <div class="avatar">
-                            <img src="../../../../images/5.jpg" alt="">
+                            <img src="../../../../uploads/<%= memberInfo.avatar %>" alt="">
                         </div>
                         <div class="info">
                             <div class="name">
-                                <h3>User Name</h3>
+                                <h3><%= memberInfo.username %></h3>
                                 <span>Experienced</span>
                             </div>
                             <p>123 posts</p>
-                            <p>Joined on 23rd September, 2022.</p>
-                            <span style="padding: 5px; background-color: var(--color-light);">Member</span>
+                            <% if(isForumCreator == true){ %>
+                            <p>Created on <%= new Date(forumInfo.createdAt).toDateString() %>.</p>
+                            <p><span style="padding: 5px; background-color: var(--color-light);">Forum Creator</span>
+                            </p>
+                            <% }else { %>
+                            <p>Joined on <%= memberInfo.dateJoined %>.</p>
+                            <p><span style="padding: 5px; background-color: var(--color-light);">
+                                    <% if(isAModerator == true){%>
+                                    Moderator
+                                    <% }else{ %> Member <% } %>
+                                </span></p>
+                            <% } %>
                         </div>
                     </div>
                     <div class="profile-body">
                         <div class="category">
-                            <h6 class="active tablinks" class="archive" onclick="openTab(event, 'recent-activity')"
-                                id="defaultOpen">Recent Activity &nbsp; <i class="fa-solid fa-chart-simple"></i></h6>
-                            <h6 class="tablinks" onclick="openTab(event, 'rank-progress')">Rank Progress &nbsp; <i
+                            <h6 class="active tablinks6" class="archive" onclick="openTab6(event, 'recent-activity')"
+                                id="defaultOpen7">Recent Activity &nbsp; <i class="fa-solid fa-chart-simple"></i></h6>
+                            <h6 class="tablinks6" onclick="openTab6(event, 'rank-progress')">Rank Progress &nbsp; <i
                                     class="fa-solid fa-ranking-star"></i></h6>
                         </div>
-                        <div class="postFeeds" id="recent-activity">
+                        <div class="postFeeds6" id="recent-activity">
                             <% 
                             // Check if there's any activity on user's profile
-                                if(recentActivities.activities.length > 0){ 
-                                    for (let i = 0; i < recentActivities.activities.length; i++) {
-                                        const activity = recentActivities.activities[i];
+                                if(recentActivities.length > 0){ 
+                                    for (let i = 0; i < recentActivities.length; i++) {
+                                        const activity = recentActivities[i];
                                         if(activity.activity == "post"){%>
                             <a
                                 href="/dashboard/public/forum/<%= activity.forumID %>/key?topicID=<%= activity.topicID %>">
@@ -146,7 +110,7 @@
                             </div>
                             <%}%>
                         </div>
-                        <div class="postFeeds" id="rank-progress">B</div>
+                        <div class="postFeeds6" id="rank-progress">B</div>
                     </div>
                 </div>
 

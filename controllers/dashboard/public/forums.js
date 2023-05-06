@@ -1846,6 +1846,8 @@ const visitMemberProfile = asyncWrapper(async (req, res) => {
   const forumID = req.params.forumID;
   const memberID = req.query.memberID;
   let isAMember = false;
+  let isForumCreator = false;
+  let isAModerator = false;
   let profileInfo;
 
   const cookies = req.cookies;
@@ -1856,24 +1858,38 @@ const visitMemberProfile = asyncWrapper(async (req, res) => {
     userName: payload.userName,
   };
 
-  const forumInfo = await ForumsModel.findById(forumID, "forumName members");
+  const forumInfo = await ForumsModel.findById(forumID);
   const memberInfo = await AuthModel.findById(
     memberID,
     "username avatar about"
   );
 
-  // Check if the user trying to access the profile is a member of the forum
-  for (let i = 0; i < forumInfo.members.length; i++) {
-    if (forumInfo.members[i].userID == user.userId) {
-      isAMember = true;
+  // Check if the user trying to access the profile is a member or owner of the forum
+  if (forumInfo.creator == user.userId) {
+    isAMember = true;
+  } else {
+    for (let i = 0; i < forumInfo.members.length; i++) {
+      if (forumInfo.members[i].userID == user.userId) {
+        isAMember = true;
+      }
     }
   }
 
   // If user is a member, fetch profile info
   if (isAMember == true) {
-    for (let i = 0; i < forumInfo.members.length; i++) {
-      if (forumInfo.members[i].userID == memberID) {
-        profileInfo = forumInfo.members[i];
+    if (forumInfo.creator == memberID) {
+      isForumCreator = true;
+    } else {
+      for (let i = 0; i < forumInfo.moderators.length; i++) {
+        const moderator = forumInfo.moderators[i];
+        for (let i = 0; i < forumInfo.members.length; i++) {
+          if (memberID == moderator.userID) {
+            isAModerator = true;
+          }
+          if (forumInfo.members[i].userID == memberID) {
+            profileInfo = forumInfo.members[i];
+          }
+        }
       }
     }
   }
@@ -1890,16 +1906,19 @@ const visitMemberProfile = asyncWrapper(async (req, res) => {
     userID: user.userId,
   });
 
-  // res.locals.forumID = forumID;
-  // res.locals.forumInfo = forumInfo;
+  var activities = recentActivities.activities.slice(-20).reverse();
+
+  res.locals.forumID = forumID;
+  res.locals.forumInfo = forumInfo;
   // res.locals.topicInfo = topicInfo;
   // res.locals.questionnaire = questionnaire;
-  // res.locals.responses = responses;
+  res.locals.isForumCreator = isForumCreator;
+  res.locals.isAModerator = isAModerator;
   res.locals.forums = fetchAllForums;
   res.locals.invites = invites;
   res.locals.profileInfo = profileInfo;
   res.locals.memberInfo = memberInfo;
-  res.locals.recentActivities = recentActivities;
+  res.locals.recentActivities = activities;
 
   //Render Member Profile Page
   res

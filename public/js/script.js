@@ -22,6 +22,9 @@ if (document.getElementById("defaultOpen5")) {
 if (document.getElementById("defaultOpen6")) {
   document.getElementById("defaultOpen6").click();
 }
+if (document.getElementById("defaultOpen7")) {
+  document.getElementById("defaultOpen7").click();
+}
 
 setTimeout(() => {
   if (document.getElementById("defaultOpen3")) {
@@ -1594,6 +1597,24 @@ function openTab5(event, tabName) {
   }
 
   tablinks = document.getElementsByClassName("tablinks5");
+
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace("active", "");
+  }
+
+  document.getElementById(tabName).style.display = "block";
+  event.currentTarget.className += " active";
+}
+function openTab6(event, tabName) {
+  var i, postFeeds6, tablinks;
+
+  postFeeds6 = document.getElementsByClassName("postFeeds6");
+
+  for (i = 0; i < postFeeds6.length; i++) {
+    postFeeds6[i].style.display = "none";
+  }
+
+  tablinks = document.getElementsByClassName("tablinks6");
 
   for (i = 0; i < tablinks.length; i++) {
     tablinks[i].className = tablinks[i].className.replace("active", "");
