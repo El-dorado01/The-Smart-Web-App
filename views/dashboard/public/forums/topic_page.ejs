@@ -84,48 +84,29 @@
                                 <div class="title">
                                     <%= topicInfo.subject  %>
                                 </div>
-                                <div class="action">
-                                    <div class="upvotes">
-                                        <i class="fa fa-arrow-up"></i> <b><%= topicInfo.upvotes %></b>
-                                        <span class="text">upvote<% if(topicInfo.upvotes > 1){%>s<% } %></span>
-                                    </div>
-                                    <% 
-                                    if(user._id == topicInfo.userID || user._id == forumInfo.creator){ %>
-                                    <div style="background-color: var( --color-danger);"
-                                        onclick="deleteForumTopic('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= topicInfo.userID %>')">
-                                        <i class="fa-solid fa-trash"></i>
-                                        <span class="text">Delete
-                                        </span></div>
-                                    <%} else if(forumInfo.creator == user._id){%>
-                                    <div style="background-color: var( --color-danger);"
-                                        onclick="deleteForumTopic('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= topicInfo.userID %>')">
-                                        <i class="fa-solid fa-trash"></i>
-                                        <span class="text">Delete
-                                        </span></div>
-                                    <%} else {
-                                    for (let i = 0; i < forumInfo.moderators.length; i++) { 
-                                        if(forumInfo.moderators[i].userID==user._id ) { 
-                                    %>
-                                    <div style="background-color: var( --color-danger);"
-                                        onclick="deleteForumTopic('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= topicInfo.userID %>')">
-                                        <i class="fa-solid fa-trash"></i>
-                                        <span class="text">Delete
-                                        </span></div>
-                                    <% } 
-                                        }
-                                     } %>
-                                </div>
                             </div>
-                            <div class="tags">
-                                <% topicInfo.topicTags.forEach(tag => {%>
-                                <a
-                                    href="/dashboard/public/forum_topic_categories/<%= tag %>/key?forumID=<%= forumID %>">
-                                    <div class="tag">
-                                        <i class="fa-solid fa-tag"></i>
-                                        <span><%= tag %></span>
+                            <div class="tags-panel">
+                                <div class="tags">
+                                    <% topicInfo.topicTags.forEach(tag => {%>
+                                    <a
+                                        href="/dashboard/public/forum_topic_categories/<%= tag %>/key?forumID=<%= forumID %>">
+                                        <div class="tag">
+                                            <i class="fa-solid fa-tag"></i>
+                                            <span><%= tag %></span>
+                                        </div>
+                                    </a>
+                                    <%})%>
+                                </div>
+                                <div class="action">
+                                    <div title="Views">
+                                        <span><i class="fa-solid fa-eye fa-lg"></i></span>
+                                        <span class="count"><%= topicInfo.__v %></span>
                                     </div>
-                                </a>
-                                <%})%>
+                                    <div title="Comments">
+                                        <span><i class="fa-solid fa-comment fa-lg"></i></span>
+                                        <span class="count" id="comment-count"><%= responses.length %></span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="second">
                                 <div class="user-info">
@@ -138,43 +119,75 @@
                                     </div>
                                 </div>
                                 <div class="action">
-                                    <div>
-                                        <span class="fa fa-share"></span> Share
+                                    <% if(bookmarked == true){%>
+                                    <div class="flex" title="Remove this Discussion from Bookmarks"
+                                        style="cursor: pointer;">
+                                        <span><i class="fa-solid fa-bookmark fa-lg"
+                                                style="color: var(--color-primary);"></i>
+                                        </span>&nbsp;
+                                        <div class="count"><%= topicInfo.bookmarks.length %></div>
                                     </div>
-                                    <div class="flex">
-                                        <span><i class="fa fa-eye"></i> &nbsp; <span class="text">Views</span></span>
-                                        <div class="count"><%= topicInfo.__v %></div>
+                                    <%}else{%>
+                                    <div class="flex" title="Bookmark this Discussion" style="cursor: pointer;">
+                                        <span><i class="fa-solid fa-bookmark fa-lg"></i>
+                                        </span>&nbsp;
+                                        <div class="count"><%= topicInfo.bookmarks.length %></div>
                                     </div>
-                                    <div class="flex">
-                                        <span><i class="fa fa-comment"></i>&nbsp; <span
-                                                class="text">Comments</span></span>
-                                        <div class="count" id="comment-count"><%= responses.length %></div>
-                                    </div>
-                                </div>
+                                    <%}%>
+                                    <div class="flex" title="Upvote this Topic" style="cursor: pointer;">
+                                        <span><i class="fa-solid fa-arrow-up fa-lg"></i>
+                                        </span>&nbsp;
+                                        <div class="count"><%= topicInfo.upvotes %></div>
+                            </div>
+                            <div title="Share" class="extra">
+                                <span><i class="fa-solid fa-arrow-up-from-bracket fa-lg"></i></span>
+                            </div>
+                            <% 
+                                    if(user._id == topicInfo.userID || user._id == forumInfo.creator){ %>
+                            <div title="Delete Topic" class="extra" style="background-color: var(--color-danger);"
+                                onclick="deleteForumTopic('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= topicInfo.userID %>')">
+                                <span><i class="fa-solid fa-trash fa-lg"></i></span>
+                            </div>
+                            <%} else {
+                                    for (let i = 0; i < forumInfo.moderators.length; i++) { 
+                                        if(forumInfo.moderators[i].userID==user._id ) { 
+                                    %>
+                            <div title="Delete Topic" class="extra" style="background-color: var(--color-danger);"
+                                onclick="
+                                deleteForumTopic('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= topicInfo.userID %>')">
+                                <span><i class="fa-solid fa-trash fa-lg"></i></span>
+                            </div>
+
+                            <% } 
+                                        }
+                                     } %>
+
+
+                        </div>
+                    </div>
+                </div>
+                <!--Questionnaire-->
+                <div class="q-box" id="<%= topicInfo._id %>">
+                    <div class="q-box-main">
+                        <div class="q-box-left">
+                            <div class="user-info">
+                                <h4><%= questionnaire.userInfo.username %></h4>
+                                <img src="../../../../uploads/<%= questionnaire.userInfo.avatar %>" alt="">
+                                <div class="upvotes"><%= questionnaire.memberUpvotes %>
+                                    upvote<% if(questionnaire.memberUpvotes > 1){%>s<% } %></div>
+                                <span>Posted: <i
+                                        class="text-muted"><%= new Date(topicInfo.createdAt).toDateString() %></i></span>
                             </div>
                         </div>
-                        <!--Questionnaire-->
-                        <div class="q-box" id="<%= topicInfo._id %>">
-                            <div class="q-box-main">
-                                <div class="q-box-left">
-                                    <div class="user-info">
-                                        <h4><%= questionnaire.userInfo.username %></h4>
-                                        <img src="../../../../uploads/<%= questionnaire.userInfo.avatar %>" alt="">
-                                        <div class="upvotes"><%= questionnaire.memberUpvotes %>
-                                            upvote<% if(questionnaire.memberUpvotes > 1){%>s<% } %></div>
-                                        <span>Posted: <i
-                                                class="text-muted"><%= new Date(topicInfo.createdAt).toDateString() %></i></span>
-                                    </div>
+                        <div class="q-box-right" id="field_<%= topicInfo._id %>">
+                            <div class="field-one">
+                                <div class="response-field">
+                                    <%- topicInfo.topicText %>
                                 </div>
-                                <div class="q-box-right" id="field_<%= topicInfo._id %>">
-                                    <div class="field-one">
-                                        <div class="response-field">
-                                            <%- topicInfo.topicText %>
-                                        </div>
-                                        <!-- Topic Media -->
-                                        <% if(topicInfo.topicMedia.length > 0){%>
-                                        <div class="media">
-                                            <% 
+                                <!-- Topic Media -->
+                                <% if(topicInfo.topicMedia.length > 0){%>
+                                <div class="media">
+                                    <% 
                                             var imagesExtensions = ["jpg", "gif", "png"];
                                             var videosExtensions = ["mp4", "3gp", "ogg"];
 
@@ -184,83 +197,85 @@
 
                                                 if (imagesExtensions.includes(extension)) { 
                                         %>
-                                            <div class="img">
-                                                <img id="forumImg" src="<%= url %>" alt="">
-                                            </div>
-                                            <% } else if (videosExtensions.includes(extension)) { %>
-                                            <div class="video">
-                                                <video controls>
-                                                    <source src="<%= url %>" type="video/<%= extension %>">
-                                                </video>
-                                            </div>
-                                            <% }
+                                    <div class="img">
+                                        <img id="forumImg" src="<%= url %>" alt="">
+                                    </div>
+                                    <% } else if (videosExtensions.includes(extension)) { %>
+                                    <div class="video">
+                                        <video controls>
+                                            <source src="<%= url %>" type="video/<%= extension %>">
+                                        </video>
+                                    </div>
+                                    <% }
                                             });
                                         %>
-                                        </div>
-                                        <% } %>
-                                    </div>
-                                    <div class="actions">
-                                        <p
-                                            onclick="tagAResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>', '<%= topicInfo._id %>', '<%= JSON.stringify(forumInfo.wordsFilter) %>')">
-                                            <i class="fa-solid fa-quote-right"></i> <span>Quote</span></p>
-                                        <p><i class="fa fa-arrow-up"></i><span><%= topicInfo.upvotes %>
-                                                upvote<% if(topicInfo.upvotes > 1){%>s<% } %></span></p>
-                                        <p><i class="fa fa-share-alt"></i> <span>Share</span> </p>
-                                    </div>
                                 </div>
+                                <% } %>
                             </div>
-                        </div>
-
-                        <!-- Loop through each responses -->
-                        <div class="responses" style="width: 100%; padding: 0;">
-                            <%- include ("./topic_responses") %>
-                        </div>
-
-                        <div class="response-area">
-                            <div class="tagged-msg">
-                                <span class="icon"><i class="fa-solid fa-times"></i></span>
-                                <div></div>
-                            </div>
-                            <div class="preview"></div>
-                            <textarea name="" id="response-text"></textarea>
                             <div class="actions">
-                                <div class="icons">
-                                    <span onclick="createResponseImg()" title="Add Images"><i
-                                            class="fa-regular fa-image"></i></span>
-                                    <span onclick="createResponseVideo()" title="Add Video"><i
-                                            class="fa-solid fa-video"></i></span>
-                                    <!--<span title="Add File"><i class="fa-solid fa-paperclip"></i></span>-->
-                                </div>
-                                <button class="btn btn-primary" type="submit" onclick="submitForumResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>',
-                                    '<%= JSON.stringify(forumInfo.wordsFilter) %>', '')"><i
-                                        class="fa-solid fa-paper-plane"></i><span>Send</span></button>
+                                <p title="Quote"
+                                    onclick="tagAResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>', '<%= topicInfo._id %>', '<%= JSON.stringify(forumInfo.wordsFilter) %>')">
+                                    <i class="fa-solid fa-quote-right fa-lg"></i></p>
+                                <p title="Upvote" style="width: 40px;"><i
+                                        class="fa-solid fa-arrow-up fa-lg"></i><span><%= topicInfo.upvotes %>
+                                    </span></p>
+                                <p title="Share"><i class="fa-solid fa-arrow-up-from-bracket fa-lg"></i> </p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <%- include ("./topic_category_middle") %>
-            </div>
-            <!--Middle ends here-->
 
-            <!--Right-->
-            <div class="right">
-                <!--Forums-->
-                <%- include ("./my_forums_right") %>
-                <!--Forums end here-->
+                <!-- Loop through each responses -->
+                <div class="responses" style="width: 100%; padding: 0;">
+                    <%- include ("./topic_responses") %>
+                </div>
 
-                <!-- ===============FORUM PROFILE=========================== -->
-                <%- include ("./my_profile") %>
-                <!-- ===============FORUM PROFILE ENDS HERE=========================== -->
+                <div class="response-area">
+                    <span style="font-size: 16px;">Your response</span>
+                    <div class="tagged-msg">
+                        <span class="icon"><i class="fa-solid fa-times"></i></span>
+                        <div></div>
+                    </div>
+                    <div class="preview"></div>
+                    <textarea name="" id="response-text"></textarea>
+                    <div class="actions">
+                        <div class="icons">
+                            <span onclick="createResponseImg()" title="Add Images"><i
+                                    class="fa-regular fa-image"></i></span>
+                            <span onclick="createResponseVideo()" title="Add Video"><i
+                                    class="fa-solid fa-video"></i></span>
+                            <!--<span title="Add File"><i class="fa-solid fa-paperclip"></i></span>-->
+                        </div>
+                        <button class="btn btn-primary" type="submit" onclick="submitForumResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>',
+                                    '<%= JSON.stringify(forumInfo.wordsFilter) %>', '')"><i
+                                class="fa-solid fa-paper-plane"></i><span>Send</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%- include ("./topic_category_middle") %>
+        </div>
+        <!--Middle ends here-->
 
-                <!--Forum box-->
-                <%- include ("./topic_category_right") %>
-                <!--Forum box end here-->
-            </div>
-            <div id="myImgModal" class="img-modal">
-                <button class="close-imgModal btn btn-primary"><i class="fa fa-angle-left"></i> Close</button>
-                <img id="modal-img" class="modal-content"
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQS2ol73JZj6-IqypxPZXYS3rRiPwKteoD8vezk9QsRdkjt3jEn&usqp=CAU">
-            </div>
+        <!--Right-->
+        <div class="right">
+            <!--Forums-->
+            <%- include ("./my_forums_right") %>
+            <!--Forums end here-->
+
+            <!-- ===============FORUM PROFILE=========================== -->
+            <%- include ("./my_profile") %>
+            <!-- ===============FORUM PROFILE ENDS HERE=========================== -->
+
+            <!--Forum box-->
+            <%- include ("./topic_category_right") %>
+            <!--Forum box end here-->
+        </div>
+        <div id="myImgModal" class="img-modal">
+            <button class="close-imgModal btn btn-primary"><i class="fa fa-angle-left"></i> Close</button>
+            <img id="modal-img" class="modal-content"
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQS2ol73JZj6-IqypxPZXYS3rRiPwKteoD8vezk9QsRdkjt3jEn&usqp=CAU">
+        </div>
         </div>
     </main>
 

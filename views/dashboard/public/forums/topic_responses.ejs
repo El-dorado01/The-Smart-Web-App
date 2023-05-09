@@ -95,27 +95,27 @@
                 <p onclick="tagAResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>',
                                             '<%= response.response._id %>',
                                             '<%= JSON.stringify(forumInfo.wordsFilter) %>')">
-                    <i class="fa-solid fa-quote-right"></i> <span>Quote</span></p>
-                <p><i class="fa fa-arrow-up"></i><span><%= response.response.upvotes %>
-                        upvote<% if(response.response.upvotes > 1){%>s<% } %></span></p>
-                <!--<p><i class="fa fa-share-alt"></i> <span>Share</span> </p>-->
+                    <i class="fa-solid fa-quote-right fa-lg"></i></p>
+                <p style="width: 40px;"><i class="fa-solid fa-arrow-up fa-lg"></i><span><%= response.response.upvotes %>
+                    </span></p>
+                <p><i class="fa-solid fa-arrow-up-from-bracket fa-lg"></i> </p>
                 <% 
                 if(response.response.userID == user._id){
                 %>
-                <p
+                <p style="background-color: var(--color-danger);"
                     onclick="deleteTopicResponse('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= response.response.userID %>')">
-                    <i class="fa-solid fa-trash"></i>
-                    <span>Delete</span> </p>
+                    <i class="fa-solid fa-trash fa-lg"></i>
+                </p>
                 <% }else if(forumInfo.creator == user._id){ %>
-                <p
+                <p style="background-color: var(--color-danger);"
                     onclick="deleteTopicResponse('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= response.response.userID %>')">
-                    <i class="fa-solid fa-trash"></i> <span>Delete</span> </p>
+                    <i class="fa-solid fa-trash fa-lg"></i> </p>
                 <%} else { 
                         for (let i = 0; i < forumInfo.moderators.length; i++) { if
                             (forumInfo.moderators[i].userID==user._id ) { %>
-                <p
+                <p style="background-color: var(--color-danger);"
                     onclick="deleteTopicResponse('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= response.response.userID %>')">
-                    <i class="fa-solid fa-trash"></i> <span>Delete</span> </p>
+                    <i class="fa-solid fa-trash fa-lg"></i> </p>
 
                 <% }
                         }

@@ -207,6 +207,12 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
     $and: [{ "invites.userID": user.userId }, { "invites.incoming": false }],
   });
 
+  // Check if topic is bookmarked by current user
+  var bookmarked = false;
+  if (topicInfo.bookmarks.includes(user.userId)) {
+    bookmarked = true;
+  }
+
   res.locals.forumID = forumID;
   res.locals.forumInfo = forumInfo;
   res.locals.topicInfo = topicInfo;
@@ -214,6 +220,7 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   res.locals.responses = responses;
   res.locals.forums = fetchAllForums;
   res.locals.invites = invites;
+  res.locals.bookmarked = bookmarked;
 
   res.status(StatusCodes.OK).render("./dashboard/public/forums/topic_page", {
     headTitle: "Forum - " + forumInfo.forumName,
@@ -1905,19 +1912,105 @@ const visitMemberProfile = asyncWrapper(async (req, res) => {
   const recentActivities = await ForumsActivityModel.findOne({
     userID: user.userId,
   });
-
   var activities = recentActivities.activities.slice(-20).reverse();
+
+  let numberOfPosts = 0;
+  const forumTopics = await ForumsTopicsModel.find({
+    forumID,
+  });
+  //Count Number of user's posts
+  for (let i = 0; i < forumTopics.length; i++) {
+    if (forumTopics[i].userID == memberID) {
+      numberOfPosts++;
+    }
+    for (let a = 0; a < forumTopics[i].responses.length; a++) {
+      if (forumTopics[i].responses[a].userID == memberID) {
+        numberOfPosts++;
+      }
+    }
+  }
+  if (isForumCreator == false) {
+    let memberRank;
+    const forumRanks = await ForumRankingsModel.findById({ _id: forumID });
+    var memberUpvote = profileInfo.upvotes;
+    switch (memberUpvote) {
+      case memberUpvote >= forumRanks.newbie.minUpvotesRequired &&
+        memberUpvote < forumRanks.rookie.minUpvotesRequired:
+        memberRank = "Newbie";
+        break;
+      case memberUpvote >= forumRanks.rookie.minUpvotesRequired &&
+        memberUpvote < forumRanks.apprentice.minUpvotesRequired:
+        memberRank = "Rookie";
+        break;
+      case memberUpvote >= forumRanks.apprentice.minUpvotesRequired &&
+        memberUpvote < forumRanks.explorer.minUpvotesRequired:
+        memberRank = "Apprentice";
+        break;
+      case memberUpvote >= forumRanks.explorer.minUpvotesRequired &&
+        memberUpvote < forumRanks.contributor.minUpvotesRequired:
+        memberRank = "Explorer";
+        break;
+      case memberUpvote >= forumRanks.contributor.minUpvotesRequired &&
+        memberUpvote < forumRanks.enthusiast.minUpvotesRequired:
+        memberRank = "Contributor";
+        break;
+      case memberUpvote >= forumRanks.enthusiast.minUpvotesRequired &&
+        memberUpvote < forumRanks.collaborator.minUpvotesRequired:
+        memberRank = "Enthusiast";
+        break;
+      case memberUpvote >= forumRanks.collaborator.minUpvotesRequired &&
+        memberUpvote < forumRanks.communityRegular.minUpvotesRequired:
+        memberRank = "Collaborator";
+        break;
+      case memberUpvote >= forumRanks.communityRegular.minUpvotesRequired &&
+        memberUpvote < forumRanks.risingStar.minUpvotesRequired:
+        memberRank = "Community Regular";
+        break;
+      case memberUpvote >= forumRanks.risingStar.minUpvotesRequired &&
+        memberUpvote < forumRanks.proficient.minUpvotesRequired:
+        memberRank = "Rising Star";
+        break;
+      case memberUpvote >= forumRanks.proficient.minUpvotesRequired &&
+        memberUpvote < forumRanks.experienced.minUpvotesRequired:
+        memberRank = "Proficient";
+        break;
+      case memberUpvote >= forumRanks.experienced.minUpvotesRequired &&
+        memberUpvote < forumRanks.mentor.minUpvotesRequired:
+        memberRank = "Experienced";
+        break;
+      case memberUpvote >= forumRanks.mentor.minUpvotesRequired &&
+        memberUpvote < forumRanks.veteran.minUpvotesRequired:
+        memberRank = "Mentor";
+        break;
+      case memberUpvote >= forumRanks.veteran.minUpvotesRequired &&
+        memberUpvote < forumRanks.master.minUpvotesRequired:
+        memberRank = "Veteran";
+        break;
+      case memberUpvote >= forumRanks.master.minUpvotesRequired &&
+        memberUpvote < forumRanks.grandmaster.minUpvotesRequired:
+        memberRank = "Master";
+        break;
+      case memberUpvote >= forumRanks.grandmaster.minUpvotesRequired &&
+        memberUpvote < forumRanks.lengendary.minUpvotesRequired:
+        memberRank = "Grandmaster";
+        break;
+
+      default:
+        memberRank = "Legendary";
+        break;
+    }
+    res.locals.memberRank = memberRank;
+  }
 
   res.locals.forumID = forumID;
   res.locals.forumInfo = forumInfo;
-  // res.locals.topicInfo = topicInfo;
-  // res.locals.questionnaire = questionnaire;
   res.locals.isForumCreator = isForumCreator;
   res.locals.isAModerator = isAModerator;
   res.locals.forums = fetchAllForums;
   res.locals.invites = invites;
   res.locals.profileInfo = profileInfo;
   res.locals.memberInfo = memberInfo;
+  res.locals.membersNoOfPosts = numberOfPosts;
   res.locals.recentActivities = activities;
 
   //Render Member Profile Page

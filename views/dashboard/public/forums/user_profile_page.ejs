@@ -30,15 +30,17 @@
                         <div class="info">
                             <div class="name">
                                 <h3><%= memberInfo.username %></h3>
-                                <span>Experienced</span>
+                                <% if(isForumCreator == false){ %>
+                                <span><%= memberRank %></span>
+                                <% } %>
                             </div>
-                            <p>123 posts</p>
+                            <p><%= membersNoOfPosts %> posts</p>
                             <% if(isForumCreator == true){ %>
                             <p>Created on <%= new Date(forumInfo.createdAt).toDateString() %>.</p>
                             <p><span style="padding: 5px; background-color: var(--color-light);">Forum Creator</span>
                             </p>
                             <% }else { %>
-                            <p>Joined on <%= memberInfo.dateJoined %>.</p>
+                            <p>Joined on <%= profileInfo.dateJoined %>.</p>
                             <p><span style="padding: 5px; background-color: var(--color-light);">
                                     <% if(isAModerator == true){%>
                                     Moderator
@@ -48,13 +50,8 @@
                         </div>
                     </div>
                     <div class="profile-body">
-                        <div class="category">
-                            <h6 class="active tablinks6" class="archive" onclick="openTab6(event, 'recent-activity')"
-                                id="defaultOpen7">Recent Activity &nbsp; <i class="fa-solid fa-chart-simple"></i></h6>
-                            <h6 class="tablinks6" onclick="openTab6(event, 'rank-progress')">Rank Progress &nbsp; <i
-                                    class="fa-solid fa-ranking-star"></i></h6>
-                        </div>
-                        <div class="postFeeds6" id="recent-activity">
+                        <% if(isForumCreator == true){ %>
+                        <div id="recent-activity">
                             <% 
                             // Check if there's any activity on user's profile
                                 if(recentActivities.length > 0){ 
@@ -109,28 +106,93 @@
                                 <span class="text-muted">No recent activity</span>
                             </div>
                             <%}%>
+                            </div>
+                        <% }else{ %>
+                            <div class="category">
+                                <h6 class="active tablinks6" class="archive"
+                                    onclick="openTab6(event, 'recent-activity')" id="defaultOpen7">Recent Activity
+                                    &nbsp; <i class="fa-solid fa-chart-simple"></i></h6>
+                                <h6 class="tablinks6" onclick="openTab6(event, 'rank-progress')">Rank Progress &nbsp; <i
+                                        class="fa-solid fa-ranking-star"></i></h6>
+                            </div>
+                            <div class="postFeeds6" id="recent-activity">
+                                <% 
+                            // Check if there's any activity on user's profile
+                                if(recentActivities.length > 0){ 
+                                    for (let i = 0; i < recentActivities.length; i++) {
+                                        const activity = recentActivities[i];
+                                        if(activity.activity == "post"){%>
+                                <a
+                                    href="/dashboard/public/forum/<%= activity.forumID %>/key?topicID=<%= activity.topicID %>">
+                                    <div class="activity">
+                                        <span class="activity-icon"><i class="fa-solid fa-paper-plane fa-lg"></i></span>
+                                        <span class="activity-details">User created a new topic in the forum </span>
+                                        <span
+                                            class="activity-time"><%= new Date(activity.datePerformed).toDateString() %></span>
+                                    </div>
+                                </a>
+                                <%}else if(activity.activity == "response"){%>
+                                <a
+                                    href="/dashboard/public/forum/<%= activity.forumID %>/key?topicID=<%= activity.topicID %>#<%= activity.responseID %>">
+                                    <div class="activity">
+                                        <span class="activity-icon"><i class="fa-solid fa-comment fa-lg"></i></span>
+                                        <span class="activity-details">User commented on a topic</span>
+                                        <span
+                                            class="activity-time"><%= new Date(activity.datePerformed).toDateString() %></span>
+                                    </div>
+                                </a>
+                                <%}else if(activity.activity == "upvoteTopic"){%>
+                                <a
+                                    href="/dashboard/public/forum/<%= activity.forumID %>/key?topicID=<%= activity.topicID %>">
+                                    <div class="activity">
+                                        <span class="activity-icon"><i class="fa-solid fa-circle-up fa-lg"></i></span>
+                                        <span class="activity-details">User upvoted a topic</span>
+                                        <span
+                                            class="activity-time"><%= new Date(activity.datePerformed).toDateString() %></span>
+                                    </div>
+                                </a>
+                                <%}else{%>
+                                <a
+                                    href="/dashboard/public/forum/<%= activity.forumID %>/key?topicID=<%= activity.topicID %>#<%= activity.responseID %>">
+                                    <div class="activity">
+                                        <span class="activity-icon"><i class="fa-solid fa-circle-up fa-lg"></i></span>
+                                        <span class="activity-details">User upvoted a response on a topic</span>
+                                        <span
+                                            class="activity-time"><%= new Date(activity.datePerformed).toDateString() %></span>
+                                    </div>
+                                </a>
+                                <%}
+                                    }
+                                    %>
+                                <%}else{%>
+                                <div class="body"
+                                    style="display: flex; align-items: center; justify-content: center; font-size: 1.2rem; height: 50vh;">
+                                    <span class="text-muted">No recent activity</span>
+                                </div>
+                                <%}%>
+                            </div>
+                            <div class="postFeeds6" id="rank-progress">B</div>
+                        <% } %>
+                            </div>
                         </div>
-                        <div class="postFeeds6" id="rank-progress">B</div>
+
+                        <%- include ("./topic_category_middle") %>
+                        <!--Forum box end here-->
                     </div>
-                </div>
+                    <!--Right-->
+                    <div class="right">
+                        <!--Forums-->
+                        <%- include ("./my_forums_right") %>
+                        <!--Forums end here-->
 
-                <%- include ("./topic_category_middle") %>
-                            <!--Forum box end here-->
-                        </div>
-                        <!--Right-->
-                        <div class="right">
-                            <!--Forums-->
-                            <%- include ("./my_forums_right") %>
-                            <!--Forums end here-->
+                        <!-- ===============FORUM PROFILE=========================== -->
+                        <%- include ("./my_profile") %>
+                        <!-- ===============FORUM PROFILE ENDS HERE=========================== -->
 
-                            <!-- ===============FORUM PROFILE=========================== -->
-                            <%- include ("./my_profile") %>
-                            <!-- ===============FORUM PROFILE ENDS HERE=========================== -->
-
-                            <!--Forum box-->
-                            <%- include ("./topic_category_right") %>
-                            <!--Forum box end here-->
-                        </div>
+                        <!--Forum box-->
+                        <%- include ("./topic_category_right") %>
+                        <!--Forum box end here-->
+                    </div>
     </main>
 
     <!--Theme Customization-->

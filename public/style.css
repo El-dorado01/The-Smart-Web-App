@@ -5652,13 +5652,35 @@ main .container .right {
     margin-bottom: 2.5rem;
 }
 
+.middle .forum-body .topic-title .tags-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--color-light);
+}
+
+.middle .forum-body .topic-title .tags-panel .action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.middle .forum-body .tags-panel .action div {
+    background-color: var(--color-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 5px;
+}
+
 .middle .forum-body .topic-title .tags {
     display: flex;
     align-items: flex-start;
     flex-wrap: wrap;
     gap: 5px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--color-light);
 }
 
 .middle .forum-body .topic-title .tags .tag {
@@ -5739,10 +5761,13 @@ main .container .right {
     cursor: pointer;
 }
 
+.middle .forum-body .topic-title .second .action .extra{
+    display: flex; align-items: center; justify-content: center; background-color: rgba(0,0,0,0.1); cursor: pointer; height: 35px; width: 35px; border-radius: 10px;
+}
 .middle .forum-body .topic-title .second .action .flex{
     display: flex;
     background: rgba(0,0,0,0.1);
-    border-radius: 3px;
+    border-radius: 10px;
     padding: 3px 7px;
     /* font-size: 8px; */
 }
@@ -5819,6 +5844,8 @@ main .container .right {
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 35px;
+    width: 35px;
     gap: 5px;
     background-color: var(--color-light);
     padding: 5px;
@@ -6876,7 +6903,7 @@ main .container .right {
         align-items: flex-start;
     }
 
-    .middle .forum-body .topic-title .text {
+    .middle .text {
         display: none;
     }
 

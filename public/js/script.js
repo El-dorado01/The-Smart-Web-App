@@ -3906,13 +3906,17 @@ function loadAForumInfo(
   forumDescription.querySelector("p").innerText = forumInfo.forumDesc;
   forumDescription.querySelector(".moderators.creator").innerHTML = `
     <div class="moderator">
-        <a href="/member_profile/${forumInfo._id}/key?${creatorDetails._id}">
+        <a href="/dashboard/public/member_profile/${
+          forumInfo._id
+        }/key?memberID=${creatorDetails._id}">
           <div class="profile-pic">
               <img src="../../../uploads/${creatorDetails.avatar}" alt="">
           </div>
         </a>
         <div class="info">
-          <a href="/member_profile/${forumInfo._id}/key?${creatorDetails._id}">
+          <a href="/dashboard/public/member_profile/${
+            forumInfo._id
+          }/key?memberID=${creatorDetails._id}">
             <h3>${creatorDetails.username}</h3>
           </a>
           <p>Forum Creator</p>
@@ -3943,13 +3947,13 @@ function loadAForumInfo(
     var userCreator = document.createElement("div");
     userCreator.classList.add("member");
     userCreator.innerHTML = `
-          <a href="/member_profile/${forumInfo._id}/key?${creatorDetails._id}">
+          <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${creatorDetails._id}">
             <div class="profile-pic">
                 <img src="../../../uploads/${creatorDetails.avatar}" alt="">
             </div>
           </a>
           <div class="info">
-              <a href="/member_profile/${forumInfo._id}/key?${creatorDetails._id}">
+              <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${creatorDetails._id}">
                 <h3>${creatorDetails.username}</h3>
               </a>
               <p>Creator</p>
@@ -4084,13 +4088,13 @@ function loadAForumInfo(
         div.classList.add("moderator");
         div.innerHTML = `
           <div class="info">
-              <a href="/member_profile/${forumInfo._id}/key?${moderator.userID}">
+              <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${moderator.userID}">
                   <div class="profile-pic">
                       <img src="../../../uploads/${memberInfo.avatar}" alt="">
                   </div>
               </a>
               <div class="name">
-                  <a href="/member_profile/${forumInfo._id}/key?${moderator.userID}">
+                  <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${moderator.userID}">
                       <h4>${memberInfo.username}</h4>
                   </a>
                   <p>${memberRank}</p>
@@ -4107,13 +4111,13 @@ function loadAForumInfo(
         mod_panel.classList.add("moderator");
         if (forumInfo.moderators.length > 0) {
           mod_panel.innerHTML = `
-          <a href="/member_profile/${forumInfo._id}/key?${moderator.userID}">
+          <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${moderator.userID}">
                   <div class="profile-pic">
                       <img src="${memberInfo.avatar}" alt="">
                   </div>
                 </a>
                 <div class="info">
-                  <a href="/member_profile/${forumInfo._id}/key?${moderator.userID}">
+                  <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${moderator.userID}">
                     <h3>${memberInfo.username}</h3>
                   </a>
                   <p>${memberRank}</p>
@@ -4129,13 +4133,13 @@ function loadAForumInfo(
       memberModalPanel.classList.add("member");
       memberModalPanel.innerHTML = `
         <div class="info">
-            <a href="/member_profile/${forumInfo._id}/key?${memberInfo._id}">
+            <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${memberInfo._id}">
                 <div class="profile-pic">
                     <img src="../../../uploads/${memberInfo.avatar}" alt="">
                 </div>
             </a>
             <div class="name">
-                <a href="/member_profile/${forumInfo._id}/key?${memberInfo._id}">
+                <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${memberInfo._id}">
                     <h4>${memberInfo.username}</h4>
                 </a>
                 <p>${memberRank}</p>
@@ -4183,13 +4187,13 @@ function loadAForumInfo(
         var userMember = document.createElement("div");
         userMember.classList.add("member");
         userMember.innerHTML = `
-          <a href="/member_profile/${forumInfo._id}/key?${memberInfo._id}">
+          <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${memberInfo._id}">
             <div class="profile-pic">
                 <img src="../../../uploads/${memberInfo.avatar}" alt="">
             </div>
           </a>
           <div class="info">
-              <a href="/member_profile/${forumInfo._id}/key?${memberInfo._id}">
+              <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${memberInfo._id}">
                 <h3>${memberInfo.username}</h3>
               </a>
               <p>${memberRank}</p>
@@ -4204,13 +4208,13 @@ function loadAForumInfo(
         var memberPanel = document.createElement("div");
         memberPanel.classList.add("member");
         memberPanel.innerHTML = `
-            <a href="/member_profile/${forumInfo._id}/key?${memberInfo._id}">
+            <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${memberInfo._id}">
               <div class="profile-pic">
                   <img src="../../../uploads/${memberInfo.avatar}" alt="">
               </div>
             </a>
             <div class="info">
-                <a href="/member_profile/${forumInfo._id}/key?${memberInfo._id}">
+                <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${memberInfo._id}">
                   <h3>${memberInfo.username}</h3>
                 </a>
                 <p>${memberRank}</p>
