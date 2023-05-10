@@ -7,8 +7,10 @@ const {
 } = require("../../errors");
 
 const AuthModel = require("../../models/AuthModel");
+const ForumsActivityModel = require("../../models/ForumsActivityModel");
 const ForumsModel = require("../../models/ForumsModel");
 const ForumsTopicsModel = require("../../models/ForumsTopicsModel");
+const UserUpvotesModel = require("../../models/UserUpvotesModel");
 
 const deleteATopicAsModerator = async (data) => {
   const {
@@ -251,8 +253,8 @@ const updateTopicUpvotes = async (data) => {
           "ownerUpvotes"
         );
 
-        var newUserUpvote = userUpvoteNumber + 1;
-        userUpvoted = await ForumsModel.findOnendUpdate(
+        var newUserUpvote = userUpvoteNumber.ownerUpvotes + 1;
+        userUpvoted = await ForumsModel.findOneAndUpdate(
           { _id: forumID },
           { ownerUpvotes: newUserUpvote }
         );
@@ -262,14 +264,70 @@ const updateTopicUpvotes = async (data) => {
           "upvotes"
         );
 
-        var newUserUpvote = userUpvoteNumber + 1;
-        userUpvoted = await ForumsModel.findOnendUpdate(
+        var newUserUpvote = userUpvoteNumber.upvotes + 1;
+        userUpvoted = await ForumsModel.findOneAndUpdate(
           { _id: forumID, "members.userID": getInfo.userID },
           { $set: { "members.$.upvotes": newUserUpvote } }
         );
       }
+      var userUpvotePresent = await UserUpvotesModel.findOne({ userID });
+      if (userUpvotePresent) {
+        var upvoteAdded = await UserUpvotesModel.findOneAndUpdate(
+          { userID },
+          {
+            $push: {
+              myUpvotes: {
+                upvoteType: "topic",
+                forumID,
+                topicID,
+              },
+            },
+          }
+        );
+      } else {
+        var upvoteAdded = await UserUpvotesModel.create({
+          userID,
+          myUpvotes: [
+            {
+              upvoteType: "topic",
+              forumID,
+              topicID,
+            },
+          ],
+        });
+      }
 
-      if (topicUpvoted && userUpvoted)
+      const userActivity = await ForumsActivityModel.findOne({
+        userID,
+      });
+
+      if (userActivity) {
+        await ForumsActivityModel.findOneAndUpdate(
+          { userID },
+          {
+            $push: {
+              activities: {
+                activity: "upvoteTopic",
+                forumID,
+                topicID,
+              },
+            },
+          }
+        );
+      } else {
+        const activityCreated = await ForumsActivityModel.create({
+          userID,
+          activities: [
+            {
+              activity: "upvoteTopic",
+              forumID,
+              topicID,
+            },
+          ],
+        });
+      }
+
+      if (topicUpvoted && userUpvoted && upvoteAdded)
         console.log("Topic " + topicID + " has been upvoted");
       break;
 
@@ -289,8 +347,8 @@ const updateTopicUpvotes = async (data) => {
           "ownerUpvotes"
         );
 
-        var newUserUpvote = userUpvoteNumber - 1;
-        userUpvoteRemoved = await ForumsModel.findOnendUpdate(
+        var newUserUpvote = userUpvoteNumber.ownerUpvotes - 1;
+        userUpvoteRemoved = await ForumsModel.findOneAndUpdate(
           { _id: forumID },
           { ownerUpvotes: newUserUpvote }
         );
@@ -300,14 +358,43 @@ const updateTopicUpvotes = async (data) => {
           "upvotes"
         );
 
-        var newUserUpvote = userUpvoteNumber - 1;
-        userUpvoteRemoved = await ForumsModel.findOnendUpdate(
+        var newUserUpvote = userUpvoteNumber.upvotes - 1;
+        userUpvoteRemoved = await ForumsModel.findOneAndUpdate(
           { _id: forumID, "members.userID": getInfo.userID },
           { $set: { "members.$.upvotes": newUserUpvote } }
         );
       }
 
-      if (topicUpvoteRemoved && userUpvoteRemoved)
+      var userUpvotePresent = await UserUpvotesModel.findOne({ userID });
+      if (userUpvotePresent) {
+        var upvoteRemoved = await UserUpvotesModel.findOneAndUpdate(
+          { userID },
+          {
+            $pull: {
+              myUpvotes: {
+                upvoteType: "topic",
+                forumID,
+                topicID,
+              },
+            },
+          }
+        );
+      }
+
+      await ForumsActivityModel.findOneAndUpdate(
+        { userID },
+        {
+          $pull: {
+            activities: {
+              activity: "upvoteTopic",
+              forumID,
+              topicID,
+            },
+          },
+        }
+      );
+
+      if (topicUpvoteRemoved && userUpvoteRemoved && upvoteRemoved)
         console.log("Upvote for topic " + topicID + " has been removed");
       break;
   }
@@ -324,44 +411,107 @@ const updateResponseUpvotes = async (data) => {
     "responses"
   );
 
-  for (let i = 0; i < getAllResponses.length; i++) {
-    if (getAllResponses[i].responseID == responseID) {
-      var oldResponseUpvotes = getAllResponses[i].upvotes;
+  for (let i = 0; i < getAllResponses.responses.length; i++) {
+    const responses = getAllResponses.responses[i];
+
+    if (responses._id == responseID) {
+      var oldResponseUpvotes = responses.upvotes;
       switch (actionType) {
         case "upvoteAResponse":
           var newResponseUpvote = oldResponseUpvotes + 1;
           const responseUpvoted = await ForumsTopicsModel.findOneAndUpdate(
-            { _id: topicID, "responses.responseID": responseID },
+            { _id: topicID, "responses._id": responseID },
             { $set: { "responses.$.upvotes": newResponseUpvote } }
           );
 
           let userUpvoted;
           //Check if user is the forum creator
-          if (getAllResponses[i].userID == forumOwner) {
+          if (responses.userID == forumOwner) {
             const userUpvoteNumber = await ForumsModel.findOne(
               { _id: forumID },
               "ownerUpvotes"
             );
 
-            var newUserUpvote = userUpvoteNumber + 1;
-            userUpvoted = await ForumsModel.findOnendUpdate(
+            var newUserUpvote = userUpvoteNumber.ownerUpvotes + 1;
+            userUpvoted = await ForumsModel.findOneAndUpdate(
               { _id: forumID },
               { ownerUpvotes: newUserUpvote }
             );
           } else {
             const userUpvoteNumber = await ForumsModel.findOne(
-              { _id: forumID, "members.userID": getAllResponses[i].userID },
+              { _id: forumID, "members.userID": responses.userID },
               "upvotes"
             );
 
-            var newUserUpvote = userUpvoteNumber + 1;
-            userUpvoted = await ForumsModel.findOnendUpdate(
-              { _id: forumID, "members.userID": getAllResponses[i].userID },
+            var newUserUpvote = userUpvoteNumber.upvotes + 1;
+            userUpvoted = await ForumsModel.findOneAndUpdate(
+              { _id: forumID, "members.userID": responses.userID },
               { $set: { "members.$.upvotes": newUserUpvote } }
             );
           }
 
-          if (responseUpvoted && userUpvoted)
+          var userUpvotePresent = await UserUpvotesModel.findOne({ userID });
+          if (userUpvotePresent) {
+            var upvoteAdded = await UserUpvotesModel.findOneAndUpdate(
+              { userID },
+              {
+                $push: {
+                  myUpvotes: {
+                    upvoteType: "response",
+                    forumID,
+                    topicID,
+                    responseID,
+                  },
+                },
+              }
+            );
+          } else {
+            var upvoteAdded = await UserUpvotesModel.create({
+              userID,
+              myUpvotes: [
+                {
+                  upvoteType: "response",
+                  forumID,
+                  topicID,
+                  responseID,
+                },
+              ],
+            });
+          }
+
+          const userActivity = await ForumsActivityModel.findOne({
+            userID,
+          });
+
+          if (userActivity) {
+            await ForumsActivityModel.findOneAndUpdate(
+              { userID },
+              {
+                $push: {
+                  activities: {
+                    activity: "upvoteResponse",
+                    forumID,
+                    topicID,
+                    responseID,
+                  },
+                },
+              }
+            );
+          } else {
+            const activityCreated = await ForumsActivityModel.create({
+              userID,
+              activities: [
+                {
+                  activity: "upvoteResponse",
+                  forumID,
+                  topicID,
+                  responseID,
+                },
+              ],
+            });
+          }
+
+          if (responseUpvoted && userUpvoted && upvoteAdded)
             console.log(
               "Response " +
                 responseID +
@@ -376,37 +526,68 @@ const updateResponseUpvotes = async (data) => {
           var newResponseUpvote = oldResponseUpvotes - 1;
           const responseUpvoteRemoved =
             await ForumsTopicsModel.findOneAndUpdate(
-              { _id: topicID, "responses.responseID": responseID },
+              { _id: topicID, "responses._id": responseID },
               { $set: { "responses.$.upvotes": newResponseUpvote } }
             );
 
           let userUpvoteRemoved;
           //Check if user is the forum creator
-          if (getAllResponses[i].userID == forumOwner) {
+          if (responses.userID == forumOwner) {
             const userUpvoteNumber = await ForumsModel.findOne(
               { _id: forumID },
               "ownerUpvotes"
             );
 
-            var newUserUpvote = userUpvoteNumber - 1;
-            userUpvoteRemoved = await ForumsModel.findOnendUpdate(
+            var newUserUpvote = userUpvoteNumber.ownerUpvotes - 1;
+            userUpvoteRemoved = await ForumsModel.findOneAndUpdate(
               { _id: forumID },
               { ownerUpvotes: newUserUpvote }
             );
           } else {
             const userUpvoteNumber = await ForumsModel.findOne(
-              { _id: forumID, "members.userID": getAllResponses[i].userID },
+              { _id: forumID, "members.userID": responses.userID },
               "upvotes"
             );
 
-            var newUserUpvote = userUpvoteNumber - 1;
-            userUpvoteRemoved = await ForumsModel.findOnendUpdate(
-              { _id: forumID, "members.userID": getAllResponses[i].userID },
+            var newUserUpvote = userUpvoteNumber.upvotes - 1;
+            userUpvoteRemoved = await ForumsModel.findOneAndUpdate(
+              { _id: forumID, "members.userID": responses.userID },
               { $set: { "members.$.upvotes": newUserUpvote } }
             );
           }
 
-          if (responseUpvoteRemoved && userUpvoteRemoved)
+          var userUpvotePresent = await UserUpvotesModel.findOne({ userID });
+          if (userUpvotePresent) {
+            var upvoteRemoved = await UserUpvotesModel.findOneAndUpdate(
+              { userID },
+              {
+                $pull: {
+                  myUpvotes: {
+                    upvoteType: "response",
+                    forumID,
+                    topicID,
+                    responseID,
+                  },
+                },
+              }
+            );
+          }
+
+          await ForumsActivityModel.findOneAndUpdate(
+            { userID },
+            {
+              $pull: {
+                activities: {
+                  activity: "upvoteResponse",
+                  forumID,
+                  topicID,
+                  responseID,
+                },
+              },
+            }
+          );
+
+          if (responseUpvoteRemoved && userUpvoteRemoved && upvoteRemoved)
             console.log(
               "Upvote of a response " +
                 responseID +
@@ -438,6 +619,36 @@ const updateTopicBookmarks = async (data) => {
         { $push: { bookmarks: { userID } } }
       );
 
+      const userActivity = await ForumsActivityModel.findOne({
+        userID,
+      });
+
+      if (userActivity) {
+        await ForumsActivityModel.findOneAndUpdate(
+          { userID },
+          {
+            $push: {
+              activities: {
+                activity: "bookmark",
+                forumID,
+                topicID,
+              },
+            },
+          }
+        );
+      } else {
+        const activityCreated = await ForumsActivityModel.create({
+          userID,
+          activities: [
+            {
+              activity: "bookmark",
+              forumID,
+              topicID,
+            },
+          ],
+        });
+      }
+
       if (topicBookmarked)
         console.log("Topic " + topicID + " has been added to bookmarks");
       break;
@@ -447,6 +658,19 @@ const updateTopicBookmarks = async (data) => {
       const topicBookmarkRemoved = await ForumsTopicsModel.findByIdAndUpdate(
         { _id: topicID },
         { $pull: { bookmarks: { userID } } }
+      );
+
+      await ForumsActivityModel.findOneAndUpdate(
+        { userID },
+        {
+          $pull: {
+            activities: {
+              activity: "bookmark",
+              forumID,
+              topicID,
+            },
+          },
+        }
       );
 
       if (topicBookmarkRemoved)

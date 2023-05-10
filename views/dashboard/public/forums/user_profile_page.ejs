@@ -34,7 +34,7 @@
                                 <span><%= memberRank %></span>
                                 <% } %>
                             </div>
-                            <p><%= membersNoOfPosts %> posts</p>
+                            <p><%= membersNoOfPosts %> posts and comments</p>
                             <% if(isForumCreator == true){ %>
                             <p>Created on <%= new Date(forumInfo.createdAt).toDateString() %>.</p>
                             <p><span style="padding: 5px; background-color: var(--color-light);">Forum Creator</span>
@@ -77,16 +77,26 @@
                                         class="activity-time"><%= new Date(activity.datePerformed).toDateString() %></span>
                                 </div>
                             </a>
-                            <%}else if(activity.activity == "upvoteTopic"){%>
-                            <a
-                                href="/dashboard/public/forum/<%= activity.forumID %>/key?topicID=<%= activity.topicID %>">
-                                <div class="activity">
-                                    <span class="activity-icon"><i class="fa-solid fa-circle-up fa-lg"></i></span>
-                                    <span class="activity-details">User upvoted a topic</span>
-                                    <span
-                                        class="activity-time"><%= new Date(activity.datePerformed).toDateString() %></span>
-                                </div>
-                            </a>
+                            <%}else if(activity.activity == "bookmark"){%>
+                                <a
+                                    href="/dashboard/public/forum/<%= activity.forumID %>/key?topicID=<%= activity.topicID %>">
+                                    <div class="activity">
+                                        <span class="activity-icon"><i class="fa-solid fa-bookmark fa-lg"></i></span>
+                                        <span class="activity-details">User bookmarked a discussion</span>
+                                        <span
+                                            class="activity-time"><%= new Date(activity.datePerformed).toDateString() %></span>
+                                    </div>
+                                </a>
+                            <%}else if(activity.activity == "upvoteTopic"){ %> 
+                                <a
+                                    href="/dashboard/public/forum/<%= activity.forumID %>/key?topicID=<%= activity.topicID %>">
+                                    <div class="activity">
+                                        <span class="activity-icon"><i class="fa-solid fa-circle-up fa-lg"></i></span>
+                                        <span class="activity-details">User upvoted a topic</span>
+                                        <span
+                                            class="activity-time"><%= new Date(activity.datePerformed).toDateString() %></span>
+                                    </div>
+                                </a>
                             <%}else{%>
                             <a
                                 href="/dashboard/public/forum/<%= activity.forumID %>/key?topicID=<%= activity.topicID %>#<%= activity.responseID %>">

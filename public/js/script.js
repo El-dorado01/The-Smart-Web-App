@@ -3838,10 +3838,6 @@ function loadTopicsPage(newTopics, page, totalPages, nextPage, previousPage) {
   document.querySelector("#forumTopics").appendChild(div);
 }
 
-if (forumID) {
-  fetchAForumInfo(forumID, theUserID);
-}
-
 function fetchAForumInfo(forumID, userID) {
   socket.emit("fetchAForumInfo", { forumID, userID });
 }
@@ -4260,97 +4256,246 @@ function loadAForumInfo(
 }
 
 function deleteForumTopic(forumID, topicID, topicCreator) {
-  const formData = new FormData();
+  if (confirm("Are you sure you want to delete this topic?")) {
+    const formData = new FormData();
 
-  formData.append("topicID", topicID);
-  formData.append("forumID", forumID);
-  formData.append("topicCreator", topicCreator);
+    formData.append("topicID", topicID);
+    formData.append("forumID", forumID);
+    formData.append("topicCreator", topicCreator);
 
-  fetch("/dashboard/public/deleteATopic", {
-    method: "POST",
-    mode: "cors",
-    cache: "no-cache",
-    credentials: "same-origin",
-    redirect: "follow",
-    referrerPolicy: "no-referrer",
-    body: formData,
-  })
-    .then(function (res) {
-      return res.json();
+    fetch("/dashboard/public/deleteATopic", {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+      body: formData,
     })
-    .then(function (json) {
-      if (json.success) {
-        successAlert.style.display = "block";
-        successAlertIcon.className = "";
-        successAlertIcon.className = "fa fa-check-circle";
-        successMessage.textContent = json.msg;
+      .then(function (res) {
+        return res.json();
+      })
+      .then(function (json) {
+        if (json.success) {
+          successAlert.style.display = "block";
+          successAlertIcon.className = "";
+          successAlertIcon.className = "fa fa-check-circle";
+          successMessage.textContent = json.msg;
 
-        setTimeout(() => {
-          successAlert.style.display = "none";
-          location.assign("/dashboard/public/forum/" + forumID);
-        }, 1000);
-      } else {
-        dangerAlert.style.display = "block";
-        dangerMessage.textContent = json.msg;
+          setTimeout(() => {
+            successAlert.style.display = "none";
+            location.assign("/dashboard/public/forum/" + forumID);
+          }, 1000);
+        } else {
+          dangerAlert.style.display = "block";
+          dangerMessage.textContent = json.msg;
 
-        setTimeout(() => {
-          dangerAlert.style.display = "none";
-        }, 5000);
-      }
-    })
-    .catch(function (err) {
-      console.log(err);
-    });
+          setTimeout(() => {
+            dangerAlert.style.display = "none";
+          }, 5000);
+        }
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+  }
 }
 
 function deleteTopicResponse(forumID, topicID, responseID, responseCreator) {
-  const formData = new FormData();
+  if (confirm("Are you sure you want to delete this topic?")) {
+    const formData = new FormData();
 
-  formData.append("topicID", topicID);
-  formData.append("forumID", forumID);
-  formData.append("responseID", responseID);
-  formData.append("responseCreator", responseCreator);
+    formData.append("topicID", topicID);
+    formData.append("forumID", forumID);
+    formData.append("responseID", responseID);
+    formData.append("responseCreator", responseCreator);
 
-  fetch("/dashboard/public/deleteAResponse", {
-    method: "POST",
-    mode: "cors",
-    cache: "no-cache",
-    credentials: "same-origin",
-    redirect: "follow",
-    referrerPolicy: "no-referrer",
-    body: formData,
-  })
-    .then(function (res) {
-      return res.json();
+    fetch("/dashboard/public/deleteAResponse", {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+      body: formData,
     })
-    .then(function (json) {
-      if (json.success) {
-        // Remove response box panel
-        document.querySelector(".responseBox_" + responseID).remove();
-        var newCommentCount = parseInt(
-          document.getElementById("comment-count").innerHTML
-        );
-        document.getElementById("comment-count").innerText =
-          newCommentCount - 1;
+      .then(function (res) {
+        return res.json();
+      })
+      .then(function (json) {
+        if (json.success) {
+          // Remove response box panel
+          document.querySelector(".responseBox_" + responseID).remove();
+          var newCommentCount = parseInt(
+            document.getElementById("comment-count").innerHTML
+          );
+          document.getElementById("comment-count").innerText =
+            newCommentCount - 1;
 
-        successAlert.style.display = "block";
-        successAlertIcon.className = "";
-        successAlertIcon.className = "fa fa-check-circle";
-        successMessage.textContent = json.msg;
+          successAlert.style.display = "block";
+          successAlertIcon.className = "";
+          successAlertIcon.className = "fa fa-check-circle";
+          successMessage.textContent = json.msg;
 
-        setTimeout(() => {
-          successAlert.style.display = "none";
-        }, 3000);
-      } else {
-        dangerAlert.style.display = "block";
-        dangerMessage.textContent = json.msg;
+          setTimeout(() => {
+            successAlert.style.display = "none";
+          }, 3000);
+        } else {
+          dangerAlert.style.display = "block";
+          dangerMessage.textContent = json.msg;
 
-        setTimeout(() => {
-          dangerAlert.style.display = "none";
-        }, 5000);
-      }
-    })
-    .catch(function (err) {
-      console.log(err);
-    });
+          setTimeout(() => {
+            dangerAlert.style.display = "none";
+          }, 5000);
+        }
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+  }
+}
+
+function updateTopicUpvotes(
+  event,
+  userID,
+  topicID,
+  forumID,
+  actionType,
+  isAMember
+) {
+  if (isAMember == false) {
+    dangerAlert.style.display = "block";
+    dangerMessage.textContent = "You are not a member of this forum!";
+
+    setTimeout(() => {
+      dangerAlert.style.display = "none";
+    }, 5000);
+    return;
+  }
+
+  if (actionType == "upvoteATopic") {
+    event.querySelector(".icon").style.color = "var(--color-primary)";
+    event.querySelector(".count").innerText =
+      parseInt(event.querySelector(".count").innerText) + 1;
+    event.title = "Remove this Topic from Upvotes";
+
+    event.removeAttribute("onclick");
+    event.setAttribute(
+      "onclick",
+      `updateTopicUpvotes(this, '${userID}', '${topicID}', '${forumID}', 'removeTopicFromUpvotes', '${isAMember}')`
+    );
+  } else {
+    event.querySelector(".icon").style.color = "";
+    event.querySelector(".count").innerText =
+      parseInt(event.querySelector(".count").innerText) - 1;
+    event.title = "Upvote this Topic";
+
+    event.removeAttribute("onclick");
+    event.setAttribute(
+      "onclick",
+      `updateTopicUpvotes(this, '${userID}', '${topicID}', '${forumID}', "upvoteATopic", '${isAMember}')`
+    );
+  }
+  socket.emit("updateTopicUpvotes", { userID, topicID, forumID, actionType });
+}
+
+function updateResponseUpvotes(
+  obj,
+  userID,
+  topicID,
+  responseID,
+  forumID,
+  actionType,
+  isAMember
+) {
+  if (isAMember == false) {
+    dangerAlert.style.display = "block";
+    dangerMessage.textContent = "You are not a member of this forum!";
+
+    setTimeout(() => {
+      dangerAlert.style.display = "none";
+    }, 5000);
+    return;
+  }
+
+  if (actionType == "upvoteAResponse") {
+    obj.querySelector(".icon").style.color = "var(--color-primary)";
+    obj.title = "Remove this Response from Upvotes";
+    obj.querySelector(".count").innerText =
+      parseInt(obj.querySelector(".count").innerText) + 1;
+
+    obj.removeAttribute("onclick");
+    obj.setAttribute(
+      "onclick",
+      `updateResponseUpvotes(this, '${userID}', '${topicID}', '${responseID}', '${forumID}', "removeResponseFromUpvotes", '${isAMember}')`
+    );
+  } else {
+    obj.querySelector(".icon").style.color = "";
+    obj.title = "Upvote this Response";
+    obj.querySelector(".count").innerText =
+      parseInt(obj.querySelector(".count").innerText) - 1;
+
+    obj.removeAttribute("onclick");
+    obj.setAttribute(
+      "onclick",
+      `updateResponseUpvotes(this, '${userID}', '${topicID}', '${responseID}', '${forumID}', "upvoteAResponse", '${isAMember}')`
+    );
+  }
+  socket.emit("updateResponseUpvotes", {
+    userID,
+    topicID,
+    responseID,
+    forumID,
+    actionType,
+  });
+}
+
+function updateTopicBookmarks(
+  obj,
+  userID,
+  topicID,
+  forumID,
+  actionType,
+  isAMember
+) {
+  if (isAMember == false) {
+    dangerAlert.style.display = "block";
+    dangerMessage.textContent = "You are not a member of this forum!";
+
+    setTimeout(() => {
+      dangerAlert.style.display = "none";
+    }, 5000);
+    return;
+  }
+
+  if (actionType == "bookmarkATopic") {
+    obj.querySelector(".icon").style.color = "var(--color-primary)";
+    obj.title = "Remove this Discussion from Bookmarks";
+    obj.querySelector(".count").innerText =
+      parseInt(obj.querySelector(".count").innerText) + 1;
+
+    obj.removeAttribute("onclick");
+    obj.setAttribute(
+      "onclick",
+      `updateTopicBookmarks(this, '${userID}', '${topicID}', '${forumID}', 'removeTopicFromBookmarks', '${isAMember}')`
+    );
+  } else {
+    obj.querySelector(".icon").style.color = "";
+    obj.title = "Bookmark this Discussion";
+    obj.querySelector(".count").innerText =
+      parseInt(obj.querySelector(".count").innerText) - 1;
+
+    obj.removeAttribute("onclick");
+    obj.setAttribute(
+      "onclick",
+      `updateTopicBookmarks(this, '${userID}', '${topicID}', '${forumID}', 'bookmarkATopic', '${isAMember}')`
+    );
+  }
+
+  socket.emit("updateTopicBookmarks", {
+    userID,
+    topicID,
+    forumID,
+    actionType,
+  });
 }

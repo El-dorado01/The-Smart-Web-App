@@ -4,9 +4,6 @@
 <head>
     <!-- Header -->
     <%- include("../partials/header") %>
-    <script>
-        //const forumID = "";
-    </script>
 </head>
 
 <body>
@@ -110,69 +107,79 @@
                             </div>
                             <div class="second">
                                 <div class="user-info">
-                                    <img src="../../../../uploads/<%= questionnaire.userInfo.avatar %>" alt="">
+                                    <a href="/dashboard/public/member_profile/<%= forumID %>/key?memberID=<%= questionnaire.userInfo._id %>">
+                                        <img src="../../../../uploads/<%= questionnaire.userInfo.avatar %>" alt="">
+                                    </a>
                                     <div>
-                                        <h5>By <%= questionnaire.userInfo.username %>,</h5>
-                                        <span class="text-muted"><%= topicInfo.upvotes %>
-                                            upvote<% if(topicInfo.upvotes > 1){%>s<% } %>,
+                                        <h5>By <a href="/dashboard/public/member_profile/<%= forumID %>/key?memberID=<%= questionnaire.userInfo._id %>"><%= questionnaire.userInfo.username %></a>,</h5>
+                                        <span class="text-muted"><%= questionnaire.memberUpvotes %>
+                                            upvote<% if(questionnaire.memberUpvotes > 1){%>s<% } %>,
                                             <%= new Date(topicInfo.createdAt).toDateString() %></span>
                                     </div>
                                 </div>
                                 <div class="action">
                                     <% if(bookmarked == true){%>
                                     <div class="flex" title="Remove this Discussion from Bookmarks"
-                                        style="cursor: pointer;">
-                                        <span><i class="fa-solid fa-bookmark fa-lg"
-                                                style="color: var(--color-primary);"></i>
+                                        style="cursor: pointer;" onclick="updateTopicBookmarks(this, '<%= user._id%>','<%= topicInfo._id %>','<%= topicInfo.forumID %>','removeTopicFromBookmarks', '<%= isAMember %>')">
+                                        <span class="icon" style="color: var(--color-primary);"><i class="fa-solid fa-bookmark fa-lg"></i>
                                         </span>&nbsp;
                                         <div class="count"><%= topicInfo.bookmarks.length %></div>
                                     </div>
                                     <%}else{%>
-                                    <div class="flex" title="Bookmark this Discussion" style="cursor: pointer;">
-                                        <span><i class="fa-solid fa-bookmark fa-lg"></i>
+                                    <div class="flex" title="Bookmark this Discussion" style="cursor: pointer;" onclick="updateTopicBookmarks(this, '<%= user._id%>','<%= topicInfo._id %>','<%= topicInfo.forumID %>','bookmarkATopic', '<%= isAMember %>')">
+                                        <span class="icon"><i class="fa-solid fa-bookmark fa-lg"></i>
                                         </span>&nbsp;
                                         <div class="count"><%= topicInfo.bookmarks.length %></div>
                                     </div>
-                                    <%}%>
-                                    <div class="flex" title="Upvote this Topic" style="cursor: pointer;">
-                                        <span><i class="fa-solid fa-arrow-up fa-lg"></i>
+                                    <%}
+                                    if(topicUpvotedByUser == true){%>
+                                    <div class="flex" title="Remove this Topic from Upvotes" style="cursor: pointer;" onclick="updateTopicUpvotes(this, '<%= user._id%>','<%= topicInfo._id %>','<%= topicInfo.forumID %>','removeTopicFromUpvotes', <%= isAMember %>)">
+                                        <span class="icon" style="color: var(--color-primary);"><i class="fa-solid fa-circle-up fa-lg"></i>
                                         </span>&nbsp;
                                         <div class="count"><%= topicInfo.upvotes %></div>
-                            </div>
-                            <div title="Share" class="extra">
-                                <span><i class="fa-solid fa-arrow-up-from-bracket fa-lg"></i></span>
-                            </div>
-                            <% 
-                                    if(user._id == topicInfo.userID || user._id == forumInfo.creator){ %>
-                            <div title="Delete Topic" class="extra" style="background-color: var(--color-danger);"
-                                onclick="deleteForumTopic('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= topicInfo.userID %>')">
-                                <span><i class="fa-solid fa-trash fa-lg"></i></span>
-                            </div>
-                            <%} else {
-                                    for (let i = 0; i < forumInfo.moderators.length; i++) { 
-                                        if(forumInfo.moderators[i].userID==user._id ) { 
+                                    </div>
+                                    <%}else{%>
+                                        <div class="flex" title="Upvote this Topic" style="cursor: pointer;" onclick="updateTopicUpvotes(this, '<%= user._id%>','<%= topicInfo._id %>','<%= topicInfo.forumID %>','upvoteATopic', <%= isAMember %>)">
+                                            <span class="icon"><i class="fa-solid fa-circle-up fa-lg"></i>
+                                            </span>&nbsp;
+                                            <div class="count"><%= topicInfo.upvotes %></div>
+                                        </div>
+                                    <%}
                                     %>
-                            <div title="Delete Topic" class="extra" style="background-color: var(--color-danger);"
-                                onclick="
-                                deleteForumTopic('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= topicInfo.userID %>')">
-                                <span><i class="fa-solid fa-trash fa-lg"></i></span>
-                            </div>
-
-                            <% } 
+                                    <div title="Share" class="extra">
+                                        <span><i class="fa-solid fa-arrow-up-from-bracket fa-lg"></i></span>
+                                    </div>
+                                    <% if(user._id == topicInfo.userID || user._id == forumInfo.creator){ %>
+                                    <div title="Delete Topic" class="extra" style="background-color: var(--color-danger);"
+                                        onclick="deleteForumTopic('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= topicInfo.userID %>')">
+                                        <span><i class="fa-solid fa-trash fa-lg"></i></span>
+                                    </div>
+                                    <%} else {
+                                        for (let i = 0; i < forumInfo.moderators.length; i++) { 
+                                            if(forumInfo.moderators[i].userID==user._id ) { 
+                                    %>
+                                    <div title="Delete Topic" class="extra" style="background-color: var(--color-danger);"
+                                        onclick="
+                                        deleteForumTopic('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= topicInfo.userID %>')">
+                                        <span><i class="fa-solid fa-trash fa-lg"></i></span>
+                                    </div>
+                                    <% } 
                                         }
                                      } %>
-
-
+                                </div>
                         </div>
                     </div>
-                </div>
                 <!--Questionnaire-->
                 <div class="q-box" id="<%= topicInfo._id %>">
                     <div class="q-box-main">
                         <div class="q-box-left">
                             <div class="user-info">
-                                <h4><%= questionnaire.userInfo.username %></h4>
-                                <img src="../../../../uploads/<%= questionnaire.userInfo.avatar %>" alt="">
+                                <a href="/dashboard/public/member_profile/<%= forumID %>/key?memberID=<%= questionnaire.userInfo._id %>">
+                                    <h4><%= questionnaire.userInfo.username %></h4>
+                                    </a>
+                                <a href="/dashboard/public/member_profile/<%= forumID %>/key?memberID=<%= questionnaire.userInfo._id %>">
+                                    <img src="../../../../uploads/<%= questionnaire.userInfo.avatar %>" alt="">
+                                    </a>
                                 <div class="upvotes"><%= questionnaire.memberUpvotes %>
                                     upvote<% if(questionnaire.memberUpvotes > 1){%>s<% } %></div>
                                 <span>Posted: <i
@@ -214,11 +221,10 @@
                             </div>
                             <div class="actions">
                                 <p title="Quote"
-                                    onclick="tagAResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>', '<%= topicInfo._id %>', '<%= JSON.stringify(forumInfo.wordsFilter) %>')">
+                                    onclick="tagAResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>', '<%= topicInfo._id %>', '<%= JSON.stringify(forumInfo.wordsFilter) %>', '<%= isAMember %>')">
                                     <i class="fa-solid fa-quote-right fa-lg"></i></p>
-                                <p title="Upvote" style="width: 40px;"><i
-                                        class="fa-solid fa-arrow-up fa-lg"></i><span><%= topicInfo.upvotes %>
-                                    </span></p>
+                                <!--<p title="Upvote" style="width: 40px;"><i class="fa-solid fa-circle-up fa-lg"></i><span><% //topicInfo.upvotes %>
+                                    </span></p>-->
                                 <p title="Share"><i class="fa-solid fa-arrow-up-from-bracket fa-lg"></i> </p>
                             </div>
                         </div>
@@ -237,19 +243,23 @@
                         <div></div>
                     </div>
                     <div class="preview"></div>
-                    <textarea name="" id="response-text"></textarea>
-                    <div class="actions">
-                        <div class="icons">
-                            <span onclick="createResponseImg()" title="Add Images"><i
-                                    class="fa-regular fa-image"></i></span>
-                            <span onclick="createResponseVideo()" title="Add Video"><i
-                                    class="fa-solid fa-video"></i></span>
-                            <!--<span title="Add File"><i class="fa-solid fa-paperclip"></i></span>-->
+                    <% if(isAMember == false){ %>
+                        <textarea name="" disabled>You cannot post a comment on this topic because your not a member of this forum!</textarea>
+                    <% }else{ %> 
+                        <textarea name="" id="response-text"></textarea>
+                        <div class="actions">
+                            <div class="icons">
+                                <span onclick="createResponseImg()" title="Add Images"><i
+                                        class="fa-regular fa-image"></i></span>
+                                <span onclick="createResponseVideo()" title="Add Video"><i
+                                        class="fa-solid fa-video"></i></span>
+                                <!--<span title="Add File"><i class="fa-solid fa-paperclip"></i></span>-->
+                            </div>
+                            <button class="btn btn-primary" type="submit" onclick="submitForumResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>',
+                                        '<%= JSON.stringify(forumInfo.wordsFilter) %>', '')"><i
+                                    class="fa-solid fa-paper-plane"></i><span>Send</span></button>
                         </div>
-                        <button class="btn btn-primary" type="submit" onclick="submitForumResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>',
-                                    '<%= JSON.stringify(forumInfo.wordsFilter) %>', '')"><i
-                                class="fa-solid fa-paper-plane"></i><span>Send</span></button>
-                    </div>
+                        <% } %>
                 </div>
             </div>
         </div>
@@ -296,7 +306,16 @@
 
         let myEditor;
 
-        function tagAResponse(forumID, topicID, taggedResponseID, filterArray) {
+        function tagAResponse(forumID, topicID, taggedResponseID, filterArray, isAMember) {
+            if(isAMember == false){
+                dangerAlert.style.display = "block";
+                dangerMessage.textContent = "You are not a member of this forum!";
+
+                setTimeout(() => {
+                    dangerAlert.style.display = "none";
+                }, 5000);
+                return;
+            }
             var taggedText = document.querySelector("#field_" + taggedResponseID + " .response-field").innerHTML
             document.querySelector(".tagged-msg div").innerHTML = taggedText
             document.querySelector(".tagged-msg").style.display = "block"
@@ -633,10 +652,17 @@
                                 var actionsField = document.createElement("div")
                                 actionsField.classList.add("actions")
                                 actionsField.innerHTML = `
-                                    <p onclick="tagAResponse('${topicInfo.forumID}', '${topicInfo._id}', '${replyInfo.response._id}', '${JSON.stringify(forumInfo.wordsFilter)}')">
-                                        <i class="fa-solid fa-quote-right"></i> <span>Quote</span></p>
-                                    <p><i class="fa fa-arrow-up"></i><span>${replyInfo.response.upvotes}
-                                            upvote${replyInfo.response.upvotes > 1 ? "s" : ""} </span></p>
+                                    <p onclick="tagAResponse('${topicInfo.forumID}', '${topicInfo._id}', '${replyInfo.response._id}', '${JSON.stringify(forumInfo.wordsFilter)}', true)">
+                                        <i class="fa-solid fa-quote-right fa-lg"></i></p>
+                                    <p style="width: 40px;" title="Upvote this Response" onclick="updateResponseUpvotes(this, '${replyInfo.response.userID}','${topicInfo._id }','${replyInfo.response._id }','${topicInfo.forumID }','upvoteAResponse', true)">
+                                        <span class="icon"><i class="fa-solid fa-circle-up fa-lg"></i></span>
+                                        <span class="count">${replyInfo.response.upvotes}</span>
+                                    </p>
+                                    <p title="Share"><i class="fa-solid fa-arrow-up-from-bracket fa-lg"></i> </p>
+                                    <p style="background-color: var(--color-danger);" title="Delete"
+                    onclick="deleteTopicResponse('${topicInfo.forumID}','${topicInfo._id}','${replyInfo.response._id}','${replyInfo.response.userID}')">
+                                        <i class="fa-solid fa-trash fa-lg"></i>
+                                    </p>
                                 `
 
                                 // APPEND ACTIONS FIELD

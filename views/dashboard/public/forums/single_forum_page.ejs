@@ -4,9 +4,6 @@
 <head>
     <!-- Header -->
     <%- include("../partials/header") %>
-    <script>
-        const forumID = "<%= forumID %>";
-    </script>
 </head>
 
 <body>
@@ -41,7 +38,6 @@
             </div>
             <!-- Sidebar -->
             <%- include ("../partials/sidebar") %>
-
             <!--Middle-->
             <div class="middle">
                 <!--Forums-->
@@ -257,6 +253,10 @@
         }
     </script>
     <script src="../../../../js/script.js"></script>
+    <script>
+        const forumID = "<%= forumID %>";
+        fetchAForumInfo(forumID, theUserID);
+    </script>
 </body>
 
 </html>

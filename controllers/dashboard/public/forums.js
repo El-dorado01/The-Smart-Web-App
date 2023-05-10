@@ -17,7 +17,7 @@ const ForumsModel = require("../../../models/ForumsModel");
 const ForumsTopicsModel = require("../../../models/ForumsTopicsModel");
 const ForumRankingsModel = require("../../../models/ForumRankingsModel");
 const ForumsActivityModel = require("../../../models/ForumsActivityModel");
-const { log } = require("console");
+const UserUpvotesModel = require("../../../models/UserUpvotesModel");
 
 const forums = async (req, res) => {
   const page_name = req.path;
@@ -125,6 +125,7 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   const page_name = req.path;
   const forumID = req.params.forumID;
   const topicID = req.query.topicID;
+  var isAMember = false;
 
   const cookies = req.cookies;
   const token = cookies.jwtAccessToken;
@@ -133,6 +134,14 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
     userId: payload.userId,
     userName: payload.userName,
   };
+
+  // Update number of views
+  const getTopicViews = await ForumsTopicsModel.findById({ _id: topicID });
+  var newViewsNumber = getTopicViews.__v + 1;
+  await ForumsTopicsModel.findByIdAndUpdate(
+    { _id: topicID },
+    { __v: newViewsNumber }
+  );
 
   const topicInfo = await ForumsTopicsModel.findById({ _id: topicID });
   const topicResponses = topicInfo.responses;
@@ -153,6 +162,9 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   );
 
   if (topicInfo.userID == forumInfo.creator) {
+    if (user.userId == forumInfo.creator) {
+      isAMember = true;
+    }
     questionnaire = {
       userInfo,
       memberUpvotes: forumInfo.ownerUpvotes,
@@ -160,7 +172,9 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   } else {
     for (let i = 0; i < forumInfo.members.length; i++) {
       const member = forumInfo.members[i];
-
+      if (user.userId == member.userID) {
+        isAMember = true;
+      }
       if (topicInfo.userID == member.userID) {
         questionnaire = {
           userInfo,
@@ -170,6 +184,8 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
     }
   }
 
+  var responsesUpvoted = [];
+
   // Get all responses with user info and upvotes
   for (let i = 0; i < topicResponses.length; i++) {
     const response = topicResponses[i];
@@ -177,6 +193,20 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
       response.userID,
       "username avatar about"
     );
+
+    //Check if the response is among the responses upvoted by user
+    var responseUpvotePresent = await UserUpvotesModel.findOne({
+      userID: user.userId,
+      $and: [
+        { "myUpvotes.forumID": forumID },
+        { "myUpvotes.responseID": response._id },
+      ],
+    });
+
+    if (responseUpvotePresent) {
+      responsesUpvoted.push(response._id);
+    }
+
     if (response.userID == forumInfo.creator) {
       responses.push({
         response,
@@ -209,8 +239,22 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
 
   // Check if topic is bookmarked by current user
   var bookmarked = false;
-  if (topicInfo.bookmarks.includes(user.userId)) {
-    bookmarked = true;
+  for (let i = 0; i < topicInfo.bookmarks.length; i++) {
+    const bookmark = topicInfo.bookmarks[i];
+    if (bookmark.userID == user.userId) {
+      bookmarked = true;
+    }
+  }
+
+  //Check if user has upvoted the current topic
+  const userUpvote = await UserUpvotesModel.findOne({
+    userID: user.userId,
+    $and: [{ "myUpvotes.forumID": forumID }, { "myUpvotes.topicID": topicID }],
+  });
+
+  var topicUpvotedByUser = false;
+  if (userUpvote) {
+    topicUpvotedByUser = true;
   }
 
   res.locals.forumID = forumID;
@@ -221,15 +265,14 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   res.locals.forums = fetchAllForums;
   res.locals.invites = invites;
   res.locals.bookmarked = bookmarked;
+  res.locals.isAMember = isAMember;
+  res.locals.responsesUpvoted = responsesUpvoted;
+  res.locals.topicUpvotedByUser = topicUpvotedByUser;
 
   res.status(StatusCodes.OK).render("./dashboard/public/forums/topic_page", {
     headTitle: "Forum - " + forumInfo.forumName,
     page_name,
   });
-
-  // res
-  //   .status(StatusCodes.PERMANENT_REDIRECT)
-  //   .redirect("/dashboard/public/forum/channel");
 });
 
 /*
@@ -1285,6 +1328,7 @@ const deleteATopic = asyncWrapper(async (req, res) => {
       {
         $pull: {
           activities: {
+            activity: "post",
             forumID,
             topicID,
           },
@@ -1318,6 +1362,7 @@ const deleteATopic = asyncWrapper(async (req, res) => {
           {
             $pull: {
               activities: {
+                activity: "post",
                 forumID,
                 topicID,
               },
@@ -1774,7 +1819,7 @@ const deleteAResponse = asyncWrapper(async (req, res) => {
   if (responseCreator == user.userId) {
     const responseDeleted = await ForumsTopicsModel.findByIdAndUpdate(
       { _id: topicID },
-      { $pull: { responses: { responseID } } }
+      { $pull: { responses: { _id: responseID } } }
     );
 
     await ForumsActivityModel.findOneAndUpdate(
@@ -1782,7 +1827,9 @@ const deleteAResponse = asyncWrapper(async (req, res) => {
       {
         $pull: {
           activities: {
+            activity: "response",
             forumID,
+            topicID,
             responseID,
           },
         },
@@ -1808,7 +1855,7 @@ const deleteAResponse = asyncWrapper(async (req, res) => {
       ) {
         const responseDeleted = await ForumsTopicsModel.findByIdAndUpdate(
           { _id: topicID },
-          { $pull: { responses: { responseID } } }
+          { $pull: { responses: { _id: responseID } } }
         );
 
         await ForumsActivityModel.findOneAndUpdate(
@@ -1816,7 +1863,9 @@ const deleteAResponse = asyncWrapper(async (req, res) => {
           {
             $pull: {
               activities: {
+                activity: "response",
                 forumID,
+                topicID,
                 responseID,
               },
             },

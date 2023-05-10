@@ -1,22 +1,16 @@
 const mongoose = require("mongoose");
-const { v4: uuidv4 } = require("uuid");
 
-const ForumsActivitySchema = new mongoose.Schema(
+const UserUpvotesSchema = new mongoose.Schema(
   {
     userID: {
       type: String,
+      required: [true, "A user ID is missing"],
     },
-    activities: [
+    myUpvotes: [
       {
-        activity: {
+        upvoteType: {
           type: String,
-          enum: [
-            "post",
-            "response",
-            "bookmark",
-            "upvoteTopic",
-            "upvoteResponse",
-          ],
+          enum: ["topic", "response"],
         },
         forumID: {
           type: String,
@@ -27,7 +21,7 @@ const ForumsActivitySchema = new mongoose.Schema(
         responseID: {
           type: String,
         },
-        datePerformed: {
+        dateUpvoted: {
           type: Date,
           default: Date.now,
         },
@@ -39,4 +33,4 @@ const ForumsActivitySchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("forumsActivity", ForumsActivitySchema);
+module.exports = mongoose.model("userUpvote", UserUpvotesSchema);
