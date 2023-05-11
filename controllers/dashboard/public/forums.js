@@ -5,6 +5,7 @@ require("express-async-errors");
 const { StatusCodes } = require("http-status-codes");
 const { v4: uuidv4 } = require("uuid");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const cloudinary = require("cloudinary").v2;
 const asyncWrapper = require("../../../middleware/async");
 const {
@@ -49,6 +50,233 @@ const forums = async (req, res) => {
   });
 };
 
+const processInvite = asyncWrapper(async (req, res) => {
+  const page_name = req.path;
+  const forumID = req.params.forumID;
+  const secretKey = req.query.secretKey;
+
+  const cookies = req.cookies;
+  const token = cookies.jwtAccessToken;
+  const payload = jwt.verify(token, process.env.ACCESS_TOKEN_KEY);
+  const user = {
+    userId: payload.userId,
+    userName: payload.userName,
+  };
+
+  const forumInfoKey = await ForumsModel.findById(forumID);
+
+  const isMatch = await bcrypt.compare(forumInfoKey.forumSecretKey, secretKey);
+  if (isMatch) {
+    // Check if user is already a member of the forum
+    var isAlreadyAMember = false;
+    if (forumInfoKey.creator == user.userId) {
+      isAlreadyAMember = true;
+    } else {
+      if (forumInfoKey.members.length > 0) {
+        for (let i = 0; i < forumInfoKey.members.length; i++) {
+          const member = forumInfoKey.members[i];
+          if (member.userID == user.userId) {
+            isAlreadyAMember = true;
+          }
+        }
+      }
+    }
+
+    if (isAlreadyAMember == true) {
+      var msg = {
+        success: true,
+        content: "You are already a member of this forum",
+      };
+    } else {
+      const newMemberAdded = await ForumsModel.findByIdAndUpdate(
+        { _id: forumID },
+        {
+          $push: {
+            members: {
+              userID: user.userId,
+            },
+          },
+        }
+      );
+
+      if (newMemberAdded) {
+        console.log(
+          "New Member " + user.userId + " has joined the forum " + forumID
+        );
+      }
+
+      var msg = {
+        success: true,
+        content: "Welcome to " + forumInfoKey.forumName,
+      };
+    }
+
+    //Fetch User's forums
+    const fetchAllForums = await ForumsModel.find({
+      $or: [{ creator: user.userId }, { "members.userID": user.userId }],
+    });
+    const invites = await ForumsModel.find({
+      $and: [{ "invites.userID": user.userId }, { "invites.incoming": false }],
+    });
+
+    const topics = [];
+
+    const allTopics = await ForumsTopicsModel.find({ forumID }).sort(
+      "-createdAt"
+    );
+    var topic_per_page = 15;
+    var topicsModel = allTopics.slice(0, topic_per_page);
+    var totalPages = Math.ceil(allTopics.length / topic_per_page);
+    var isAMember = false;
+    var isAModerator = false;
+
+    const forumInfo = await ForumsModel.findById(forumID);
+
+    // Check if user is an admin
+    for (let i = 0; i < forumInfo.moderators.length; i++) {
+      const moderator = forumInfo.moderators[i];
+      if (user.userId == moderator.userID) {
+        isAModerator = true;
+      }
+    }
+    if (user.userId == forumInfo.creator) {
+      isAMember = true;
+      isAModerator = true;
+    } else {
+      for (let i = 0; i < forumInfo.members.length; i++) {
+        const member = forumInfo.members[i];
+        if (user.userId == member.userID) {
+          isAMember = true;
+        }
+      }
+    }
+    for (let i = 0; i < topicsModel.length; i++) {
+      const userInfo = await AuthModel.findById(
+        topicsModel[i].userID,
+        "username avatar about"
+      );
+      if (topicsModel[i].userID == forumInfo.creator) {
+        topics.push({
+          topic: topicsModel[i],
+          userInfo,
+          memberUpvotes: forumInfo.ownerUpvotes,
+        });
+      } else {
+        for (let i = 0; i < forumInfo.members.length; i++) {
+          const member = forumInfo.members[i];
+          if (user.userId == member.userID) {
+            isAMember = true;
+          }
+          if (topicsModel[i].userID == member.userID) {
+            topics.push({
+              topic: topicsModel[i],
+              userInfo,
+              memberUpvotes: member.upvotes,
+            });
+          }
+        }
+      }
+    }
+
+    res.locals.forums = fetchAllForums;
+    res.locals.invites = invites;
+    res.locals.forumID = forumID;
+    res.locals.forumInfo = forumInfo;
+    res.locals.topics = topics;
+    res.locals.isAMember = isAMember;
+    res.locals.isAModerator = isAModerator;
+    res.locals.incomingMsg = true;
+    res
+      .status(StatusCodes.OK)
+      .render("./dashboard/public/forums/single_forum_page", {
+        headTitle: "Smart Forums - " + forumInfo.forumName,
+        page_name,
+        totalPages,
+        msg,
+      });
+  } else {
+    //Fetch User's forums
+    const fetchAllForums = await ForumsModel.find({
+      $or: [{ creator: user.userId }, { "members.userID": user.userId }],
+    });
+    const invites = await ForumsModel.find({
+      $and: [{ "invites.userID": user.userId }, { "invites.incoming": false }],
+    });
+
+    const topics = [];
+
+    const allTopics = await ForumsTopicsModel.find({ forumID }).sort(
+      "-createdAt"
+    );
+    var topic_per_page = 15;
+    var topicsModel = allTopics.slice(0, topic_per_page);
+    var totalPages = Math.ceil(allTopics.length / topic_per_page);
+    var isAMember = false;
+    var isAModerator = false;
+
+    const forumInfo = await ForumsModel.findById(forumID);
+
+    // Check if user is an admin
+    for (let i = 0; i < forumInfo.moderators.length; i++) {
+      const moderator = forumInfo.moderators[i];
+      if (user.userId == moderator.userID) {
+        isAModerator = true;
+      }
+    }
+    for (let i = 0; i < topicsModel.length; i++) {
+      const userInfo = await AuthModel.findById(
+        topicsModel[i].userID,
+        "username avatar about"
+      );
+      if (topicsModel[i].userID == forumInfo.creator) {
+        if (user.userId == forumInfo.creator) {
+          isAMember = true;
+          isAModerator = true;
+        }
+        topics.push({
+          topic: topicsModel[i],
+          userInfo,
+          memberUpvotes: forumInfo.ownerUpvotes,
+        });
+      } else {
+        for (let i = 0; i < forumInfo.members.length; i++) {
+          const member = forumInfo.members[i];
+          if (user.userId == member.userID) {
+            isAMember = true;
+          }
+          if (topicsModel[i].userID == member.userID) {
+            topics.push({
+              topic: topicsModel[i],
+              userInfo,
+              memberUpvotes: member.upvotes,
+            });
+          }
+        }
+      }
+    }
+
+    res.locals.forums = fetchAllForums;
+    res.locals.invites = invites;
+    res.locals.forumID = forumID;
+    res.locals.forumInfo = forumInfo;
+    res.locals.topics = topics;
+    res.locals.isAMember = isAMember;
+    res.locals.isAModerator = isAModerator;
+    res.locals.incomingMsg = true;
+    res
+      .status(StatusCodes.OK)
+      .render("./dashboard/public/forums/single_forum_page", {
+        headTitle: "Smart Forums - " + forumInfo.forumName,
+        page_name,
+        totalPages,
+        msg: {
+          success: false,
+          content: `Cannot join forum, please check your invite link and try again!`,
+        },
+      });
+  }
+});
+
 const singleForum = async (req, res) => {
   const page_name = req.path;
   const forumID = req.params.forumID;
@@ -74,29 +302,50 @@ const singleForum = async (req, res) => {
   const allTopics = await ForumsTopicsModel.find({ forumID }).sort(
     "-createdAt"
   );
-  var topic_per_page = 1;
+  var topic_per_page = 15;
   var topicsModel = allTopics.slice(0, topic_per_page);
   var totalPages = Math.ceil(allTopics.length / topic_per_page);
+  var isAMember = false;
+  var isAModerator = false;
 
-  const forumMembers = await ForumsModel.findById(
-    forumID,
-    "creator members ownerUpvotes"
-  );
+  const forumInfo = await ForumsModel.findById(forumID);
+
+  // Check if user is a member
+  for (let i = 0; i < forumInfo.members.length; i++) {
+    const member = forumInfo.members[i];
+    if (user.userId == member.userID) {
+      isAMember = true;
+    }
+  }
+
+  // Check if user is an admin
+  for (let i = 0; i < forumInfo.moderators.length; i++) {
+    const moderator = forumInfo.moderators[i];
+    if (user.userId == moderator.userID) {
+      isAModerator = true;
+    }
+  }
   for (let i = 0; i < topicsModel.length; i++) {
     const userInfo = await AuthModel.findById(
       topicsModel[i].userID,
       "username avatar about"
     );
-    if (topicsModel[i].userID == forumMembers.creator) {
+    if (topicsModel[i].userID == forumInfo.creator) {
+      if (user.userId == forumInfo.creator) {
+        isAMember = true;
+        isAModerator = true;
+      }
       topics.push({
         topic: topicsModel[i],
         userInfo,
-        memberUpvotes: forumMembers.ownerUpvotes,
+        memberUpvotes: forumInfo.ownerUpvotes,
       });
     } else {
-      for (let i = 0; i < forumMembers.members.length; i++) {
-        const member = forumMembers.members[i];
-
+      for (let i = 0; i < forumInfo.members.length; i++) {
+        const member = forumInfo.members[i];
+        if (user.userId == member.userID) {
+          isAMember = true;
+        }
         if (topicsModel[i].userID == member.userID) {
           topics.push({
             topic: topicsModel[i],
@@ -111,11 +360,15 @@ const singleForum = async (req, res) => {
   res.locals.forums = fetchAllForums;
   res.locals.invites = invites;
   res.locals.forumID = forumID;
+  res.locals.forumInfo = forumInfo;
   res.locals.topics = topics;
+  res.locals.isAMember = isAMember;
+  res.locals.isAModerator = isAModerator;
+  res.locals.incomingMsg = false;
   res
     .status(StatusCodes.OK)
     .render("./dashboard/public/forums/single_forum_page", {
-      headTitle: "Smart Forums",
+      headTitle: "Smart Forums - " + forumInfo.forumName,
       page_name,
       totalPages,
     });
@@ -1932,23 +2185,23 @@ const visitMemberProfile = asyncWrapper(async (req, res) => {
   }
 
   // If user is a member, fetch profile info
-  if (isAMember == true) {
-    if (forumInfo.creator == memberID) {
-      isForumCreator = true;
-    } else {
-      for (let i = 0; i < forumInfo.moderators.length; i++) {
-        const moderator = forumInfo.moderators[i];
-        for (let i = 0; i < forumInfo.members.length; i++) {
-          if (memberID == moderator.userID) {
-            isAModerator = true;
-          }
-          if (forumInfo.members[i].userID == memberID) {
-            profileInfo = forumInfo.members[i];
-          }
-        }
+  // if (isAMember == true) {
+  if (forumInfo.creator == memberID) {
+    isForumCreator = true;
+  } else {
+    for (let i = 0; i < forumInfo.moderators.length; i++) {
+      const moderator = forumInfo.moderators[i];
+      if (memberID == moderator.userID) {
+        isAModerator = true;
+      }
+    }
+    for (let i = 0; i < forumInfo.members.length; i++) {
+      if (forumInfo.members[i].userID == memberID) {
+        profileInfo = forumInfo.members[i];
       }
     }
   }
+  // }
 
   //Fetch User's forums
   const fetchAllForums = await ForumsModel.find({
@@ -1962,7 +2215,7 @@ const visitMemberProfile = asyncWrapper(async (req, res) => {
     userID: user.userId,
   });
   var activities = recentActivities.activities.slice(-20).reverse();
-
+  console.log(activities);
   let numberOfPosts = 0;
   const forumTopics = await ForumsTopicsModel.find({
     forumID,
@@ -1980,73 +2233,82 @@ const visitMemberProfile = asyncWrapper(async (req, res) => {
   }
   if (isForumCreator == false) {
     let memberRank;
-    const forumRanks = await ForumRankingsModel.findById({ _id: forumID });
+    const forumRanks = await ForumRankingsModel.findOne({ forumID });
     var memberUpvote = profileInfo.upvotes;
-    switch (memberUpvote) {
-      case memberUpvote >= forumRanks.newbie.minUpvotesRequired &&
-        memberUpvote < forumRanks.rookie.minUpvotesRequired:
-        memberRank = "Newbie";
-        break;
-      case memberUpvote >= forumRanks.rookie.minUpvotesRequired &&
-        memberUpvote < forumRanks.apprentice.minUpvotesRequired:
-        memberRank = "Rookie";
-        break;
-      case memberUpvote >= forumRanks.apprentice.minUpvotesRequired &&
-        memberUpvote < forumRanks.explorer.minUpvotesRequired:
-        memberRank = "Apprentice";
-        break;
-      case memberUpvote >= forumRanks.explorer.minUpvotesRequired &&
-        memberUpvote < forumRanks.contributor.minUpvotesRequired:
-        memberRank = "Explorer";
-        break;
-      case memberUpvote >= forumRanks.contributor.minUpvotesRequired &&
-        memberUpvote < forumRanks.enthusiast.minUpvotesRequired:
-        memberRank = "Contributor";
-        break;
-      case memberUpvote >= forumRanks.enthusiast.minUpvotesRequired &&
-        memberUpvote < forumRanks.collaborator.minUpvotesRequired:
-        memberRank = "Enthusiast";
-        break;
-      case memberUpvote >= forumRanks.collaborator.minUpvotesRequired &&
-        memberUpvote < forumRanks.communityRegular.minUpvotesRequired:
-        memberRank = "Collaborator";
-        break;
-      case memberUpvote >= forumRanks.communityRegular.minUpvotesRequired &&
-        memberUpvote < forumRanks.risingStar.minUpvotesRequired:
-        memberRank = "Community Regular";
-        break;
-      case memberUpvote >= forumRanks.risingStar.minUpvotesRequired &&
-        memberUpvote < forumRanks.proficient.minUpvotesRequired:
-        memberRank = "Rising Star";
-        break;
-      case memberUpvote >= forumRanks.proficient.minUpvotesRequired &&
-        memberUpvote < forumRanks.experienced.minUpvotesRequired:
-        memberRank = "Proficient";
-        break;
-      case memberUpvote >= forumRanks.experienced.minUpvotesRequired &&
-        memberUpvote < forumRanks.mentor.minUpvotesRequired:
-        memberRank = "Experienced";
-        break;
-      case memberUpvote >= forumRanks.mentor.minUpvotesRequired &&
-        memberUpvote < forumRanks.veteran.minUpvotesRequired:
-        memberRank = "Mentor";
-        break;
-      case memberUpvote >= forumRanks.veteran.minUpvotesRequired &&
-        memberUpvote < forumRanks.master.minUpvotesRequired:
-        memberRank = "Veteran";
-        break;
-      case memberUpvote >= forumRanks.master.minUpvotesRequired &&
-        memberUpvote < forumRanks.grandmaster.minUpvotesRequired:
-        memberRank = "Master";
-        break;
-      case memberUpvote >= forumRanks.grandmaster.minUpvotesRequired &&
-        memberUpvote < forumRanks.lengendary.minUpvotesRequired:
-        memberRank = "Grandmaster";
-        break;
-
-      default:
-        memberRank = "Legendary";
-        break;
+    if (memberUpvote < forumRanks.rookie.minUpvotesRequired) {
+      memberRank = "Newbie";
+    } else if (
+      memberUpvote >= forumRanks.rookie.minUpvotesRequired &&
+      memberUpvote < forumRanks.apprentice.minUpvotesRequired
+    ) {
+      memberRank = "Rookie";
+    } else if (
+      memberUpvote >= forumRanks.apprentice.minUpvotesRequired &&
+      memberUpvote < forumRanks.explorer.minUpvotesRequired
+    ) {
+      memberRank = "Apprentice";
+    } else if (
+      memberUpvote >= forumRanks.explorer.minUpvotesRequired &&
+      memberUpvote < forumRanks.contributor.minUpvotesRequired
+    ) {
+      memberRank = "Explorer";
+    } else if (
+      memberUpvote >= forumRanks.contributor.minUpvotesRequired &&
+      memberUpvote < forumRanks.enthusiast.minUpvotesRequired
+    ) {
+      memberRank = "Contributor";
+    } else if (
+      memberUpvote >= forumRanks.enthusiast.minUpvotesRequired &&
+      memberUpvote < forumRanks.collaborator.minUpvotesRequired
+    ) {
+      memberRank = "Enthusiast";
+    } else if (
+      memberUpvote >= forumRanks.collaborator.minUpvotesRequired &&
+      memberUpvote < forumRanks.communityRegular.minUpvotesRequired
+    ) {
+      memberRank = "Collaborator";
+    } else if (
+      memberUpvote >= forumRanks.communityRegular.minUpvotesRequired &&
+      memberUpvote < forumRanks.risingStar.minUpvotesRequired
+    ) {
+      memberRank = "Community Regular";
+    } else if (
+      memberUpvote >= forumRanks.risingStar.minUpvotesRequired &&
+      memberUpvote < forumRanks.proficient.minUpvotesRequired
+    ) {
+      memberRank = "Rising Star";
+    } else if (
+      memberUpvote >= forumRanks.proficient.minUpvotesRequired &&
+      memberUpvote < forumRanks.experienced.minUpvotesRequired
+    ) {
+      memberRank = "Proficient";
+    } else if (
+      memberUpvote >= forumRanks.experienced.minUpvotesRequired &&
+      memberUpvote < forumRanks.mentor.minUpvotesRequired
+    ) {
+      memberRank = "Experienced";
+    } else if (
+      memberUpvote >= forumRanks.mentor.minUpvotesRequired &&
+      memberUpvote < forumRanks.veteran.minUpvotesRequired
+    ) {
+      memberRank = "Mentor";
+    } else if (
+      memberUpvote >= forumRanks.veteran.minUpvotesRequired &&
+      memberUpvote < forumRanks.master.minUpvotesRequired
+    ) {
+      memberRank = "Veteran";
+    } else if (
+      memberUpvote >= forumRanks.master.minUpvotesRequired &&
+      memberUpvote < forumRanks.grandmaster.minUpvotesRequired
+    ) {
+      memberRank = "Master";
+    } else if (
+      memberUpvote >= forumRanks.grandmaster.minUpvotesRequired &&
+      memberUpvote < forumRanks.lengendary.minUpvotesRequired
+    ) {
+      memberRank = "Grandmaster";
+    } else {
+      memberRank = "Legendary";
     }
     res.locals.memberRank = memberRank;
   }
@@ -2088,4 +2350,5 @@ module.exports = {
   replyToATopic,
   deleteAResponse,
   visitMemberProfile,
+  processInvite,
 };

@@ -98,7 +98,7 @@
             <div class="actions">
                 <p onclick="tagAResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>',
                                             '<%= response.response._id %>',
-                                            '<%= JSON.stringify(forumInfo.wordsFilter) %>', '<%= isAMember %>')">
+                                            '<%= JSON.stringify(forumInfo.wordsFilter) %>', <%= isAMember %>)">
                     <i class="fa-solid fa-quote-right fa-lg"></i></p>
                 <% if(responsesUpvoted.includes(response.response._id)){%>
                     <p style="width: 40px;" title="Remove this Response from Upvotes" onclick="updateResponseUpvotes(this, '<%= user._id %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= topicInfo.forumID %>','removeResponseFromUpvotes', <%= isAMember %>)">
@@ -228,7 +228,7 @@
             <div class="actions">
                 <p onclick="tagAResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>',
                                             '<%= response.response._id %>',
-                                            '<%= JSON.stringify(forumInfo.wordsFilter) %>', '<%= isAMember %>')">
+                                            '<%= JSON.stringify(forumInfo.wordsFilter) %>', <%= isAMember %>)">
                     <i class="fa-solid fa-quote-right"></i>
                 </p>
                 <% if(responsesUpvoted.includes(response.response._id)){%>

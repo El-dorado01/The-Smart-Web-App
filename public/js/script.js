@@ -3874,6 +3874,7 @@ function loadAForumInfo(
   // ==================FETCH FORUM INFO===================== //
   var forumHeader = document.querySelector(".forum-profile .forum-header");
 
+  // =================== INSERT VARIABLES TO TOPIC SUBMISSION BUTTON =========== //
   var theArray = JSON.stringify(forumInfo.wordsFilter);
   var button = document.createElement("button");
   button.classList.add("btn");
@@ -3886,7 +3887,9 @@ function loadAForumInfo(
   button.innerHTML = `<i class="fa-solid fa-paper-plane"></i><span>Send</span>`;
   if (document.querySelector(".add-topic-modal .actions"))
     document.querySelector(".add-topic-modal .actions").appendChild(button);
+  // =================== INSERT VARIABLES TO TOPIC SUBMISSION BUTTON =========== //
 
+  // ================== ATTACH FORUM DETAILS TO THE FORUM HEADER ================= //
   forumHeader.querySelector(".avatar img").src = forumInfo.displayPic;
   forumHeader.querySelector(".info h3").innerText = forumInfo.forumName;
 
@@ -3897,16 +3900,18 @@ function loadAForumInfo(
     forumHeader.querySelector(".info .forum-desc").innerText =
       forumInfo.forumDesc;
   }
+  // ================== ATTACH FORUM DETAILS TO THE FORUM HEADER ================= //
   var forumDescription = document.querySelector("#forum-description");
-
+  // ============ ATTACH FORUM DESCRIPTION TEXT TO FORUM DESCRIPTION ============== //
   forumDescription.querySelector("p").innerText = forumInfo.forumDesc;
+  // ============ATTACH CREATOR AVATAR TO FORUM DESCRIPTION ================= //
   forumDescription.querySelector(".moderators.creator").innerHTML = `
     <div class="moderator">
         <a href="/dashboard/public/member_profile/${
           forumInfo._id
         }/key?memberID=${creatorDetails._id}">
           <div class="profile-pic">
-              <img src="../../../uploads/${creatorDetails.avatar}" alt="">
+              <img src="../../../../uploads/${creatorDetails.avatar}" alt="">
           </div>
         </a>
         <div class="info">
@@ -3920,51 +3925,67 @@ function loadAForumInfo(
         </div>
     </div>
   `;
+  // ============ATTACH CREATOR AVATAR TO FORUM DESCRIPTION ================= //
 
+  // ================== ATTACH FORUM CREATOR AVATAR TO USER PROFILE AT THE RIGHT ============ //
   //Check if user the forum creator
   if (creatorDetails._id == theUserID) {
     document.querySelector(".forum-user-profile").innerHTML = `
       <div class="user-info">
-          <div class="avatar">
-              <img src="../../../uploads/${creatorDetails.avatar}" alt="">
-          </div>
-          <div class="info">
-              <h3>${creatorDetails.username}</h3>
-              <p>${numberOfPosts} posts</p>
-              <p>Created On: ${new Date(forumInfo.createdAt).toDateString()}</p>
-          </div>
-      </div>
-      <button class="btn btn-primary"><i class="fa-solid fa-bookmark"></i><span>My
-              Bookmarks</span></button>
-    `;
-
-    document.querySelector(".forum-user-profile").style.display = "block";
-
-    var userCreator = document.createElement("div");
-    userCreator.classList.add("member");
-    userCreator.innerHTML = `
-          <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${creatorDetails._id}">
-            <div class="profile-pic">
-                <img src="../../../uploads/${creatorDetails.avatar}" alt="">
+          <a href="/dashboard/public/member_profile/${
+            forumInfo._id
+          }/key?memberID=${creatorDetails._id}">
+            <div class="avatar">
+                <img src="../../../../uploads/${creatorDetails.avatar}" alt="">
             </div>
           </a>
           <div class="info">
-              <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${creatorDetails._id}">
+              <a href="/dashboard/public/member_profile/${
+                forumInfo._id
+              }/key?memberID=${creatorDetails._id}">
                 <h3>${creatorDetails.username}</h3>
               </a>
-              <p>Creator</p>
-          </div>
-        `;
-    document.querySelector("#forum-members .members").appendChild(userCreator);
-  }
+              <p>${numberOfPosts} posts</p>
+              <p>Created On: ${new Date(forumInfo.createdAt).toDateString()}</p>
+              </div>
+              </div>
+              <button class="btn btn-primary"><i class="fa-solid fa-bookmark"></i><span>My
+              Bookmarks</span></button>
+              `;
 
+    document.querySelector(".forum-user-profile").style.display = "block";
+  }
+  // ================== ATTACH FORUM CREATOR AVATAR TO USER PROFILE AT THE RIGHT ============ //
+
+  // ================== ATTACH FORUM CREATOR AVATAR TO FORUM MEMBERS PANEL ============ //
+  var userCreator = document.createElement("div");
+  userCreator.classList.add("member");
+  userCreator.innerHTML = `
+    <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${creatorDetails._id}">
+      <div class="profile-pic">
+          <img src="../../../../uploads/${creatorDetails.avatar}" alt="">
+      </div>
+    </a>
+    <div class="info">
+        <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${creatorDetails._id}">
+          <h3>${creatorDetails.username}</h3>
+        </a>
+        <p>Creator</p>
+    </div>
+  `;
+  document.querySelector("#forum-members .members").appendChild(userCreator);
+  // ================== ATTACH FORUM CREATOR AVATAR TO FORUM MEMBERS PANEL ============ //
+
+  // ====================== UPDATE FORUM MEMBERS COUNT ======================= //
   if (forumInfo.members.length <= 0) {
     forumHeader.querySelector(".info .forum-member").innerText = "1 member";
   } else if (forumInfo.members.length > 0) {
     forumHeader.querySelector(".info .forum-member").innerText =
-      forumInfo.members.length + " members";
+      forumInfo.members.length + 1 + " members";
   }
+  // ====================== UPDATE FORUM MEMBERS COUNT ======================= //
 
+  // ================= UPDATE FORUM SETTINGS PANEL ================== //
   var updateForum = document.querySelector(".settings-child.update-forum-info");
   updateForum.querySelector("#availableForLookUp").checked =
     forumInfo.availableForLookUp;
@@ -3983,7 +4004,9 @@ function loadAForumInfo(
                         `;
     updateForum.querySelector(".word-tags .up").appendChild(div);
   }
+  // ================= UPDATE FORUM SETTINGS PANEL ================== //
 
+  // ================= CHECK IF THERE ARE NO MEMBERS IN THE FORUM =================== //
   if (forumMembers.length < 1) {
     var memberPanel = document.createElement("div");
     memberPanel.classList.add("body");
@@ -3992,7 +4015,9 @@ function loadAForumInfo(
             <span class="text-muted">There are no members in this forum!</span>`;
     document.querySelector(".member-modal .members").appendChild(memberPanel);
   }
+  // ================= CHECK IF THERE ARE NO MEMBERS IN THE FORUM =================== //
 
+  // ================= CHECK IF THERE ARE NO MODERATORS IN THE FORUM =================== //
   if (forumInfo.moderators.length < 1) {
     var mod_panel = document.createElement("div");
     mod_panel.classList.add("body");
@@ -4003,6 +4028,9 @@ function loadAForumInfo(
       .querySelector("#forum-description .moderators.mod_panel")
       .appendChild(mod_panel);
   }
+  // ================= CHECK IF THERE ARE NO MODERATORS IN THE FORUM =================== //
+
+  // ============== LOOP THROUGH EACH FORUM MODERATOR =============== //
   for (let i = 0; i < forumInfo.moderators.length; i++) {
     const moderator = forumInfo.moderators[i];
 
@@ -4011,74 +4039,83 @@ function loadAForumInfo(
       var memberUpvote = member.upvotes;
       let memberRank;
 
-      switch (memberUpvote) {
-        case memberUpvote >= forumRanks.newbie.minUpvotesRequired &&
-          memberUpvote < forumRanks.rookie.minUpvotesRequired:
-          memberRank = "Newbie";
-          break;
-        case memberUpvote >= forumRanks.rookie.minUpvotesRequired &&
-          memberUpvote < forumRanks.apprentice.minUpvotesRequired:
-          memberRank = "Rookie";
-          break;
-        case memberUpvote >= forumRanks.apprentice.minUpvotesRequired &&
-          memberUpvote < forumRanks.explorer.minUpvotesRequired:
-          memberRank = "Apprentice";
-          break;
-        case memberUpvote >= forumRanks.explorer.minUpvotesRequired &&
-          memberUpvote < forumRanks.contributor.minUpvotesRequired:
-          memberRank = "Explorer";
-          break;
-        case memberUpvote >= forumRanks.contributor.minUpvotesRequired &&
-          memberUpvote < forumRanks.enthusiast.minUpvotesRequired:
-          memberRank = "Contributor";
-          break;
-        case memberUpvote >= forumRanks.enthusiast.minUpvotesRequired &&
-          memberUpvote < forumRanks.collaborator.minUpvotesRequired:
-          memberRank = "Enthusiast";
-          break;
-        case memberUpvote >= forumRanks.collaborator.minUpvotesRequired &&
-          memberUpvote < forumRanks.communityRegular.minUpvotesRequired:
-          memberRank = "Collaborator";
-          break;
-        case memberUpvote >= forumRanks.communityRegular.minUpvotesRequired &&
-          memberUpvote < forumRanks.risingStar.minUpvotesRequired:
-          memberRank = "Community Regular";
-          break;
-        case memberUpvote >= forumRanks.risingStar.minUpvotesRequired &&
-          memberUpvote < forumRanks.proficient.minUpvotesRequired:
-          memberRank = "Rising Star";
-          break;
-        case memberUpvote >= forumRanks.proficient.minUpvotesRequired &&
-          memberUpvote < forumRanks.experienced.minUpvotesRequired:
-          memberRank = "Proficient";
-          break;
-        case memberUpvote >= forumRanks.experienced.minUpvotesRequired &&
-          memberUpvote < forumRanks.mentor.minUpvotesRequired:
-          memberRank = "Experienced";
-          break;
-        case memberUpvote >= forumRanks.mentor.minUpvotesRequired &&
-          memberUpvote < forumRanks.veteran.minUpvotesRequired:
-          memberRank = "Mentor";
-          break;
-        case memberUpvote >= forumRanks.veteran.minUpvotesRequired &&
-          memberUpvote < forumRanks.master.minUpvotesRequired:
-          memberRank = "Veteran";
-          break;
-        case memberUpvote >= forumRanks.master.minUpvotesRequired &&
-          memberUpvote < forumRanks.grandmaster.minUpvotesRequired:
-          memberRank = "Master";
-          break;
-        case memberUpvote >= forumRanks.grandmaster.minUpvotesRequired &&
-          memberUpvote < forumRanks.lengendary.minUpvotesRequired:
-          memberRank = "Grandmaster";
-          break;
-
-        default:
-          memberRank = "Legendary";
-          break;
+      if (memberUpvote < forumRanks.rookie.minUpvotesRequired) {
+        memberRank = "Newbie";
+      } else if (
+        memberUpvote >= forumRanks.rookie.minUpvotesRequired &&
+        memberUpvote < forumRanks.apprentice.minUpvotesRequired
+      ) {
+        memberRank = "Rookie";
+      } else if (
+        memberUpvote >= forumRanks.apprentice.minUpvotesRequired &&
+        memberUpvote < forumRanks.explorer.minUpvotesRequired
+      ) {
+        memberRank = "Apprentice";
+      } else if (
+        memberUpvote >= forumRanks.explorer.minUpvotesRequired &&
+        memberUpvote < forumRanks.contributor.minUpvotesRequired
+      ) {
+        memberRank = "Explorer";
+      } else if (
+        memberUpvote >= forumRanks.contributor.minUpvotesRequired &&
+        memberUpvote < forumRanks.enthusiast.minUpvotesRequired
+      ) {
+        memberRank = "Contributor";
+      } else if (
+        memberUpvote >= forumRanks.enthusiast.minUpvotesRequired &&
+        memberUpvote < forumRanks.collaborator.minUpvotesRequired
+      ) {
+        memberRank = "Enthusiast";
+      } else if (
+        memberUpvote >= forumRanks.collaborator.minUpvotesRequired &&
+        memberUpvote < forumRanks.communityRegular.minUpvotesRequired
+      ) {
+        memberRank = "Collaborator";
+      } else if (
+        memberUpvote >= forumRanks.communityRegular.minUpvotesRequired &&
+        memberUpvote < forumRanks.risingStar.minUpvotesRequired
+      ) {
+        memberRank = "Community Regular";
+      } else if (
+        memberUpvote >= forumRanks.risingStar.minUpvotesRequired &&
+        memberUpvote < forumRanks.proficient.minUpvotesRequired
+      ) {
+        memberRank = "Rising Star";
+      } else if (
+        memberUpvote >= forumRanks.proficient.minUpvotesRequired &&
+        memberUpvote < forumRanks.experienced.minUpvotesRequired
+      ) {
+        memberRank = "Proficient";
+      } else if (
+        memberUpvote >= forumRanks.experienced.minUpvotesRequired &&
+        memberUpvote < forumRanks.mentor.minUpvotesRequired
+      ) {
+        memberRank = "Experienced";
+      } else if (
+        memberUpvote >= forumRanks.mentor.minUpvotesRequired &&
+        memberUpvote < forumRanks.veteran.minUpvotesRequired
+      ) {
+        memberRank = "Mentor";
+      } else if (
+        memberUpvote >= forumRanks.veteran.minUpvotesRequired &&
+        memberUpvote < forumRanks.master.minUpvotesRequired
+      ) {
+        memberRank = "Veteran";
+      } else if (
+        memberUpvote >= forumRanks.master.minUpvotesRequired &&
+        memberUpvote < forumRanks.grandmaster.minUpvotesRequired
+      ) {
+        memberRank = "Master";
+      } else if (
+        memberUpvote >= forumRanks.grandmaster.minUpvotesRequired &&
+        memberUpvote < forumRanks.lengendary.minUpvotesRequired
+      ) {
+        memberRank = "Grandmaster";
+      } else {
+        memberRank = "Legendary";
       }
 
-      // ==================FETCH FORUM MODERATORS========================= //
+      // ==================FETCH FORUM MODERATORS AND ATTACH TO SETTINGS AND FORUM DESCRIPTION ========================= //
       if (memberInfo._id == moderator.userID) {
         var div = document.createElement("div");
         div.classList.add("moderator");
@@ -4086,7 +4123,7 @@ function loadAForumInfo(
           <div class="info">
               <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${moderator.userID}">
                   <div class="profile-pic">
-                      <img src="../../../uploads/${memberInfo.avatar}" alt="">
+                      <img src="../../../../uploads/${memberInfo.avatar}" alt="">
                   </div>
               </a>
               <div class="name">
@@ -4123,90 +4160,180 @@ function loadAForumInfo(
 
         document.querySelector(".moderators.mod_panel").appendChild(mod_panel);
       }
+      // ==================FETCH FORUM MODERATORS AND ATTACH TO SETTINGS AND FORUM DESCRIPTION ========================= //
+    }
+  }
+  // ====================== LOOP THROUGH EACH FORUM MODERATOR ====================== //
 
-      // ==================FETCH FORUM MEMBERS========================= //
-      var memberModalPanel = document.createElement("div");
-      memberModalPanel.classList.add("member");
-      memberModalPanel.innerHTML = `
-        <div class="info">
-            <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${memberInfo._id}">
-                <div class="profile-pic">
-                    <img src="../../../uploads/${memberInfo.avatar}" alt="">
-                </div>
-            </a>
-            <div class="name">
-                <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${memberInfo._id}">
-                    <h4>${memberInfo.username}</h4>
-                </a>
-                <p>${memberRank}</p>
-            </div>
-        </div>
-        <button class="btn btn-primary">
-            <i class="fa-solid fa-plus"></i>
-            <span>Add</span>
-        </button>
-      `;
-      document
-        .querySelector(".member-modal .members")
-        .appendChild(memberModalPanel);
+  // ====================== LOOP THROUGH EACH FORUM MEMBER ====================== //
+  for (let i = 0; i < forumMembers.length; i++) {
+    const { member, memberInfo } = forumMembers[i];
+    var memberUpvote = member.upvotes;
+    let memberRank;
+    if (memberUpvote < forumRanks.rookie.minUpvotesRequired) {
+      memberRank = "Newbie";
+    } else if (
+      memberUpvote >= forumRanks.rookie.minUpvotesRequired &&
+      memberUpvote < forumRanks.apprentice.minUpvotesRequired
+    ) {
+      memberRank = "Rookie";
+    } else if (
+      memberUpvote >= forumRanks.apprentice.minUpvotesRequired &&
+      memberUpvote < forumRanks.explorer.minUpvotesRequired
+    ) {
+      memberRank = "Apprentice";
+    } else if (
+      memberUpvote >= forumRanks.explorer.minUpvotesRequired &&
+      memberUpvote < forumRanks.contributor.minUpvotesRequired
+    ) {
+      memberRank = "Explorer";
+    } else if (
+      memberUpvote >= forumRanks.contributor.minUpvotesRequired &&
+      memberUpvote < forumRanks.enthusiast.minUpvotesRequired
+    ) {
+      memberRank = "Contributor";
+    } else if (
+      memberUpvote >= forumRanks.enthusiast.minUpvotesRequired &&
+      memberUpvote < forumRanks.collaborator.minUpvotesRequired
+    ) {
+      memberRank = "Enthusiast";
+    } else if (
+      memberUpvote >= forumRanks.collaborator.minUpvotesRequired &&
+      memberUpvote < forumRanks.communityRegular.minUpvotesRequired
+    ) {
+      memberRank = "Collaborator";
+    } else if (
+      memberUpvote >= forumRanks.communityRegular.minUpvotesRequired &&
+      memberUpvote < forumRanks.risingStar.minUpvotesRequired
+    ) {
+      memberRank = "Community Regular";
+    } else if (
+      memberUpvote >= forumRanks.risingStar.minUpvotesRequired &&
+      memberUpvote < forumRanks.proficient.minUpvotesRequired
+    ) {
+      memberRank = "Rising Star";
+    } else if (
+      memberUpvote >= forumRanks.proficient.minUpvotesRequired &&
+      memberUpvote < forumRanks.experienced.minUpvotesRequired
+    ) {
+      memberRank = "Proficient";
+    } else if (
+      memberUpvote >= forumRanks.experienced.minUpvotesRequired &&
+      memberUpvote < forumRanks.mentor.minUpvotesRequired
+    ) {
+      memberRank = "Experienced";
+    } else if (
+      memberUpvote >= forumRanks.mentor.minUpvotesRequired &&
+      memberUpvote < forumRanks.veteran.minUpvotesRequired
+    ) {
+      memberRank = "Mentor";
+    } else if (
+      memberUpvote >= forumRanks.veteran.minUpvotesRequired &&
+      memberUpvote < forumRanks.master.minUpvotesRequired
+    ) {
+      memberRank = "Veteran";
+    } else if (
+      memberUpvote >= forumRanks.master.minUpvotesRequired &&
+      memberUpvote < forumRanks.grandmaster.minUpvotesRequired
+    ) {
+      memberRank = "Master";
+    } else if (
+      memberUpvote >= forumRanks.grandmaster.minUpvotesRequired &&
+      memberUpvote < forumRanks.lengendary.minUpvotesRequired
+    ) {
+      memberRank = "Grandmaster";
+    } else {
+      memberRank = "Legendary";
+    }
 
-      if (memberInfo._id == theUserID) {
-        document.querySelector(".forum-user-profile").innerHTML = `
-          <div class="user-info">
-              <div class="avatar">
-                  <img src="../../../uploads/${memberInfo.avatar}" alt="">
-              </div>
-              <div class="info">
-                  <h3>${memberInfo.username}</h3>
-                  <p>${numberOfPosts} posts</p>
-                  <p>Joined On: ${forumInfo.createdAt}</p>
-              </div>
-          </div>
-          <h3 style="margin-top: 10px;">Current Rank &nbsp; <i class="fa-solid fa-ranking-star"></i></h3>
-          <div class="user-rank">
-              <div class="rank">
-                  <div class="rank-badge">
-                      <img src="../../../images/5.jpg" alt="">
-                  </div>
-                  <div class="rank-info">
-                      <h4>${memberRank}</h4>
-                      <p>Earned on: June 14, 2022.</p>
-                  </div>
-              </div>
-          </div>
-          <button class="btn btn-primary"><i class="fa-solid fa-bookmark"></i><span>My
-                  Bookmarks</span></button>
-        `;
-
-        document.querySelector(".forum-user-profile").style.display = "block";
-
-        var userMember = document.createElement("div");
-        userMember.classList.add("member");
-        userMember.innerHTML = `
-          <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${memberInfo._id}">
-            <div class="profile-pic">
-                <img src="../../../uploads/${memberInfo.avatar}" alt="">
-            </div>
-          </a>
+    // ==================FETCH FORUM MEMBERS AND ATTACH TO MEMBERS MODAL========================= //
+    var memberModalPanel = document.createElement("div");
+    memberModalPanel.classList.add("member");
+    memberModalPanel.innerHTML = `
           <div class="info">
               <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${memberInfo._id}">
-                <h3>${memberInfo.username}</h3>
+                  <div class="profile-pic">
+                      <img src="../../../../uploads/${memberInfo.avatar}" alt="">
+                  </div>
               </a>
-              <p>${memberRank}</p>
+              <div class="name">
+                  <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${memberInfo._id}">
+                      <h4>${memberInfo.username}</h4>
+                  </a>
+                  <p>${memberRank}</p>
+              </div>
           </div>
+          <button class="btn btn-primary">
+              <i class="fa-solid fa-plus"></i>
+              <span>Add</span>
+          </button>
         `;
-        document
-          .querySelector("#forum-members .members")
-          .appendChild(userMember);
-      }
+    document
+      .querySelector(".member-modal .members")
+      .appendChild(memberModalPanel);
+    // ==================FETCH FORUM MEMBERS AND ATTACH TO MEMBERS MODAL========================= //
 
-      if (memberInfo._id != theUserID) {
-        var memberPanel = document.createElement("div");
-        memberPanel.classList.add("member");
-        memberPanel.innerHTML = `
+    // ==================IF USER IS CURRENT MEMBER, ATTACH TO USER PROFILE AND FORUM MEMBERS PANEL ===================== //
+    if (memberInfo._id == theUserID) {
+      document.querySelector(".forum-user-profile").innerHTML = `
+            <div class="user-info">
+                <a href="/dashboard/public/member_profile/${
+                  forumInfo._id
+                }}/key?memberID=${memberInfo._id}">
+                  <div class="avatar">
+                      <img src="../../../../uploads/${
+                        memberInfo.avatar
+                      }" alt="">
+                  </div>
+                </a>
+                <div class="info">
+                    <a href="/dashboard/public/member_profile/${
+                      forumInfo._id
+                    }}/key?memberID=${memberInfo._id}">
+                      <h3>${memberInfo.username}</h3>
+                    </a>
+                    <p>${numberOfPosts} posts</p>
+                    <p>Joined On: ${new Date(
+                      member.dateJoined
+                    ).toLocaleDateString()}</p>
+                </div>
+            </div>
+            <h3 style="margin-top: 10px;">Current Rank &nbsp; <i class="fa-solid fa-ranking-star"></i></h3>
+            <div class="user-rank">
+                <div class="rank">
+                    <div class="rank-badge">
+                        <img src="../../../../images/5.jpg" alt="">
+                    </div>
+                    <div class="rank-info">
+                        <h4>${memberRank}</h4>
+                        <p>Status: 
+                          <span class =
+                          ${
+                            member.memberStatus == "active"
+                              ? "active"
+                              : "inactive"
+                          }>
+                          <i class="fa-regular fa-circle-dot fa-2xs"></i> 
+                          <b style="color: var(--color-success);">${
+                            member.memberStatus
+                          }</b>
+                          </span> 
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary"><i class="fa-solid fa-bookmark"></i><span>My
+                    Bookmarks</span></button>
+          `;
+
+      document.querySelector(".forum-user-profile").style.display = "block";
+
+      var userMember = document.createElement("div");
+      userMember.classList.add("member");
+      userMember.innerHTML = `
             <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${memberInfo._id}">
               <div class="profile-pic">
-                  <img src="../../../uploads/${memberInfo.avatar}" alt="">
+                  <img src="../../../../uploads/${memberInfo.avatar}" alt="">
               </div>
             </a>
             <div class="info">
@@ -4216,13 +4343,36 @@ function loadAForumInfo(
                 <p>${memberRank}</p>
             </div>
           `;
-        document
-          .querySelector("#forum-members .members")
-          .appendChild(memberPanel);
-      }
+      document.querySelector("#forum-members .members").appendChild(userMember);
     }
-  }
+    // ==================IF USER IS CURRENT MEMBER, ATTACH TO USER PROFILE AND FORUM MEMBERS PANEL ===================== //
 
+    // ==================IF USER IS NOT CURRENT MEMBER, ATTACH TO FORUM MEMBERS PANEL ===================== //
+    if (memberInfo._id != theUserID) {
+      var memberPanel = document.createElement("div");
+      memberPanel.classList.add("member");
+      memberPanel.innerHTML = `
+              <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${memberInfo._id}">
+                <div class="profile-pic">
+                    <img src="../../../../uploads/${memberInfo.avatar}" alt="">
+                </div>
+              </a>
+              <div class="info">
+                  <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${memberInfo._id}">
+                    <h3>${memberInfo.username}</h3>
+                  </a>
+                  <p>${memberRank}</p>
+              </div>
+            `;
+      document
+        .querySelector("#forum-members .members")
+        .appendChild(memberPanel);
+    }
+    // ==================IF USER IS NOT CURRENT MEMBER, ATTACH TO FORUM MEMBERS PANEL ===================== //
+  }
+  // ====================== LOOP THROUGH EACH FORUM MEMBER ====================== //
+
+  // =============== ATTACH INCOMING REQUESTS TO JOIN FORUM =============== //
   if (incomingInvites.length > 0) {
     for (let i = 0; i < incomingInvites.length; i++) {
       const { member } = incomingInvites[i];
@@ -4231,7 +4381,7 @@ function loadAForumInfo(
       div.innerHTML = ` 
         <div class="moderator-info">
             <div class="profile-pic">
-                <img src="../../../uploads/${member.avatar}" alt="">
+                <img src="../../../../uploads/${member.avatar}" alt="">
             </div>
             <div class="info">
                 <h3>${member.username}</h3>
@@ -4253,6 +4403,7 @@ function loadAForumInfo(
       `;
     document.querySelector("#requests-to-join .moderators").appendChild(div);
   }
+  // =============== ATTACH INCOMING REQUESTS TO JOIN FORUM =============== //
 }
 
 function deleteForumTopic(forumID, topicID, topicCreator) {
@@ -4382,7 +4533,7 @@ function updateTopicUpvotes(
     event.removeAttribute("onclick");
     event.setAttribute(
       "onclick",
-      `updateTopicUpvotes(this, '${userID}', '${topicID}', '${forumID}', 'removeTopicFromUpvotes', '${isAMember}')`
+      `updateTopicUpvotes(this, '${userID}', '${topicID}', '${forumID}', 'removeTopicFromUpvotes', ${isAMember})`
     );
   } else {
     event.querySelector(".icon").style.color = "";
@@ -4393,7 +4544,7 @@ function updateTopicUpvotes(
     event.removeAttribute("onclick");
     event.setAttribute(
       "onclick",
-      `updateTopicUpvotes(this, '${userID}', '${topicID}', '${forumID}', "upvoteATopic", '${isAMember}')`
+      `updateTopicUpvotes(this, '${userID}', '${topicID}', '${forumID}', "upvoteATopic", ${isAMember})`
     );
   }
   socket.emit("updateTopicUpvotes", { userID, topicID, forumID, actionType });
@@ -4427,7 +4578,7 @@ function updateResponseUpvotes(
     obj.removeAttribute("onclick");
     obj.setAttribute(
       "onclick",
-      `updateResponseUpvotes(this, '${userID}', '${topicID}', '${responseID}', '${forumID}', "removeResponseFromUpvotes", '${isAMember}')`
+      `updateResponseUpvotes(this, '${userID}', '${topicID}', '${responseID}', '${forumID}', "removeResponseFromUpvotes", ${isAMember})`
     );
   } else {
     obj.querySelector(".icon").style.color = "";
@@ -4438,7 +4589,7 @@ function updateResponseUpvotes(
     obj.removeAttribute("onclick");
     obj.setAttribute(
       "onclick",
-      `updateResponseUpvotes(this, '${userID}', '${topicID}', '${responseID}', '${forumID}', "upvoteAResponse", '${isAMember}')`
+      `updateResponseUpvotes(this, '${userID}', '${topicID}', '${responseID}', '${forumID}', "upvoteAResponse", ${isAMember})`
     );
   }
   socket.emit("updateResponseUpvotes", {
@@ -4477,7 +4628,7 @@ function updateTopicBookmarks(
     obj.removeAttribute("onclick");
     obj.setAttribute(
       "onclick",
-      `updateTopicBookmarks(this, '${userID}', '${topicID}', '${forumID}', 'removeTopicFromBookmarks', '${isAMember}')`
+      `updateTopicBookmarks(this, '${userID}', '${topicID}', '${forumID}', 'removeTopicFromBookmarks', ${isAMember})`
     );
   } else {
     obj.querySelector(".icon").style.color = "";
@@ -4488,7 +4639,7 @@ function updateTopicBookmarks(
     obj.removeAttribute("onclick");
     obj.setAttribute(
       "onclick",
-      `updateTopicBookmarks(this, '${userID}', '${topicID}', '${forumID}', 'bookmarkATopic', '${isAMember}')`
+      `updateTopicBookmarks(this, '${userID}', '${topicID}', '${forumID}', 'bookmarkATopic', ${isAMember})`
     );
   }
 
@@ -4499,3 +4650,20 @@ function updateTopicBookmarks(
     actionType,
   });
 }
+
+function copyForumInviteLink(secretKey, forumID, link) {
+  socket.emit("copyForumInviteLink", { secretKey, forumID, link });
+}
+
+socket.on("inviteLinkHashed", (hashedKey, forumID, newLink) => {
+  navigator.clipboard.writeText(newLink);
+
+  successAlert.style.display = "block";
+  successAlertIcon.className = "";
+  successAlertIcon.className = "fa fa-clipboard";
+  successMessage.textContent = "Link Copied";
+
+  setTimeout(() => {
+    successAlert.style.display = "none";
+  }, 3000);
+});

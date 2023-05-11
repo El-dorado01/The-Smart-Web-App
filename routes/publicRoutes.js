@@ -34,6 +34,7 @@ const {
   replyToATopic,
   deleteAResponse,
   visitMemberProfile,
+  processInvite,
 } = require("../controllers/dashboard/public/forums");
 // const { singleForum } = require("../controllers/dashboard/public/forum-single");
 const {
@@ -48,6 +49,7 @@ router.route("/index/:postID").get(singlePost);
 // router.route("/:postID").get(singlePost);
 router.route("/forums").get(forums);
 router.route("/forum/:forumID").get(singleForum);
+router.route("/forum_invites/:forumID/key?:secretKey").get(processInvite);
 router.route("/forum/:forumID/key?:topicID").get(forumTopicInfo);
 router.route("/member_profile/:forumID/key?:memberID").get(visitMemberProfile);
 router.route("/find_mates").get(findMates);

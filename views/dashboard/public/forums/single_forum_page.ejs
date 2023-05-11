@@ -46,28 +46,36 @@
 
                 <div class="forum-profile">
                     <div class="forum-header">
-                        <div class="avatar">
+                        <div class="avatar" onclick='document.querySelector(".forum-profile .forum-body").style.display = "flex"; document.querySelector(".forum-profile .body-forum").style.display = "flex";'>
                             <img src="" alt="">
                         </div>
                         <div class="info">
-                            <h3></h3>
+                            <h3 onclick='document.querySelector(".forum-profile .forum-body").style.display = "flex"; document.querySelector(".forum-profile .body-forum").style.display = "flex";'></h3>
                             <p class="forum-desc"></p>
                             <p class="name" style="margin-top: 5px;">
                                 <span style="padding: 5px; background-color: var(--color-light);"><i
                                         class="fa fa-users-rays"></i> <span class="forum-member"></span></span>
                             </p>
                             <div class="action-icons">
-                                <div class="btn btn-primary"
-                                    onclick="document.querySelector('.add-topic-modal').style.display = 'grid';"
-                                    title=" Add a new topic">
-                                    <i class="fa-solid fa-plus"></i> <span>Add</span>
-                                </div>
-                                <div class="other-icons">
-                                    <span title="Turn on notifications"><i class="fa fa-bell"></i></span>
-                                    <span onclick="toggleSettings()" title="Toggle to show and hide settings"><i
-                                            class="fa fa-cog"></i></span>
-                                    <span title="Exit Forum"><i class="fa-solid fa-sign-out"></i></span>
-                                </div>
+                                <% if(isAMember == false){ %> 
+                                    <div class="btn btn-primary" title="Send Request to Join Forum" style="width: 100%;">
+                                        <i class="fa-solid fa-person-circle-plus"></i> <span>Request to Join</span>
+                                    </div>
+                                <% }else{ %> 
+                                    <div class="btn btn-primary"
+                                        onclick="document.querySelector('.add-topic-modal').style.display = 'grid';"
+                                        title="Add a new topic">
+                                        <i class="fa-solid fa-plus"></i> <span>Add</span>
+                                    </div>
+                                    <div class="other-icons">
+                                        <span title="Turn on notifications"><i class="fa fa-bell"></i></span>
+                                        <% if(isAModerator == true){ %>
+                                            <span onclick="toggleSettings()" title="Toggle to show and hide settings"><i
+                                                    class="fa fa-cog"></i></span>
+                                        <% } %>
+                                        <span title="Exit Forum"><i class="fa-solid fa-sign-out"></i></span>
+                                    </div>
+                                <% } %>
                             </div>
                         </div>
                     </div>
@@ -155,7 +163,9 @@
                 <!--Forums end here-->
 
                 <!-- ===============FORUM PROFILE=========================== -->
-                <%- include ("./my_profile") %>
+                <% if(isAMember == true){ %> 
+                    <%- include ("./my_profile") %>
+                <%}%>
                 <!-- ===============FORUM PROFILE ENDS HERE=========================== -->
 
                 <!--Forum box-->
@@ -257,6 +267,33 @@
         const forumID = "<%= forumID %>";
         fetchAForumInfo(forumID, theUserID);
     </script>
+    <% if(incomingMsg == true){ 
+        var inviteStatus = msg.success
+        var msgText = msg.content
+        %> 
+        <script>
+            checkInviteStatus(<%= inviteStatus %>, "<%= msgText %>")
+            function checkInviteStatus(inviteStatus, text){
+                if(inviteStatus == true){
+                    successAlert.style.display = "block";
+                    successAlertIcon.className = "";
+                    successAlertIcon.className = "fa fa-check-circle";
+                    successMessage.textContent = text;
+
+                    setTimeout(() => {
+                    successAlert.style.display = "none";
+                    }, 3000);
+                }else{
+                    dangerAlert.style.display = "block";
+                    dangerMessage.textContent = text;
+
+                    setTimeout(() => {
+                        dangerAlert.style.display = "none";
+                    }, 5000);
+                }
+            }
+        </script>
+    <% } %>
 </body>
 
 </html>

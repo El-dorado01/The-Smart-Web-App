@@ -13,6 +13,7 @@ const MarketStoresModel = require("../../models/MarketStoresModel");
 const BuyersModel = require("../../models/BuyersModel");
 
 const { v4: uuidv4 } = require("uuid");
+const bcrypt = require("bcryptjs");
 const asyncWrapper = require("../async");
 
 const { room } = require("../../controllers/dashboard/private/liveMeeting");
@@ -571,12 +572,20 @@ const allSockets = (socket) => {
   socket.on("updateResponseUpvotes", updateResponseUpvotes);
   socket.on("updateTopicUpvotes", updateTopicUpvotes);
   socket.on("updateTopicBookmarks", updateTopicBookmarks);
+  socket.on("copyForumInviteLink", async (data) => {
+    const { secretKey, forumID, link } = data;
+    const salt = await bcrypt.genSalt(10);
+    const hashedKey = await bcrypt.hash(secretKey, salt);
+
+    var newLink = link + hashedKey;
+    socket.emit("inviteLinkHashed", hashedKey, forumID, newLink);
+  });
   socket.on("fetchAForumInfo", async (data) => {
     const { forumID, userID } = data;
 
     const forumInfo = await ForumsModel.findById({ _id: forumID });
 
-    const forumRanks = await ForumRankingsModel.findById({ _id: forumID });
+    const forumRanks = await ForumRankingsModel.findOne({ forumID });
     let incomingInvites = [];
     let forumMembers = [];
 
@@ -641,7 +650,7 @@ const allSockets = (socket) => {
     // const page = 1;
     let nextPage;
     let previousPage;
-    const limit = 1;
+    const limit = 15;
     const startIndex = (page - 1) * limit;
     // const endIndex = page * limit;
 

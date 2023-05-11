@@ -5,8 +5,10 @@
             &nbsp; <i class="fa-solid fa-users"></i></h6>
         <h6 class="tablinks4" onclick="openTab4(event, 'forum-description')">Description &nbsp; <i
                 class="fa-solid fa-circle-info"></i></h6>
+        <% if(isAModerator == true){ %>
         <h6 class="tablinks4" onclick="openTab4(event, 'requests-to-join')">Requests &nbsp; <i
                 class="fa-solid fa-users"></i></h6>
+        <% } %>
     </div>
     <div class="postFeeds4" id="forum-members">
         <div class="members"></div>

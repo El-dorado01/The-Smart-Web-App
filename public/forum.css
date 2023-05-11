@@ -199,7 +199,7 @@
     overflow-y: auto;
 }
 
-.middle .profile-body .topic {
+/* .middle .profile-body .topic {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -265,7 +265,7 @@
 
 .middle .profile-body .topic .topic-right .user-info h5 {
     margin-left: 5px;
-}
+} */
 
 .forum-user-profile {
     background: var(--color-white);
@@ -393,12 +393,17 @@
     grid-gap: 10px;
 }
 
-.body-forum #forum-members .members .body, .body-forum #forum-description .moderators .body, .body-forum #requests-to-join .moderators .body {
+.body-forum #forum-members .members .body, .body-forum #forum-description .moderators .body, .body-forum #requests-to-join .moderators .body, #forum-invites .body, #my-forums .body {
     width: 100%;
     height: 30vh;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+#forum-invites .body,
+#my-forums .body {
+    height: 10rem;
 }
 
 .body-forum #requests-to-join .moderators .moderator {
@@ -1018,4 +1023,11 @@
 
 #recent-activity .activity .activity-details {
     width: 80%;
+}
+
+.rank-info .active {
+    color: var(--color-success);
+}
+.rank-info .inactive {
+    color: var(--color-danger);
 }

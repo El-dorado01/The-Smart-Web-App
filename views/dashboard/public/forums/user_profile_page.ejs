@@ -40,7 +40,7 @@
                             <p><span style="padding: 5px; background-color: var(--color-light);">Forum Creator</span>
                             </p>
                             <% }else { %>
-                            <p>Joined on <%= profileInfo.dateJoined %>.</p>
+                            <p>Joined on <%= new Date(profileInfo.dateJoined).toDateString() %>.</p>
                             <p><span style="padding: 5px; background-color: var(--color-light);">
                                     <% if(isAModerator == true){%>
                                     Moderator
@@ -97,7 +97,7 @@
                                             class="activity-time"><%= new Date(activity.datePerformed).toDateString() %></span>
                                     </div>
                                 </a>
-                            <%}else{%>
+                            <%}else if(activity.activity == "upvoteResponse"){%>
                             <a
                                 href="/dashboard/public/forum/<%= activity.forumID %>/key?topicID=<%= activity.topicID %>#<%= activity.responseID %>">
                                 <div class="activity">
@@ -196,7 +196,7 @@
                         <!--Forums end here-->
 
                         <!-- ===============FORUM PROFILE=========================== -->
-                        <%- include ("./my_profile") %>
+                        <% // include ("./my_profile") %>
                         <!-- ===============FORUM PROFILE ENDS HERE=========================== -->
 
                         <!--Forum box-->

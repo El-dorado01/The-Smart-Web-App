@@ -723,7 +723,7 @@ main .container .left, main .body-container .left {
     position: absolute;
     right: 10%;
     background: #76e99a;
-    height: 7rem;
+    min-height: 7rem;
     width: 20rem;
     border-radius: var(--card-border-radius);
     padding: var(--card-padding);
@@ -734,7 +734,7 @@ main .container .left, main .body-container .left {
     position: absolute;
     right: 10%;
     background: var(--color-danger);
-    height: 7rem;
+    min-height: 7rem;
     width: 20rem;
     border-radius: var(--card-border-radius);
     padding: var(--card-padding);
@@ -745,7 +745,7 @@ main .container .left, main .body-container .left {
     position: absolute;
     right: 10%;
     background: #3b5998;
-    height: 7rem;
+    min-height: 7rem;
     width: 20rem;
     border-radius: var(--card-border-radius);
     padding: var(--card-padding);
@@ -756,7 +756,7 @@ main .container .left, main .body-container .left {
     position: absolute;
     right: 10%;
     background: var(--color-white);
-    height: 7rem;
+    min-height: 7rem;
     width: 20rem;
     border-radius: var(--card-border-radius);
     padding: var(--card-padding);
@@ -772,6 +772,7 @@ main .container .left, main .body-container .left {
 
 .alerts .body {
     margin-top: 20px;
+    margin-bottom: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -5540,11 +5541,11 @@ main .container .right {
     padding: 5px 5px 10px 5px;
     line-height: 1.4rem;
     cursor: pointer;
-    border-radius: 10px;
 }
 
 .middle .forum-body .topic:hover {
     background: rgba(0,0,0,0.1);
+    border-radius: 10px;
 }
 
 .middle .forum-body .topic:first-child {
