@@ -533,6 +533,7 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
 SPECIAL OPERATIONS PERFORMED AS A FORUM CREATOR
 -- Create a forum
 -- Assign Moderators
+-- Update Forum Ranks
 -- Delete a forum
 ===================================================================================================
 */
@@ -570,7 +571,7 @@ const createForum = asyncWrapper(async (req, res) => {
     } else {
       const displayPicName = uuidv4() + "_" + displayPic.name.split(".")[0];
 
-      cloudinary.uploader.upload(
+      await cloudinary.uploader.upload(
         displayPic.tempFilePath,
         {
           resource_type: "image",
@@ -650,6 +651,12 @@ const modifyModerators = asyncWrapper(async (req, res) => {
           );
           // res.status(StatusCodes.OK).send("Request approved!");
         }
+
+        //Send success back to frontend
+        res.status(StatusCodes.OK).json({
+          success: true,
+          msg: "Member has been added as a new moderator",
+        });
         break;
 
       default:
@@ -667,12 +674,21 @@ const modifyModerators = asyncWrapper(async (req, res) => {
           );
           // res.status(StatusCodes.OK).send("Request approved!");
         }
+
+        //Send success back to frontend
+        res.status(StatusCodes.OK).json({
+          success: true,
+          msg: "Member has been removed as an moderator",
+        });
         break;
     }
   } else {
     res
       .status(StatusCodes.FORBIDDEN)
-      .send("You are not allowed to perform this action");
+      .json({
+        success: false,
+        msg: "You are not allowed to perform this action.",
+      });
   }
 });
 
@@ -785,7 +801,10 @@ const updateForumRanks = asyncWrapper(async (req, res) => {
   } else {
     res
       .status(StatusCodes.FORBIDDEN)
-      .send("You are not allowed to perform this action");
+      .json({
+        success: false,
+        msg: "You are not allowed to perform this action.",
+      });
   }
 });
 
@@ -840,26 +859,29 @@ SPECIAL OPERATIONS PERFORMED AS A FORUM MODERATOR
 */
 const updateForumDisplayPic = asyncWrapper(async (req, res) => {
   const { displayPic } = req.files;
-
   let newPicPath;
   let uploadOk = 1;
 
   if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400).send("No files were uploaded.");
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ success: false, msg: "No files were uploaded." });
   }
 
-  allowedLogoFiles = displayPic.mimetype;
-  logoFileSize = req.files.displayPic.size;
-  maxSize = 5000000;
+  var allowedLogoFiles = displayPic.mimetype;
+  var logoFileSize = req.files.displayPic.size;
+  var maxSize = 7000000;
 
   if (allowedLogoFiles && allowedLogoFiles.startsWith("image/")) {
     if (logoFileSize > maxSize) {
-      res.json({ bigFile: true });
+      res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ success: false, msg: "File is too big" });
       uploadOk = 0;
     } else {
       const displayPicName = uuidv4() + "_" + displayPic.name.split(".")[0];
 
-      cloudinary.uploader.upload(
+      await cloudinary.uploader.upload(
         displayPic.tempFilePath,
         {
           resource_type: "image",
@@ -877,7 +899,8 @@ const updateForumDisplayPic = asyncWrapper(async (req, res) => {
               { _id: req.body.forumID },
               {
                 displayPic: newPicPath,
-              }
+              },
+              { returnOriginal: false }
             );
             console.log(
               "Forum " +
@@ -886,6 +909,13 @@ const updateForumDisplayPic = asyncWrapper(async (req, res) => {
             );
 
             fs.unlinkSync(displayPic.tempFilePath);
+
+            //Send success back to frontend
+            res.status(StatusCodes.OK).json({
+              success: true,
+              msg: "Forum display picture has been updated successfully!",
+              forumInfo,
+            });
           }
         }
       );

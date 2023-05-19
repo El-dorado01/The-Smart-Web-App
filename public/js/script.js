@@ -3580,6 +3580,72 @@ function showPreview3(event) {
     document.querySelector(".image-preview .pic").style.display = "block";
   }
 }
+function showPreview4(event) {
+  if (event.target.files.length > 0) {
+    var src = URL.createObjectURL(event.target.files[0]);
+    var preview = document.getElementById("img-preview3");
+    preview.src = src;
+    document.querySelector("#showForumDP").style.display = "flex";
+    document.querySelector("#showForumDP .pic").style.display = "block";
+  }
+}
+
+function updateForumDisplayPic() {
+  const formData = new FormData();
+  formData.append("displayPic", document.getElementById("logo").files[0]);
+  formData.append("forumID", document.getElementById("forumIDForUpload").value);
+
+  document.querySelector("#showForumDP").style.display = "none";
+
+  primaryAlert.style.display = "block";
+  primaryMessage.textContent = "Updating forum display picture, please wait...";
+
+  fetch("/dashboard/public/updateForumDisplayPic", {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: formData,
+  })
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (json) {
+      if (json.success) {
+        const forumInfo = json.forumInfo;
+        var displayPic = forumInfo.displayPic;
+        document.getElementById("forum-avatar").src = displayPic;
+
+        primaryAlert.style.display = "none";
+        successAlert.style.display = "block";
+        successAlertIcon.className = "";
+        successAlertIcon.className = "fa fa-check-circle";
+        successMessage.textContent = json.msg;
+
+        setTimeout(() => {
+          successAlert.style.display = "none";
+        }, 5000);
+      } else {
+        dangerAlert.style.display = "block";
+        dangerMessage.textContent = json.msg;
+
+        setTimeout(() => {
+          dangerAlert.style.display = "none";
+        }, 5000);
+      }
+    })
+    .catch(function (err) {
+      primaryAlert.style.display = "none";
+      dangerAlert.style.display = "block";
+      dangerMessage.textContent = "An error occured. Please try again later";
+
+      setTimeout(() => {
+        dangerAlert.style.display = "none";
+      }, 5000);
+    });
+}
 
 function createForum() {
   const formData = new FormData();
@@ -3632,6 +3698,7 @@ function createForum() {
       }
     })
     .catch(function (err) {
+      primaryAlert.style.display = "none";
       dangerAlert.style.display = "block";
       dangerMessage.textContent = "An error occured. Please try again later";
 
@@ -3840,6 +3907,8 @@ function loadTopicsPage(newTopics, page, totalPages, nextPage, previousPage) {
 
 function fetchAForumInfo(forumID, userID) {
   socket.emit("fetchAForumInfo", { forumID, userID });
+  primaryAlert.style.display = "block";
+  primaryMessage.textContent = "Loading...";
 }
 
 socket.on(
@@ -4118,6 +4187,7 @@ function loadAForumInfo(
       // ==================FETCH FORUM MODERATORS AND ATTACH TO SETTINGS AND FORUM DESCRIPTION ========================= //
       if (memberInfo._id == moderator.userID) {
         var div = document.createElement("div");
+        div.id = "moderatorDIV_" + moderator.userID;
         div.classList.add("moderator");
         div.innerHTML = `
           <div class="info">
@@ -4133,12 +4203,14 @@ function loadAForumInfo(
                   <p>${memberRank}</p>
               </div>
           </div>
-          <span class="remove" onclick="removeModerator('${forumInfo._id}','${moderator.userID}')">
+          <span class="remove-user" onclick="modifyModerators('${forumInfo._id}','${moderator.userID}', 'removeModerator')">
+              <i class="fa-solid fa-user-minus"></i>
               <span>Remove</span>
-              <i class="fa-solid fa-minus"></i>
           </span>
         `;
-        document.querySelector(".settings-child.moderators").appendChild(div);
+        document
+          .querySelector(".settings-child.moderators .child")
+          .appendChild(div);
 
         var mod_panel = document.createElement("div");
         mod_panel.classList.add("moderator");
@@ -4263,9 +4335,9 @@ function loadAForumInfo(
                   <p>${memberRank}</p>
               </div>
           </div>
-          <button class="btn btn-primary">
-              <i class="fa-solid fa-plus"></i>
-              <span>Add</span>
+          <button class="btn btn-primary" onclick="modifyModerators('${forumInfo._id}','${memberInfo._id}', 'assignModerators', '${memberRank}', '${memberInfo.avatar}','${memberInfo.username}')" id="assignModerators_${memberInfo._id}">
+              <span class="icon"><i class="fa-solid fa-plus"></i></span>
+              <span class="text">Add</span>
           </button>
         `;
     document
@@ -4404,6 +4476,8 @@ function loadAForumInfo(
     document.querySelector("#requests-to-join .moderators").appendChild(div);
   }
   // =============== ATTACH INCOMING REQUESTS TO JOIN FORUM =============== //
+
+  primaryAlert.style.display = "none";
 }
 
 function deleteForumTopic(forumID, topicID, topicCreator) {
@@ -4667,3 +4741,84 @@ socket.on("inviteLinkHashed", (hashedKey, forumID, newLink) => {
     successAlert.style.display = "none";
   }, 3000);
 });
+
+function modifyModerators(forumID, memberID, actionType, memberRank, memberAvatar, username){
+  const formData = new FormData();
+  formData.append("forumID", forumID);
+  formData.append("memberID", memberID);
+  formData.append("actionType", actionType);
+
+  fetch("/dashboard/public/modifyModerators", {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+      body: formData,
+  })
+  .then(function (res) {
+      return res.json();
+  })
+  .then(function (json) {
+      if (json.success) {
+          switch (actionType) {
+              case "assignModerators":
+                  // Notify that member has been added as a moderator
+                  var button = document.getElementById("assignModerators_" + memberID)
+                  button.classList.remove("btn-primary")
+                  button.querySelector(".icon").remove()
+                  button.style.backgroundColor = "var(--color-secondary)"
+                  button.querySelector(".text").innerHTML = "Added"
+                  button.removeAttribute("onclick")
+
+                  var div = document.createElement("div")
+                  div.id = "moderatorDIV_" + memberID
+                  div.classList.add("moderator")
+                  div.innerHTML = `
+                      <div class="info">
+                          <a href="/dashboard/public/member_profile/${forumID}/key?memberID=${memberID}">
+                              <div class="profile-pic">
+                                  <img src="../../../../uploads/${memberAvatar}" alt="">
+                              </div>
+                          </a>
+                          <div class="name">
+                              <a href="/dashboard/public/member_profile/${forumID}/key?memberID=${memberID}">
+                                  <h4>${username}</h4>
+                              </a>
+                              <p>${memberRank}</p>
+                          </div>
+                      </div>
+                      <span class="remove-user" onclick="modifyModerators('${forumID}', '${memberID}', 'removeModerator')">
+                          <i class="fa-solid fa-user-minus"></i>
+                          <span>Remove</span>
+                      </span>
+                  `
+                  document.querySelector(".settings-child.moderators .child").appendChild(div)
+                  break;
+          
+              default:
+                  //Remove Moderator by Default
+                  var moderatorDIV = document.getElementById("moderatorDIV_" + memberID);
+                  moderatorDIV.remove()
+                  break;
+          }
+      
+      } else {
+      dangerAlert.style.display = "block";
+      dangerMessage.textContent = json.msg;
+
+      setTimeout(() => {
+          dangerAlert.style.display = "none";
+      }, 5000);
+      }
+  })
+  .catch(function (err) {
+      dangerAlert.style.display = "block";
+      dangerMessage.textContent = "An error occured. Please try again later";
+
+      setTimeout(() => {
+          dangerAlert.style.display = "none";
+      }, 5000);
+  });
+}

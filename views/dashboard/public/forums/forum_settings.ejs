@@ -2,19 +2,37 @@
     <h3>Settings &nbsp; <i class="fa-solid fa-cog"></i></h3>
     <div class="action">
         <h4>Change Forum Display Picture</h4> <label for="logo"><span><i class="fa-solid fa-pencil"></i></span></label>
-        <input type="file" name="" id="logo" style="display: none;" accept="image/*" onchange="showPreview2(event);">
+        <input type="text" style="display: none;" id="forumIDForUpload" value="<%= forumID %>">
+        <input type="file" name="" id="logo" style="display: none;" accept="image/*" onchange="showPreview4(event);">
     </div>
-    <div class="image-preview">
+    <div class="image-preview" id="showForumDP">
         <div class="pic">
-            <img id="img-preview" alt="">
+            <img id="img-preview3" alt="">
         </div>
-        <button class="btn btn-primary">Apply</button>
+        <button class="btn btn-primary" onclick="updateForumDisplayPic()">Apply</button>
     </div>
     <div class="action">
         <h4>Modify Moderators</h4> <span onclick="toggleSettingsChild('moderators')"><i
                 class="fa-solid fa-pencil"></i></span>
     </div>
     <div class="settings-child moderators">
+        <div class="child">
+            <!-- <div class="moderator">
+                <div class="info">
+                    <div class="profile-pic">
+                        <img src="../../../../6.jpg" alt="">
+                    </div>
+                    <div class="name">
+                        <span>El Dorado</span>
+                        <span>Newbie</span>
+                    </div>
+                </div>
+                <span class="remove-user" onclick="modifyModerators()">
+                    <i class="fa-solid fa-user-minus"></i>
+                    <span>Remove</span>
+                </span>
+            </div> -->
+        </div>
         <button class="btn btn-gray" onclick="document.querySelector('.member-modal').style.display = 'grid';"
             style="display: flex; gap: 7px; align-items: center; justify-content: center;" id="add-moderator"><i
                 class="fa-solid fa-plus"></i><span>Add a
@@ -56,9 +74,9 @@
                 class="fa-solid fa-pencil"></i></span>
     </div>
     <div class="action">
-        <h4>Copy Forum Invite Link</h4> <span onclick="copyForumInviteLink('<%= forumInfo.forumSecretKey %>', '<%= forumID %>', '<%= getURL %>/dashboard/public/forum_invites/<%= forumID %>/key?secretKey=')"><i class="fa-solid fa-url"></i></span>
+        <h4>Copy Forum Invite Link</h4> <span onclick="copyForumInviteLink('<%= forumInfo.forumSecretKey %>', '<%= forumID %>', '<%= getURL %>/dashboard/public/forum_invites/<%= forumID %>/key?secretKey=')"><i class="fa-solid fa-link"></i></span>
     </div>
-    <div class="action">
+    <!-- <div class="action">
         <h4>Send an Invite to a Friend</h4> <span><i class="fa-solid fa-paper-plane"></i></span>
-    </div>
+    </div> -->
 </div>
