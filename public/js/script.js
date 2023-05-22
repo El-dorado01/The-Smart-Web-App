@@ -4058,19 +4058,19 @@ function loadAForumInfo(
   var updateForum = document.querySelector(".settings-child.update-forum-info");
   updateForum.querySelector("#availableForLookUp").checked =
     forumInfo.availableForLookUp;
-  updateForum.querySelector("#forumName").value = forumInfo.forumName;
-  updateForum.querySelector("#forumDesc").value = forumInfo.forumDesc;
+  updateForum.querySelector("#forumNameInput").value = forumInfo.forumName;
+  updateForum.querySelector("#forumDescInput").value = forumInfo.forumDesc;
 
   for (let i = 0; i < forumInfo.wordsFilter.length; i++) {
     var div = document.createElement("div");
     div.classList.add("tag");
     div.classList.add(forumInfo.wordsFilter[i]);
     div.innerHTML = ` <span class="remove-tag"
-                            onclick="removeFilterWord('${forumInfo.wordsFilter[i]}')">
-                            <i class="fa-solid fa-times"></i>
-                            </span>
-                            <p>${forumInfo.wordsFilter[i]}</p>
-                        `;
+                        onclick="removeFilterWord('${forumInfo.wordsFilter[i]}')">
+                        <i class="fa-solid fa-times"></i>
+                      </span>
+                      <p>${forumInfo.wordsFilter[i]}</p>
+                    `;
     updateForum.querySelector(".word-tags .up").appendChild(div);
   }
   // ================= UPDATE FORUM SETTINGS PANEL ================== //
@@ -4821,4 +4821,115 @@ function modifyModerators(forumID, memberID, actionType, memberRank, memberAvata
           dangerAlert.style.display = "none";
       }, 5000);
   });
+}
+
+function updateForumProfile(forumID){
+  if(document.getElementById("availableForLookUp").checked == true){
+      var availableForLookUp = "on";
+  }else{
+      var availableForLookUp = "off"
+  }
+  var forumName = document.getElementById("forumNameInput").value
+  var forumDesc = document.getElementById("forumDescInput").value
+
+  var wordsFilter = []
+  var allTags = document.querySelectorAll(".word-tags .up div")
+  for (let i = 0; i < allTags.length; i++) {
+      var tagText = allTags[i].querySelector("p").innerText
+      wordsFilter.push(tagText);
+  }
+
+  const formData = new FormData();
+  formData.append("forumID", forumID);
+  formData.append("forumName", forumName);
+  formData.append("forumDesc", forumDesc);
+  formData.append("lookUpValue", availableForLookUp);
+  formData.append("wordsFilter", wordsFilter);
+
+  fetch("/dashboard/public/updateForumProfile", {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+      body: formData,
+  })
+  .then(function (res) {
+      return res.json();
+  })
+  .then(function (json) {
+      if (json.success) {
+          successAlert.style.display = "block";
+          successAlertIcon.className = "";
+          successAlertIcon.className = "fa fa-check-circle";
+          successMessage.textContent = json.msg;
+
+          setTimeout(() => {
+              successAlert.style.display = "none";
+          }, 3000);
+      } else {
+      dangerAlert.style.display = "block";
+      dangerMessage.textContent = json.msg;
+
+      setTimeout(() => {
+          dangerAlert.style.display = "none";
+      }, 5000);
+      }
+  })
+  .catch(function (err) {
+      dangerAlert.style.display = "block";
+      dangerMessage.textContent = "An error occured. Please try again later";
+
+      setTimeout(() => {
+          dangerAlert.style.display = "none";
+      }, 5000);
+  });
+}
+
+function updateForumRanks(forumID, rank, minUpvotesRequiredText) {
+  const formData = new FormData();
+  formData.append("forumID", forumID);
+  formData.append("rank", rank);
+  formData.append("minUpvotesRequiredText", minUpvotesRequiredText);
+
+  fetch("/dashboard/public/updateForumRanks", {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: formData,
+})
+.then(function (res) {
+    return res.json();
+})
+.then(function (json) {
+    if (json.success) {
+      successAlert.style.display = "block";
+      successAlertIcon.className = "";
+      successAlertIcon.className = "fa fa-check-circle";
+      successMessage.textContent = json.msg;
+
+      setTimeout(() => {
+          successAlert.style.display = "none";
+      }, 3000);
+    } else {
+      dangerAlert.style.display = "block";
+      dangerMessage.textContent = json.msg;
+
+      setTimeout(() => {
+          dangerAlert.style.display = "none";
+      }, 5000);
+    }
+})
+.catch(function (err) {
+    dangerAlert.style.display = "block";
+    dangerMessage.textContent = "An error occured. Please try again later";
+
+    setTimeout(() => {
+        dangerAlert.style.display = "none";
+    }, 5000);
+});
 }
