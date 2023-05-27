@@ -69,6 +69,10 @@
                                     </div>
                                     <div class="other-icons">
                                         <span title="Turn on notifications"><i class="fa fa-bell"></i></span>
+                                        <% 
+                                        if(forumInfo.membersCanInvite == true && isAMember == true && isAModerator == false){ %>
+                                            <span onclick="copyForumInviteLink('<%= forumInfo.forumSecretKey %>', '<%= forumID %>', '<%= getURL %>/dashboard/public/forum_invites/<%= forumID %>/key?secretKey=')" title="Copy Invite Link"><i class="fa-solid fa-link"></i></span>
+                                        <% } %>
                                         <% if(isAModerator == true){ %>
                                             <span onclick="toggleSettings()" title="Toggle to show and hide settings"><i
                                                     class="fa fa-cog"></i></span>

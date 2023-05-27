@@ -4901,35 +4901,54 @@ function updateForumRanks(forumID, rank, minUpvotesRequiredText) {
     redirect: "follow",
     referrerPolicy: "no-referrer",
     body: formData,
-})
-.then(function (res) {
-    return res.json();
-})
-.then(function (json) {
-    if (json.success) {
-      successAlert.style.display = "block";
-      successAlertIcon.className = "";
-      successAlertIcon.className = "fa fa-check-circle";
-      successMessage.textContent = json.msg;
+  })
+  .then(function (res) {
+      return res.json();
+  })
+  .then(function (json) {
+      if (json.success) {
+        successAlert.style.display = "block";
+        successAlertIcon.className = "";
+        successAlertIcon.className = "fa fa-check-circle";
+        successMessage.textContent = json.msg;
 
-      setTimeout(() => {
-          successAlert.style.display = "none";
-      }, 3000);
-    } else {
+        setTimeout(() => {
+            successAlert.style.display = "none";
+        }, 3000);
+      } else {
+        dangerAlert.style.display = "block";
+        dangerMessage.textContent = json.msg;
+
+        setTimeout(() => {
+            dangerAlert.style.display = "none";
+        }, 5000);
+      }
+  })
+  .catch(function (err) {
       dangerAlert.style.display = "block";
-      dangerMessage.textContent = json.msg;
+      dangerMessage.textContent = "An error occured. Please try again later";
 
       setTimeout(() => {
           dangerAlert.style.display = "none";
       }, 5000);
-    }
-})
-.catch(function (err) {
-    dangerAlert.style.display = "block";
-    dangerMessage.textContent = "An error occured. Please try again later";
+  });
+}
+
+function resetRanks(forumID){
+  socket.emit("resetForumRanks", { forumID });
+}
+
+socket.on("ranksReset", (data)=> {
+  const { success, msg } = data
+
+  if(success == true){
+    successAlert.style.display = "block";
+    successAlertIcon.className = "";
+    successAlertIcon.className = "fa fa-clipboard";
+    successMessage.textContent = msg;
 
     setTimeout(() => {
-        dangerAlert.style.display = "none";
-    }, 5000);
-});
-}
+      successAlert.style.display = "none";
+    }, 3000);
+  }
+})

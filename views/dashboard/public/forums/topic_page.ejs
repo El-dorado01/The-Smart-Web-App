@@ -61,17 +61,29 @@
                                         member<%}else{%><%= forumInfo.members.length %> members<%} %></span></span>
                             </p>
                             <div class="action-icons">
-                                <div class="btn btn-primary"
-                                    onclick="document.querySelector('.add-topic-modal').style.display = 'grid';"
-                                    title=" Add a new topic">
-                                    <i class="fa-solid fa-plus"></i> <span>Add</span>
-                                </div>
-                                <div class="other-icons">
-                                    <span title="Turn on notifications"><i class="fa fa-bell"></i></span>
-                                    <span onclick="toggleSettings()" title="Toggle to show and hide settings"><i
-                                            class="fa fa-cog"></i></span>
-                                    <span title="Exit Forum"><i class="fa-solid fa-sign-out"></i></span>
-                                </div>
+                                <% if(isAMember == false){ %> 
+                                    <div class="btn btn-primary" title="Send Request to Join Forum" style="width: 100%;">
+                                        <i class="fa-solid fa-person-circle-plus"></i> <span>Request to Join</span>
+                                    </div>
+                                <% }else{ %> 
+                                    <div class="btn btn-primary"
+                                        onclick="document.querySelector('.add-topic-modal').style.display = 'grid';"
+                                        title=" Add a new topic">
+                                        <i class="fa-solid fa-plus"></i> <span>Add</span>
+                                    </div>
+                                    <div class="other-icons">
+                                        <span title="Turn on notifications"><i class="fa fa-bell"></i></span>
+                                        <% 
+                                        if(forumInfo.membersCanInvite == true && isAMember == true && isAModerator == false){ %>
+                                            <span onclick="copyForumInviteLink('<%= forumInfo.forumSecretKey %>', '<%= forumID %>', '<%= getURL %>/dashboard/public/forum_invites/<%= forumID %>/key?secretKey=')" title="Copy Invite Link"><i class="fa-solid fa-link"></i></span>
+                                        <% } %>
+                                        <% if(isAModerator == true){ %>
+                                            <span onclick="toggleSettings()" title="Toggle to show and hide settings"><i
+                                                    class="fa fa-cog"></i></span>
+                                        <% } %>
+                                        <span title="Exit Forum"><i class="fa-solid fa-sign-out"></i></span>
+                                    </div>
+                                <% } %>
                             </div>
                         </div>
                     </div>
@@ -270,7 +282,7 @@
         <!--Right-->
         <div class="right">
             <!--Forums-->
-            <%- //include ("./my_forums_right") %>
+            <%- include ("./my_forums_right") %>
             <!--Forums end here-->
 
             <!-- ===============FORUM PROFILE=========================== -->

@@ -311,10 +311,15 @@ const singleForum = async (req, res) => {
   const forumInfo = await ForumsModel.findById(forumID);
 
   // Check if user is a member
-  for (let i = 0; i < forumInfo.members.length; i++) {
-    const member = forumInfo.members[i];
-    if (user.userId == member.userID) {
-      isAMember = true;
+  if (user.userId == forumInfo.creator) {
+    isAMember = true;
+    isAModerator = true;
+  }else{
+    for (let i = 0; i < forumInfo.members.length; i++) {
+      const member = forumInfo.members[i];
+      if (user.userId == member.userID) {
+        isAMember = true;
+      }
     }
   }
 
@@ -325,16 +330,13 @@ const singleForum = async (req, res) => {
       isAModerator = true;
     }
   }
+
   for (let i = 0; i < topicsModel.length; i++) {
     const userInfo = await AuthModel.findById(
       topicsModel[i].userID,
       "username avatar about"
     );
     if (topicsModel[i].userID == forumInfo.creator) {
-      if (user.userId == forumInfo.creator) {
-        isAMember = true;
-        isAModerator = true;
-      }
       topics.push({
         topic: topicsModel[i],
         userInfo,
@@ -343,9 +345,6 @@ const singleForum = async (req, res) => {
     } else {
       for (let i = 0; i < forumInfo.members.length; i++) {
         const member = forumInfo.members[i];
-        if (user.userId == member.userID) {
-          isAMember = true;
-        }
         if (topicsModel[i].userID == member.userID) {
           topics.push({
             topic: topicsModel[i],
@@ -382,6 +381,7 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   const forumID = req.params.forumID;
   const topicID = req.query.topicID;
   var isAMember = false;
+  var isAModerator = false;
 
   const cookies = req.cookies;
   const token = cookies.jwtAccessToken;
@@ -406,6 +406,28 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   let questionnaire;
 
   const forumInfo = await ForumsModel.findById({ _id: forumID });
+
+  // Check if user is a member
+  if (user.userId == forumInfo.creator) {
+    isAMember = true;
+    isAModerator = true;
+  }else{
+    for (let i = 0; i < forumInfo.members.length; i++) {
+      const member = forumInfo.members[i];
+      if (user.userId == member.userID) {
+        isAMember = true;
+      }
+    }
+  }
+
+  // Check if user is an admin
+  for (let i = 0; i < forumInfo.moderators.length; i++) {
+    const moderator = forumInfo.moderators[i];
+    if (user.userId == moderator.userID) {
+      isAModerator = true;
+    }
+  }
+
   // const forumMembers = await ForumsModel.findById(
   //   forumID,
   //   "creator members ownerUpvotes"
@@ -418,9 +440,6 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   );
 
   if (topicInfo.userID == forumInfo.creator) {
-    if (user.userId == forumInfo.creator) {
-      isAMember = true;
-    }
     questionnaire = {
       userInfo,
       memberUpvotes: forumInfo.ownerUpvotes,
@@ -428,9 +447,6 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   } else {
     for (let i = 0; i < forumInfo.members.length; i++) {
       const member = forumInfo.members[i];
-      if (user.userId == member.userID) {
-        isAMember = true;
-      }
       if (topicInfo.userID == member.userID) {
         questionnaire = {
           userInfo,
@@ -514,7 +530,8 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   }
 
   const forumRanks = await ForumRankingsModel.findOne({ forumID });
-
+  console.log(isAMember, isAModerator);
+  
   res.locals.forumID = forumID;
   res.locals.forumInfo = forumInfo;
   res.locals.topicInfo = topicInfo;
@@ -524,6 +541,7 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   res.locals.invites = invites;
   res.locals.bookmarked = bookmarked;
   res.locals.isAMember = isAMember;
+  res.locals.isAModerator = isAModerator;
   res.locals.responsesUpvoted = responsesUpvoted;
   res.locals.topicUpvotedByUser = topicUpvotedByUser;
   res.locals.forumRanks = forumRanks;

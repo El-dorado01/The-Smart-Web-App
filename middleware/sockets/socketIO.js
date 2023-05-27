@@ -580,6 +580,68 @@ const allSockets = (socket) => {
     var newLink = link + hashedKey;
     socket.emit("inviteLinkHashed", hashedKey, forumID, newLink);
   });
+  socket.on("resetForumRanks", async(data) => {
+    const { forumID } = data;
+    
+    const ranksReset = await ForumRankingsModel.findByIdAndUpdate(
+      forumID, 
+      {
+        newbie: {
+          minUpvotesRequired: 0
+        },
+        rookie: {
+          minUpvotesRequired: 5
+        },
+        apprentice: {
+          minUpvotesRequired: 15
+        },
+        explorer: {
+          minUpvotesRequired: 30
+        },
+        contributor: {
+          minUpvotesRequired: 50
+        },
+        enthusiast: {
+          minUpvotesRequired: 75
+        },
+        collaborator: {
+          minUpvotesRequired: 105
+        },
+        communityRegular: {
+          minUpvotesRequired: 140
+        },
+        risingStar: {
+          minUpvotesRequired: 180
+        },
+        proficient: {
+          minUpvotesRequired: 225
+        },
+        experienced: {
+          minUpvotesRequired: 275
+        },
+        mentor: {
+          minUpvotesRequired: 330
+        },
+        veteran: {
+          minUpvotesRequired: 400
+        },
+        master: {
+          minUpvotesRequired: 500
+        },
+        grandmaster: {
+          minUpvotesRequired: 750
+        },
+        legendary: {
+          minUpvotesRequired: 1500
+        },
+      }
+    )
+
+    if(ranksReset){
+      console.log("Forum " + forumID + " ranks have been reset to default");
+      socket.emit("ranksReset", { success: true, msg: "Forum Ranks have been reset" });
+    }
+  })
   socket.on("fetchAForumInfo", async (data) => {
     const { forumID, userID } = data;
 

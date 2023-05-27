@@ -5,6 +5,16 @@
             <span class="fa fa-times"></span>
         </div>
         <h3>Update Forum Ranking System</h3>
+        <div class="info">
+            <span><i class="fa-solid fa-circle-info"></i></span>
+            <span>
+                You can click the "Reset Ranks" button to reset all ranks back to default.
+                <button class="btn" onclick="resetRanks('<%= forumID %>')">
+                    <span><i class="fa-solid fa-arrows-rotate"></i></span>
+                    <span>Reset Ranks</span>
+                </button>
+            </span>
+        </div>
         <div class="ranks">
             <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
                 onmouseout='this.querySelector(".edit").style.display="none";'>
