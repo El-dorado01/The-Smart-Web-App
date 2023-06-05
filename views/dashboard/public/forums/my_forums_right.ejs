@@ -25,23 +25,44 @@
                 <input type="search" placeholder="Search" id="message-searchs">
             </div>
             <div class="scroll-bar">
-                <% forums.forEach(forum => { %>
-                <div class="message">
-                    <a href="/dashboard/public/forum/<%= forum._id %>">
-                        <div class="profile-pic">
-                            <img src="<%= forum.displayPic %>" alt="">
+                <% forums.forEach(forum => { 
+                    if(forum._id == forumID){%>
+                        <div class="message">
+                            <a href="/dashboard/public/forum/<%= forum._id %>">
+                                <div class="profile-pic">
+                                    <img src="<%= forum.displayPic %>" alt="">
+                                </div>
+                            </a>
+                            <div class="message-body">
+                                <a href="/dashboard/public/forum/<%= forum._id %>">
+                                    <h5 style="font-size: 13px; font-weight: 600; color: var(--color-primary)"><%= forum.forumName %></h5>
+                                </a>
+                                <p class="text-muted">
+                                    <%= forum.members.length %>
+                                    member<% if (forum.members.length > 1){%>s<%}%>
+                                </p>
+                            </div>
                         </div>
-                    </a>
-                    <div class="message-body">
-                        <a href="/dashboard/public/forum/<%= forum._id %>">
-                            <h5 style="font-size: 13px; font-weight: 600;"><%= forum.forumName %></h5>
-                        </a>
-                        <p class="text-muted">
-                            <%= forum.members.length %>
-                            member<% if (forum.members.length > 1){%>s<%}%>
-                        </p>
-                    </div>
-                </div>
+                    <% }
+                    if(forum._id != forumID){ %>
+                        <div class="message <% if(forum._id == forumID){ %> active <% } %>"
+                        >
+                            <a href="/dashboard/public/forum/<%= forum._id %>">
+                                <div class="profile-pic">
+                                    <img src="<%= forum.displayPic %>" alt="">
+                                </div>
+                            </a>
+                            <div class="message-body">
+                                <a href="/dashboard/public/forum/<%= forum._id %>">
+                                    <h5 style="font-size: 13px; font-weight: 600;"><%= forum.forumName %></h5>
+                                </a>
+                                <p class="text-muted">
+                                    <%= forum.members.length %>
+                                    member<% if (forum.members.length > 1){%>s<%}%>
+                                </p>
+                            </div>
+                        </div>
+                    <% } %>
                 <% }) %>
             </div>
         <% } %>

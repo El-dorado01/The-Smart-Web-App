@@ -2326,6 +2326,12 @@ main .container .right {
     cursor: pointer;
 }
 
+.message.active {
+    background-color: var(--color-primary);
+    padding: 5px;
+    border-radius: 5px;
+}
+
 .right .messages .forum, .middle .messages .forum {
     display: flex;
     align-items: center;

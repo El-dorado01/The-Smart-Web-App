@@ -311,10 +311,15 @@ const singleForum = async (req, res) => {
   const forumInfo = await ForumsModel.findById(forumID);
 
   // Check if user is a member
-  for (let i = 0; i < forumInfo.members.length; i++) {
-    const member = forumInfo.members[i];
-    if (user.userId == member.userID) {
-      isAMember = true;
+  if (user.userId == forumInfo.creator) {
+    isAMember = true;
+    isAModerator = true;
+  }else{
+    for (let i = 0; i < forumInfo.members.length; i++) {
+      const member = forumInfo.members[i];
+      if (user.userId == member.userID) {
+        isAMember = true;
+      }
     }
   }
 
@@ -325,16 +330,13 @@ const singleForum = async (req, res) => {
       isAModerator = true;
     }
   }
+
   for (let i = 0; i < topicsModel.length; i++) {
     const userInfo = await AuthModel.findById(
       topicsModel[i].userID,
       "username avatar about"
     );
     if (topicsModel[i].userID == forumInfo.creator) {
-      if (user.userId == forumInfo.creator) {
-        isAMember = true;
-        isAModerator = true;
-      }
       topics.push({
         topic: topicsModel[i],
         userInfo,
@@ -343,9 +345,6 @@ const singleForum = async (req, res) => {
     } else {
       for (let i = 0; i < forumInfo.members.length; i++) {
         const member = forumInfo.members[i];
-        if (user.userId == member.userID) {
-          isAMember = true;
-        }
         if (topicsModel[i].userID == member.userID) {
           topics.push({
             topic: topicsModel[i],
@@ -357,6 +356,8 @@ const singleForum = async (req, res) => {
     }
   }
 
+  const forumRanks = await ForumRankingsModel.findOne({ forumID });
+
   res.locals.forums = fetchAllForums;
   res.locals.invites = invites;
   res.locals.forumID = forumID;
@@ -365,6 +366,7 @@ const singleForum = async (req, res) => {
   res.locals.isAMember = isAMember;
   res.locals.isAModerator = isAModerator;
   res.locals.incomingMsg = false;
+  res.locals.forumRanks = forumRanks;
   res
     .status(StatusCodes.OK)
     .render("./dashboard/public/forums/single_forum_page", {
@@ -379,6 +381,7 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   const forumID = req.params.forumID;
   const topicID = req.query.topicID;
   var isAMember = false;
+  var isAModerator = false;
 
   const cookies = req.cookies;
   const token = cookies.jwtAccessToken;
@@ -403,6 +406,28 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   let questionnaire;
 
   const forumInfo = await ForumsModel.findById({ _id: forumID });
+
+  // Check if user is a member
+  if (user.userId == forumInfo.creator) {
+    isAMember = true;
+    isAModerator = true;
+  }else{
+    for (let i = 0; i < forumInfo.members.length; i++) {
+      const member = forumInfo.members[i];
+      if (user.userId == member.userID) {
+        isAMember = true;
+      }
+    }
+  }
+
+  // Check if user is an admin
+  for (let i = 0; i < forumInfo.moderators.length; i++) {
+    const moderator = forumInfo.moderators[i];
+    if (user.userId == moderator.userID) {
+      isAModerator = true;
+    }
+  }
+
   // const forumMembers = await ForumsModel.findById(
   //   forumID,
   //   "creator members ownerUpvotes"
@@ -415,9 +440,6 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   );
 
   if (topicInfo.userID == forumInfo.creator) {
-    if (user.userId == forumInfo.creator) {
-      isAMember = true;
-    }
     questionnaire = {
       userInfo,
       memberUpvotes: forumInfo.ownerUpvotes,
@@ -425,9 +447,6 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   } else {
     for (let i = 0; i < forumInfo.members.length; i++) {
       const member = forumInfo.members[i];
-      if (user.userId == member.userID) {
-        isAMember = true;
-      }
       if (topicInfo.userID == member.userID) {
         questionnaire = {
           userInfo,
@@ -510,6 +529,9 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
     topicUpvotedByUser = true;
   }
 
+  const forumRanks = await ForumRankingsModel.findOne({ forumID });
+  console.log(isAMember, isAModerator);
+  
   res.locals.forumID = forumID;
   res.locals.forumInfo = forumInfo;
   res.locals.topicInfo = topicInfo;
@@ -519,8 +541,10 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   res.locals.invites = invites;
   res.locals.bookmarked = bookmarked;
   res.locals.isAMember = isAMember;
+  res.locals.isAModerator = isAModerator;
   res.locals.responsesUpvoted = responsesUpvoted;
   res.locals.topicUpvotedByUser = topicUpvotedByUser;
+  res.locals.forumRanks = forumRanks;
 
   res.status(StatusCodes.OK).render("./dashboard/public/forums/topic_page", {
     headTitle: "Forum - " + forumInfo.forumName,
@@ -695,22 +719,8 @@ const modifyModerators = asyncWrapper(async (req, res) => {
 const updateForumRanks = asyncWrapper(async (req, res) => {
   const {
     forumID,
-    newbie,
-    rookie,
-    apprentice,
-    explorer,
-    contributor,
-    enthusiast,
-    collaborator,
-    communityRegular,
-    risingStar,
-    proficient,
-    experienced,
-    mentor,
-    veteran,
-    master,
-    grandmaster,
-    legendary,
+    rank,
+    minUpvotesRequiredText,
   } = req.body;
 
   const cookies = req.cookies;
@@ -726,78 +736,180 @@ const updateForumRanks = asyncWrapper(async (req, res) => {
 
   //Check if user is the forum creator
   if (forumInfo.creator == user.userId) {
-    const ranksUpdated = await ForumRankingsModel.findOneAndUpdate(
-      { _id: forumID },
-      {
-        newbie: {
-          rankName: newbie.rankName,
-          minUpvotesRequired: newbie.minUpvotesRequired,
-        },
-        rookie: {
-          rankName: rookie.rankName,
-          minUpvotesRequired: rookie.minUpvotesRequired,
-        },
-        apprentice: {
-          rankName: apprentice.rankName,
-          minUpvotesRequired: apprentice.minUpvotesRequired,
-        },
-        explorer: {
-          rankName: explorer.rankName,
-          minUpvotesRequired: explorer.minUpvotesRequired,
-        },
-        contributor: {
-          rankName: contributor.rankName,
-          minUpvotesRequired: contributor.minUpvotesRequired,
-        },
-        enthusiast: {
-          rankName: enthusiast.rankName,
-          minUpvotesRequired: enthusiast.minUpvotesRequired,
-        },
-        collaborator: {
-          rankName: collaborator.rankName,
-          minUpvotesRequired: collaborator.minUpvotesRequired,
-        },
-        communityRegular: {
-          rankName: communityRegular.rankName,
-          minUpvotesRequired: communityRegular.minUpvotesRequired,
-        },
-        risingStar: {
-          rankName: risingStar.rankName,
-          minUpvotesRequired: risingStar.minUpvotesRequired,
-        },
-        proficient: {
-          rankName: proficient.rankName,
-          minUpvotesRequired: proficient.minUpvotesRequired,
-        },
-        experienced: {
-          rankName: experienced.rankName,
-          minUpvotesRequired: experienced.minUpvotesRequired,
-        },
-        mentor: {
-          rankName: mentor.rankName,
-          minUpvotesRequired: mentor.minUpvotesRequired,
-        },
-        veteran: {
-          rankName: veteran.rankName,
-          minUpvotesRequired: veteran.minUpvotesRequired,
-        },
-        master: {
-          rankName: master.rankName,
-          minUpvotesRequired: master.minUpvotesRequired,
-        },
-        grandmaster: {
-          rankName: grandmaster.rankName,
-          minUpvotesRequired: grandmaster.minUpvotesRequired,
-        },
-        legendary: {
-          rankName: legendary.rankName,
-          minUpvotesRequired: legendary.minUpvotesRequired,
-        },
-      }
-    );
+    var ranksUpdated;
+    var minUpvotesRequired = parseInt(minUpvotesRequiredText);
+    switch (rank) {
+      case "newbie":
+        ranksUpdated = await ForumRankingsModel.findOneAndUpdate(
+          { _id: forumID },
+          {
+            newbie: {
+              minUpvotesRequired,
+            }
+          }
+        );
+        break;
+      case "rookie":
+        ranksUpdated = await ForumRankingsModel.findOneAndUpdate(
+          { _id: forumID },
+          {
+            rookie: {
+              minUpvotesRequired,
+            }
+          }
+        );
+        break;
+      case "apprentice":
+        ranksUpdated = await ForumRankingsModel.findOneAndUpdate(
+          { _id: forumID },
+          {
+            apprentice: {
+              minUpvotesRequired,
+            }
+          }
+        );
+        break;
+      case "explorer":
+        ranksUpdated = await ForumRankingsModel.findOneAndUpdate(
+          { _id: forumID },
+          {
+            explorer: {
+              minUpvotesRequired,
+            }
+          }
+        );
+        break;
+      case "contributor":
+        ranksUpdated = await ForumRankingsModel.findOneAndUpdate(
+          { _id: forumID },
+          {
+            contributor: {
+              minUpvotesRequired,
+            }
+          }
+        );
+        break;
+      case "enthusiast":
+        ranksUpdated = await ForumRankingsModel.findOneAndUpdate(
+          { _id: forumID },
+          {
+            enthusiast: {
+              minUpvotesRequired,
+            }
+          }
+        );
+        break;
+      case "collaborator":
+        ranksUpdated = await ForumRankingsModel.findOneAndUpdate(
+          { _id: forumID },
+          {
+            collaborator: {
+              minUpvotesRequired,
+            }
+          }
+        );
+        break;
+      case "communityRegular":
+        ranksUpdated = await ForumRankingsModel.findOneAndUpdate(
+          { _id: forumID },
+          {
+            communityRegular: {
+              minUpvotesRequired,
+            }
+          }
+        );
+        break;
+      case "risingStar":
+        ranksUpdated = await ForumRankingsModel.findOneAndUpdate(
+          { _id: forumID },
+          {
+            risingStar: {
+              minUpvotesRequired,
+            }
+          }
+        );
+        break;
+      case "proficient":
+        ranksUpdated = await ForumRankingsModel.findOneAndUpdate(
+          { _id: forumID },
+          {
+            proficient: {
+              minUpvotesRequired,
+            }
+          }
+        );
+        break;
+      case "experienced":
+        ranksUpdated = await ForumRankingsModel.findOneAndUpdate(
+          { _id: forumID },
+          {
+            experienced: {
+              minUpvotesRequired,
+            }
+          }
+        );
+        break;
+      case "mentor":
+        ranksUpdated = await ForumRankingsModel.findOneAndUpdate(
+          { _id: forumID },
+          {
+            mentor: {
+              minUpvotesRequired,
+            }
+          }
+        );
+        break;
+      case "veteran":
+        ranksUpdated = await ForumRankingsModel.findOneAndUpdate(
+          { _id: forumID },
+          {
+            veteran: {
+              minUpvotesRequired,
+            }
+          }
+        );
+        break;
+      case "master":
+        ranksUpdated = await ForumRankingsModel.findOneAndUpdate(
+          { _id: forumID },
+          {
+            master: {
+              minUpvotesRequired,
+            }
+          }
+        );
+        break;
+      case "grandmaster":
+        ranksUpdated = await ForumRankingsModel.findOneAndUpdate(
+          { _id: forumID },
+          {
+            grandmaster: {
+              minUpvotesRequired,
+            }
+          }
+        );
+        break;
+        
+      default:
+        ranksUpdated = await ForumRankingsModel.findOneAndUpdate(
+          { _id: forumID },
+          {
+            legendary: {
+              minUpvotesRequired,
+            }
+          }
+        );
+        break;
+    }
 
-    if (ranksUpdated)
-      console.log("Forum " + forumID + " 's rank system has been updated");
+    // if (ranksUpdated){
+      console.log("Forum " + forumID + " 's rank system has been updated"); 
+      //Send success back to frontend
+      res.status(StatusCodes.OK).json({
+        success: true,
+        msg: "Forum rank has been updated successfully!",
+      }); 
+    // }
   } else {
     res
       .status(StatusCodes.FORBIDDEN)
@@ -859,72 +971,114 @@ SPECIAL OPERATIONS PERFORMED AS A FORUM MODERATOR
 */
 const updateForumDisplayPic = asyncWrapper(async (req, res) => {
   const { displayPic } = req.files;
-  let newPicPath;
-  let uploadOk = 1;
+  const { forumID } = req.body
+  var allowedToPerformTask = false;
 
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ success: false, msg: "No files were uploaded." });
-  }
+  const cookies = req.cookies;
+  const token = cookies.jwtAccessToken;
+  const payload = jwt.verify(token, process.env.ACCESS_TOKEN_KEY);
+  const user = {
+    userId: payload.userId,
+    userName: payload.userName,
+  };
 
-  var allowedLogoFiles = displayPic.mimetype;
-  var logoFileSize = req.files.displayPic.size;
-  var maxSize = 7000000;
+  //Check if user is allowed to perform this action
+  const forumInfo = await ForumsModel.findById({ _id: forumID });
+  const forumOwner = forumInfo.creator;
 
-  if (allowedLogoFiles && allowedLogoFiles.startsWith("image/")) {
-    if (logoFileSize > maxSize) {
-      res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ success: false, msg: "File is too big" });
-      uploadOk = 0;
-    } else {
-      const displayPicName = uuidv4() + "_" + displayPic.name.split(".")[0];
-
-      await cloudinary.uploader.upload(
-        displayPic.tempFilePath,
-        {
-          resource_type: "image",
-          public_id: `forumDisplayPics/${displayPicName}`,
-        },
-        async function (err, logo) {
-          if (err) {
-            console.log(err);
-            uploadOk = 0;
-          } else {
-            newPicPath = logo.secure_url;
-            uploadOk = 1;
-
-            const forumInfo = await ForumsModel.findOneAndUpdate(
-              { _id: req.body.forumID },
-              {
-                displayPic: newPicPath,
-              },
-              { returnOriginal: false }
-            );
-            console.log(
-              "Forum " +
-                req.body.forumID +
-                " 's display picture has been updated."
-            );
-
-            fs.unlinkSync(displayPic.tempFilePath);
-
-            //Send success back to frontend
-            res.status(StatusCodes.OK).json({
-              success: true,
-              msg: "Forum display picture has been updated successfully!",
-              forumInfo,
-            });
-          }
+  if(forumOwner == user.userId){
+    allowedToPerformTask = true;
+  }else{
+    if(forumInfo.moderators.length > 0){
+      for (let i = 0; i < forumInfo.moderators.length; i++) {
+        if (forumInfo.moderators[i].userID == user.userId) {
+          allowedToPerformTask = true;
+        } else {
+          allowedToPerformTask = false;
         }
-      );
+      }
+    }else{
+      allowedToPerformTask = false;
     }
+  }
+  
+  if(allowedToPerformTask == true){
+    let newPicPath;
+    let uploadOk = 1;
+  
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ success: false, msg: "No files were uploaded." });
+    }
+  
+    var allowedLogoFiles = displayPic.mimetype;
+    var logoFileSize = req.files.displayPic.size;
+    var maxSize = 7000000;
+  
+    if (allowedLogoFiles && allowedLogoFiles.startsWith("image/")) {
+      if (logoFileSize > maxSize) {
+        res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ success: false, msg: "File is too big" });
+        uploadOk = 0;
+      } else {
+        const displayPicName = uuidv4() + "_" + displayPic.name.split(".")[0];
+  
+        await cloudinary.uploader.upload(
+          displayPic.tempFilePath,
+          {
+            resource_type: "image",
+            public_id: `forumDisplayPics/${displayPicName}`,
+          },
+          async function (err, logo) {
+            if (err) {
+              console.log(err);
+              uploadOk = 0;
+            } else {
+              newPicPath = logo.secure_url;
+              uploadOk = 1;
+  
+              const forumInfo = await ForumsModel.findOneAndUpdate(
+                { _id: req.body.forumID },
+                {
+                  displayPic: newPicPath,
+                },
+                { returnOriginal: false }
+              );
+              console.log(
+                "Forum " +
+                  req.body.forumID +
+                  " 's display picture has been updated."
+              );
+  
+              fs.unlinkSync(displayPic.tempFilePath);
+  
+              //Send success back to frontend
+              res.status(StatusCodes.OK).json({
+                success: true,
+                msg: "Forum display picture has been updated successfully!",
+                forumInfo,
+              });
+            }
+          }
+        );
+      }
+    }
+  }else{
+    res
+      .status(StatusCodes.FORBIDDEN)
+      .json({
+        success: false,
+        msg: "You are not allowed to perform this action.",
+      });
   }
 });
 
 const updateForumProfile = asyncWrapper(async (req, res) => {
   const { forumID, forumName, forumDesc, lookUpValue, wordsFilter } = req.body;
+
+  const newWordsFilter = wordsFilter.split(",");
 
   if (lookUpValue == "on") {
     var availableForLookUp = true;
@@ -943,32 +1097,71 @@ const updateForumProfile = asyncWrapper(async (req, res) => {
   const forumInfo = await ForumsModel.findById({ _id: forumID });
   const forumOwner = forumInfo.creator;
 
-  for (let i = 0; i < forumInfo.moderators.length; i++) {
-    if (
-      forumInfo.moderators[i].userID == user.userId ||
-      forumOwner == user.userId
-    ) {
-      const updateInfo = {
-        forumName,
-        forumDesc,
-        availableForLookUp,
-        wordsFilter,
-      };
+  if(forumOwner == user.userId){
+    const updateInfo = {
+      forumName,
+      forumDesc,
+      availableForLookUp,
+      wordsFilter: newWordsFilter,
+    };
 
-      const infoUpdated = await ForumsModel.findByIdAndUpdate(
-        { _id: forumID },
-        updateInfo
-      );
+    const infoUpdated = await ForumsModel.findByIdAndUpdate(
+      { _id: forumID },
+      updateInfo
+    );
 
-      if (infoUpdated) {
-        console.log("Forum " + forumID + " Profile has been updated");
-      }
-    } else {
-      res
-        .status(StatusCodes.FORBIDDEN)
-        .send("You are not allowed to perform this action");
+    //Send success back to frontend
+    res.status(StatusCodes.OK).json({
+      success: true,
+      msg: "Forum profile has been updated successfully!",
+    });
+
+    if (infoUpdated) {
+      console.log("Forum " + forumID + " Profile has been updated");
     }
-  }
+  }else{
+    if(forumInfo.moderators.length > 0){
+      for (let i = 0; i < forumInfo.moderators.length; i++) {
+        if (forumInfo.moderators[i].userID == user.userId) {
+          const updateInfo = {
+            forumName,
+            forumDesc,
+            availableForLookUp,
+            wordsFilter: newWordsFilter,
+          };
+    
+          const infoUpdated = await ForumsModel.findByIdAndUpdate(
+            { _id: forumID },
+            updateInfo
+          );
+
+          //Send success back to frontend
+          res.status(StatusCodes.OK).json({
+            success: true,
+            msg: "Forum profile has been updated successfully!",
+          });
+    
+          if (infoUpdated) {
+            console.log("Forum " + forumID + " Profile has been updated");
+          }
+        } else {
+          res
+            .status(StatusCodes.FORBIDDEN)
+            .json({
+              success: false,
+              msg: "You are not allowed to perform this action.",
+            });
+        }
+      }
+    }else{
+      res
+      .status(StatusCodes.FORBIDDEN)
+      .json({
+        success: false,
+        msg: "You are not allowed to perform this action.",
+      });
+    }
+  }  
 });
 
 const performActionAsModerator = asyncWrapper(async (req, res) => {

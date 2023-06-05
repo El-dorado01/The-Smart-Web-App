@@ -16,23 +16,7 @@
                 class="fa-solid fa-pencil"></i></span>
     </div>
     <div class="settings-child moderators">
-        <divc class="child">
-            <div class="moderator">
-                <div class="info">
-                    <div class="profile-pic">
-                        <img src="../../../../6.jpg" alt="">
-                    </div>
-                    <div class="name">
-                        <span>El Dorado</span>
-                        <span>Newbie</span>
-                    </div>
-                </div>
-                <span class="remove-user" onclick="modifyModerators()">
-                    <i class="fa-solid fa-user-minus"></i>
-                    <span>Remove</span>
-                </span>
-            </div>
-        </div>
+        <div class="child"></div>
         <button class="btn btn-gray" onclick="document.querySelector('.member-modal').style.display = 'grid';"
             style="display: flex; gap: 7px; align-items: center; justify-content: center;" id="add-moderator"><i
                 class="fa-solid fa-plus"></i><span>Add a
@@ -48,12 +32,12 @@
             <input type="checkbox" name="" id="availableForLookUp">
         </div>
         <div class="input-field">
-            <label>Forum Name</label>
-            <input type="text" name="forumName" id="forumName" required placeholder="Forum Name">
+            <label for="forumName">Forum Name</label>
+            <input type="text" name="forumName" id="forumNameInput" required placeholder="Forum Name">
         </div>
         <div class="input-field-textarea">
             <label>Forum Description</label>
-            <textarea name="" id="forumDesc" required placeholder="Forum Description"></textarea>
+            <textarea name="" id="forumDescInput" required placeholder="Forum Description"></textarea>
         </div>
         <label for="filter-value">Filter Unwanted words (You can add many words separated with comma
             and
@@ -64,8 +48,8 @@
                 <textarea name="" id="filter-value"></textarea>
             </div>
         </div>
-        <button class="btn btn-gray" style="display: flex; gap: 7px; align-items: center; justify-content: center;"><i
-                class="fa-solid fa-pen"></i><span>Update
+        <button class="btn btn-gray" style="display: flex; gap: 7px; align-items: center; justify-content: center;"
+            onclick="updateForumProfile('<%= forumID %>')"><i class="fa-solid fa-pen"></i><span>Update
                 Info</span></button>
     </div>
     <div class="action">
@@ -74,86 +58,11 @@
                 class="fa-solid fa-pencil"></i></span>
     </div>
     <div class="action">
-        <h4>Copy Forum Invite Link</h4> <span onclick="copyForumInviteLink('<%= forumInfo.forumSecretKey %>', '<%= forumID %>', '<%= getURL %>/dashboard/public/forum_invites/<%= forumID %>/key?secretKey=')"><i class="fa-solid fa-link"></i></span>
+        <h4>Copy Forum Invite Link</h4> <span title="Copy Invite Link"
+            onclick="copyForumInviteLink('<%= forumInfo.forumSecretKey %>', '<%= forumID %>', '<%= getURL %>/dashboard/public/forum_invites/<%= forumID %>/key?secretKey=')"><i
+                class="fa-solid fa-link"></i></span>
     </div>
     <!-- <div class="action">
         <h4>Send an Invite to a Friend</h4> <span><i class="fa-solid fa-paper-plane"></i></span>
     </div> -->
 </div>
-<script>
-    function modifyModerators(forumID, memberID, actionType, memberRank, memberAvatar, username){
-        const formData = new FormData();
-        formData.append("forumID", forumID);
-        formData.append("memberID", memberID);
-        formData.append("actionType", actionType);
-
-        fetch("/dashboard/public/modifyModerators", {
-            method: "POST",
-            mode: "cors",
-            cache: "no-cache",
-            credentials: "same-origin",
-            redirect: "follow",
-            referrerPolicy: "no-referrer",
-            body: formData,
-        })
-        .then(function (res) {
-            return res.json();
-        })
-        .then(function (json) {
-            if (json.success) {
-                switch (actionType) {
-                    case "assignModerators":
-                        // Notify that member has been added as a moderator
-                        var button = document.getElementById("assignModerators_" + memberID)
-                        button.classList.remove("btn-primary")
-                        button.querySelector(".icon").remove()
-                        button.style.backgroundColor = "var(--color-secondary)"
-                        button.querySelector(".text").innerHTML = "Added"
-
-                        var div = document.createElement("div")
-                        div.classList.add("moderator")
-                        div.innerHTML = `
-                            <div class="info">
-                                <a href="/dashboard/public/member_profile/${forumID}/key?memberID=${memberID}">
-                                    <div class="profile-pic">
-                                        <img src="../../../../uploads/${memberAvatar}" alt="">
-                                    </div>
-                                </a>
-                                <div class="name">
-                                    <a href="/dashboard/public/member_profile/${forumID}/key?memberID=${memberID}">
-                                        <h4>${username}</h4>
-                                    </a>
-                                    <p>${memberRank}</p>
-                                </div>
-                            </div>
-                            <span class="remove-user" onclick="modifyModerators('${forumID}', '${memberID}', 'removeModerator')">
-                                <i class="fa-solid fa-user-minus"></i>
-                                <span>Remove</span>
-                            </span>
-                        `
-                        document.querySelector(".settings-child.moderators .child").appendChild(div)
-                        break;
-                
-                    default:
-                        break;
-                }
-            
-            } else {
-            dangerAlert.style.display = "block";
-            dangerMessage.textContent = json.msg;
-
-            setTimeout(() => {
-                dangerAlert.style.display = "none";
-            }, 5000);
-            }
-        })
-        .catch(function (err) {
-            dangerAlert.style.display = "block";
-            dangerMessage.textContent = "An error occured. Please try again later";
-
-            setTimeout(() => {
-                dangerAlert.style.display = "none";
-            }, 5000);
-        });
-    }
-</script>

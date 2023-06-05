@@ -688,6 +688,24 @@
     max-height: 80vh;
 }
 
+.rank-modal .info {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 10px;
+    background-color: var(--color-primary);
+    border-radius: 10px 10px 10px 0;
+}
+
+.rank-modal .info button {
+    margin-left: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
 .rank-modal .ranks, .member-modal .members, .add-topic-modal .post-area {
     display: flex;
     flex-direction: column;

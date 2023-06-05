@@ -4058,19 +4058,19 @@ function loadAForumInfo(
   var updateForum = document.querySelector(".settings-child.update-forum-info");
   updateForum.querySelector("#availableForLookUp").checked =
     forumInfo.availableForLookUp;
-  updateForum.querySelector("#forumName").value = forumInfo.forumName;
-  updateForum.querySelector("#forumDesc").value = forumInfo.forumDesc;
+  updateForum.querySelector("#forumNameInput").value = forumInfo.forumName;
+  updateForum.querySelector("#forumDescInput").value = forumInfo.forumDesc;
 
   for (let i = 0; i < forumInfo.wordsFilter.length; i++) {
     var div = document.createElement("div");
     div.classList.add("tag");
     div.classList.add(forumInfo.wordsFilter[i]);
     div.innerHTML = ` <span class="remove-tag"
-                            onclick="removeFilterWord('${forumInfo.wordsFilter[i]}')">
-                            <i class="fa-solid fa-times"></i>
-                            </span>
-                            <p>${forumInfo.wordsFilter[i]}</p>
-                        `;
+                        onclick="removeFilterWord('${forumInfo.wordsFilter[i]}')">
+                        <i class="fa-solid fa-times"></i>
+                      </span>
+                      <p>${forumInfo.wordsFilter[i]}</p>
+                    `;
     updateForum.querySelector(".word-tags .up").appendChild(div);
   }
   // ================= UPDATE FORUM SETTINGS PANEL ================== //
@@ -4187,6 +4187,7 @@ function loadAForumInfo(
       // ==================FETCH FORUM MODERATORS AND ATTACH TO SETTINGS AND FORUM DESCRIPTION ========================= //
       if (memberInfo._id == moderator.userID) {
         var div = document.createElement("div");
+        div.id = "moderatorDIV_" + moderator.userID;
         div.classList.add("moderator");
         div.innerHTML = `
           <div class="info">
@@ -4740,3 +4741,214 @@ socket.on("inviteLinkHashed", (hashedKey, forumID, newLink) => {
     successAlert.style.display = "none";
   }, 3000);
 });
+
+function modifyModerators(forumID, memberID, actionType, memberRank, memberAvatar, username){
+  const formData = new FormData();
+  formData.append("forumID", forumID);
+  formData.append("memberID", memberID);
+  formData.append("actionType", actionType);
+
+  fetch("/dashboard/public/modifyModerators", {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+      body: formData,
+  })
+  .then(function (res) {
+      return res.json();
+  })
+  .then(function (json) {
+      if (json.success) {
+          switch (actionType) {
+              case "assignModerators":
+                  // Notify that member has been added as a moderator
+                  var button = document.getElementById("assignModerators_" + memberID)
+                  button.classList.remove("btn-primary")
+                  button.querySelector(".icon").remove()
+                  button.style.backgroundColor = "var(--color-secondary)"
+                  button.querySelector(".text").innerHTML = "Added"
+                  button.removeAttribute("onclick")
+
+                  var div = document.createElement("div")
+                  div.id = "moderatorDIV_" + memberID
+                  div.classList.add("moderator")
+                  div.innerHTML = `
+                      <div class="info">
+                          <a href="/dashboard/public/member_profile/${forumID}/key?memberID=${memberID}">
+                              <div class="profile-pic">
+                                  <img src="../../../../uploads/${memberAvatar}" alt="">
+                              </div>
+                          </a>
+                          <div class="name">
+                              <a href="/dashboard/public/member_profile/${forumID}/key?memberID=${memberID}">
+                                  <h4>${username}</h4>
+                              </a>
+                              <p>${memberRank}</p>
+                          </div>
+                      </div>
+                      <span class="remove-user" onclick="modifyModerators('${forumID}', '${memberID}', 'removeModerator')">
+                          <i class="fa-solid fa-user-minus"></i>
+                          <span>Remove</span>
+                      </span>
+                  `
+                  document.querySelector(".settings-child.moderators .child").appendChild(div)
+                  break;
+          
+              default:
+                  //Remove Moderator by Default
+                  var moderatorDIV = document.getElementById("moderatorDIV_" + memberID);
+                  moderatorDIV.remove()
+                  break;
+          }
+      
+      } else {
+      dangerAlert.style.display = "block";
+      dangerMessage.textContent = json.msg;
+
+      setTimeout(() => {
+          dangerAlert.style.display = "none";
+      }, 5000);
+      }
+  })
+  .catch(function (err) {
+      dangerAlert.style.display = "block";
+      dangerMessage.textContent = "An error occured. Please try again later";
+
+      setTimeout(() => {
+          dangerAlert.style.display = "none";
+      }, 5000);
+  });
+}
+
+function updateForumProfile(forumID){
+  if(document.getElementById("availableForLookUp").checked == true){
+      var availableForLookUp = "on";
+  }else{
+      var availableForLookUp = "off"
+  }
+  var forumName = document.getElementById("forumNameInput").value
+  var forumDesc = document.getElementById("forumDescInput").value
+
+  var wordsFilter = []
+  var allTags = document.querySelectorAll(".word-tags .up div")
+  for (let i = 0; i < allTags.length; i++) {
+      var tagText = allTags[i].querySelector("p").innerText
+      wordsFilter.push(tagText);
+  }
+
+  const formData = new FormData();
+  formData.append("forumID", forumID);
+  formData.append("forumName", forumName);
+  formData.append("forumDesc", forumDesc);
+  formData.append("lookUpValue", availableForLookUp);
+  formData.append("wordsFilter", wordsFilter);
+
+  fetch("/dashboard/public/updateForumProfile", {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+      body: formData,
+  })
+  .then(function (res) {
+      return res.json();
+  })
+  .then(function (json) {
+      if (json.success) {
+          successAlert.style.display = "block";
+          successAlertIcon.className = "";
+          successAlertIcon.className = "fa fa-check-circle";
+          successMessage.textContent = json.msg;
+
+          setTimeout(() => {
+              successAlert.style.display = "none";
+          }, 3000);
+      } else {
+      dangerAlert.style.display = "block";
+      dangerMessage.textContent = json.msg;
+
+      setTimeout(() => {
+          dangerAlert.style.display = "none";
+      }, 5000);
+      }
+  })
+  .catch(function (err) {
+      dangerAlert.style.display = "block";
+      dangerMessage.textContent = "An error occured. Please try again later";
+
+      setTimeout(() => {
+          dangerAlert.style.display = "none";
+      }, 5000);
+  });
+}
+
+function updateForumRanks(forumID, rank, minUpvotesRequiredText) {
+  const formData = new FormData();
+  formData.append("forumID", forumID);
+  formData.append("rank", rank);
+  formData.append("minUpvotesRequiredText", minUpvotesRequiredText);
+
+  fetch("/dashboard/public/updateForumRanks", {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: formData,
+  })
+  .then(function (res) {
+      return res.json();
+  })
+  .then(function (json) {
+      if (json.success) {
+        successAlert.style.display = "block";
+        successAlertIcon.className = "";
+        successAlertIcon.className = "fa fa-check-circle";
+        successMessage.textContent = json.msg;
+
+        setTimeout(() => {
+            successAlert.style.display = "none";
+        }, 3000);
+      } else {
+        dangerAlert.style.display = "block";
+        dangerMessage.textContent = json.msg;
+
+        setTimeout(() => {
+            dangerAlert.style.display = "none";
+        }, 5000);
+      }
+  })
+  .catch(function (err) {
+      dangerAlert.style.display = "block";
+      dangerMessage.textContent = "An error occured. Please try again later";
+
+      setTimeout(() => {
+          dangerAlert.style.display = "none";
+      }, 5000);
+  });
+}
+
+function resetRanks(forumID){
+  socket.emit("resetForumRanks", { forumID });
+}
+
+socket.on("ranksReset", (data)=> {
+  const { success, msg } = data
+
+  if(success == true){
+    successAlert.style.display = "block";
+    successAlertIcon.className = "";
+    successAlertIcon.className = "fa fa-clipboard";
+    successMessage.textContent = msg;
+
+    setTimeout(() => {
+      successAlert.style.display = "none";
+    }, 3000);
+  }
+})
