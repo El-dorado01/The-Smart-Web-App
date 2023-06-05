@@ -47,7 +47,7 @@
                 <div class="forum-profile">
                     <div class="forum-header">
                         <div class="avatar" onclick='document.querySelector(".forum-profile .forum-body").style.display = "flex"; document.querySelector(".forum-profile .body-forum").style.display = "flex";'>
-                            <img src="" alt="">
+                            <img src="" alt="" id="forum-avatar">
                         </div>
                         <div class="info">
                             <h3 onclick='document.querySelector(".forum-profile .forum-body").style.display = "flex"; document.querySelector(".forum-profile .body-forum").style.display = "flex";'></h3>
@@ -79,7 +79,7 @@
                             </div>
                         </div>
                     </div>
-                    <%- include ("./forum_settings") %>
+                    <%- //include ("./forum_settings") %>
                     <%- include ("./forum_info") %>
                     <div class="forum-body" id="forumTopics">
                         <% if(topics.length < 1){%>
