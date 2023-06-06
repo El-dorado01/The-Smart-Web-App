@@ -73,8 +73,100 @@
 
             <!--Right-->
             <div class="right">
+                <div class="messages">
+                    <div class="heading">
+                        <h4>Forums</h4>
+                        <i class="fa fa-users-rays"></i>
+                    </div>
+                    <div class="category">
+                        <h6 class="active tablinks2" class="archive" onclick="openTab2(event, 'my-forums')" id="defaultOpen2">My Forums
+                            &nbsp; <i class="fa-solid fa-users-rays" style="font-size: 1rem;"></i> <span class="msg-archive">
+                                <%= forums.length %>
+                            </span>
+                        </h6>
+                        <h6 class="tablinks2" onclick="openTab2(event, 'forum-invites')" style="font-size: 1rem;">
+                            Invites &nbsp; <i class="fa-solid fa-envelope-open-text"></i>
+                            <span class="msg-archive">4</span>
+                        </h6>
+                    </div>
+                    <div class="postFeeds2" id="my-forums">
+                        <% if (forums.length < 1) { %>
+                            <div class="body">
+                                <span class="text-muted">You have no forums</span>
+                            </div>
+                        <% }else{ %>
+                            <!--Search Bar-->
+                            <div class="search-bar">
+                                <i class="fa fa-search"></i>
+                                <input type="search" placeholder="Search" id="message-searchs">
+                            </div>
+                            <div class="scroll-bar">
+                                <% forums.forEach(forum=> { %>
+                                    <div class="message">
+                                        <a href="/dashboard/public/forum/<%= forum._id %>">
+                                            <div class="profile-pic">
+                                                <img src="<%= forum.displayPic %>" alt="">
+                                            </div>
+                                        </a>
+                                        <div class="message-body">
+                                            <a href="/dashboard/public/forum/<%= forum._id %>">
+                                                <h5 style="font-size: 13px; font-weight: 600;">
+                                                    <%= forum.forumName %>
+                                                </h5>
+                                            </a>
+                                            <p class="text-muted">
+                                                <%= forum.members.length %>
+                                                    member<% if (forum.members.length> 1){%>s<%}%>
+                                            </p>
+                                        </div>
+                                    </div>
+                                <% }) %>
+                            </div>
+                        <% } %>
+                        <button class="btn btn-primary" style="margin-top: 10px;" onclick="showCreateForum()">
+                            <span class="fa fa-plus"></span>
+                            Create a Forum
+                        </button>
+                    </div>
+                    <div class="postFeeds2" id="forum-invites">
+                        <% if (invites.length < 1) { %>
+                            <div class="body">
+                                <span class="text-muted">You have no invites</span>
+                            </div>
+                        <% } else { %>
+                            <div class="scroll-bar">
+                                <div class="messages">
+                                    <% invites.forEach(invite=> { %>
+                                        <div class="forum">
+                                            <div class="info">
+                                                <div class="profile-pic">
+                                                    <img src="<%= invite.displayPic %>" alt="">
+                                                </div>
+                                                <div class="message-body">
+                                                    <h5 style="font-size: 13px; font-weight: 600;">
+                                                        <%= invite.forumName %>
+                                                    </h5>
+                                                    <p class="text-muted">
+                                                        <%= invite.members.length %>
+                                                            member<% if(invite.members.length> 1){%>s<%}%>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="action">
+                                                <span onclick="updateInvite('<%= invite._id %>', '<%= userID %>', 'accept')"><i
+                                                        class="fa-solid fa-check"></i></span>
+                                                <span onclick="updateInvite('<%= invite._id %>', '<%= userID %>', 'reject')"><i
+                                                        class="fa-solid fa-times"></i></span>
+                                            </div>
+                                        </div>
+                                        <% }); %>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
                 <!--Forums-->
-                <%- include ("./my_forums_right") %>
+                <%- //include ("./my_forums_right") %>
                 <!--Forums end here-->
             </div>
         </div>

@@ -83,7 +83,7 @@
                             </div>
                         </div>
                     </div>
-                    <%- //include ("./forum_settings") %>
+                    <%- include ("./forum_settings") %>
                     <%- include ("./forum_info") %>
                     <div class="forum-body" id="forumTopics">
                         <% if(topics.length < 1){%>
@@ -141,17 +141,26 @@
                         <% }) %>
                         <div class="pagination">
                             <% 
-                                for(var i = 1; i < 4; i++){
-                                    %>
-                            <div onclick="goToNewPage('<%= i %>','<%= totalPages %>','<%= forumID %>')" <% if(i == 1){%>
-                                class="active" <%}%>>
-                                <%= i %> </div> <%  } 
-                            if(totalPages > 3){%> <div style="cursor: auto;">...</div>
-                            <div onclick="goToNewPage('<%= totalPages %>','<%= totalPages %>','<%= forumID %>')">
-                                <%= totalPages %></div>
-                            <% } %>
-                            <div class="next" onclick="goToNewPage('2','<%= totalPages %>','<%= forumID %>')">
-                                <span>Next</span><i class="fa-solid fa-angle-right"></i></div>
+                                if(totalPages > 1 && totalPages < 4){
+                                    for(var i = 1; i < 4; i++){
+                                        %>
+                                        <div onclick="goToNewPage('<%= i %>','<%= totalPages %>','<%= forumID %>')" <% if(i == 1){%> class="active" <%}%>>
+                                            <%= i %> </div> 
+                            <%      }
+                                }else if(totalPages > 3){
+                                    for(var i = 1; i < 4; i++){
+                                        %>
+                                        <div onclick="goToNewPage('<%= i %>','<%= totalPages %>','<%= forumID %>')" <% if(i == 1){%> class="active" <%}%>>
+                                            <%= i %> </div> 
+                            <%  
+                                    } 
+                                    if(totalPages > 3){%> <div style="cursor: auto;">...</div>
+                                    <div onclick="goToNewPage('<%= totalPages %>','<%= totalPages %>','<%= forumID %>')">
+                                        <%= totalPages %></div>
+                                    <% } %>
+                                    <div class="next" onclick="goToNewPage('2','<%= totalPages %>','<%= forumID %>')">
+                                        <span>Next</span><i class="fa-solid fa-angle-right"></i></div>
+                            <%  } %>
                         </div>
                     </div>
                 </div>
