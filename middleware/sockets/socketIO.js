@@ -580,11 +580,11 @@ const allSockets = (socket) => {
     var newLink = link + hashedKey;
     socket.emit("inviteLinkHashed", hashedKey, forumID, newLink);
   });
-  socket.on("resetForumRanks", async(data) => {
+  socket.on("resetForumRanks", async (data) => {
     const { forumID } = data;
-    
-    const ranksReset = await ForumRankingsModel.findByIdAndUpdate(
-      forumID, 
+
+    const ranksReset = await ForumRankingsModel.findOneAndUpdate(
+      { forumID },
       {
         newbie: {
           minUpvotesRequired: 0
@@ -637,7 +637,7 @@ const allSockets = (socket) => {
       }
     )
 
-    if(ranksReset){
+    if (ranksReset) {
       console.log("Forum " + forumID + " ranks have been reset to default");
       socket.emit("ranksReset", { success: true, msg: "Forum Ranks have been reset" });
     }
@@ -767,6 +767,61 @@ const allSockets = (socket) => {
 
     // topics.results = model.slice(startIndex, endIndex);
   });
+  socket.on("performActionInForum", async (data) => {
+    const { forumID, topicID, actionType } = data;
+
+    switch (actionType) {
+      case "pinDiscussion":
+        var discussionPinned = await ForumsTopicsModel.findByIdAndUpdate(
+          { _id: topicID },
+          {
+            pinned: 1
+          });
+
+        if (discussionPinned) {
+          console.log("Discussion pinned!")
+          socket.emit("actionDone", { success: true, actionType, forumID, topicID })
+        }
+        break;
+      case "unpinDiscussion":
+        var discussionPinned = await ForumsTopicsModel.findByIdAndUpdate(
+          { _id: topicID },
+          {
+            pinned: 0
+          });
+
+        if (discussionPinned) {
+          console.log("Discussion has been unpinned!")
+          socket.emit("actionDone", { success: true, actionType, forumID, topicID })
+        }
+        break;
+      case "closeDiscussion":
+        var discussionClosed = await ForumsTopicsModel.findByIdAndUpdate(
+          { _id: topicID },
+          {
+            discussionClosed: 1
+          });
+
+        if (discussionClosed) {
+          console.log("Discussion closed!")
+          socket.emit("actionDone", { success: true, actionType, forumID, topicID })
+        }
+        break;
+
+      default:
+        var discussionOpened = await ForumsTopicsModel.findByIdAndUpdate(
+          { _id: topicID },
+          {
+            discussionClosed: 0
+          });
+
+        if (discussionOpened) {
+          console.log("Discussion opened!")
+          socket.emit("actionDone", { success: true, actionType, forumID, topicID })
+        }
+        break;
+    }
+  })
 
   /*
  =======================================================================================
@@ -857,8 +912,8 @@ const allSockets = (socket) => {
         if (filterResults)
           console.log(
             "Filter results for gender: " +
-              filterValues.gender +
-              " fetched successfully!"
+            filterValues.gender +
+            " fetched successfully!"
           );
         break;
 
@@ -962,7 +1017,7 @@ const allSockets = (socket) => {
         for (let b = 0; b < profileInfo.matchedMates.length; b++) {
           if (
             fetchAllMates[i].userID !=
-              profileInfo.removeMatesFromSuggestion[a].userID ||
+            profileInfo.removeMatesFromSuggestion[a].userID ||
             fetchAllMates[i].userID != profileInfo.matchedMates[b].userID
           ) {
             allMates.push(fetchAllMates[i]);

@@ -113,6 +113,7 @@
                 <% 
                 if(response.response.userID == user._id){
                 %>
+                <p><i class="fa-solid fa-ellipsis fa-lg"></i></p>
                 <p style="background-color: var(--color-danger);" title="Delete"
                     onclick="deleteTopicResponse('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= response.response.userID %>')">
                     <i class="fa-solid fa-trash fa-lg"></i>

@@ -3530,13 +3530,15 @@ function toggleSettings() {
   }
 }
 
-function editRank(obj) {
-  var upvote = document.querySelector(".upvote-" + obj);
+function editRank(rank, forumID) {
+  var upvote = document.querySelector(".upvote-" + rank);
+  var inputValue = document.querySelector(".upvote-" + rank).value;
 
   if (upvote.disabled == true) {
     upvote.disabled = false;
   } else {
-    upvote.disabled = true;
+    updateForumRanks(forumID, rank, inputValue);
+    document.querySelector(".upvote-" + rank).disabled = true;
   }
 }
 
@@ -4942,9 +4944,25 @@ socket.on("ranksReset", (data)=> {
   const { success, msg } = data
 
   if(success == true){
+    document.getElementById("rookie").value = 5
+    document.getElementById("apprentice").value = 15
+    document.getElementById("explorer").value = 30
+    document.getElementById("contributor").value = 50
+    document.getElementById("enthusiast").value = 75
+    document.getElementById("collaborator").value = 105
+    document.getElementById("communityRegular").value = 140
+    document.getElementById("risingStar").value = 180
+    document.getElementById("proficient").value = 225
+    document.getElementById("experienced").value = 275
+    document.getElementById("mentor").value = 330
+    document.getElementById("veteran").value = 400
+    document.getElementById("master").value = 500
+    document.getElementById("grandmaster").value = 750
+    document.getElementById("legendary").value = 1500
+
     successAlert.style.display = "block";
     successAlertIcon.className = "";
-    successAlertIcon.className = "fa fa-clipboard";
+    successAlertIcon.className = "fa fa-check-circle";
     successMessage.textContent = msg;
 
     setTimeout(() => {
@@ -4952,3 +4970,64 @@ socket.on("ranksReset", (data)=> {
     }, 3000);
   }
 })
+
+function performActionInForum(forumID, topicID, actionType) {
+                    socket.emit("performActionInForum", { forumID, topicID, actionType });
+                }
+                socket.on("actionDone", data => {
+                    if (data.success == true) {
+                        switch (data.actionType) {
+                            case "pinDiscussion":
+                                var pinBtn = document.getElementById("pinDiscussion")
+                                pinBtn.querySelector("span").style.color = "var(--color-primary)"
+                                pinBtn.title = "Unpin Discussion"
+                                pinBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'unpinDiscussion')")
+                                break;
+                            case "unpinDiscussion":
+                                var pinBtn = document.getElementById("pinDiscussion")
+                                pinBtn.querySelector("span").style.color = ""
+                                pinBtn.title = "Pin Discussion"
+                                pinBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'pinDiscussion')")
+                                break;
+                            case "closeDiscussion":
+                                // CLOSE DISCUSSION
+                                var closeBtn = document.getElementById("closeDiscussion")
+                                closeBtn.querySelector("span").style.color = "var(--color-primary)"
+                                closeBtn.title = "Open Discussion"
+                                closeBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'openDiscussion')")
+
+                                // Disable Editor features
+                                var responseArea = document.querySelector('.response-area')
+                                // Check if there's any tagged message
+                                if(responseArea.querySelector('.tagged-msg div').innerHTML != ''){
+                                   responseArea.querySelector('.tagged-msg div').innerHTML = "";
+                                   responseArea.querySelector('.tagged-msg').style.display = "none"; 
+                                   responseArea.querySelector(".tagged-msg .icon").removeAttribute("onclick")
+                                }
+                                // Check if there's any preview
+                                if(responseArea.querySelector('.preview div')){
+                                    responseArea.querySelectorAll('.preview div').forEach(div => {
+                                        div.remove()
+                                    })
+                                }
+                                responseArea.querySelector('.actions').style.display = "none"
+
+                                myEditor.setData('')
+                                myEditor.enableReadOnlyMode('response-text')
+                                break;
+                            default:
+                                // OPEN DISCUSSION
+                                var closeBtn = document.getElementById("closeDiscussion")
+                                closeBtn.querySelector("span").style.color = ""
+                                closeBtn.title = "Close Discussion"
+                                closeBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'closeDiscussion')");
+
+                                // Enable Editor features
+                                var responseArea = document.querySelector('.response-area')
+                                responseArea.querySelector('.actions').style.display = "flex";
+                                myEditor.disableReadOnlyMode('response-text')
+                                break;
+                        }
+                    }
+                })
+            

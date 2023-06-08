@@ -530,7 +530,6 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   }
 
   const forumRanks = await ForumRankingsModel.findOne({ forumID });
-  console.log(isAMember, isAModerator);
   
   res.locals.forumID = forumID;
   res.locals.forumInfo = forumInfo;
@@ -565,8 +564,6 @@ const createForum = asyncWrapper(async (req, res) => {
   const { forumName, forumDesc } = req.body;
   const { displayPic } = req.files;
   let allowedFiles, fileSize, maxSize;
-
-  // console.log(req.body, req.files.displayPic);
 
   const cookies = req.cookies;
   const token = cookies.jwtAccessToken;
@@ -2438,7 +2435,7 @@ const visitMemberProfile = asyncWrapper(async (req, res) => {
     userID: user.userId,
   });
   var activities = recentActivities.activities.slice(-20).reverse();
-  console.log(activities);
+
   let numberOfPosts = 0;
   const forumTopics = await ForumsTopicsModel.find({
     forumID,
