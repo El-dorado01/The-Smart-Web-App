@@ -318,15 +318,15 @@
                                                         <% } %>
                                                 </div>
                                                 <div class="actions">
-                                                    <p title="Quote"
+                                                    <span title="Quote"
                                                         onclick="tagAResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>', '<%= topicInfo._id %>', '<%= JSON.stringify(forumInfo.wordsFilter) %>', <%= isAMember %>)">
                                                         <i class="fa-solid fa-quote-right fa-lg"></i>
-                                                    </p>
+                                                    </span>
                                                     <!--<p title="Upvote" style="width: 40px;"><i class="fa-solid fa-circle-up fa-lg"></i><span><% //topicInfo.upvotes %>
                                     </span></p>-->
-                                                    <p title="Share"><i
+                                                    <span title="Share"><i
                                                             class="fa-solid fa-arrow-up-from-bracket fa-lg"></i>
-                                                    </p>
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
@@ -766,17 +766,17 @@
                                         var actionsField = document.createElement("div")
                                         actionsField.classList.add("actions")
                                         actionsField.innerHTML = `
-                                    <p onclick="tagAResponse('${topicInfo.forumID}', '${topicInfo._id}', '${replyInfo.response._id}', '${JSON.stringify(forumInfo.wordsFilter)}', true)">
-                                        <i class="fa-solid fa-quote-right fa-lg"></i></p>
-                                    <p style="width: 40px;" title="Upvote this Response" onclick="updateResponseUpvotes(this, '${replyInfo.response.userID}','${topicInfo._id}','${replyInfo.response._id}','${topicInfo.forumID}','upvoteAResponse', true)">
+                                    <div onclick="tagAResponse('${topicInfo.forumID}', '${topicInfo._id}', '${replyInfo.response._id}', '${JSON.stringify(forumInfo.wordsFilter)}', true)">
+                                        <i class="fa-solid fa-quote-right fa-lg"></i></div>
+                                    <div style="width: 40px;" title="Upvote this Response" onclick="updateResponseUpvotes(this, '${replyInfo.response.userID}','${topicInfo._id}','${replyInfo.response._id}','${topicInfo.forumID}','upvoteAResponse', true)">
                                         <span class="icon"><i class="fa-solid fa-circle-up fa-lg"></i></span>
                                         <span class="count">${replyInfo.response.upvotes}</span>
-                                    </p>
-                                    <p title="Share"><i class="fa-solid fa-arrow-up-from-bracket fa-lg"></i> </p>
-                                    <p style="background-color: var(--color-danger);" title="Delete"
+                                    </div>
+                                    <div title="Share"><i class="fa-solid fa-arrow-up-from-bracket fa-lg"></i> </div>
+                                    <div style="background-color: var(--color-danger);" title="Delete"
                     onclick="deleteTopicResponse('${topicInfo.forumID}','${topicInfo._id}','${replyInfo.response._id}','${replyInfo.response.userID}')">
                                         <i class="fa-solid fa-trash fa-lg"></i>
-                                    </p>
+                                    </div>
                                 `
 
                                         // APPEND ACTIONS FIELD

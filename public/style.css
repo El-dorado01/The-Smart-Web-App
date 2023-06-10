@@ -4371,13 +4371,24 @@ main .container .right {
     top: -100%;
     left: -3.5rem;
     height: auto;
-    width: 12rem;
+    min-width: 15rem;
+    width: auto;
     border-radius: 10px;
     padding: 10px;
     display: flex;
     flex-direction: column;
     background-color: var(--color-light);
     z-index: 11;
+}
+
+.requote .one, .requote .two {
+    font-size: 12px;
+    cursor: pointer;
+    padding: 5px 0;
+}
+
+.requote .one {
+    border-bottom: 1px solid var(--color-white);
 }
 
 .requote div {
@@ -5845,7 +5856,7 @@ main .container .right {
     align-items: center;
 }
 
-.middle .forum-body .q-box-main .q-box-right .actions p {
+.middle .forum-body .q-box-main .q-box-right .actions span {
     /* font-size: 14px; */
     cursor: pointer;
     display: flex;
@@ -6938,6 +6949,10 @@ main .container .right {
     .middle .post-feed-single .action-button {
         padding-right: 10px;
     }
+
+    .other-actions {
+        left: -8rem;
+    }
 }
 
 @media (max-width: 497px) {
@@ -7024,6 +7039,9 @@ main .container .right {
     .attach-quote .media-caption {
         width: 60%;
     }
+    .other-actions {
+        left: -10rem;
+    }
 }
 
 @media(max-width: 420px){
@@ -7072,6 +7090,9 @@ main .container .right {
     .container.sidebar-close .channel-chat-float {
         right: 5%;
         width: 85vw;
+    }
+    .other-actions {
+        left: -12rem;
     }
 }
 
