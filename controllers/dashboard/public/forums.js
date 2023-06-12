@@ -1176,12 +1176,23 @@ const performActionAsModerator = asyncWrapper(async (req, res) => {
   const forumInfo = await ForumsModel.findById({ _id: forumID });
   const forumOwner = forumInfo.creator;
 
-  for (let i = 0; i < forumInfo.moderators.length; i++) {
-    if (
-      forumInfo.moderators[i].userID == user.userId ||
-      forumOwner == user.userId
-    ) {
-      //Switch Actions
+  var canPerformAction = false;
+
+  if(forumOwner == user.userId){
+    canPerformAction = true;
+  }else{
+    for (let i = 0; i < forumInfo.moderators.length; i++) {
+      if (
+        forumInfo.moderators[i].userID == user.userId ||
+        forumOwner == user.userId
+      ) {
+        canPerformAction = true;
+      } 
+    }
+  }
+
+  if(canPerformAction == true){
+    //Switch Actions
       switch (actionType) {
         case "approveRequest":
           const pullRequest = await ForumsModel.findByIdAndUpdate(
@@ -1255,14 +1266,55 @@ const performActionAsModerator = asyncWrapper(async (req, res) => {
           break;
 
         case "warnMembers":
+          // Delete User's post or response
+          const { deletionType, topicID, reasonForWarning } = req.body;
+          if(deletionType == "topicDelete"){
+            const topicDeleted = await ForumsTopicsModel.findByIdAndDelete({
+              _id: topicID,
+            });
+
+            await ForumsActivityModel.findOneAndUpdate(
+              { userID: memberID },
+              {
+                $pull: {
+                  activities: {
+                    activity: "post",
+                    forumID,
+                    topicID,
+                  },
+                },
+              }
+            );
+          }else {
+            var responseID = req.body.responseID;
+            const responseDeleted = await ForumsTopicsModel.findByIdAndUpdate(
+              { _id: topicID },
+              { $pull: { responses: { _id: responseID } } }
+            );
+
+            await ForumsActivityModel.findOneAndUpdate(
+              { userID: memberID },
+              {
+                $pull: {
+                  activities: {
+                    activity: "response",
+                    forumID,
+                    topicID,
+                    responseID,
+                  },
+                },
+              }
+            );
+          }
+
           //Get the member's number of warns
           const memberWarnNumber = await ForumsModel.findOne(
             { _id: forumID, "members.userID": memberID },
             "numberOfWarns"
           );
 
-          if (memberWarnNumber < 5) {
-            const newWarnNumber = memberWarnNumber + 1;
+          if (memberWarnNumber.numberOfWarns < 5) {
+            const newWarnNumber = memberWarnNumber.numberOfWarns + 1;
 
             //Check if the new member's warn number has reached 5, then remove member
             if (newWarnNumber >= 5) {
@@ -1317,12 +1369,12 @@ const performActionAsModerator = asyncWrapper(async (req, res) => {
           }
           break;
       }
-    } else {
-      res
-        .status(StatusCodes.FORBIDDEN)
-        .send("You are not allowed to perform this action");
-    }
+  } else {
+    res
+      .status(StatusCodes.FORBIDDEN)
+      .send("You are not allowed to perform this action");
   }
+  
 });
 
 /*
@@ -1831,7 +1883,7 @@ const deleteATopic = asyncWrapper(async (req, res) => {
         });
 
         await ForumsActivityModel.findOneAndUpdate(
-          { userID: user.userId },
+          { userID: topicCreator },
           {
             $pull: {
               activities: {
@@ -2332,7 +2384,7 @@ const deleteAResponse = asyncWrapper(async (req, res) => {
         );
 
         await ForumsActivityModel.findOneAndUpdate(
-          { userID: user.userId },
+          { userID: responseCreator },
           {
             $pull: {
               activities: {

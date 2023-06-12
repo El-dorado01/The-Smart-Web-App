@@ -86,18 +86,18 @@
 
 .middle .create-forum .info {
     width: 100%;
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
     justify-content: space-between;
 }
 
 .middle .create-forum .info span {
-    width: 40px; 
-    height: 40px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    background-color: var(--color-light); 
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-light);
     border-radius: 50%;
 }
 
@@ -108,14 +108,16 @@
     margin-right: 10px;
 }
 
-.middle .user-profile-page, .middle .forum-profile {
+.middle .user-profile-page,
+.middle .forum-profile {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.middle .user-profile-page .header, .middle .forum-profile .forum-header {
+.middle .user-profile-page .header,
+.middle .forum-profile .forum-header {
     width: 100%;
     background: var(--color-white);
     padding: var(--card-padding);
@@ -126,20 +128,23 @@
     gap: 15px;
 }
 
-.middle .user-profile-page .header .avatar, .middle .forum-profile .forum-header .avatar {
+.middle .user-profile-page .header .avatar,
+.middle .forum-profile .forum-header .avatar {
     width: 100px;
     height: 100px;
     border-radius: 50%;
 }
 
-.middle .user-profile-page .header .avatar img, .middle .forum-profile .forum-header .avatar img {
+.middle .user-profile-page .header .avatar img,
+.middle .forum-profile .forum-header .avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
 }
 
-.middle .user-profile-page .header .info, .middle .forum-profile .forum-header .info {
+.middle .user-profile-page .header .info,
+.middle .forum-profile .forum-header .info {
     width: 70%;
     display: flex;
     flex-direction: column;
@@ -170,7 +175,8 @@
     background-color: var(--color-light);
 }
 
-.middle .profile-body, .middle .body-forum {
+.middle .profile-body,
+.middle .body-forum {
     width: 100%;
     background: var(--color-white);
     padding: var(--card-padding);
@@ -377,7 +383,9 @@
     justify-content: center;
 }
 
-.body-forum #forum-members, .body-forum #forum-description, .body-forum #requests-to-join {
+.body-forum #forum-members,
+.body-forum #forum-description,
+.body-forum #requests-to-join {
     width: 100%;
     max-height: 30vh;
     overflow-y: auto;
@@ -387,13 +395,18 @@
     margin: 20px;
 }
 
-.body-forum #forum-description .moderators, .body-forum #requests-to-join .moderators {
+.body-forum #forum-description .moderators,
+.body-forum #requests-to-join .moderators {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     grid-gap: 10px;
 }
 
-.body-forum #forum-members .members .body, .body-forum #forum-description .moderators .body, .body-forum #requests-to-join .moderators .body, #forum-invites .body, #my-forums .body {
+.body-forum #forum-members .members .body,
+.body-forum #forum-description .moderators .body,
+.body-forum #requests-to-join .moderators .body,
+#forum-invites .body,
+#my-forums .body {
     width: 100%;
     height: 30vh;
     display: flex;
@@ -413,7 +426,8 @@
     width: 100%;
 }
 
-.body-forum #forum-description .moderators .moderator, .body-forum #requests-to-join .moderators .moderator .moderator-info {
+.body-forum #forum-description .moderators .moderator,
+.body-forum #requests-to-join .moderators .moderator .moderator-info {
     display: flex;
     width: 100%;
     gap: 10px;
@@ -445,7 +459,8 @@
     color: var(--color-danger);
 }
 
-.body-forum #forum-description .moderators .moderator .profile-pic, .body-forum #requests-to-join .moderators .moderator .profile-pic {
+.body-forum #forum-description .moderators .moderator .profile-pic,
+.body-forum #requests-to-join .moderators .moderator .profile-pic {
     width: 70px;
     height: 70px;
     border-radius: 50%;
@@ -456,14 +471,16 @@
     height: 50px;
 }
 
-.body-forum #forum-description .moderators .moderator .profile-pic img, .body-forum #requests-to-join .moderators .moderator .profile-pic img {
+.body-forum #forum-description .moderators .moderator .profile-pic img,
+.body-forum #requests-to-join .moderators .moderator .profile-pic img {
     width: 100%;
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
 }
 
-.body-forum #forum-description .moderators .moderator .info, .body-forum #requests-to-join .moderators .moderator .info {
+.body-forum #forum-description .moderators .moderator .info,
+.body-forum #requests-to-join .moderators .moderator .info {
     display: flex;
     flex-direction: column;
 }
@@ -488,7 +505,8 @@
     margin-bottom: 10px;
 }
 
-.forum-profile .settings .image-preview, .create-forum .image-preview {
+.forum-profile .settings .image-preview,
+.create-forum .image-preview {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -498,14 +516,16 @@
     display: none;
 }
 
-.forum-profile .settings .image-preview .pic, .create-forum .image-preview .pic {
+.forum-profile .settings .image-preview .pic,
+.create-forum .image-preview .pic {
     width: 6rem;
     height: 6rem;
     border-radius: 50%;
     display: none;
 }
 
-.forum-profile .settings #img-preview3, .create-forum #img-preview2 {
+.forum-profile .settings #img-preview3,
+.create-forum #img-preview2 {
     width: 100%;
     height: 100%;
     border-radius: 50%;
@@ -533,7 +553,8 @@
     cursor: pointer;
 }
 
-.forum-profile .settings .moderators, .forum-profile .settings .update-forum-info {
+.forum-profile .settings .moderators,
+.forum-profile .settings .update-forum-info {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -555,8 +576,8 @@
 
 .forum-profile .settings .update-forum-info .info {
     width: 100%;
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
     justify-content: space-between;
 }
 
@@ -567,31 +588,36 @@
     margin-right: 10px;
 }
 
-.forum-profile .settings .moderators .moderator, .member-modal .members .member {
+.forum-profile .settings .moderators .moderator,
+.member-modal .members .member {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.forum-profile .settings .moderators .moderator .info, .member-modal .members .member .info {
+.forum-profile .settings .moderators .moderator .info,
+.member-modal .members .member .info {
     display: flex;
     gap: 10px;
 }
 
-.forum-profile .settings .moderators .moderator .info .profile-pic, .member-modal .members .member .profile-pic {
+.forum-profile .settings .moderators .moderator .info .profile-pic,
+.member-modal .members .member .profile-pic {
     width: 50px;
     height: 50px;
     border-radius: 50%;
 }
 
-.forum-profile .settings .moderators .moderator .info .profile-pic img, .member-modal .members .member .profile-pic img {
+.forum-profile .settings .moderators .moderator .info .profile-pic img,
+.member-modal .members .member .profile-pic img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
 }
 
-.forum-profile .settings .moderators .moderator .info .name, .member-modal .members .member .info .name {
+.forum-profile .settings .moderators .moderator .info .name,
+.member-modal .members .member .info .name {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -640,18 +666,23 @@
     cursor: pointer;
 }
 
-.forum-profile .settings .update-forum-info .input-field, .create-forum .input-field {
+.forum-profile .settings .update-forum-info .input-field,
+.create-forum .input-field {
     width: 100%;
     height: 4rem;
     border-radius: 10px;
 }
 
-.forum-profile .settings .update-forum-info .input-field-textarea, .create-forum .input-field-textarea {
+.forum-profile .settings .update-forum-info .input-field-textarea,
+.create-forum .input-field-textarea {
     width: 100%;
     border-radius: 10px;
 }
 
-.forum-profile .settings .update-forum-info .input-field label, .forum-profile .settings .update-forum-info .input-field-textarea label, .create-forum .input-field label, .create-forum .input-field-textarea label  {
+.forum-profile .settings .update-forum-info .input-field label,
+.forum-profile .settings .update-forum-info .input-field-textarea label,
+.create-forum .input-field label,
+.create-forum .input-field-textarea label {
     margin-bottom: 5px;
     display: flex;
     align-items: center;
@@ -659,7 +690,8 @@
     letter-spacing: 1px;
 }
 
-.forum-profile .settings .update-forum-info .input-field input, .create-forum .input-field input {
+.forum-profile .settings .update-forum-info .input-field input,
+.create-forum .input-field input {
     width: 100%;
     background-color: var(--color-light);
     border-radius: 10px;
@@ -667,7 +699,8 @@
     padding: 3px 10px;
 }
 
-.forum-profile .settings .update-forum-info .input-field-textarea textarea, .create-forum .input-field-textarea textarea {
+.forum-profile .settings .update-forum-info .input-field-textarea textarea,
+.create-forum .input-field-textarea textarea {
     width: 100%;
     border: none;
     outline: none;
@@ -678,7 +711,8 @@
     resize: none;
 }
 
-.rank-modal .card, .member-modal .card  {
+.rank-modal .card,
+.member-modal .card {
     background: var(--color-white);
     padding: 3rem;
     border-radius: var(--card-border-radius);
@@ -711,7 +745,9 @@
     border-radius: 8px;
 }
 
-.rank-modal .ranks, .member-modal .members, .add-topic-modal .post-area {
+.rank-modal .ranks,
+.member-modal .members,
+.add-topic-modal .post-area {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -746,7 +782,8 @@
     border-bottom: none;
 }
 
-.rank-modal h3, .member-modal h3 {
+.rank-modal h3,
+.member-modal h3 {
     font-size: 1.2rem;
     margin-top: 25px;
 }
@@ -808,7 +845,7 @@
     display: none;
 }
 
- /* {
+/* {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -818,68 +855,69 @@
 } */
 
 .add-topic-modal select {
-  appearance: none;
-  background-color: transparent;
-  border: none;
-  padding: 0 1em 0 0;
-  margin: 0;
-  width: 100%;
-  font-family: inherit;
-  font-size: inherit;
-  cursor: inherit;
-  line-height: inherit;
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    padding: 0 1em 0 0;
+    margin: 0;
+    width: 100%;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: inherit;
+    line-height: inherit;
 
-  outline: none;
+    outline: none;
 }
 
 .add-topic-modal select::-ms-expand {
-  display: none;
+    display: none;
 }
 
 .add-topic-modal .select {
-  width: 100%;
-  height: 2.5rem;
-  min-width: 15ch;
-  /* max-width: 30ch; */
-  border: 1px solid var(--color-light);
-  border-radius: 0.2em;
-  padding: 0.5em;
-  cursor: pointer;
-  line-height: 1.5;
-  background-color: var(--color-light);
-  /* background-image: linear-gradient(to top, #f9f9f9, #fff 33%); */
+    width: 100%;
+    height: 2.5rem;
+    min-width: 15ch;
+    /* max-width: 30ch; */
+    border: 1px solid var(--color-light);
+    border-radius: 0.2em;
+    padding: 0.5em;
+    cursor: pointer;
+    line-height: 1.5;
+    background-color: var(--color-light);
+    /* background-image: linear-gradient(to top, #f9f9f9, #fff 33%); */
 
-  display: grid;
-  grid-template-areas: "select";
-  align-items: center;
-  position: relative;
+    display: grid;
+    grid-template-areas: "select";
+    align-items: center;
+    position: relative;
 }
 
 .add-topic-modal .select::after {
-  content: "";
-  width: 0.8em;
-  height: 0.5em;
-  background-color: var(--color-gray);
-  clip-path: polygon(100% 0%, 0 0%, 50% 100%);
-  justify-self: end;
+    content: "";
+    width: 0.8em;
+    height: 0.5em;
+    background-color: var(--color-gray);
+    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+    justify-self: end;
 }
 
 .add-topic-modal select,
 .add-topic-modal .select:after {
-  grid-area: select;
+    grid-area: select;
 }
 
-.add-topic-modal select:focus + .focus {
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  right: -1px;
-  bottom: -1px;
-  border: 2px solid var(--color-light);
-  border-radius: inherit;
+.add-topic-modal select:focus+.focus {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    border: 2px solid var(--color-light);
+    border-radius: inherit;
 }
 
-.add-topic-modal .actions, .response-area .actions {
+.add-topic-modal .actions,
+.response-area .actions {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -887,7 +925,8 @@
     gap: 15px;
 }
 
-.add-topic-modal .actions button, .response-area .actions button {
+.add-topic-modal .actions button,
+.response-area .actions button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -895,14 +934,16 @@
     width: 100%;
 }
 
-.add-topic-modal .icons, .response-area .icons {
+.add-topic-modal .icons,
+.response-area .icons {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     gap: 5px;
 }
 
-.add-topic-modal .icons span, .response-area .icons span {
+.add-topic-modal .icons span,
+.response-area .icons span {
     width: 30px;
     height: 30px;
     cursor: pointer;
@@ -985,11 +1026,13 @@
     gap: 10px;
 }
 
-.response-area .tagged-msg div p, .response-area .tagged-msg div div {
+.response-area .tagged-msg div p,
+.response-area .tagged-msg div div {
     width: 100%;
 }
 
-.response-area .preview, .forum-body .media {
+.response-area .preview,
+.forum-body .media {
     width: 100%;
     display: flex;
     align-items: center;
@@ -1001,7 +1044,8 @@
     margin: 15px 0;
 }
 
-.response-area .preview .sub-img, .forum-body .media .img {
+.response-area .preview .sub-img,
+.forum-body .media .img {
     width: 50%;
     height: 100%;
     max-height: 15rem;
@@ -1027,15 +1071,18 @@
     right: 10px;
 }
 
-.response-area .preview .sub-img img, .forum-body .media .img img {
+.response-area .preview .sub-img img,
+.forum-body .media .img img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 10px;
 }
-#recent-activity a { 
+
+#recent-activity a {
     width: 100%;
 }
+
 #recent-activity .activity {
     width: 100%;
     height: 40px;
@@ -1061,6 +1108,48 @@
 .rank-info .active {
     color: var(--color-success);
 }
+
 .rank-info .inactive {
     color: var(--color-danger);
+}
+
+.content {
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    font-size: 12px;
+}
+
+.content h2 {
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.content .warns {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.content .warns .warn {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+}
+
+.confirm-popup .action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.confirm-popup .action button {
+    width: 100%;
+    border-radius: 10px;
 }

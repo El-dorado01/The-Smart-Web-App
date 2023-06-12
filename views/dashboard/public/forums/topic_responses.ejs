@@ -118,28 +118,25 @@
                                                     <span title="Share"><i
                                                             class="fa-solid fa-arrow-up-from-bracket fa-lg"></i> </span>
                                                     <% if(response.response.userID==user._id){ %>
-                                                        <div style="position: relative;" id="other-actions-<%= response.response._id %>">
-                                                            <span title="More"
-                                                                onclick="showOtherActionsInForum('<%= response.response._id %>')"><i
-                                                                    class="fa-solid fa-ellipsis fa-lg"></i></span>
-                                                        </div>
-                                                        <!--<span style="background-color: var(--color-danger);"
+                                                        <span style="background-color: var(--color-danger);"
                                                             title="Delete"
                                                             onclick="deleteTopicResponse('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= response.response.userID %>')">
                                                             <i class="fa-solid fa-trash fa-lg"></i>
-                                                        </span>-->
+                                                        </span>
                                                         <% }else if(forumInfo.creator==user._id){ %>
-                                                            <div style="position: relative;" id="other-actions-<%= response.response._id %>">
+                                                            <div style="position: relative;"
+                                                                id="other-actions-<%= response.response._id %>">
                                                                 <span title="More"
-                                                                    onclick="showOtherActionsInForum('<%= response.response._id %>')"><i
+                                                                    onclick="showOtherActionsInForum('<%= response.response._id %>', '<%= topicInfo.forumID %>', '<%= response.response.userID %>', '<%= topicInfo._id %>', 'responseDelete', '<%= response.response._id %>')"><i
                                                                         class="fa-solid fa-ellipsis fa-lg"></i></span>
                                                             </div>
                                                             <%} else { for (let i=0; i < forumInfo.moderators.length;
                                                                 i++) { if (forumInfo.moderators[i].userID==user._id ) {
                                                                 %>
-                                                                <div style="position: relative;" id="other-actions-<%= response.response._id %>">
+                                                                <div style="position: relative;"
+                                                                    id="other-actions-<%= response.response._id %>">
                                                                     <span title="More"
-                                                                        onclick="showOtherActionsInForum('<%= response.response._id %>')"><i
+                                                                        onclick="showOtherActionsInForum('<%= response.response._id %>', '<%= topicInfo.forumID %>', '<%= response.response.userID %>', '<%= topicInfo._id %>', 'responseDelete', '<%= response.response._id %>')"><i
                                                                             class="fa-solid fa-ellipsis fa-lg"></i></span>
                                                                 </div>
 
@@ -294,28 +291,149 @@
             <%} } %>
 
                 <script>
-                    function showOtherActionsInForum(id) {
+                    function warnMemberPanel(id, forumID, memberID, topicID, deletionType, responseID) {
+                        var actionPanel = document.getElementById("action-panel-" + id)
+                        var actionModal = document.getElementById("action-modal-" + id)
+
+                        actionPanel.style.display = "none"
+                        actionModal.style.display = "none"
+
+                        var closeUp = document.createElement("div");
+                        closeUp.classList.add("close-popup");
+                        closeUp.setAttribute("style", "cursor: pointer;");
+                        closeUp.setAttribute("onclick", `cancelWarn('${id}')`);
+                        closeUp.innerHTML = `
+                            <span><i class="fa fa-times"></i></span>
+                        `;
+
+                        var div = document.createElement("div");
+                        div.classList.add("content");
+                        div.innerHTML = `
+                            <h2>Warn Member</h2>
+                            <span>This user has 5 warn(s) left. Help this user know what they have done wrong!</span>
+                            <div class="warns">
+                                <span class="warn">
+                                    <input type="radio" name="warn_reason" value="Inappropriate use of language">
+                                    <span>Inappropriate use of language</span>
+                                </span>
+                                <span class="warn">
+                                    <input type="radio" name="warn_reason" value="Unnecessary spamming">
+                                    <span>Unnecessary spamming</span>
+                                </span>
+                                <span class="warn">
+                                    <input type="radio" name="warn_reason" value="Unrelated discussion in forum">
+                                    <span>Unrelated discussion in forum</span>
+                                </span>
+                                <span class="warn">
+                                    <input type="radio" name="warn_reason" value="Violation of other forum rules">
+                                    <span>Violation of other forum rules</span>
+                                </span>
+                            </div>
+                        `;
+
+                        var actionDiv = document.createElement("div");
+                        actionDiv.classList.add("action");
+                        actionDiv.innerHTML = `
+                            <button class="btn" onclick="cancelWarn('${id}')">Cancel</button>
+                            <button class="btn btn-primary" onclick="warnMember('${id}', '${forumID}', '${memberID}', '${topicID}', '${deletionType}', '${responseID}')">Warn Member</button>
+                        `;
+
+                        var panel = document.querySelector(".confirm-popup");
+
+                        panel.querySelector(".card").innerHTML = "";
+                        panel.querySelector(".card").appendChild(closeUp);
+                        panel.querySelector(".card").appendChild(div);
+                        panel.querySelector(".card").appendChild(actionDiv);
+                        panel.style.display = "block";
+                    }
+
+                    function ejectMemberPanel(id) {
+                        var actionPanel = document.getElementById("action-panel-" + id)
+                        var actionModal = document.getElementById("action-modal-" + id)
+
+                        actionPanel.style.display = "none"
+                        actionModal.style.display = "none"
+
+                        var closeUp = document.createElement("div");
+                        closeUp.classList.add("close-popup");
+                        closeUp.setAttribute("style", "cursor: pointer;");
+                        closeUp.setAttribute("onclick", `cancelEject('${id}')`);
+                        closeUp.innerHTML = `
+                            <span><i class="fa fa-times"></i></span>
+                        `;
+
+                        var div = document.createElement("div");
+                        div.classList.add("content");
+                        div.innerHTML = `
+                            <h2>Eject Member</h2>
+                            <span>Are you sure you want to eject this member? You can choose to warn this member instead. </span>
+                        `;
+
+                        var actionDiv = document.createElement("div");
+                        actionDiv.classList.add("action");
+                        actionDiv.innerHTML = `
+                            <button class="btn btn-danger" onclick="ejectMember('${id}')">No, Eject Member!</button>
+                            <button class="btn btn-primary" onclick="cancelEject('${id}'); warnMemberPanel('${id}');">Yes, Warn Member Instead!</button>
+                        `;
+
+                        var panel = document.querySelector(".confirm-popup");
+
+                        panel.querySelector(".card").innerHTML = "";
+                        panel.querySelector(".card").appendChild(closeUp);
+                        panel.querySelector(".card").appendChild(div);
+                        panel.querySelector(".card").appendChild(actionDiv);
+                        panel.style.display = "block";
+                    }
+
+                    function cancelWarn(id) {
+                        document.getElementsByName('warn_reason').forEach(warn => {
+                            warn.checked = false;
+                        });
+                        var panel = document.querySelector(".confirm-popup");
+                        panel.style.display = "none"
+                        panel.querySelector(".card").innerHTML = "";
+
+                        var actionPanel = document.getElementById("action-panel-" + id)
+                        var actionModal = document.getElementById("action-modal-" + id)
+
+                        actionPanel.style.display = "block";
+                        actionModal.style.display = "block";
+                    }
+
+                    function cancelEject(id) {
+                        var panel = document.querySelector(".confirm-popup");
+                        panel.style.display = "none"
+                        panel.querySelector(".card").innerHTML = "";
+
+                        var actionPanel = document.getElementById("action-panel-" + id)
+                        var actionModal = document.getElementById("action-modal-" + id)
+
+                        actionPanel.style.display = "block";
+                        actionModal.style.display = "block";
+                    }
+
+                    function showOtherActionsInForum(id, forumID, memberID, topicID, deletionType, responseID) {
                         var otherActions = document.getElementById("other-actions-" + id)
 
                         if (!otherActions.querySelector("#action-panel-" + id)) {
                             var div = document.createElement("div")
                             div.innerHTML = `
-                    <div class="requote other-actions" style="top: -30%; left:" id="action-panel-${id}">
-                        <div class="one" onclick="warnMember()">
-                            <i class="fa-solid fa-land-mine-on"></i>
-                            <strong>Warn Member</strong>
-                        </div>
-                        <div class="two" onclick="deleteResponseInForum('${id}')">
-                            <i class="fa-solid fa-trash"></i>
-                            <strong>Delete Response</strong>
-                        </div>
-                        <div class="two" onclick="ejectMember('${id}')">
-                            <i class="fa-solid fa-user-xmark"></i>
-                            <strong>Eject Member</strong>
-                        </div>
-                    </div>
-                    <div class="requote-modal" id="action-modal-${id}" onclick="closeOtherActionsInForum(this, '${id}')"></div>
-                `
+                                <div class="requote other-actions" style="top: -30%; left:" id="action-panel-${id}">
+                                    <div class="one" onclick="warnMemberPanel('${id}', '${forumID}', '${memberID}', '${topicID}', '${deletionType}', '${responseID}')">
+                                        <i class="fa-solid fa-land-mine-on"></i>
+                                        <strong>Warn Member</strong>
+                                    </div>
+                                    <div class="one" onclick="deleteResponseInForum('${id}')">
+                                        <i class="fa-solid fa-trash"></i>
+                                        <strong>Delete Response</strong>
+                                    </div>
+                                    <div class="two" onclick="ejectMemberPanel('${id}')">
+                                        <i class="fa-solid fa-user-xmark"></i>
+                                        <strong>Eject Member</strong>
+                                    </div>
+                                </div>
+                                <div class="requote-modal" id="action-modal-${id}" onclick="closeOtherActionsInForum(this, '${id}')"></div>
+                            `;
 
                             otherActions.appendChild(div)
                         } else {
@@ -328,9 +446,76 @@
                     }
 
                     function closeOtherActionsInForum(obj, id) {
-                        console.log("Here")
                         var actionPanel = document.getElementById("action-panel-" + id)
                         obj.style.display = "none"
                         actionPanel.style.display = "none"
+                    }
+
+                    function warnMember(id, forumID, memberID, topicID, deletionType, responseID) {
+                        var reasonForWarning;
+                        document.getElementsByName('warn_reason').forEach(warn => {
+                            if(warn.checked == true){
+                                reasonForWarning = warn.value;
+                            }
+                            warn.checked = false;
+                        });
+                        if(reasonForWarning == undefined){
+                            reasonForWarning = "null";
+                        }
+                        var panel = document.querySelector(".confirm-popup");
+                        panel.style.display = "none"
+                        panel.querySelector(".card").innerHTML = "";
+
+                        var actionPanel = document.getElementById("action-panel-" + id)
+                        var actionModal = document.getElementById("action-modal-" + id)
+
+                        actionPanel.style.display = "block";
+                        actionModal.style.display = "block";
+
+                        var actionType = "warnMembers";
+                        primaryAlert.style.display = "block";
+                        primaryMessage.textContent = "Processing, please wait!";
+
+                        const formData = new FormData();
+
+                        formData.append("forumID", forumID);
+                        formData.append("memberID", memberID);
+                        formData.append("topicID", topicID);
+                        formData.append("actionType", actionType);
+                        formData.append("deletionType", deletionType);
+                        formData.append("reasonForWarning", reasonForWarning);
+                        if(deletionType == "responseDelete") formData.append("responseID", responseID);
+
+                        fetch("/dashboard/public/performActionAsModerator", {
+                                method: "POST",
+                                mode: "cors",
+                                cache: "no-cache",
+                                credentials: "same-origin",
+                                redirect: "follow",
+                                referrerPolicy: "no-referrer",
+                                body: formData,
+                            })
+                                .then(function (res) {
+                                    return res.json();
+                                })
+                                .then(function (json) {
+                                    if (json.success) {
+                                        primaryAlert.style.display = "none";
+                                        successAlert.style.display = "block";
+                                        successAlertIcon.className = "";
+                                        successAlertIcon.className = "fa fa-check-circle";
+                                        successMessage.textContent = json.msg;
+                                    } else {
+                                        dangerAlert.style.display = "block";
+                                        dangerMessage.textContent = json.msg;
+
+                                        setTimeout(() => {
+                                            dangerAlert.style.display = "none";
+                                        }, 5000);
+                                    }
+                                })
+                                .catch(function (err) {
+                                    console.log(err);
+                                });
                     }
                 </script>

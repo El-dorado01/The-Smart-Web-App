@@ -6855,6 +6855,10 @@ main .container .right {
     .middle .stories {
         max-width: 59rem;
     }
+
+    .confirm-popup .card {
+        width: 70%;
+    }
 }
 
 @media (max-width:800px) {
@@ -7192,6 +7196,14 @@ main .container .right {
 
     .add-thread {
         display: none;
+    }
+
+    .confirm-popup .card {
+        width: 90%;
+    }
+
+    .confirm-popup .action button:first-child {
+        width: 40%;
     }
 }
 
