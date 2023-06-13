@@ -767,6 +767,20 @@ const allSockets = (socket) => {
 
     // topics.results = model.slice(startIndex, endIndex);
   });
+  socket.on("warns", async(data) => {
+    const { id, forumID, memberID, topicID, deletionType, responseID } = data
+
+    const forumInfo = await ForumsModel.findById({ _id: forumID });
+    const forumOwner = forumInfo.creator;
+    var memberWarnNumber;
+    forumInfo.members.forEach(member => {
+      if(member.userID == memberID){
+        memberWarnNumber = 5 - member.numberOfWarns;
+      }
+    });
+
+    socket.emit("hereIsTheNumberOfWarns", { memberWarnNumber, id, forumID, memberID, topicID, deletionType, responseID });
+  });
   socket.on("performActionInForum", async (data) => {
     const { forumID, topicID, actionType } = data;
 

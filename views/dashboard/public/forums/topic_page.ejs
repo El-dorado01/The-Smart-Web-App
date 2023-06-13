@@ -239,24 +239,31 @@
                                                                         <span><i
                                                                                 class="fa-solid fa-arrow-up-from-bracket fa-lg"></i></span>
                                                                     </div>
-                                                                    <% if(user._id==topicInfo.userID ||
-                                                                        user._id==forumInfo.creator){ %>
+                                                                    <% if(user._id==topicInfo.userID){ %>
                                                                         <div title="Delete Topic" class="extra"
                                                                             style="background-color: var(--color-danger);"
                                                                             onclick="deleteForumTopic('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= topicInfo.userID %>')">
                                                                             <span><i
                                                                                     class="fa-solid fa-trash fa-lg"></i></span>
                                                                         </div>
-                                                                        <%} else { for (let i=0; i <
+                                                                    <% } else if(topicInfo.userID==forumInfo.creator) { %>
+                                                                    <% } else if(user._id==forumInfo.creator) { %>
+                                                                        <div style="position: relative;"
+                                                                            id="other-actions-<%= topicInfo._id %>" class ="moreDiv">
+                                                                            <span class="extra" title="More"
+                                                                                onclick="showOtherActionsInForum('<%= topicInfo._id %>', '<%= topicInfo.forumID %>', '<%= topicInfo.userID %>', '<%= topicInfo._id %>', 'topicDelete')"><i
+                                                                                    class="fa-solid fa-ellipsis fa-lg"></i></span>
+                                                                        </div>
+                                                                        <%} else { 
+                                                                            for (let i=0; i <
                                                                             forumInfo.moderators.length; i++) {
                                                                             if(forumInfo.moderators[i].userID==user._id
                                                                             ) { %>
-                                                                            <div title="Delete Topic" class="extra"
-                                                                                style="background-color: var(--color-danger);"
-                                                                                onclick="
-                                        deleteForumTopic('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= topicInfo.userID %>')">
-                                                                                <span><i
-                                                                                        class="fa-solid fa-trash fa-lg"></i></span>
+                                                                            <div style="position: relative;"
+                                                                            id="other-actions-<%= topicInfo._id %>" class ="moreDiv">
+                                                                                <span class="extra" title="More"
+                                                                                    onclick="showOtherActionsInForum('<%= topicInfo._id %>', '<%= topicInfo.forumID %>', '<%= topicInfo.userID %>', '<%= topicInfo._id %>', 'topicDelete')"><i
+                                                                                        class="fa-solid fa-ellipsis fa-lg"></i></span>
                                                                             </div>
                                                                             <% } } } %>
                                             </div>
@@ -582,7 +589,7 @@
                                     return res.json();
                                 })
                                 .then(function (json) {
-                                    if (json.success) {
+                                    if (json.success == true) {
                                         primaryAlert.style.display = "none";
                                         successAlert.style.display = "block";
                                         successAlertIcon.className = "";
@@ -767,18 +774,17 @@
                                         var actionsField = document.createElement("div")
                                         actionsField.classList.add("actions")
                                         actionsField.innerHTML = `
-                                    <div onclick="tagAResponse('${topicInfo.forumID}', '${topicInfo._id}', '${replyInfo.response._id}', '${JSON.stringify(forumInfo.wordsFilter)}', true)">
-                                        <i class="fa-solid fa-quote-right fa-lg"></i></div>
-                                    <div style="width: 40px;" title="Upvote this Response" onclick="updateResponseUpvotes(this, '${replyInfo.response.userID}','${topicInfo._id}','${replyInfo.response._id}','${topicInfo.forumID}','upvoteAResponse', true)">
-                                        <span class="icon"><i class="fa-solid fa-circle-up fa-lg"></i></span>
-                                        <span class="count">${replyInfo.response.upvotes}</span>
-                                    </div>
-                                    <div title="Share"><i class="fa-solid fa-arrow-up-from-bracket fa-lg"></i> </div>
-                                    <div style="background-color: var(--color-danger);" title="Delete"
-                    onclick="deleteTopicResponse('${topicInfo.forumID}','${topicInfo._id}','${replyInfo.response._id}','${replyInfo.response.userID}')">
-                                        <i class="fa-solid fa-trash fa-lg"></i>
-                                    </div>
-                                `
+                                            <span onclick="tagAResponse('${topicInfo.forumID}', '${topicInfo._id}', '${replyInfo.response._id}', '${JSON.stringify(forumInfo.wordsFilter)}', true)">
+                                                <i class="fa-solid fa-quote-right fa-lg"></i></span>
+                                            <span style="width: 40px;" title="Upvote this Response" onclick="updateResponseUpvotes(this, '${replyInfo.response.userID}','${topicInfo._id}','${replyInfo.response._id}','${topicInfo.forumID}','upvoteAResponse', true)">
+                                                <strong class="icon"><i class="fa-solid fa-circle-up fa-lg"></i></strong>
+                                                <strong class="count">${replyInfo.response.upvotes}</strong>
+                                            </span>
+                                            <span title="Share"><i class="fa-solid fa-arrow-up-from-bracket fa-lg"></i> </span>
+                                            <span style="background-color: var(--color-danger);" title="Delete" onclick="deleteTopicResponse('${topicInfo.forumID}','${topicInfo._id}','${replyInfo.response._id}','${replyInfo.response.userID}')">
+                                                <i class="fa-solid fa-trash fa-lg"></i>
+                                            </span>
+                                        `
 
                                         // APPEND ACTIONS FIELD
                                         if (replyInfo.response.userID == topicInfo.userID) {
@@ -807,6 +813,13 @@
                                 .catch(function (err) {
                                     console.log(err);
                                 });
+
+                                // HIGHLIGHT ALL CODE BLOCKS
+                            if(document.querySelectorAll('pre code')){
+                                document.querySelectorAll('pre code').forEach((el) => {
+                                    hljs.highlightElement(el);
+                                });
+                            }    
                         }
 
                     }

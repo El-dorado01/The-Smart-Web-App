@@ -123,6 +123,7 @@
                                                             onclick="deleteTopicResponse('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= response.response.userID %>')">
                                                             <i class="fa-solid fa-trash fa-lg"></i>
                                                         </span>
+                                                        <% }else if(response.response.userID == forumInfo.creator){ %>
                                                         <% }else if(forumInfo.creator==user._id){ %>
                                                             <div style="position: relative;"
                                                                 id="other-actions-<%= response.response._id %>">
@@ -147,7 +148,7 @@
         </div>
         <% }else{ %>
             <!--Commentators-->
-            <div class="c-box responseBox_<%= response.response._id %>">
+            <div class="c-box responseBox_<%= response.response._id %>" id="<%= response.response._id %>">
                 <div class="c-box-main">
                     <div class="c-box-left">
                         <div class="user-info">
@@ -235,52 +236,55 @@
                                                 <% } %>
                                         </div>
                                         <div class="actions">
-                                            <div onclick="tagAResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>',
-                                            '<%= response.response._id %>',
-                                            '<%= JSON.stringify(forumInfo.wordsFilter) %>', <%= isAMember %>)">
-                                                <i class="fa-solid fa-quote-right"></i>
-                                            </div>
+                                            <span onclick="tagAResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>',
+                                                '<%= response.response._id %>',
+                                                '<%= JSON.stringify(forumInfo.wordsFilter) %>', <%= isAMember %>)">
+                                                <i class="fa-solid fa-quote-right fa-lg"></i>
+                                            </span>
                                             <% if(responsesUpvoted.includes(response.response._id)){%>
-                                                <div style="width: 40px;" title="Remove this Response from Upvotes"
-                                                    onclick="updateResponseUpvotes(this, '<%= user._id%>','<%= topicInfo._id %>','<%= response.response._id %>','<%= topicInfo.forumID %>','removeResponseFromUpvotes', <%= isAMember %>)">
-                                                    <strong class="icon" style="color: var(--color-primary);"><i
-                                                            class="fa-solid fa-circle-up fa-lg"></i></strong><strong
-                                                        class="count">
+                                                <span style="width: 40px;" title="Remove this Response from Upvotes"
+                                                    onclick="updateResponseUpvotes(this, '<%= user._id %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= topicInfo.forumID %>','removeResponseFromUpvotes', <%= isAMember %>)">
+                                                    <strong class="icon" style="color: var(--color-primary);">
+                                                        <i class="fa-solid fa-circle-up fa-lg"></i>
+                                                    </strong>
+                                                    <strong class="count">
                                                         <%= response.response.upvotes %>
                                                     </strong>
-                                                </div>
+                                                </span>
                                                 <%}else{%>
-                                                    <div style="width: 40px;" title="Upvote this Response"
-                                                        onclick="updateResponseUpvotes(this, '<%= user._id%>','<%= topicInfo._id %>','<%= response.response._id %>','<%= topicInfo.forumID %>','upvoteAResponse', <%= isAMember %>)">
+                                                    <span style="width: 40px;" title="Upvote this Response"
+                                                        onclick="updateResponseUpvotes(this, '<%= user._id %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= topicInfo.forumID %>','upvoteAResponse', <%= isAMember %>)">
                                                         <strong class="icon"><i
                                                                 class="fa-solid fa-circle-up fa-lg"></i></strong><strong
                                                             class="count">
                                                             <%= response.response.upvotes %>
                                                         </strong>
-                                                    </div>
+                                                    </span>
                                                     <%} %>
-                                                        <div title="Share"><i
-                                                                class="fa-solid fa-arrow-up-from-bracket fa-lg"></i>
-                                                        </div>
+                                                        <span title="Share"><i
+                                                                class="fa-solid fa-arrow-up-from-bracket fa-lg"></i> </span>
                                                         <% if(response.response.userID==user._id){ %>
-                                                            <div title="Delete"
-                                                                style="background-color: var(--color-danger);"
+                                                            <span style="background-color: var(--color-danger);"
+                                                                title="Delete"
                                                                 onclick="deleteTopicResponse('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= response.response.userID %>')">
                                                                 <i class="fa-solid fa-trash fa-lg"></i>
-                                                            </div>
-                                                            <% }else if(forumInfo.creator==user._id){ %>
-                                                                <div title="Delete"
-                                                                    style="background-color: var(--color-danger);"
-                                                                    onclick="deleteTopicResponse('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= response.response.userID %>')">
-                                                                    <i class="fa-solid fa-trash fa-lg"></i>
+                                                            </span>
+                                                            <% }else if(response.response.userID == forumInfo.creator){ %> 
+                                                            <% } else if(forumInfo.creator==user._id){ %>
+                                                                <div style="position: relative;"
+                                                                    id="other-actions-<%= response.response._id %>">
+                                                                    <span title="More"
+                                                                        onclick="showOtherActionsInForum('<%= response.response._id %>', '<%= topicInfo.forumID %>', '<%= response.response.userID %>', '<%= topicInfo._id %>', 'responseDelete', '<%= response.response._id %>')"><i
+                                                                            class="fa-solid fa-ellipsis fa-lg"></i></span>
                                                                 </div>
-                                                                <%} else { for (let i=0; i <
-                                                                    forumInfo.moderators.length; i++) { if
-                                                                    (forumInfo.moderators[i].userID==user._id ) { %>
-                                                                    <div title="Delete"
-                                                                        style="background-color: var(--color-danger);"
-                                                                        onclick="deleteTopicResponse('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= response.response.userID %>')">
-                                                                        <i class="fa-solid fa-trash fa-lg"></i>
+                                                                <%} else { for (let i=0; i < forumInfo.moderators.length;
+                                                                    i++) { if (forumInfo.moderators[i].userID==user._id ) {
+                                                                    %>
+                                                                    <div style="position: relative;"
+                                                                        id="other-actions-<%= response.response._id %>">
+                                                                        <span title="More"
+                                                                            onclick="showOtherActionsInForum('<%= response.response._id %>', '<%= topicInfo.forumID %>', '<%= response.response.userID %>', '<%= topicInfo._id %>', 'responseDelete', '<%= response.response._id %>')"><i
+                                                                                class="fa-solid fa-ellipsis fa-lg"></i></span>
                                                                     </div>
 
                                                                     <% } } }%>
@@ -291,62 +295,6 @@
             <%} } %>
 
                 <script>
-                    function warnMemberPanel(id, forumID, memberID, topicID, deletionType, responseID) {
-                        var actionPanel = document.getElementById("action-panel-" + id)
-                        var actionModal = document.getElementById("action-modal-" + id)
-
-                        actionPanel.style.display = "none"
-                        actionModal.style.display = "none"
-
-                        var closeUp = document.createElement("div");
-                        closeUp.classList.add("close-popup");
-                        closeUp.setAttribute("style", "cursor: pointer;");
-                        closeUp.setAttribute("onclick", `cancelWarn('${id}')`);
-                        closeUp.innerHTML = `
-                            <span><i class="fa fa-times"></i></span>
-                        `;
-
-                        var div = document.createElement("div");
-                        div.classList.add("content");
-                        div.innerHTML = `
-                            <h2>Warn Member</h2>
-                            <span>This user has 5 warn(s) left. Help this user know what they have done wrong!</span>
-                            <div class="warns">
-                                <span class="warn">
-                                    <input type="radio" name="warn_reason" value="Inappropriate use of language">
-                                    <span>Inappropriate use of language</span>
-                                </span>
-                                <span class="warn">
-                                    <input type="radio" name="warn_reason" value="Unnecessary spamming">
-                                    <span>Unnecessary spamming</span>
-                                </span>
-                                <span class="warn">
-                                    <input type="radio" name="warn_reason" value="Unrelated discussion in forum">
-                                    <span>Unrelated discussion in forum</span>
-                                </span>
-                                <span class="warn">
-                                    <input type="radio" name="warn_reason" value="Violation of other forum rules">
-                                    <span>Violation of other forum rules</span>
-                                </span>
-                            </div>
-                        `;
-
-                        var actionDiv = document.createElement("div");
-                        actionDiv.classList.add("action");
-                        actionDiv.innerHTML = `
-                            <button class="btn" onclick="cancelWarn('${id}')">Cancel</button>
-                            <button class="btn btn-primary" onclick="warnMember('${id}', '${forumID}', '${memberID}', '${topicID}', '${deletionType}', '${responseID}')">Warn Member</button>
-                        `;
-
-                        var panel = document.querySelector(".confirm-popup");
-
-                        panel.querySelector(".card").innerHTML = "";
-                        panel.querySelector(".card").appendChild(closeUp);
-                        panel.querySelector(".card").appendChild(div);
-                        panel.querySelector(".card").appendChild(actionDiv);
-                        panel.style.display = "block";
-                    }
-
                     function ejectMemberPanel(id) {
                         var actionPanel = document.getElementById("action-panel-" + id)
                         var actionModal = document.getElementById("action-modal-" + id)
@@ -416,24 +364,45 @@
                         var otherActions = document.getElementById("other-actions-" + id)
 
                         if (!otherActions.querySelector("#action-panel-" + id)) {
-                            var div = document.createElement("div")
-                            div.innerHTML = `
-                                <div class="requote other-actions" style="top: -30%; left:" id="action-panel-${id}">
-                                    <div class="one" onclick="warnMemberPanel('${id}', '${forumID}', '${memberID}', '${topicID}', '${deletionType}', '${responseID}')">
-                                        <i class="fa-solid fa-land-mine-on"></i>
-                                        <strong>Warn Member</strong>
+                            var div = document.createElement("div");
+
+                            if(deletionType == "topicDelete"){
+                                div.innerHTML = `
+                                    <div class="requote" style="top: -30%; left: -13rem;" id="action-panel-${id}">
+                                        <div class="one" onclick="warnMemberPanel('${id}', '${forumID}', '${memberID}', '${topicID}', '${deletionType}', '${responseID}')">
+                                            <i class="fa-solid fa-land-mine-on"></i>
+                                            <strong>Warn Member</strong>
+                                        </div>
+                                        <div class="one" onclick="deleteResponseInForum('${id}')">
+                                            <i class="fa-solid fa-trash"></i>
+                                            <strong>Delete Response</strong>
+                                        </div>
+                                        <div class="two" onclick="ejectMemberPanel('${id}')">
+                                            <i class="fa-solid fa-user-xmark"></i>
+                                            <strong>Eject Member</strong>
+                                        </div>
                                     </div>
-                                    <div class="one" onclick="deleteResponseInForum('${id}')">
-                                        <i class="fa-solid fa-trash"></i>
-                                        <strong>Delete Response</strong>
+                                    <div class="requote-modal" id="action-modal-${id}" onclick="closeOtherActionsInForum(this, '${id}')"></div>
+                                `;
+                            }else{
+                                div.innerHTML = `
+                                    <div class="requote other-actions" style="top: -30%;" id="action-panel-${id}">
+                                        <div class="one" onclick="warnMemberPanel('${id}', '${forumID}', '${memberID}', '${topicID}', '${deletionType}', '${responseID}')">
+                                            <i class="fa-solid fa-land-mine-on"></i>
+                                            <strong>Warn Member</strong>
+                                        </div>
+                                        <div class="one" onclick="deleteResponseInForum('${id}')">
+                                            <i class="fa-solid fa-trash"></i>
+                                            <strong>Delete Response</strong>
+                                        </div>
+                                        <div class="two" onclick="ejectMemberPanel('${id}')">
+                                            <i class="fa-solid fa-user-xmark"></i>
+                                            <strong>Eject Member</strong>
+                                        </div>
                                     </div>
-                                    <div class="two" onclick="ejectMemberPanel('${id}')">
-                                        <i class="fa-solid fa-user-xmark"></i>
-                                        <strong>Eject Member</strong>
-                                    </div>
-                                </div>
-                                <div class="requote-modal" id="action-modal-${id}" onclick="closeOtherActionsInForum(this, '${id}')"></div>
-                            `;
+                                    <div class="requote-modal" id="action-modal-${id}" onclick="closeOtherActionsInForum(this, '${id}')"></div>
+                                `;
+                            }
 
                             otherActions.appendChild(div)
                         } else {
@@ -469,8 +438,8 @@
                         var actionPanel = document.getElementById("action-panel-" + id)
                         var actionModal = document.getElementById("action-modal-" + id)
 
-                        actionPanel.style.display = "block";
-                        actionModal.style.display = "block";
+                        actionPanel.style.display = "none";
+                        actionModal.style.display = "none";
 
                         var actionType = "warnMembers";
                         primaryAlert.style.display = "block";
@@ -499,12 +468,18 @@
                                     return res.json();
                                 })
                                 .then(function (json) {
-                                    if (json.success) {
+                                    if (json.success == true) {
                                         primaryAlert.style.display = "none";
                                         successAlert.style.display = "block";
                                         successAlertIcon.className = "";
                                         successAlertIcon.className = "fa fa-check-circle";
                                         successMessage.textContent = json.msg;
+
+                                        document.getElementById(id).remove();
+
+                                        setTimeout(() => {
+                                            successAlert.style.display = "none";
+                                        }, 3000);
                                     } else {
                                         dangerAlert.style.display = "block";
                                         dangerMessage.textContent = json.msg;

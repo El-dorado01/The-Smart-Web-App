@@ -3615,7 +3615,7 @@ function updateForumDisplayPic() {
       return res.json();
     })
     .then(function (json) {
-      if (json.success) {
+      if (json.success == true) {
         const forumInfo = json.forumInfo;
         var displayPic = forumInfo.displayPic;
         document.getElementById("forum-avatar").src = displayPic;
@@ -3678,7 +3678,7 @@ function createForum() {
       return res.json();
     })
     .then(function (json) {
-      if (json.success) {
+      if (json.success == true) {
         primaryAlert.style.display = "none";
         successAlert.style.display = "block";
         successAlertIcon.className = "";
@@ -4503,7 +4503,7 @@ function deleteForumTopic(forumID, topicID, topicCreator) {
         return res.json();
       })
       .then(function (json) {
-        if (json.success) {
+        if (json.success == true) {
           successAlert.style.display = "block";
           successAlertIcon.className = "";
           successAlertIcon.className = "fa fa-check-circle";
@@ -4550,7 +4550,7 @@ function deleteTopicResponse(forumID, topicID, responseID, responseCreator) {
         return res.json();
       })
       .then(function (json) {
-        if (json.success) {
+        if (json.success == true) {
           // Remove response box panel
           document.querySelector(".responseBox_" + responseID).remove();
           var newCommentCount = parseInt(
@@ -4763,7 +4763,7 @@ function modifyModerators(forumID, memberID, actionType, memberRank, memberAvata
       return res.json();
   })
   .then(function (json) {
-      if (json.success) {
+    if (json.success == true) {
           switch (actionType) {
               case "assignModerators":
                   // Notify that member has been added as a moderator
@@ -4861,7 +4861,7 @@ function updateForumProfile(forumID){
       return res.json();
   })
   .then(function (json) {
-      if (json.success) {
+      if (json.success == true) {
           successAlert.style.display = "block";
           successAlertIcon.className = "";
           successAlertIcon.className = "fa fa-check-circle";
@@ -4908,7 +4908,7 @@ function updateForumRanks(forumID, rank, minUpvotesRequiredText) {
       return res.json();
   })
   .then(function (json) {
-      if (json.success) {
+    if (json.success == true) {
         successAlert.style.display = "block";
         successAlertIcon.className = "";
         successAlertIcon.className = "fa fa-check-circle";
@@ -4972,62 +4972,122 @@ socket.on("ranksReset", (data)=> {
 })
 
 function performActionInForum(forumID, topicID, actionType) {
-                    socket.emit("performActionInForum", { forumID, topicID, actionType });
-                }
-                socket.on("actionDone", data => {
-                    if (data.success == true) {
-                        switch (data.actionType) {
-                            case "pinDiscussion":
-                                var pinBtn = document.getElementById("pinDiscussion")
-                                pinBtn.querySelector("span").style.color = "var(--color-primary)"
-                                pinBtn.title = "Unpin Discussion"
-                                pinBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'unpinDiscussion')")
-                                break;
-                            case "unpinDiscussion":
-                                var pinBtn = document.getElementById("pinDiscussion")
-                                pinBtn.querySelector("span").style.color = ""
-                                pinBtn.title = "Pin Discussion"
-                                pinBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'pinDiscussion')")
-                                break;
-                            case "closeDiscussion":
-                                // CLOSE DISCUSSION
-                                var closeBtn = document.getElementById("closeDiscussion")
-                                closeBtn.querySelector("span").style.color = "var(--color-primary)"
-                                closeBtn.title = "Open Discussion"
-                                closeBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'openDiscussion')")
+  socket.emit("performActionInForum", { forumID, topicID, actionType });
+}
+socket.on("actionDone", data => {
+if (data.success == true) {
+    switch (data.actionType) {
+        case "pinDiscussion":
+            var pinBtn = document.getElementById("pinDiscussion")
+            pinBtn.querySelector("span").style.color = "var(--color-primary)"
+            pinBtn.title = "Unpin Discussion"
+            pinBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'unpinDiscussion')")
+            break;
+        case "unpinDiscussion":
+            var pinBtn = document.getElementById("pinDiscussion")
+            pinBtn.querySelector("span").style.color = ""
+            pinBtn.title = "Pin Discussion"
+            pinBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'pinDiscussion')")
+            break;
+        case "closeDiscussion":
+            // CLOSE DISCUSSION
+            var closeBtn = document.getElementById("closeDiscussion")
+            closeBtn.querySelector("span").style.color = "var(--color-primary)"
+            closeBtn.title = "Open Discussion"
+            closeBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'openDiscussion')")
 
-                                // Disable Editor features
-                                var responseArea = document.querySelector('.response-area')
-                                // Check if there's any tagged message
-                                if(responseArea.querySelector('.tagged-msg div').innerHTML != ''){
-                                   responseArea.querySelector('.tagged-msg div').innerHTML = "";
-                                   responseArea.querySelector('.tagged-msg').style.display = "none"; 
-                                   responseArea.querySelector(".tagged-msg .icon").removeAttribute("onclick")
-                                }
-                                // Check if there's any preview
-                                if(responseArea.querySelector('.preview div')){
-                                    responseArea.querySelectorAll('.preview div').forEach(div => {
-                                        div.remove()
-                                    })
-                                }
-                                responseArea.querySelector('.actions').style.display = "none"
-
-                                myEditor.setData('')
-                                myEditor.enableReadOnlyMode('response-text')
-                                break;
-                            default:
-                                // OPEN DISCUSSION
-                                var closeBtn = document.getElementById("closeDiscussion")
-                                closeBtn.querySelector("span").style.color = ""
-                                closeBtn.title = "Close Discussion"
-                                closeBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'closeDiscussion')");
-
-                                // Enable Editor features
-                                var responseArea = document.querySelector('.response-area')
-                                responseArea.querySelector('.actions').style.display = "flex";
-                                myEditor.disableReadOnlyMode('response-text')
-                                break;
-                        }
-                    }
+            // Disable Editor features
+            var responseArea = document.querySelector('.response-area')
+            // Check if there's any tagged message
+            if(responseArea.querySelector('.tagged-msg div').innerHTML != ''){
+                responseArea.querySelector('.tagged-msg div').innerHTML = "";
+                responseArea.querySelector('.tagged-msg').style.display = "none"; 
+                responseArea.querySelector(".tagged-msg .icon").removeAttribute("onclick")
+            }
+            // Check if there's any preview
+            if(responseArea.querySelector('.preview div')){
+                responseArea.querySelectorAll('.preview div').forEach(div => {
+                    div.remove()
                 })
-            
+            }
+            responseArea.querySelector('.actions').style.display = "none"
+
+            myEditor.setData('')
+            myEditor.enableReadOnlyMode('response-text')
+            break;
+        default:
+            // OPEN DISCUSSION
+            var closeBtn = document.getElementById("closeDiscussion")
+            closeBtn.querySelector("span").style.color = ""
+            closeBtn.title = "Close Discussion"
+            closeBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'closeDiscussion')");
+
+            // Enable Editor features
+            var responseArea = document.querySelector('.response-area')
+            responseArea.querySelector('.actions').style.display = "flex";
+            myEditor.disableReadOnlyMode('response-text')
+            break;
+    }
+}
+})
+
+function warnMemberPanel(id, forumID, memberID, topicID, deletionType, responseID) {
+    socket.emit("warns", { id, forumID, memberID, topicID, deletionType, responseID });
+}
+socket.on("hereIsTheNumberOfWarns", data => {
+    const { memberWarnNumber, id, forumID, memberID, topicID, deletionType, responseID } = data;
+
+    var actionPanel = document.getElementById("action-panel-" + id)
+    var actionModal = document.getElementById("action-modal-" + id)
+
+    actionPanel.style.display = "none"
+    actionModal.style.display = "none"
+
+    var closeUp = document.createElement("div");
+    closeUp.classList.add("close-popup");
+    closeUp.setAttribute("style", "cursor: pointer;");
+    closeUp.setAttribute("onclick", `cancelWarn('${id}')`);
+    closeUp.innerHTML = `
+        <span><i class="fa fa-times"></i></span>
+    `;
+
+    var div = document.createElement("div");
+    div.classList.add("content");
+    div.innerHTML = `
+        <h2>Warn Member</h2>
+        <span>This user has ${memberWarnNumber} warn(s) left. Help this user know what they have done wrong!</span>
+        <div class="warns">
+            <span class="warn">
+                <input type="radio" name="warn_reason" value="Inappropriate use of language">
+                <span>Inappropriate use of language</span>
+            </span>
+            <span class="warn">
+                <input type="radio" name="warn_reason" value="Unnecessary spamming">
+                <span>Unnecessary spamming</span>
+            </span>
+            <span class="warn">
+                <input type="radio" name="warn_reason" value="Unrelated discussion in forum">
+                <span>Unrelated discussion in forum</span>
+            </span>
+            <span class="warn">
+                <input type="radio" name="warn_reason" value="Violation of other forum rules">
+                <span>Violation of other forum rules</span>
+            </span>
+        </div>
+    `;
+
+    var actionDiv = document.createElement("div");
+    actionDiv.classList.add("action");
+    actionDiv.innerHTML = `
+        <button class="btn" onclick="cancelWarn('${id}')">Cancel</button>
+        <button class="btn btn-primary" onclick="warnMember('${id}', '${forumID}', '${memberID}', '${topicID}', '${deletionType}', '${responseID}')">Warn Member</button>
+    `;
+
+    var panel = document.querySelector(".confirm-popup");
+
+    panel.querySelector(".card").innerHTML = "";
+    panel.querySelector(".card").appendChild(closeUp);
+    panel.querySelector(".card").appendChild(div);
+    panel.querySelector(".card").appendChild(actionDiv);
+    panel.style.display = "block";
+})

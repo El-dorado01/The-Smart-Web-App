@@ -1308,13 +1308,15 @@ const performActionAsModerator = asyncWrapper(async (req, res) => {
           }
 
           //Get the member's number of warns
-          const memberWarnNumber = await ForumsModel.findOne(
-            { _id: forumID, "members.userID": memberID },
-            "numberOfWarns"
-          );
+          var memberWarnNumber;
+          forumInfo.members.forEach(member => {
+            if(member.userID == memberID){
+              memberWarnNumber = member.numberOfWarns;
+            }
+          });
 
-          if (memberWarnNumber.numberOfWarns < 5) {
-            const newWarnNumber = memberWarnNumber.numberOfWarns + 1;
+          if (memberWarnNumber < 5) {
+            const newWarnNumber = memberWarnNumber + 1;
 
             //Check if the new member's warn number has reached 5, then remove member
             if (newWarnNumber >= 5) {
@@ -1329,7 +1331,9 @@ const performActionAsModerator = asyncWrapper(async (req, res) => {
                     memberID +
                     " has been sent a warning for misconduct and has been ejected from the forum."
                 );
-                // res.status(StatusCodes.OK).send("Request sent!");
+                res
+                  .status(StatusCodes.OK)
+                  .json({ success: true, msg: "User has been sent a warning for misconduct and has been ejected from the forum" });
               }
             } else {
               const memberWarned = await ForumsModel.findOneAndUpdate(
@@ -1343,13 +1347,15 @@ const performActionAsModerator = asyncWrapper(async (req, res) => {
                     memberID +
                     " has been sent a warning for misconduct in the forum."
                 );
-                // res.status(StatusCodes.OK).send("Request sent!");
+                res
+                  .status(StatusCodes.OK)
+                  .json({ success: true, msg: "User has been sent a warning for misconduct" });
               }
             }
           } else {
             res
               .status(StatusCodes.BAD_REQUEST)
-              .send("Number of warns exceeded!");
+              .json({ success: false, msg: "Number of warns exceeded!" });
           }
           break;
         // case "updateForumProfile":
@@ -1365,14 +1371,16 @@ const performActionAsModerator = asyncWrapper(async (req, res) => {
             console.log(
               "User " + memberID + " has been ejected from the forum."
             );
-            // res.status(StatusCodes.OK).send("Request sent!");
+            res
+              .status(StatusCodes.OK)
+              .json({ success: true, msg: "User has been ejected from the forum" });
           }
           break;
       }
   } else {
     res
       .status(StatusCodes.FORBIDDEN)
-      .send("You are not allowed to perform this action");
+      .json({ success: false, msg: "You are not allowed to perform this action!" });
   }
   
 });

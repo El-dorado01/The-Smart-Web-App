@@ -6119,14 +6119,16 @@ main .container .right {
     align-items: center;
 }
 
-.middle .forum-body .c-box-main .c-box-right .actions p {
+.middle .forum-body .c-box-main .c-box-right .actions span {
     /* font-size: 14px; */
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 35px;
+    width: 35px;
     gap: 5px;
-    background-color: var(--color-light);
+    background-color: var(--color-white);
     padding: 5px;
     border-radius: 10px;
 }
