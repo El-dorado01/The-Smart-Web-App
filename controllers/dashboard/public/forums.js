@@ -69,6 +69,9 @@ const processInvite = asyncWrapper(async (req, res) => {
   if (isMatch) {
     // Check if user is already a member of the forum
     var isAlreadyAMember = false;
+    var isEjected = false;
+    var isInactive = false;
+
     if (forumInfoKey.creator == user.userId) {
       isAlreadyAMember = true;
     } else {
@@ -78,11 +81,50 @@ const processInvite = asyncWrapper(async (req, res) => {
           if (member.userID == user.userId) {
             isAlreadyAMember = true;
           }
+          if (member.memberStatus == "inactive"){
+            isInactive = true;
+          }
+          if (member.memberStatus == "ejected"){
+            isEjected = true;
+          }
         }
       }
     }
 
-    if (isAlreadyAMember == true) {
+    if(isInactive == true){
+      const memberRejoined = await ForumsModel.findOneAndUpdate(
+        { _id: forumID, "member.userID": memberID },
+        { $set: { "members.$.memberStatus": "active" } }
+      );
+
+      if (memberRejoined) {
+        console.log(
+          "New Member " + user.userId + " has rejoined the forum " + forumID
+        );
+      }
+
+      var msg = {
+        success: true,
+        content: "Welcome back to " + forumInfoKey.forumName,
+      };
+    }else if(isEjected == true){
+      const requestSent = await ForumsModel.findByIdAndUpdate(
+        { _id: forumID },
+        { $push: { invites: { incoming: true, userID: user.userId } } }
+      );
+
+      if (requestSent) {
+        console.log(
+          "You " + user.userId + " have sent a request to join forum " + forumID
+        );
+        // res.status(StatusCodes.OK).send("Request sent!");
+      }
+
+      var msg = {
+        success: true,
+        content: "You have sent a request to join " + forumInfoKey.forumName,
+      };
+    }else if (isAlreadyAMember == true) {
       var msg = {
         success: true,
         content: "You are already a member of this forum",
@@ -145,7 +187,7 @@ const processInvite = asyncWrapper(async (req, res) => {
     } else {
       for (let i = 0; i < forumInfo.members.length; i++) {
         const member = forumInfo.members[i];
-        if (user.userId == member.userID) {
+        if (user.userId == member.userID && member.memberStatus == "active") {
           isAMember = true;
         }
       }
@@ -164,7 +206,7 @@ const processInvite = asyncWrapper(async (req, res) => {
       } else {
         for (let i = 0; i < forumInfo.members.length; i++) {
           const member = forumInfo.members[i];
-          if (user.userId == member.userID) {
+          if (user.userId == member.userID && member.memberStatus == "active") {
             isAMember = true;
           }
           if (topicsModel[i].userID == member.userID) {
@@ -223,16 +265,23 @@ const processInvite = asyncWrapper(async (req, res) => {
         isAModerator = true;
       }
     }
+    if (user.userId == forumInfo.creator) {
+      isAMember = true;
+      isAModerator = true;
+    } else {
+      for (let i = 0; i < forumInfo.members.length; i++) {
+        const member = forumInfo.members[i];
+        if (user.userId == member.userID && member.memberStatus == "active") {
+          isAMember = true;
+        }
+      }
+    }
     for (let i = 0; i < topicsModel.length; i++) {
       const userInfo = await AuthModel.findById(
         topicsModel[i].userID,
         "username avatar about"
       );
       if (topicsModel[i].userID == forumInfo.creator) {
-        if (user.userId == forumInfo.creator) {
-          isAMember = true;
-          isAModerator = true;
-        }
         topics.push({
           topic: topicsModel[i],
           userInfo,
@@ -241,9 +290,6 @@ const processInvite = asyncWrapper(async (req, res) => {
       } else {
         for (let i = 0; i < forumInfo.members.length; i++) {
           const member = forumInfo.members[i];
-          if (user.userId == member.userID) {
-            isAMember = true;
-          }
           if (topicsModel[i].userID == member.userID) {
             topics.push({
               topic: topicsModel[i],
@@ -317,7 +363,7 @@ const singleForum = async (req, res) => {
   }else{
     for (let i = 0; i < forumInfo.members.length; i++) {
       const member = forumInfo.members[i];
-      if (user.userId == member.userID) {
+      if (user.userId == member.userID && member.memberStatus == "active") {
         isAMember = true;
       }
     }
@@ -414,7 +460,7 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   }else{
     for (let i = 0; i < forumInfo.members.length; i++) {
       const member = forumInfo.members[i];
-      if (user.userId == member.userID) {
+      if (user.userId == member.userID && member.memberStatus == "active") {
         isAMember = true;
       }
     }
@@ -1228,6 +1274,9 @@ const performActionAsModerator = asyncWrapper(async (req, res) => {
               "Member " + memberID + " request to join the forum has approved."
             );
             // res.status(StatusCodes.OK).send("Request approved!");
+            res
+              .status(StatusCodes.OK)
+              .json({ success: true, msg: "Member request to join the forum has been approved!" });
           }
           break;
 
@@ -1322,7 +1371,7 @@ const performActionAsModerator = asyncWrapper(async (req, res) => {
             if (newWarnNumber >= 5) {
               const memberWarned = await ForumsModel.findOneAndUpdate(
                 { _id: forumID, "member.userID": memberID },
-                { $set: { "members.$.memberStatus": "inactive" } }
+                { $set: { "members.$.memberStatus": "ejected" } }
               );
 
               if (memberWarned) {
@@ -1364,7 +1413,7 @@ const performActionAsModerator = asyncWrapper(async (req, res) => {
           //Eject Members by default
           const memberEjected = await ForumsModel.findOneAndUpdate(
             { _id: forumID, "member.userID": memberID },
-            { $set: { "members.$.memberStatus": "inactive" } }
+            { $set: { "members.$.memberStatus": "ejected" } }
           );
 
           if (memberEjected) {
@@ -1880,49 +1929,81 @@ const deleteATopic = asyncWrapper(async (req, res) => {
       });
     }
   } else {
-    for (let i = 0; i < forumInfo.moderators.length; i++) {
-      // Delete a topic as a moderator or forum owner
-      if (
-        forumInfo.moderators[i].userID == user.userId ||
-        forumOwner == user.userId
-      ) {
-        const topicDeleted = await ForumsTopicsModel.findByIdAndDelete({
-          _id: topicID,
-        });
+    if(forumOwner == user.userId){
+      const topicDeleted = await ForumsTopicsModel.findByIdAndDelete({
+        _id: topicID,
+      });
 
-        await ForumsActivityModel.findOneAndUpdate(
-          { userID: topicCreator },
-          {
-            $pull: {
-              activities: {
-                activity: "post",
-                forumID,
-                topicID,
-              },
+      await ForumsActivityModel.findOneAndUpdate(
+        { userID: topicCreator },
+        {
+          $pull: {
+            activities: {
+              activity: "post",
+              forumID,
+              topicID,
             },
-          }
+          },
+        }
+      );
+
+      if (topicDeleted) {
+        console.log(
+          "Moderator " +
+          user.userId +
+          " has deleted topic " +
+          topicID +
+          " from the forum " +
+          forumID
         );
 
-        if (topicDeleted) {
-          console.log(
-            "Moderator " +
-              user.userId +
-              " has deleted topic " +
-              topicID +
-              " from the forum " +
-              forumID
+        res.status(StatusCodes.OK).json({
+          success: true,
+          msg: "Topic has been deleted!",
+        });
+      }
+    }else{
+      for (let i = 0; i < forumInfo.moderators.length; i++) {
+        // Delete a topic as a moderator or forum owner
+        if (forumInfo.moderators[i].userID == user.userId ) {
+          const topicDeleted = await ForumsTopicsModel.findByIdAndDelete({
+            _id: topicID,
+          });
+  
+          await ForumsActivityModel.findOneAndUpdate(
+            { userID: topicCreator },
+            {
+              $pull: {
+                activities: {
+                  activity: "post",
+                  forumID,
+                  topicID,
+                },
+              },
+            }
           );
-
-          res.status(StatusCodes.OK).json({
-            success: true,
-            msg: "Topic has been deleted!",
+  
+          if (topicDeleted) {
+            console.log(
+              "Moderator " +
+                user.userId +
+                " has deleted topic " +
+                topicID +
+                " from the forum " +
+                forumID
+            );
+  
+            res.status(StatusCodes.OK).json({
+              success: true,
+              msg: "Topic has been deleted!",
+            });
+          }
+        } else {
+          res.status(StatusCodes.FORBIDDEN).json({
+            success: false,
+            msg: "You are not allowed to perform this action because you are not a member of this forum",
           });
         }
-      } else {
-        res.status(StatusCodes.FORBIDDEN).json({
-          success: false,
-          msg: "You are not allowed to perform this action because you are not a member of this forum",
-        });
       }
     }
   }
@@ -2380,51 +2461,85 @@ const deleteAResponse = asyncWrapper(async (req, res) => {
       });
     }
   } else {
-    for (let i = 0; i < forumInfo.moderators.length; i++) {
-      // Delete a response as a moderator or forum owner
-      if (
-        forumInfo.moderators[i].userID == user.userId ||
-        forumOwner == user.userId
-      ) {
-        const responseDeleted = await ForumsTopicsModel.findByIdAndUpdate(
-          { _id: topicID },
-          { $pull: { responses: { _id: responseID } } }
-        );
+    if(forumOwner == user.userId){
+      const responseDeleted = await ForumsTopicsModel.findByIdAndUpdate(
+        { _id: topicID },
+        { $pull: { responses: { _id: responseID } } }
+      );
 
-        await ForumsActivityModel.findOneAndUpdate(
-          { userID: responseCreator },
-          {
-            $pull: {
-              activities: {
-                activity: "response",
-                forumID,
-                topicID,
-                responseID,
-              },
+      await ForumsActivityModel.findOneAndUpdate(
+        { userID: responseCreator },
+        {
+          $pull: {
+            activities: {
+              activity: "response",
+              forumID,
+              topicID,
+              responseID,
             },
-          }
+          },
+        }
+      );
+
+      if (responseDeleted) {
+        console.log(
+          "Moderator " +
+            user.userId +
+            " has deleted response " +
+            responseID +
+            " from the forum " +
+            forumID
         );
 
-        if (responseDeleted) {
-          console.log(
-            "Moderator " +
-              user.userId +
-              " has deleted response " +
-              responseID +
-              " from the forum " +
-              forumID
+        res.status(StatusCodes.OK).json({
+          success: true,
+          msg: "Your response has been deleted!",
+        });
+      }
+    }else{
+      for (let i = 0; i < forumInfo.moderators.length; i++) {
+        // Delete a response as a moderator or forum owner
+        if (forumInfo.moderators[i].userID == user.userId) {
+          const responseDeleted = await ForumsTopicsModel.findByIdAndUpdate(
+            { _id: topicID },
+            { $pull: { responses: { _id: responseID } } }
           );
-
-          res.status(StatusCodes.OK).json({
-            success: true,
-            msg: "Your response has been deleted!",
+  
+          await ForumsActivityModel.findOneAndUpdate(
+            { userID: responseCreator },
+            {
+              $pull: {
+                activities: {
+                  activity: "response",
+                  forumID,
+                  topicID,
+                  responseID,
+                },
+              },
+            }
+          );
+  
+          if (responseDeleted) {
+            console.log(
+              "Moderator " +
+                user.userId +
+                " has deleted response " +
+                responseID +
+                " from the forum " +
+                forumID
+            );
+  
+            res.status(StatusCodes.OK).json({
+              success: true,
+              msg: "Your response has been deleted!",
+            });
+          }
+        } else {
+          res.status(StatusCodes.FORBIDDEN).json({
+            success: false,
+            msg: "You are not allowed to perform this action because you are not a member of this forum",
           });
         }
-      } else {
-        res.status(StatusCodes.FORBIDDEN).json({
-          success: false,
-          msg: "You are not allowed to perform this action because you are not a member of this forum",
-        });
       }
     }
   }
@@ -2458,7 +2573,7 @@ const visitMemberProfile = asyncWrapper(async (req, res) => {
     isAMember = true;
   } else {
     for (let i = 0; i < forumInfo.members.length; i++) {
-      if (forumInfo.members[i].userID == user.userId) {
+      if (forumInfo.members[i].userID == user.userId && forumInfo.members[i].memberStatus == "active") {
         isAMember = true;
       }
     }

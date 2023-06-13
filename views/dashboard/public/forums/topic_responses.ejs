@@ -120,7 +120,7 @@
                                                     <% if(response.response.userID==user._id){ %>
                                                         <span style="background-color: var(--color-danger);"
                                                             title="Delete"
-                                                            onclick="deleteTopicResponse('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= response.response.userID %>')">
+                                                            onclick="deleteResponseInForum('<%= response.response._id %>','<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response.userID %>','responseDelete','<%= response.response._id %>')">
                                                             <i class="fa-solid fa-trash fa-lg"></i>
                                                         </span>
                                                         <% }else if(response.response.userID == forumInfo.creator){ %>
@@ -266,7 +266,7 @@
                                                         <% if(response.response.userID==user._id){ %>
                                                             <span style="background-color: var(--color-danger);"
                                                                 title="Delete"
-                                                                onclick="deleteTopicResponse('<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= response.response.userID %>')">
+                                                                onclick="deleteResponseInForum('<%= response.response._id %>','<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response.userID %>','responseDelete','<%= response.response._id %>')">
                                                                 <i class="fa-solid fa-trash fa-lg"></i>
                                                             </span>
                                                             <% }else if(response.response.userID == forumInfo.creator){ %> 
@@ -295,7 +295,7 @@
             <%} } %>
 
                 <script>
-                    function ejectMemberPanel(id) {
+                    function ejectMemberPanel(id, forumID, memberID, topicID, deletionType, responseID) {
                         var actionPanel = document.getElementById("action-panel-" + id)
                         var actionModal = document.getElementById("action-modal-" + id)
 
@@ -320,8 +320,8 @@
                         var actionDiv = document.createElement("div");
                         actionDiv.classList.add("action");
                         actionDiv.innerHTML = `
-                            <button class="btn btn-danger" onclick="ejectMember('${id}')">No, Eject Member!</button>
-                            <button class="btn btn-primary" onclick="cancelEject('${id}'); warnMemberPanel('${id}');">Yes, Warn Member Instead!</button>
+                            <button class="btn btn-danger" onclick="ejectMember('${id}', '${forumID}', '${memberID}')">No, Eject Member!</button>
+                            <button class="btn btn-primary" onclick="cancelEject('${id}'); warnMemberPanel('${id}', '${forumID}', '${memberID}', '${topicID}', '${deletionType}', '${responseID}');">Yes, Warn Member Instead!</button>
                         `;
 
                         var panel = document.querySelector(".confirm-popup");
@@ -353,11 +353,67 @@
                         panel.style.display = "none"
                         panel.querySelector(".card").innerHTML = "";
 
-                        var actionPanel = document.getElementById("action-panel-" + id)
-                        var actionModal = document.getElementById("action-modal-" + id)
+                        if(document.getElementById("action-panel-" + id)){
+                            var actionPanel = document.getElementById("action-panel-" + id)
+                            var actionModal = document.getElementById("action-modal-" + id)
+    
+                            actionPanel.style.display = "block";
+                            actionModal.style.display = "block";
+                        }
+                    }
 
-                        actionPanel.style.display = "block";
-                        actionModal.style.display = "block";
+                    function deleteResponseInForum(id, forumID, topicID, memberID, deletionType, responseID){
+                        if(document.getElementById("action-panel-" + id)){
+                            var actionPanel = document.getElementById("action-panel-" + id)
+                            var actionModal = document.getElementById("action-modal-" + id)
+    
+                            actionPanel.style.display = "none"
+                            actionModal.style.display = "none"
+                        }
+
+                        var closeUp = document.createElement("div");
+                        closeUp.classList.add("close-popup");
+                        closeUp.setAttribute("style", "cursor: pointer;");
+                        closeUp.setAttribute("onclick", `cancelEject('${id}')`);
+                        closeUp.innerHTML = `
+                            <span><i class="fa fa-times"></i></span>
+                        `;
+
+                        var div = document.createElement("div");
+                        div.classList.add("content");
+                        if(deletionType == "topicDelete"){
+                            div.innerHTML = `
+                                <h2>Delete Topic</h2>
+                                <span>Are you sure you want to delete this topic? This topic will be deleted permanently. </span>
+                            `;
+                        }else{
+                            div.innerHTML = `
+                                <h2>Delete Response</h2>
+                                <span>Are you sure you want to delete this response? This response will be deleted permanently</span>
+                            `;
+                        }
+
+                        var actionDiv = document.createElement("div");
+                        actionDiv.classList.add("action");
+                        if(deletionType == "topicDelete"){
+                            actionDiv.innerHTML = `
+                                <button class="btn" onclick="cancelEject('${id}')">No</button>
+                                <button class="btn btn-danger" onclick="deleteForumTopic('${id}', '${forumID}', '${topicID}', '${memberID}');">Yes</button>
+                            `;
+                        }else{
+                            actionDiv.innerHTML = `
+                                <button class="btn" onclick="cancelEject('${id}')">No</button>
+                                <button class="btn btn-danger" onclick="deleteTopicResponse('${id}', '${forumID}', '${topicID}', '${responseID}', '${memberID}');">Yes</button>
+                            `;
+                        }
+
+                        var panel = document.querySelector(".confirm-popup");
+
+                        panel.querySelector(".card").innerHTML = "";
+                        panel.querySelector(".card").appendChild(closeUp);
+                        panel.querySelector(".card").appendChild(div);
+                        panel.querySelector(".card").appendChild(actionDiv);
+                        panel.style.display = "block";
                     }
 
                     function showOtherActionsInForum(id, forumID, memberID, topicID, deletionType, responseID) {
@@ -369,15 +425,15 @@
                             if(deletionType == "topicDelete"){
                                 div.innerHTML = `
                                     <div class="requote" style="top: -30%; left: -13rem;" id="action-panel-${id}">
-                                        <div class="one" onclick="warnMemberPanel('${id}', '${forumID}', '${memberID}', '${topicID}', '${deletionType}', '${responseID}')">
+                                        <div class="one" onclick="warnMemberPanel('${id}', '${forumID}', '${memberID}', '${topicID}', '${deletionType}')">
                                             <i class="fa-solid fa-land-mine-on"></i>
                                             <strong>Warn Member</strong>
                                         </div>
-                                        <div class="one" onclick="deleteResponseInForum('${id}')">
+                                        <div class="one" onclick="deleteResponseInForum('${id}','${forumID}','${topicID}','${memberID}','${deletionType}')">
                                             <i class="fa-solid fa-trash"></i>
                                             <strong>Delete Response</strong>
                                         </div>
-                                        <div class="two" onclick="ejectMemberPanel('${id}')">
+                                        <div class="two" onclick="ejectMemberPanel('${id}','${forumID}', '${memberID}', '${topicID}', '${deletionType}')">
                                             <i class="fa-solid fa-user-xmark"></i>
                                             <strong>Eject Member</strong>
                                         </div>
@@ -391,11 +447,11 @@
                                             <i class="fa-solid fa-land-mine-on"></i>
                                             <strong>Warn Member</strong>
                                         </div>
-                                        <div class="one" onclick="deleteResponseInForum('${id}')">
+                                        <div class="one" onclick="deleteResponseInForum('${id}','${forumID}','${topicID}','${memberID}','${deletionType}','${responseID}')">
                                             <i class="fa-solid fa-trash"></i>
                                             <strong>Delete Response</strong>
                                         </div>
-                                        <div class="two" onclick="ejectMemberPanel('${id}')">
+                                        <div class="two" onclick="ejectMemberPanel('${id}','${forumID}', '${memberID}', '${topicID}', '${deletionType}', '${responseID}')">
                                             <i class="fa-solid fa-user-xmark"></i>
                                             <strong>Eject Member</strong>
                                         </div>
@@ -418,6 +474,55 @@
                         var actionPanel = document.getElementById("action-panel-" + id)
                         obj.style.display = "none"
                         actionPanel.style.display = "none"
+                    }
+
+                    function ejectMember(id, forumID, memberID) {
+                        var actionType = "ejectMember";
+
+                        primaryAlert.style.display = "block";
+                        primaryMessage.textContent = "Processing, please wait!";
+
+                        const formData = new FormData();
+
+                        formData.append("forumID", forumID);
+                        formData.append("memberID", memberID);
+                        formData.append("actionType", actionType);
+
+                        fetch("/dashboard/public/performActionAsModerator", {
+                            method: "POST",
+                            mode: "cors",
+                            cache: "no-cache",
+                            credentials: "same-origin",
+                            redirect: "follow",
+                            referrerPolicy: "no-referrer",
+                            body: formData,
+                        })
+                            .then(function (res) {
+                                return res.json();
+                            })
+                            .then(function (json) {
+                                if (json.success == true) {
+                                    primaryAlert.style.display = "none";
+                                    successAlert.style.display = "block";
+                                    successAlertIcon.className = "";
+                                    successAlertIcon.className = "fa fa-check-circle";
+                                    successMessage.textContent = json.msg;
+
+                                    setTimeout(() => {
+                                        successAlert.style.display = "none";
+                                    }, 3000);
+                                } else {
+                                    dangerAlert.style.display = "block";
+                                    dangerMessage.textContent = json.msg;
+
+                                    setTimeout(() => {
+                                        dangerAlert.style.display = "none";
+                                    }, 5000);
+                                }
+                            })
+                            .catch(function (err) {
+                                console.log(err);
+                            });
                     }
 
                     function warnMember(id, forumID, memberID, topicID, deletionType, responseID) {

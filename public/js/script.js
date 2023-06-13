@@ -4482,8 +4482,8 @@ function loadAForumInfo(
   primaryAlert.style.display = "none";
 }
 
-function deleteForumTopic(forumID, topicID, topicCreator) {
-  if (confirm("Are you sure you want to delete this topic?")) {
+function deleteForumTopic(id, forumID, topicID, topicCreator) {
+  // if (confirm("Are you sure you want to delete this topic?")) {
     const formData = new FormData();
 
     formData.append("topicID", topicID);
@@ -4504,6 +4504,18 @@ function deleteForumTopic(forumID, topicID, topicCreator) {
       })
       .then(function (json) {
         if (json.success == true) {
+          var panel = document.querySelector(".confirm-popup");
+          panel.style.display = "none"
+          panel.querySelector(".card").innerHTML = "";
+
+          if(document.getElementById("action-panel-" + id)){
+            var actionPanel = document.getElementById("action-panel-" + id)
+            var actionModal = document.getElementById("action-modal-" + id)
+
+            actionPanel.style.display = "none";
+            actionModal.style.display = "none";
+          }
+          
           successAlert.style.display = "block";
           successAlertIcon.className = "";
           successAlertIcon.className = "fa fa-check-circle";
@@ -4525,11 +4537,11 @@ function deleteForumTopic(forumID, topicID, topicCreator) {
       .catch(function (err) {
         console.log(err);
       });
-  }
+  // }
 }
 
-function deleteTopicResponse(forumID, topicID, responseID, responseCreator) {
-  if (confirm("Are you sure you want to delete this topic?")) {
+function deleteTopicResponse(id, forumID, topicID, responseID, responseCreator) {
+  // if (confirm("Are you sure you want to delete this topic?")) {
     const formData = new FormData();
 
     formData.append("topicID", topicID);
@@ -4551,6 +4563,18 @@ function deleteTopicResponse(forumID, topicID, responseID, responseCreator) {
       })
       .then(function (json) {
         if (json.success == true) {
+          var panel = document.querySelector(".confirm-popup");
+          panel.style.display = "none"
+          panel.querySelector(".card").innerHTML = "";
+
+          if(document.getElementById("action-panel-" + id)){
+            var actionPanel = document.getElementById("action-panel-" + id)
+            var actionModal = document.getElementById("action-modal-" + id)
+
+            actionPanel.style.display = "none";
+            actionModal.style.display = "none";
+          }
+
           // Remove response box panel
           document.querySelector(".responseBox_" + responseID).remove();
           var newCommentCount = parseInt(
@@ -4579,7 +4603,7 @@ function deleteTopicResponse(forumID, topicID, responseID, responseCreator) {
       .catch(function (err) {
         console.log(err);
       });
-  }
+  // }
 }
 
 function updateTopicUpvotes(
