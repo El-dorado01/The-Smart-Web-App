@@ -3,7 +3,7 @@
         <div class="close-topic" onclick="closeTopicModalTwo()" style="cursor: pointer;">
             <span class="fa fa-times"></span>
         </div>
-        <h3>Update Forum Ranking System</h3>
+        <h3>Add a New Topic</h3>
         <!-- Subjects, topicText, topicMedia, userID, forumID -->
         <div class="post-area">
             <div class="field">
@@ -49,7 +49,7 @@
 </div>
 <script src="../../../../build/ckeditor.js"></script>
 <script>
-    let myEditor;
+    let myCoolEditor;
 
     let topicImgFilesObj = {
         fileArray_1234: [],
@@ -62,10 +62,10 @@
 
     const closeTopicModal = (e) => {
         if (e.target.classList.contains("add-topic-modal")) {
-            if (myEditor.getData() != "") {
+            if (myCoolEditor.getData() != "") {
                 if (confirm("Discard this topic?")) {
                     document.getElementById("subjectTopic").value = ""
-                    myEditor.setData('')
+                    myCoolEditor.setData('')
                     //Remove all tags
                     if (document.querySelectorAll(".field .word-tags .up .tag")) {
                         document.querySelectorAll(".field .word-tags .up .tag").forEach(tag => {
@@ -108,10 +108,10 @@
     addTopicModal.addEventListener("click", closeTopicModal);
 
     function closeTopicModalTwo() {
-        if (myEditor.getData() != "") {
+        if (myCoolEditor.getData() != "") {
             if (confirm("Discard this topic?")) {
                 document.getElementById("subjectTopic").value = ""
-                myEditor.setData('')
+                myCoolEditor.setData('')
                 //Remove all tags
                 if (document.querySelectorAll(".field .word-tags .up .tag")) {
                     document.querySelectorAll(".field .word-tags .up .tag").forEach(tag => {
@@ -158,7 +158,7 @@
         var invalidWordsPresent = false
 
         var subject = document.getElementById("subjectTopic").value
-        var topicText = myEditor.getData()
+        var topicText = myCoolEditor.getData()
 
         var splitTexts = topicText.split(/[ ,.?]/)
         for (let i = 0; i < splitTexts.length; i++) {
@@ -227,7 +227,7 @@
 
                     //Set input values to empty
                     document.getElementById("subjectTopic").value = ""
-                    myEditor.setData('')
+                    myCoolEditor.setData('')
                     //Remove all tags
                     document.querySelectorAll(".field .word-tags .up .tag").forEach(tag => {
                         tag.remove()
@@ -338,7 +338,7 @@
             },
         })
         .then(editor => {
-            myEditor = editor;
+            myCoolEditor = editor;
         })
         .catch(error => {
             console.error(error);

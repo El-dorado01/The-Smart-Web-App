@@ -1,64 +1,27 @@
-<% if(topicInfo.pinned==true){%>
-    <div title="Unpin Discussion" id="pinDiscussion"
-        onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'unpinDiscussion')"
-        style="cursor: pointer;">
-        <span style="color: var(--color-primary);"><i class="fa-solid fa-thumbtack fa-lg"></i></span>
-    </div>
-    <% }else{ %>
-        <div title="Pin Discussion" id="pinDiscussion"
-            onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'pinDiscussion')"
-            style="cursor: pointer;">
-            <span><i class="fa-solid fa-thumbtack fa-lg"></i></span>
-        </div>
-        <% } %>
+<% 
+                                                    if(isAMember == true){
+                                                    if(response.response.userID==user._id){ %>
+                                                        <span style="background-color: var(--color-danger);"
+                                                            title="Delete"
+                                                            onclick="deleteResponseInForum('<%= response.response._id %>','<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= response.response.userID %>','responseDelete','<%= response.response._id %>')">
+                                                            <i class="fa-solid fa-trash fa-lg"></i>
+                                                        </span>
+                                                        <% }else if(response.response.userID==forumInfo.creator){ %>
+                                                            <% }else if(forumInfo.creator==user._id){ %>
+                                                                <div style="position: relative;"
+                                                                    id="other-actions-<%= response.response._id %>">
+                                                                    <span title="More"
+                                                                        onclick="showOtherActionsInForum('<%= response.response._id %>', '<%= topicInfo.forumID %>', '<%= response.response.userID %>', '<%= topicInfo._id %>', 'responseDelete', '<%= response.response._id %>')"><i
+                                                                            class="fa-solid fa-ellipsis fa-lg"></i></span>
+                                                                </div>
+                                                                <%} else { for (let i=0; i <
+                                                                    forumInfo.moderators.length; i++) { if
+                                                                    (forumInfo.moderators[i].userID==user._id ) { %>
+                                                                    <div style="position: relative;"
+                                                                        id="other-actions-<%= response.response._id %>">
+                                                                        <span title="More"
+                                                                            onclick="showOtherActionsInForum('<%= response.response._id %>', '<%= topicInfo.forumID %>', '<%= response.response.userID %>', '<%= topicInfo._id %>', 'responseDelete', '<%= response.response._id %>')"><i
+                                                                                class="fa-solid fa-ellipsis fa-lg"></i></span>
+                                                                    </div>
 
-            <% if(topicInfo.discussionClosed==true){%>
-                <div title="Open Discussion"
-                    onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'openDiscussion')"
-                    id="openDiscussion" style="cursor: pointer;">
-                    <span style="color: var(--color-primary);"><i class="fa-solid fa-comment-slash fa-lg"></i></span>
-                </div>
-                <% }else{ %>
-                    <div title="Close Discussion"
-                        onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'closeDiscussion')"
-                        id="closeDiscussion" style="cursor: pointer;">
-                        <span><i class="fa-solid fa-comment-slash fa-lg"></i></span>
-                    </div>
-                    <% } %>
-
-                        <script>
-                            function performActionInForum(forumID, topicID, actionType) {
-                                socket.emit("performActionInForum", { forumID, topicID, actionType });
-                            }
-                            socket.on("actionDone", data => {
-                                if (data.success == true) {
-                                    switch (data.actionType) {
-                                        case "pinDiscussion":
-                                            var pinBtn = document.getElementById("pinDiscussion")
-                                            pinBtn.querySelector("span").style.color = "var(--color-primary)"
-                                            pinBtn.title = "Unpin Discussion"
-                                            pinBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'unpinDiscussion')")
-                                            break;
-                                        case "unpinDiscussion":
-                                            var pinBtn = document.getElementById("pinDiscussion")
-                                            pinBtn.querySelector("span").style.color = ""
-                                            pinBtn.title = "Pin Discussion"
-                                            pinBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'pinDiscussion')")
-                                            break;
-                                        case "closeDiscussion":
-                                            var closeBtn = document.getElementById("closeDiscussion")
-                                            closeBtn.querySelector("span").style.color = "var(--color-primary)"
-                                            closeBtn.title = "Open Discussion"
-                                            pinBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'openDiscussion')")
-                                            break;
-                                        default:
-                                            var closeBtn = document.getElementById("closeDiscussion")
-                                            closeBtn.querySelector("span").style.color = ""
-                                            closeBtn.title = "Close Discussion"
-                                            pinBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'closeDiscussion')")
-                                            break;
-                                    }
-                                }
-                            })
-
-                        </script>
+                                                                    <% } } } }%>

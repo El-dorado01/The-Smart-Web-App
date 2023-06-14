@@ -93,7 +93,7 @@ const processInvite = asyncWrapper(async (req, res) => {
 
     if(isInactive == true){
       const memberRejoined = await ForumsModel.findOneAndUpdate(
-        { _id: forumID, "member.userID": memberID },
+        { _id: forumID, "members.userID": memberID },
         { $set: { "members.$.memberStatus": "active" } }
       );
 
@@ -108,16 +108,23 @@ const processInvite = asyncWrapper(async (req, res) => {
         content: "Welcome back to " + forumInfoKey.forumName,
       };
     }else if(isEjected == true){
-      const requestSent = await ForumsModel.findByIdAndUpdate(
-        { _id: forumID },
-        { $push: { invites: { incoming: true, userID: user.userId } } }
-      );
+      var requestExisted = await ForumsModel.findOne({ 
+        _id: forumID, 
+        $and: [{ "invites.incoming": true }, { "invites.userID": user.userId }],
+      })
 
-      if (requestSent) {
-        console.log(
-          "You " + user.userId + " have sent a request to join forum " + forumID
+      if(!requestExisted){
+        var requestSent = await ForumsModel.findByIdAndUpdate(
+          { _id: forumID },
+          { $push: { invites: { incoming: true, userID: user.userId } } }
         );
-        // res.status(StatusCodes.OK).send("Request sent!");
+  
+        if (requestSent) {
+          console.log(
+            "You " + user.userId + " have sent a request to join forum " + forumID
+          );
+          // res.status(StatusCodes.OK).send("Request sent!");
+        }
       }
 
       var msg = {
@@ -220,6 +227,8 @@ const processInvite = asyncWrapper(async (req, res) => {
       }
     }
 
+    const forumRanks = await ForumRankingsModel.findOne({ forumID });
+
     res.locals.forums = fetchAllForums;
     res.locals.invites = invites;
     res.locals.forumID = forumID;
@@ -228,6 +237,7 @@ const processInvite = asyncWrapper(async (req, res) => {
     res.locals.isAMember = isAMember;
     res.locals.isAModerator = isAModerator;
     res.locals.incomingMsg = true;
+    res.locals.forumRanks = forumRanks;
     res
       .status(StatusCodes.OK)
       .render("./dashboard/public/forums/single_forum_page", {
@@ -301,6 +311,8 @@ const processInvite = asyncWrapper(async (req, res) => {
       }
     }
 
+    const forumRanks = await ForumRankingsModel.findOne({ forumID });
+
     res.locals.forums = fetchAllForums;
     res.locals.invites = invites;
     res.locals.forumID = forumID;
@@ -309,6 +321,7 @@ const processInvite = asyncWrapper(async (req, res) => {
     res.locals.isAMember = isAMember;
     res.locals.isAModerator = isAModerator;
     res.locals.incomingMsg = true;
+    res.locals.forumRanks = forumRanks;
     res
       .status(StatusCodes.OK)
       .render("./dashboard/public/forums/single_forum_page", {
@@ -1264,7 +1277,7 @@ const performActionAsModerator = asyncWrapper(async (req, res) => {
             );
           } else {
             const requestApproved = await ForumsModel.findOneAndUpdate(
-              { _id: forumID, "member.userID": memberID },
+              { _id: forumID, "members.userID": memberID },
               { $set: { "members.$.memberStatus": "active" } }
             );
           }
@@ -1370,7 +1383,7 @@ const performActionAsModerator = asyncWrapper(async (req, res) => {
             //Check if the new member's warn number has reached 5, then remove member
             if (newWarnNumber >= 5) {
               const memberWarned = await ForumsModel.findOneAndUpdate(
-                { _id: forumID, "member.userID": memberID },
+                { _id: forumID, "members.userID": memberID },
                 { $set: { "members.$.memberStatus": "ejected" } }
               );
 
@@ -1412,7 +1425,7 @@ const performActionAsModerator = asyncWrapper(async (req, res) => {
         default:
           //Eject Members by default
           const memberEjected = await ForumsModel.findOneAndUpdate(
-            { _id: forumID, "member.userID": memberID },
+            { _id: forumID, "members.userID": memberID },
             { $set: { "members.$.memberStatus": "ejected" } }
           );
 
@@ -1531,7 +1544,7 @@ const updateForumInvites = asyncWrapper(async (req, res) => {
     default:
       //Exit forum by default
       const memberExited = await ForumsModel.findOneAndUpdate(
-        { _id: forumID, "member.userID": user.userId },
+        { _id: forumID, "members.userID": user.userId },
         { $set: { "members.$.memberStatus": "inactive" } }
       );
 

@@ -1,0 +1,77 @@
+<script>
+    var successAlert = document.getElementById("alert-success");
+    var successAlertIcon = document.querySelector("#alert-success i");
+    var successMessage = document.querySelector("#alert-success .msg")
+    var primaryAlert = document.getElementById("alert-primary")
+    var primaryMessage = document.querySelector("#alert-primary .msg")
+    var dangerAlert = document.getElementById("alert-danger")
+    var dangerMessage = document.querySelector("#alert-danger .msg")
+
+    const rankModal = document.querySelector(".rank-modal");
+
+    const closeRankModal = (e) => {
+        if (e.target.classList.contains("rank-modal")) {
+            rankModal.style.display = "none";
+        }
+    };
+
+    rankModal.addEventListener("click", closeRankModal);
+
+    const memberModal = document.querySelector(".member-modal");
+
+    const closeMemberModal = (e) => {
+        if (e.target.classList.contains("member-modal")) {
+            memberModal.style.display = "none";
+        }
+    };
+
+    memberModal.addEventListener("click", closeMemberModal);
+
+    var filterInput = document.getElementById("filter-value")
+
+    filterInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault()
+
+            var valuesArray = filterInput.value.split(",")
+
+            for (let i = 0; i < valuesArray.length; i++) {
+                var div = document.createElement("div");
+                div.classList.add("tag")
+                div.classList.add(valuesArray[i])
+                div.innerHTML =
+                    ` <span class="remove-tag"
+        onclick="removeFilterWord('${valuesArray[i]}')">
+        <i class="fa-solid fa-times"></i>
+        </span>
+        <p>${valuesArray[i]}</p>
+    `
+                document.querySelector(".word-tags .up").appendChild(div)
+            }
+            filterInput.value = ""
+        }
+    })
+
+    function removeFilterWord(obj) {
+        document.querySelector(".tag." + obj).remove()
+    }
+
+    const members = document.querySelectorAll(".member-modal .members .member");
+    if (document.querySelector("#search-member")) {
+        const memberSearch = document.querySelector("#search-member");
+        const searchMember = () => {
+            const value = memberSearch.value.toLowerCase();
+            members.forEach((member) => {
+                let username = member.querySelector("h4").textContent.toLowerCase();
+                let rank = member.querySelector("p").textContent.toLowerCase();
+
+                if (username.indexOf(value) != -1 || rank.indexOf(value) != -1) {
+                    member.style.display = "flex";
+                } else {
+                    member.style.display = "none";
+                }
+            });
+        };
+        memberSearch.addEventListener("keyup", searchMember);
+    }
+</script>
