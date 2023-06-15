@@ -33,7 +33,11 @@ const forums = async (req, res) => {
 
   //Fetch User's forums
   const fetchAllForums = await ForumsModel.find({
-    $or: [{ creator: user.userId }, { "members.userID": user.userId }],
+    // $or: [{ creator: user.userId }, { "members.userID": user.userId }],
+    $or: [
+      { creator: user.userId },
+      { $and: [{ "members.userID": user.userId }, { "members.memberStatus": "active" }] }
+    ],
   });
 
   const invites = await ForumsModel.find({
@@ -78,7 +82,7 @@ const processInvite = asyncWrapper(async (req, res) => {
       if (forumInfoKey.members.length > 0) {
         for (let i = 0; i < forumInfoKey.members.length; i++) {
           const member = forumInfoKey.members[i];
-          if (member.userID == user.userId) {
+          if (member.userID == user.userId && member.memberStatus == "active") {
             isAlreadyAMember = true;
           }
           if (member.memberStatus == "inactive"){
@@ -162,7 +166,10 @@ const processInvite = asyncWrapper(async (req, res) => {
 
     //Fetch User's forums
     const fetchAllForums = await ForumsModel.find({
-      $or: [{ creator: user.userId }, { "members.userID": user.userId }],
+      $or: [
+        { creator: user.userId },
+        { $and: [{ "members.userID": user.userId }, { "members.memberStatus": "active" }] }
+      ],
     });
     const invites = await ForumsModel.find({
       $and: [{ "invites.userID": user.userId }, { "invites.incoming": false }],
@@ -249,7 +256,10 @@ const processInvite = asyncWrapper(async (req, res) => {
   } else {
     //Fetch User's forums
     const fetchAllForums = await ForumsModel.find({
-      $or: [{ creator: user.userId }, { "members.userID": user.userId }],
+      $or: [
+        { creator: user.userId },
+        { $and: [{ "members.userID": user.userId }, { "members.memberStatus": "active" }] }
+      ],
     });
     const invites = await ForumsModel.find({
       $and: [{ "invites.userID": user.userId }, { "invites.incoming": false }],
@@ -350,7 +360,10 @@ const singleForum = async (req, res) => {
 
   //Fetch User's forums
   const fetchAllForums = await ForumsModel.find({
-    $or: [{ creator: user.userId }, { "members.userID": user.userId }],
+    $or: [
+      { creator: user.userId },
+      { $and: [{ "members.userID": user.userId }, { "members.memberStatus": "active" }] }
+    ],
   });
   const invites = await ForumsModel.find({
     $and: [{ "invites.userID": user.userId }, { "invites.incoming": false }],
@@ -441,6 +454,7 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   const topicID = req.query.topicID;
   var isAMember = false;
   var isAModerator = false;
+  var hasViewed = false;
 
   const cookies = req.cookies;
   const token = cookies.jwtAccessToken;
@@ -449,14 +463,6 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
     userId: payload.userId,
     userName: payload.userName,
   };
-
-  // Update number of views
-  const getTopicViews = await ForumsTopicsModel.findById({ _id: topicID });
-  var newViewsNumber = getTopicViews.__v + 1;
-  await ForumsTopicsModel.findByIdAndUpdate(
-    { _id: topicID },
-    { __v: newViewsNumber }
-  );
 
   const topicInfo = await ForumsTopicsModel.findById({ _id: topicID });
   const topicResponses = topicInfo.responses;
@@ -473,9 +479,28 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   }else{
     for (let i = 0; i < forumInfo.members.length; i++) {
       const member = forumInfo.members[i];
+
       if (user.userId == member.userID && member.memberStatus == "active") {
         isAMember = true;
+
+        if (member.views.includes(topicID)) {
+          hasViewed = true;
+        }
+        // Update number of views
+        if (hasViewed == false) {
+          const getTopicViews = await ForumsTopicsModel.findById({ _id: topicID });
+          var newViewsNumber = getTopicViews.__v + 1;
+          await ForumsTopicsModel.findByIdAndUpdate(
+            { _id: topicID },
+            { __v: newViewsNumber }
+          );
+          const memberRejoined = await ForumsModel.findOneAndUpdate(
+            { _id: forumID, "members.userID": user.userId },
+            { $addToSet: { "members.$.views": topicID } }
+          );
+        }
       }
+      
     }
   }
 
@@ -561,7 +586,10 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
 
   //Fetch User's forums
   const fetchAllForums = await ForumsModel.find({
-    $or: [{ creator: user.userId }, { "members.userID": user.userId }],
+    $or: [
+      { creator: user.userId },
+      { $and: [{ "members.userID": user.userId }, { "members.memberStatus": "active" }] }
+    ],
   });
   // Fetch user's forum invites
   const invites = await ForumsModel.find({
@@ -1132,7 +1160,7 @@ const updateForumDisplayPic = asyncWrapper(async (req, res) => {
 });
 
 const updateForumProfile = asyncWrapper(async (req, res) => {
-  const { forumID, forumName, forumDesc, lookUpValue, wordsFilter } = req.body;
+  const { forumID, forumName, forumDesc, lookUpValue, wordsFilter, membersCanInvite } = req.body;
 
   const newWordsFilter = wordsFilter.split(",");
 
@@ -1140,6 +1168,11 @@ const updateForumProfile = asyncWrapper(async (req, res) => {
     var availableForLookUp = true;
   } else {
     var availableForLookUp = false;
+  }
+  if (membersCanInvite == "on") {
+    var membersCanInviteValue = true;
+  } else {
+    var membersCanInviteValue = false;
   }
   const cookies = req.cookies;
   const token = cookies.jwtAccessToken;
@@ -1158,6 +1191,7 @@ const updateForumProfile = asyncWrapper(async (req, res) => {
       forumName,
       forumDesc,
       availableForLookUp,
+      membersCanInviteValue: membersCanInvite,
       wordsFilter: newWordsFilter,
     };
 
@@ -1259,6 +1293,8 @@ const performActionAsModerator = asyncWrapper(async (req, res) => {
             { $pull: { invites: { userID: memberID } } }
           );
 
+          var requestApproved;
+
           let memberHasJoinedBefore = false;
           //Check if user exists as a member or a creator
           for (let i = 0; i < forumInfo.members.length; i++) {
@@ -1271,12 +1307,12 @@ const performActionAsModerator = asyncWrapper(async (req, res) => {
           }
 
           if (memberHasJoinedBefore == false) {
-            const requestApproved = await ForumsModel.findByIdAndUpdate(
+            requestApproved = await ForumsModel.findByIdAndUpdate(
               { _id: forumID },
               { $push: { members: { userID: memberID } } }
             );
           } else {
-            const requestApproved = await ForumsModel.findOneAndUpdate(
+            requestApproved = await ForumsModel.findOneAndUpdate(
               { _id: forumID, "members.userID": memberID },
               { $set: { "members.$.memberStatus": "active" } }
             );
@@ -1286,10 +1322,22 @@ const performActionAsModerator = asyncWrapper(async (req, res) => {
             console.log(
               "Member " + memberID + " request to join the forum has approved."
             );
-            // res.status(StatusCodes.OK).send("Request approved!");
             res
               .status(StatusCodes.OK)
               .json({ success: true, msg: "Member request to join the forum has been approved!" });
+          }
+          break;
+
+        case "declineRequest":
+          const declineRequest = await ForumsModel.findByIdAndUpdate(
+            { _id: forumID },
+            { $pull: { invites: { userID: memberID } } }
+          );
+
+          if (declineRequest) {
+            res
+              .status(StatusCodes.OK)
+              .json({ success: true, msg: "You have turned down the request to join forum!" });
           }
           break;
 
@@ -2613,7 +2661,10 @@ const visitMemberProfile = asyncWrapper(async (req, res) => {
 
   //Fetch User's forums
   const fetchAllForums = await ForumsModel.find({
-    $or: [{ creator: user.userId }, { "members.userID": user.userId }],
+    $or: [
+      { creator: user.userId },
+      { $and: [{ "members.userID": user.userId }, { "members.memberStatus": "active" }] }
+    ],
   });
   // Fetch user's forum invites
   const invites = await ForumsModel.find({

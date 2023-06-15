@@ -58,7 +58,7 @@ const {
 const { lockScreen } = require("./LockScreen");
 
 const {
-  deleteATopicAsModerator,
+  // deleteATopicAsModerator,
   updateResponseUpvotes,
   updateTopicUpvotes,
   updateTopicBookmarks,
@@ -409,7 +409,7 @@ const allSockets = (socket) => {
         if (user.friends[i].status === "accepted") {
           var a = await AuthModel.findById(
             user.friends[i].userID,
-            "username avatar about"
+            "username avatar about email"
           );
           contactsArray.push({
             sender: user.friends[i].sender,
@@ -421,7 +421,7 @@ const allSockets = (socket) => {
         if (user.friends[i].status === "pending") {
           var a = await AuthModel.findById(
             user.friends[i].userID,
-            "username avatar about"
+            "username avatar about email"
           );
           requestsArray.push({
             sender: user.friends[i].sender,
@@ -433,7 +433,7 @@ const allSockets = (socket) => {
         if (user.friends[i].status === "declined") {
           var a = await AuthModel.findById(
             user.friends[i].userID,
-            "username avatar about"
+            "username avatar about email"
           );
           declinedArray.push({
             sender: user.friends[i].sender,
@@ -449,7 +449,7 @@ const allSockets = (socket) => {
         ) {
           var a = await AuthModel.findById(
             user.friends[i].userID,
-            "username avatar about"
+            "username avatar about email"
           );
           blockedArray.push({
             sender: user.friends[i].sender,
@@ -478,7 +478,7 @@ const allSockets = (socket) => {
       for (let i = 0; i < mayKnowArrays.length; i++) {
         var a = await AuthModel.findById(
           mayKnowArrays[i],
-          "username avatar about"
+          "username avatar about email"
         );
         mayKnowArray.push(a);
       }
@@ -568,7 +568,7 @@ const allSockets = (socket) => {
  //Fetch info about a forum
  =======================================================================================
  */
-  socket.on("deleteATopic", deleteATopicAsModerator);
+  // socket.on("deleteATopic", deleteATopicAsModerator);
   socket.on("updateResponseUpvotes", updateResponseUpvotes);
   socket.on("updateTopicUpvotes", updateTopicUpvotes);
   socket.on("updateTopicBookmarks", updateTopicBookmarks);
@@ -656,7 +656,7 @@ const allSockets = (socket) => {
       if (allInvites[i].incoming == true) {
         var newMemberInfo = await AuthModel.findById(
           allInvites[i].userID,
-          "username avatar about"
+          "username avatar about email"
         );
         incomingInvites.push({ member: newMemberInfo });
       }
@@ -666,7 +666,7 @@ const allSockets = (socket) => {
       if (forumInfo.members[a].memberStatus == "active") {
         var memberInfo = await AuthModel.findById(
           forumInfo.members[a].userID,
-          "username avatar about"
+          "username avatar about email"
         );
         forumMembers.push({ member: forumInfo.members[a], memberInfo });
       }
@@ -674,7 +674,7 @@ const allSockets = (socket) => {
 
     const creatorDetails = await AuthModel.findById(
       forumInfo.creator,
-      "username avatar about"
+      "username avatar about email"
     );
 
     let numberOfPosts = 0;
@@ -740,7 +740,7 @@ const allSockets = (socket) => {
     for (let i = 0; i < newTopics.length; i++) {
       const userInfo = await AuthModel.findById(
         newTopics[i].userID,
-        "username avatar about"
+        "username avatar about email"
       );
       if (newTopics[i].userID == forumMembers.creator) {
         topics.push({
@@ -782,7 +782,7 @@ const allSockets = (socket) => {
     socket.emit("hereIsTheNumberOfWarns", { memberWarnNumber, id, forumID, memberID, topicID, deletionType, responseID });
   });
   socket.on("performActionInForum", async (data) => {
-    const { forumID, topicID, actionType } = data;
+    const { forumID, topicID, actionType, isAModerator } = data;
 
     switch (actionType) {
       case "pinDiscussion":
@@ -794,7 +794,7 @@ const allSockets = (socket) => {
 
         if (discussionPinned) {
           console.log("Discussion pinned!")
-          socket.emit("actionDone", { success: true, actionType, forumID, topicID })
+          socket.emit("actionDone", { success: true, actionType, forumID, topicID, isAModerator })
         }
         break;
       case "unpinDiscussion":
@@ -806,7 +806,7 @@ const allSockets = (socket) => {
 
         if (discussionPinned) {
           console.log("Discussion has been unpinned!")
-          socket.emit("actionDone", { success: true, actionType, forumID, topicID })
+          socket.emit("actionDone", { success: true, actionType, forumID, topicID, isAModerator })
         }
         break;
       case "closeDiscussion":
@@ -818,7 +818,7 @@ const allSockets = (socket) => {
 
         if (discussionClosed) {
           console.log("Discussion closed!")
-          socket.emit("actionDone", { success: true, actionType, forumID, topicID })
+          socket.emit("actionDone", { success: true, actionType, forumID, topicID, isAModerator })
         }
         break;
 
@@ -831,7 +831,7 @@ const allSockets = (socket) => {
 
         if (discussionOpened) {
           console.log("Discussion opened!")
-          socket.emit("actionDone", { success: true, actionType, forumID, topicID })
+          socket.emit("actionDone", { success: true, actionType, forumID, topicID, isAModerator })
         }
         break;
     }

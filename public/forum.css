@@ -1054,7 +1054,8 @@
 }
 
 .forum-body .media .img {
-    max-height: 20rem;
+    height: 20rem;
+    /* max-height: 20rem; */
     cursor: pointer;
 }
 

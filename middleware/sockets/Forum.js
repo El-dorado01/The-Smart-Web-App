@@ -12,219 +12,219 @@ const ForumsModel = require("../../models/ForumsModel");
 const ForumsTopicsModel = require("../../models/ForumsTopicsModel");
 const UserUpvotesModel = require("../../models/UserUpvotesModel");
 
-const deleteATopicAsModerator = async (data) => {
-  const {
-    moderatorID,
-    forumID,
-    memberID,
-    topicID,
-    actionType,
-    reasonForDelete,
-  } = data;
+// const deleteATopicAsModerator = async (data) => {
+//   const {
+//     moderatorID,
+//     forumID,
+//     memberID,
+//     topicID,
+//     actionType,
+//     reasonForDelete,
+//   } = data;
 
-  //Check if user is allowed to perform this action
-  const forumInfo = await ForumsModel.findById({ _id: forumID });
-  const forumOwner = forumInfo.creator;
+//   //Check if user is allowed to perform this action
+//   const forumInfo = await ForumsModel.findById({ _id: forumID });
+//   const forumOwner = forumInfo.creator;
 
-  for (let i = 0; i < forumInfo.moderators.length; i++) {
-    if (
-      forumInfo.moderators[i].userID == moderatorID ||
-      forumOwner == moderatorID
-    ) {
-      switch (actionType) {
-        case "deleteOnly":
-          const topicDeleted = await ForumsTopicsModel.findByIdAndDelete({
-            _id: topicID,
-          });
+//   for (let i = 0; i < forumInfo.moderators.length; i++) {
+//     if (
+//       forumInfo.moderators[i].userID == moderatorID ||
+//       forumOwner == moderatorID
+//     ) {
+//       switch (actionType) {
+//         case "deleteOnly":
+//           const topicDeleted = await ForumsTopicsModel.findByIdAndDelete({
+//             _id: topicID,
+//           });
 
-          if (topicDeleted) {
-            console.log(
-              "Topic " + topicID + " has been deleted from the forum " + forumID
-            );
-          }
-          break;
+//           if (topicDeleted) {
+//             console.log(
+//               "Topic " + topicID + " has been deleted from the forum " + forumID
+//             );
+//           }
+//           break;
 
-        default:
-          //Delete a topic and warn member by default
-          const topicDeleted1 = await ForumsTopicsModel.findByIdAndDelete({
-            _id: topicID,
-          });
+//         default:
+//           //Delete a topic and warn member by default
+//           const topicDeleted1 = await ForumsTopicsModel.findByIdAndDelete({
+//             _id: topicID,
+//           });
 
-          //Get the member's number of warns
-          const memberWarnNumber = await ForumsModel.findOne(
-            { _id: forumID, "members.userID": memberID },
-            "numberOfWarns"
-          );
+//           //Get the member's number of warns
+//           const memberWarnNumber = await ForumsModel.findOne(
+//             { _id: forumID, "members.userID": memberID },
+//             "numberOfWarns"
+//           );
 
-          if (memberWarnNumber < 5) {
-            const newWarnNumber = memberWarnNumber + 1;
+//           if (memberWarnNumber < 5) {
+//             const newWarnNumber = memberWarnNumber + 1;
 
-            //Check if the new member's warn number has reached 5, then remove member
-            if (newWarnNumber >= 5) {
-              const memberWarned = await ForumsModel.findByIdAndUpdate(
-                { _id: forumID },
-                { $pull: { "members.$.userID": memberID } }
-              );
+//             //Check if the new member's warn number has reached 5, then remove member
+//             if (newWarnNumber >= 5) {
+//               const memberWarned = await ForumsModel.findByIdAndUpdate(
+//                 { _id: forumID },
+//                 { $pull: { "members.$.userID": memberID } }
+//               );
 
-              if (memberWarned) {
-                console.log(
-                  "User " +
-                    memberID +
-                    " has been sent a warning for misconduct and has been ejected from the forum."
-                );
-                // res.status(StatusCodes.OK).send("Request sent!");
-              }
-            } else {
-              const memberWarned = await ForumsModel.findOneAndUpdate(
-                { _id: forumID, "members.userID": memberID },
-                { $set: { "members.$.numberOfWarns": newWarnNumber } }
-              );
+//               if (memberWarned) {
+//                 console.log(
+//                   "User " +
+//                     memberID +
+//                     " has been sent a warning for misconduct and has been ejected from the forum."
+//                 );
+//                 // res.status(StatusCodes.OK).send("Request sent!");
+//               }
+//             } else {
+//               const memberWarned = await ForumsModel.findOneAndUpdate(
+//                 { _id: forumID, "members.userID": memberID },
+//                 { $set: { "members.$.numberOfWarns": newWarnNumber } }
+//               );
 
-              if (memberWarned) {
-                console.log(
-                  "User " +
-                    memberID +
-                    " has been sent a warning for misconduct in the forum."
-                );
-                // res.status(StatusCodes.OK).send("Request sent!");
-              }
-            }
-          } else {
-            res
-              .status(StatusCodes.BAD_REQUEST)
-              .send("Number of warns exceeded!");
-          }
+//               if (memberWarned) {
+//                 console.log(
+//                   "User " +
+//                     memberID +
+//                     " has been sent a warning for misconduct in the forum."
+//                 );
+//                 // res.status(StatusCodes.OK).send("Request sent!");
+//               }
+//             }
+//           } else {
+//             res
+//               .status(StatusCodes.BAD_REQUEST)
+//               .send("Number of warns exceeded!");
+//           }
 
-          if (topicDeleted1) {
-            console.log(
-              "Topic " +
-                topicID +
-                " has been deleted from the forum " +
-                forumID +
-                " and member " +
-                memberID +
-                " has been ejected from the group!"
-            );
-          }
-          break;
-      }
-    } else {
-      res
-        .status(StatusCodes.FORBIDDEN)
-        .send("You are not allowed to perform this action");
-    }
-  }
-};
+//           if (topicDeleted1) {
+//             console.log(
+//               "Topic " +
+//                 topicID +
+//                 " has been deleted from the forum " +
+//                 forumID +
+//                 " and member " +
+//                 memberID +
+//                 " has been ejected from the group!"
+//             );
+//           }
+//           break;
+//       }
+//     } else {
+//       res
+//         .status(StatusCodes.FORBIDDEN)
+//         .send("You are not allowed to perform this action");
+//     }
+//   }
+// };
 
-const deleteAResponseAsModerator = async (data) => {
-  const {
-    moderatorID,
-    forumID,
-    memberID,
-    topicID,
-    responseID,
-    actionType,
-    reasonForDelete,
-  } = data;
+// const deleteAResponseAsModerator = async (data) => {
+//   const {
+//     moderatorID,
+//     forumID,
+//     memberID,
+//     topicID,
+//     responseID,
+//     actionType,
+//     reasonForDelete,
+//   } = data;
 
-  //Check if user is allowed to perform this action
-  const forumInfo = await ForumsModel.findById({ _id: forumID });
-  const forumOwner = forumInfo.creator;
+//   //Check if user is allowed to perform this action
+//   const forumInfo = await ForumsModel.findById({ _id: forumID });
+//   const forumOwner = forumInfo.creator;
 
-  for (let i = 0; i < forumInfo.moderators.length; i++) {
-    if (
-      forumInfo.moderators[i].userID == moderatorID ||
-      forumOwner == moderatorID
-    ) {
-      switch (actionType) {
-        case "deleteOnly":
-          const responseDeleted = await ForumsTopicsModel.findByIdAndUpdate(
-            { _id: topicID },
-            { $pull: { responses: { responseID } } }
-          );
+//   for (let i = 0; i < forumInfo.moderators.length; i++) {
+//     if (
+//       forumInfo.moderators[i].userID == moderatorID ||
+//       forumOwner == moderatorID
+//     ) {
+//       switch (actionType) {
+//         case "deleteOnly":
+//           const responseDeleted = await ForumsTopicsModel.findByIdAndUpdate(
+//             { _id: topicID },
+//             { $pull: { responses: { responseID } } }
+//           );
 
-          if (responseDeleted) {
-            console.log(
-              "Response " +
-                responseID +
-                " has been deleted from the forum " +
-                forumID
-            );
-          }
-          break;
+//           if (responseDeleted) {
+//             console.log(
+//               "Response " +
+//                 responseID +
+//                 " has been deleted from the forum " +
+//                 forumID
+//             );
+//           }
+//           break;
 
-        default:
-          //Delete a response and warn member by default
-          const responseDeleted1 = await ForumsTopicsModel.findByIdAndUpdate(
-            { _id: topicID },
-            { $pull: { responses: { responseID } } }
-          );
+//         default:
+//           //Delete a response and warn member by default
+//           const responseDeleted1 = await ForumsTopicsModel.findByIdAndUpdate(
+//             { _id: topicID },
+//             { $pull: { responses: { responseID } } }
+//           );
 
-          //Get the member's number of warns
-          const memberWarnNumber = await ForumsModel.findOne(
-            { _id: forumID, "members.userID": memberID },
-            "numberOfWarns"
-          );
+//           //Get the member's number of warns
+//           const memberWarnNumber = await ForumsModel.findOne(
+//             { _id: forumID, "members.userID": memberID },
+//             "numberOfWarns"
+//           );
 
-          if (memberWarnNumber < 5) {
-            const newWarnNumber = memberWarnNumber + 1;
+//           if (memberWarnNumber < 5) {
+//             const newWarnNumber = memberWarnNumber + 1;
 
-            //Check if the new member's warn number has reached 5, then remove member
-            if (newWarnNumber >= 5) {
-              const memberWarned = await ForumsModel.findByIdAndUpdate(
-                { _id: forumID },
-                { $pull: { "members.$.userID": memberID } }
-              );
+//             //Check if the new member's warn number has reached 5, then remove member
+//             if (newWarnNumber >= 5) {
+//               const memberWarned = await ForumsModel.findByIdAndUpdate(
+//                 { _id: forumID },
+//                 { $pull: { "members.$.userID": memberID } }
+//               );
 
-              if (memberWarned) {
-                console.log(
-                  "User " +
-                    memberID +
-                    " has been sent a warning for misconduct and has been ejected from the forum."
-                );
-                // res.status(StatusCodes.OK).send("Request sent!");
-              }
-            } else {
-              const memberWarned = await ForumsModel.findOneAndUpdate(
-                { _id: forumID, "members.userID": memberID },
-                { $set: { "members.$.numberOfWarns": newWarnNumber } }
-              );
+//               if (memberWarned) {
+//                 console.log(
+//                   "User " +
+//                     memberID +
+//                     " has been sent a warning for misconduct and has been ejected from the forum."
+//                 );
+//                 // res.status(StatusCodes.OK).send("Request sent!");
+//               }
+//             } else {
+//               const memberWarned = await ForumsModel.findOneAndUpdate(
+//                 { _id: forumID, "members.userID": memberID },
+//                 { $set: { "members.$.numberOfWarns": newWarnNumber } }
+//               );
 
-              if (memberWarned) {
-                console.log(
-                  "User " +
-                    memberID +
-                    " has been sent a warning for misconduct in the forum."
-                );
-                // res.status(StatusCodes.OK).send("Request sent!");
-              }
-            }
-          } else {
-            res
-              .status(StatusCodes.BAD_REQUEST)
-              .send("Number of warns exceeded!");
-          }
+//               if (memberWarned) {
+//                 console.log(
+//                   "User " +
+//                     memberID +
+//                     " has been sent a warning for misconduct in the forum."
+//                 );
+//                 // res.status(StatusCodes.OK).send("Request sent!");
+//               }
+//             }
+//           } else {
+//             res
+//               .status(StatusCodes.BAD_REQUEST)
+//               .send("Number of warns exceeded!");
+//           }
 
-          if (responseDeleted1) {
-            console.log(
-              "Response " +
-                responseID +
-                " has been deleted from the forum " +
-                forumID +
-                " and member " +
-                memberID +
-                " has been ejected from the group!"
-            );
-          }
-          break;
-      }
-    } else {
-      res
-        .status(StatusCodes.FORBIDDEN)
-        .send("You are not allowed to perform this action");
-    }
-  }
-};
+//           if (responseDeleted1) {
+//             console.log(
+//               "Response " +
+//                 responseID +
+//                 " has been deleted from the forum " +
+//                 forumID +
+//                 " and member " +
+//                 memberID +
+//                 " has been ejected from the group!"
+//             );
+//           }
+//           break;
+//       }
+//     } else {
+//       res
+//         .status(StatusCodes.FORBIDDEN)
+//         .send("You are not allowed to perform this action");
+//     }
+//   }
+// };
 
 const updateTopicUpvotes = async (data) => {
   const { userID, topicID, forumID, actionType } = data;
@@ -680,8 +680,8 @@ const updateTopicBookmarks = async (data) => {
 };
 
 module.exports = {
-  deleteATopicAsModerator,
-  deleteAResponseAsModerator,
+  // deleteATopicAsModerator,
+  // deleteAResponseAsModerator,
   updateTopicUpvotes,
   updateResponseUpvotes,
   updateTopicBookmarks,

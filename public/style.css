@@ -5863,7 +5863,7 @@ main .container .right {
 
 .middle .forum-body .topic-title .first {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     padding: 10px 0;
 }
@@ -5906,7 +5906,7 @@ main .container .right {
 .middle .forum-body .topic-title .second .user-info {
     width: 30%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 }
 

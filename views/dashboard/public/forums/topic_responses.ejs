@@ -97,7 +97,7 @@
                                         </span>
                                         <% if(responsesUpvoted.includes(response.response._id)){%>
                                             <span style="width: 40px;" title="Remove this Response from Upvotes"
-                                                onclick="updateResponseUpvotes(this, '<%= user._id %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= topicInfo.forumID %>','removeResponseFromUpvotes', <%= isAMember %>)">
+                                                onclick="updateResponseUpvotes(this, '<%= user._id %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= topicInfo.forumID %>','removeResponseFromUpvotes', <%= isAMember %>, '<%= response.response.userID %>')">
                                                 <strong class="icon" style="color: var(--color-primary);">
                                                     <i class="fa-solid fa-circle-up fa-lg"></i>
                                                 </strong>
@@ -107,7 +107,7 @@
                                             </span>
                                             <%}else{%>
                                                 <span style="width: 40px;" title="Upvote this Response"
-                                                    onclick="updateResponseUpvotes(this, '<%= user._id %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= topicInfo.forumID %>','upvoteAResponse', <%= isAMember %>)">
+                                                    onclick="updateResponseUpvotes(this, '<%= user._id %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= topicInfo.forumID %>','upvoteAResponse', <%= isAMember %>, '<%= response.response.userID %>')">
                                                     <strong class="icon"><i
                                                             class="fa-solid fa-circle-up fa-lg"></i></strong><strong
                                                         class="count">
@@ -267,7 +267,7 @@
                                             </span>
                                             <% if(responsesUpvoted.includes(response.response._id)){%>
                                                 <span style="width: 40px;" title="Remove this Response from Upvotes"
-                                                    onclick="updateResponseUpvotes(this, '<%= user._id %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= topicInfo.forumID %>','removeResponseFromUpvotes', <%= isAMember %>)">
+                                                    onclick="updateResponseUpvotes(this, '<%= user._id %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= topicInfo.forumID %>','removeResponseFromUpvotes', <%= isAMember %>, '<%= response.response.userID %>')">
                                                     <strong class="icon" style="color: var(--color-primary);">
                                                         <i class="fa-solid fa-circle-up fa-lg"></i>
                                                     </strong>
@@ -277,7 +277,7 @@
                                                 </span>
                                                 <%}else{%>
                                                     <span style="width: 40px;" title="Upvote this Response"
-                                                        onclick="updateResponseUpvotes(this, '<%= user._id %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= topicInfo.forumID %>','upvoteAResponse', <%= isAMember %>)">
+                                                        onclick="updateResponseUpvotes(this, '<%= user._id %>','<%= topicInfo._id %>','<%= response.response._id %>','<%= topicInfo.forumID %>','upvoteAResponse', <%= isAMember %>, '<%= response.response.userID %>')">
                                                         <strong class="icon"><i
                                                                 class="fa-solid fa-circle-up fa-lg"></i></strong><strong
                                                             class="count">

@@ -124,14 +124,14 @@
                                                     </div>
                                                     <% if(topicInfo.pinned==true){%>
                                                         <div title="Unpin Discussion" id="pinDiscussion"
-                                                            onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'unpinDiscussion')"
+                                                            onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'unpinDiscussion', <%= isAModerator %>)"
                                                             style="cursor: pointer;">
                                                             <span style="color: var(--color-primary);"><i
                                                                     class="fa-solid fa-thumbtack fa-lg"></i></span>
                                                         </div>
                                                         <% }else{ %>
                                                             <div title="Pin Discussion" id="pinDiscussion"
-                                                                onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'pinDiscussion')"
+                                                                onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'pinDiscussion', <%= isAModerator %>)"
                                                                 style="cursor: pointer;">
                                                                 <span><i class="fa-solid fa-thumbtack fa-lg"></i></span>
                                                             </div>
@@ -139,14 +139,14 @@
 
                                                                 <% if(topicInfo.discussionClosed==true){%>
                                                                     <div title="Open Discussion"
-                                                                        onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'openDiscussion')"
+                                                                        onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'openDiscussion', <%= isAModerator %>)"
                                                                         id="closeDiscussion" style="cursor: pointer;">
                                                                         <span style="color: var(--color-primary);"><i
                                                                                 class="fa-solid fa-comment-slash fa-lg"></i></span>
                                                                     </div>
                                                                     <% }else{ %>
                                                                         <div title="Close Discussion"
-                                                                            onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'closeDiscussion')"
+                                                                            onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'closeDiscussion', <%= isAModerator %>)"
                                                                             id="closeDiscussion"
                                                                             style="cursor: pointer;">
                                                                             <span><i
@@ -201,7 +201,7 @@
                                                             <%} if(topicUpvotedByUser==true){%>
                                                                 <div class="flex" title="Remove this Topic from Upvotes"
                                                                     style="cursor: pointer;"
-                                                                    onclick="updateTopicUpvotes(this, '<%= user._id%>','<%= topicInfo._id %>','<%= topicInfo.forumID %>','removeTopicFromUpvotes', <%= isAMember %>)">
+                                                                    onclick="updateTopicUpvotes(this, '<%= user._id%>','<%= topicInfo._id %>','<%= topicInfo.forumID %>','removeTopicFromUpvotes', <%= isAMember %>, '<%= topicInfo.userID %>')">
                                                                     <span class="icon"
                                                                         style="color: var(--color-primary);"><i
                                                                             class="fa-solid fa-circle-up fa-lg"></i>
@@ -213,7 +213,7 @@
                                                                 <%}else{%>
                                                                     <div class="flex" title="Upvote this Topic"
                                                                         style="cursor: pointer;"
-                                                                        onclick="updateTopicUpvotes(this, '<%= user._id%>','<%= topicInfo._id %>','<%= topicInfo.forumID %>','upvoteATopic', <%= isAMember %>)">
+                                                                        onclick="updateTopicUpvotes(this, '<%= user._id%>','<%= topicInfo._id %>','<%= topicInfo.forumID %>','upvoteATopic', <%= isAMember %>, '<%= topicInfo.userID %>')">
                                                                         <span class="icon"><i
                                                                                 class="fa-solid fa-circle-up fa-lg"></i>
                                                                         </span>&nbsp;

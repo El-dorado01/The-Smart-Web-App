@@ -143,11 +143,10 @@ function loadContacts(
   var div = document.createElement("div");
   div.innerHTML = `
   <div class="postFeeds3" id="friendList">
-    ${
-      contactsArray != "empty"
-        ? contactsArray
-            .map((contact) => {
-              return `<div class="contact">
+    ${contactsArray != "empty"
+      ? contactsArray
+        .map((contact) => {
+          return `<div class="contact">
             <div class="contact-info">
                 <a href="/dashboard/private/profile/${contact.details._id}" target="_blank">
                     <div class="profile-pic">
@@ -169,9 +168,9 @@ function loadContacts(
             </div>
           </div>
           `;
-            })
-            .join("")
-        : `
+        })
+        .join("")
+      : `
           <div class="postFeed-body">
             <span class="text-muted">You have no records</span>
           </div>
@@ -179,16 +178,15 @@ function loadContacts(
     }
   </div>
   <div class="postFeeds3" id="mayKnow">
-    ${
-      mayKnow != "empty"
-        ? mayKnow
-            .map((contact) => {
-              if (
-                contact._id.toString() !== theUserID.toString() &&
-                !newContactsArray.includes(contact._id.toString()) &&
-                !newOutgoingArray.includes(contact._id.toString())
-              ) {
-                return `<div class="contact">
+    ${mayKnow != "empty"
+      ? mayKnow
+        .map((contact) => {
+          if (
+            contact._id.toString() !== theUserID.toString() &&
+            !newContactsArray.includes(contact._id.toString()) &&
+            !newOutgoingArray.includes(contact._id.toString())
+          ) {
+            return `<div class="contact">
                 <div class="contact-info">
                     <a href="/dashboard/private/profile/${contact._id}" target="_blank">
                         <div class="profile-pic">
@@ -207,10 +205,10 @@ function loadContacts(
                 </div>
               </div>
             `;
-              }
-            })
-            .join("")
-        : `
+          }
+        })
+        .join("")
+      : `
         <div class="postFeed-body">
           <span class="text-muted">You have no records</span>
         </div>
@@ -218,12 +216,11 @@ function loadContacts(
     }
   </div>
   <div class="postFeeds3" id="requests">
-      ${
-        requestsArray != "empty"
-          ? requestsArray
-              .map((contact) => {
-                if (contact.sender !== theUserID.toString()) {
-                  return `<div class="contact">
+      ${requestsArray != "empty"
+      ? requestsArray
+        .map((contact) => {
+          if (contact.sender !== theUserID.toString()) {
+            return `<div class="contact">
                   <div class="contact-info">
                       <a href="/dashboard/private/profile/${contact.details._id}" target="_blank">
                           <div class="profile-pic">
@@ -252,22 +249,21 @@ function loadContacts(
                       </div>
                   </div>
               </div>`;
-                }
-              })
-              .join("")
-          : `
+          }
+        })
+        .join("")
+      : `
           <div class="postFeed-body">
               <span class="text-muted">You have no records</span>
           </div>`
-      }
+    }
   </div>
   <div class="postFeeds3" id="outgoing">
-    ${
-      requestsArray != "empty"
-        ? requestsArray
-            .map((contact) => {
-              if (contact.sender === theUserID.toString()) {
-                return `<div class="contact">
+    ${requestsArray != "empty"
+      ? requestsArray
+        .map((contact) => {
+          if (contact.sender === theUserID.toString()) {
+            return `<div class="contact">
                 <div class="contact-info">
                     <a href="/dashboard/private/profile/${contact.details._id}" target="_blank">
                         <div class="profile-pic">
@@ -290,25 +286,24 @@ function loadContacts(
                             onclick="addFriend2('${theUserID}', '${contact.details._id}', this)"></i></div>
                 </div>
             </div>`;
-              }
-            })
-            .join("")
-        : `
+          }
+        })
+        .join("")
+      : `
           <div class="postFeed-body">
               <span class="text-muted">You have no records</span>
           </div>`
     }
   </div>
   <div class="postFeeds3" id="declinedRequests">
-    ${
-      declinedArray != "empty"
-        ? // <div style="width: 100%; display: flex; align-items: center; justify-content: flex-end;">
-          //             <button class="btn btn-danger" onclick="clearDeclined()"> <i class="fa fa-trash"></i> Clear All</button>
-          //         </div>
-          declinedArray
-            .map((contact) => {
-              if (contact.sender !== theUserID.toString()) {
-                return `<div class="contact" id="contact_${contact.details._id}">
+    ${declinedArray != "empty"
+      ? // <div style="width: 100%; display: flex; align-items: center; justify-content: flex-end;">
+      //             <button class="btn btn-danger" onclick="clearDeclined()"> <i class="fa fa-trash"></i> Clear All</button>
+      //         </div>
+      declinedArray
+        .map((contact) => {
+          if (contact.sender !== theUserID.toString()) {
+            return `<div class="contact" id="contact_${contact.details._id}">
               <div class="contact-info">
                   <a href="/dashboard/private/profile/${contact.details._id}" target="_blank">
                       <div class="profile-pic">
@@ -340,21 +335,20 @@ function loadContacts(
                           onclick="deleteDeclinedRequest('${theUserID}','${contact.details._id}')"></i></div>
               </div>
             </div>`;
-              }
-            })
-            .join("")
-        : `
+          }
+        })
+        .join("")
+      : `
         <div class="postFeed-body">
             <span class="text-muted">You have no records</span>
         </div>`
     }
   </div>
   <div class="postFeeds3" id="blocked">
-  ${
-    blockedArray != "empty"
+  ${blockedArray != "empty"
       ? blockedArray
-          .map((contact) => {
-            return `<div class="contact">
+        .map((contact) => {
+          return `<div class="contact">
           <div class="contact-info">
               <a href="/dashboard/private/profile/${contact.details._id}" target="_blank">
                   <div class="profile-pic">
@@ -377,12 +371,12 @@ function loadContacts(
                       style="color: var(--color-primary);" class="fa-solid fa-user-slash"></i></div>
           </div>
         </div>`;
-          })
-          .join("")
+        })
+        .join("")
       : `<div class="postFeed-body">
           <span class="text-muted">You have no records</span>
       </div>`
-  }
+    }
   </div>
 `;
   document.getElementById("contact-list-feed").appendChild(div);
@@ -693,36 +687,30 @@ function displayNewPlaylists(playlists) {
           var playlistMovies1 = playlist.movies[playlist.movies.length - 1];
         return `
                 <div class="vid-list3${playlist._id}">
-                  <div class="vid-list3" onclick="showPlaylistVideos('${
-                    playlist._id
-                  }')">
+                  <div class="vid-list3" onclick="showPlaylistVideos('${playlist._id
+          }')">
                     <div class="thumbnails">
-                      ${
-                        playlist.movies.length > 1
-                          ? `
+                      ${playlist.movies.length > 1
+            ? `
                             <img src="${playlistMovies1.thumbnail}" alt="" class="thumbnail-1">
                             <img src="${playlistMovies2.thumbnail}" alt="" class="thumbnail-2">`
-                          : playlist.movies.length > 0
-                          ? `
+            : playlist.movies.length > 0
+              ? `
                             <img src="${playlistMovies1.thumbnail}" alt="" class="thumbnail-1">`
-                          : ""
-                      }
+              : ""
+          }
                     </div>
                     <div class="shadow">
                         <span style="color: var(--color-primary); class="fa fa-play-circle-o"></span>
-                        <h4 style="color: var(--color-primary);>${
-                          playlist.playlistName
-                        } <br> 
-                        <span style="color: var(--color-primary); class="text-muted">${
-                          playlist.movies.length
-                        } Video${
-          playlist.movies.length > 1 ? "s" : ""
-        }</span></h4>
+                        <h4 style="color: var(--color-primary);>${playlist.playlistName
+          } <br> 
+                        <span style="color: var(--color-primary); class="text-muted">${playlist.movies.length
+          } Video${playlist.movies.length > 1 ? "s" : ""
+          }</span></h4>
                     </div>
                   </div>
-                  <button class="btn" onclick="deletePlaylist('${
-                    playlist._id
-                  }')"
+                  <button class="btn" onclick="deletePlaylist('${playlist._id
+          }')"
                       style="color: var(--color-danger); margin: 5px 0; width: 100%;"> 
                       <i class="fa fa-trash"></i> Delete Playlist
                   </button>
@@ -805,8 +793,8 @@ function displayMoviesTab(movies) {
 
   div.innerHTML = ` 
   ${movies
-    .map((movie) => {
-      return `
+      .map((movie) => {
+        return `
               <div class="vid-list">
                   <a href="/dashboard/private/movies/${movie._id}">
                       <div class="thumbnail">
@@ -825,8 +813,8 @@ function displayMoviesTab(movies) {
                   </div>
               </div>
       `;
-    })
-    .join("")}
+      })
+      .join("")}
   `;
 
   document.querySelector(".movies-container").appendChild(div);
@@ -856,9 +844,8 @@ function displayReplyRoom(replies) {
                       <div class="comment-section comment2${newReplies._id} ">
                           <div class="single-comment">
                               <span class="user-avatar">
-                                  <img src="../../../uploads/${
-                                    newReplies.avatar
-                                  }" alt="">
+                                  <img src="../../../uploads/${newReplies.avatar
+    }" alt="">
                               </span>
                               <span class="user">
                                   <p>
@@ -872,35 +859,33 @@ function displayReplyRoom(replies) {
                               </span>
                           </div>
                           <span class="actions">
-                              <span>${
-                                commentDays > 13.999
-                                  ? Math.round(commentWeeks) + " weeks"
-                                  : commentDays > 6.999
-                                  ? Math.round(commentWeeks) + " week"
-                                  : commentHours > 47.99
-                                  ? Math.round(commentDays) + " days"
-                                  : commentHours > 23.99
-                                  ? Math.round(commentDays) + " day"
-                                  : commentMins > 119
-                                  ? Math.round(commentHours) + " hours"
-                                  : commentMins > 59
-                                  ? Math.round(commentHours) + " hour"
-                                  : commentSecs > 120
-                                  ? Math.round(commentMins) + " mins"
-                                  : commentSecs > 59
-                                  ? Math.round(commentMins) + " min"
-                                  : Math.round(commentSecs) + " secs"
-                              }</span>
+                              <span>${commentDays > 13.999
+      ? Math.round(commentWeeks) + " weeks"
+      : commentDays > 6.999
+        ? Math.round(commentWeeks) + " week"
+        : commentHours > 47.99
+          ? Math.round(commentDays) + " days"
+          : commentHours > 23.99
+            ? Math.round(commentDays) + " day"
+            : commentMins > 119
+              ? Math.round(commentHours) + " hours"
+              : commentMins > 59
+                ? Math.round(commentHours) + " hour"
+                : commentSecs > 120
+                  ? Math.round(commentMins) + " mins"
+                  : commentSecs > 59
+                    ? Math.round(commentMins) + " min"
+                    : Math.round(commentSecs) + " secs"
+    }</span>
                               <!--<span> Like <i class="fa fa-thumbs-up"></i></span>-->
                               <span
-                                  onclick="tagComment2('${newReplies._id}', '${
-    newReplies.username
-  }','${newReplies.message}', '${newReplies.uniqID}')">
+                                  onclick="tagComment2('${newReplies._id}', '${newReplies.username
+    }','${newReplies.message}', '${newReplies.uniqID}')">
                                   Reply <i class="fa fa-reply"></i></span>
                           </span>
                           ${newReplies.moreComments
-                            .map((moreComment) => {
-                              return `
+      .map((moreComment) => {
+        return `
                                   <div class="under-comments">
                                       <span class="user-avatar">
                                           <img src="../../../uploads/${moreComment.moreUserAvatar}" alt="">
@@ -915,8 +900,8 @@ function displayReplyRoom(replies) {
                                       </span>
                                   </div>
                                   `;
-                            })
-                            .join("")}
+      })
+      .join("")}
                               
                       </div>
                     </div>
@@ -931,19 +916,15 @@ function displayReplyRoom(replies) {
                             </div>
                             <div class="text-muted submit-comment">
                                 <input type="hidden" class="postID" name="postID" value="${postID}">
-                                <input type="hidden" class="uniqID" name="uniqID" value="${
-                                  newReplies.uniqID
-                                }">
-                                <input type="hidden" class="commentID" name="commentID" value="${
-                                  newReplies._id
-                                }">
+                                <input type="hidden" class="uniqID" name="uniqID" value="${newReplies.uniqID
+    }">
+                                <input type="hidden" class="commentID" name="commentID" value="${newReplies._id
+    }">
                                 <i class="fa fa-smile"></i>
                                 <input type="text" required id="myReply" class="myReply" name="myReply" placeholder="Type your replies...">
-                                <button onclick = "submitForm('${postID}', '${
-    newReplies._id
-  }', '${
-    newReplies.uniqID
-  }')" style="background: transparent; color: gray; cursor: pointer;">
+                                <button onclick = "submitForm('${postID}', '${newReplies._id
+    }', '${newReplies.uniqID
+    }')" style="background: transparent; color: gray; cursor: pointer;">
                                     <i class="fas fa-paper-plane"></i>
                                 </button>
                             </div>
@@ -3217,14 +3198,13 @@ function displayDrafts(drafts) {
       div.setAttribute("onclick", `displayTheDraft('${draft.threadID}')`);
 
       div.innerHTML = `
-        ${
-          draft.files.length < 1
-            ? `
+        ${draft.files.length < 1
+          ? `
                 <div class="text">
                   ${draft.postText}
                 </div>
               `
-            : draft.files[0].filePath.split("/")[4] == "image"
+          : draft.files[0].filePath.split("/")[4] == "image"
             ? `
                 <div class="img-media">
                     <img src="${draft.files[0].filePath}" alt="">
@@ -3521,13 +3501,13 @@ function toggleSettings() {
     document.querySelector(".forum-profile .settings").style.display == "none"
   ) {
     document.querySelector(".forum-profile .settings").style.display = "flex";
-    if(document.querySelector(".forum-profile .forum-body")){
+    if (document.querySelector(".forum-profile .forum-body")) {
       document.querySelector(".forum-profile .forum-body").style.display = "none";
       document.querySelector(".forum-profile .body-forum").style.display = "none";
     }
   } else {
     document.querySelector(".forum-profile .settings").style.display = "none";
-    if(document.querySelector(".forum-profile .forum-body")){
+    if (document.querySelector(".forum-profile .forum-body")) {
       document.querySelector(".forum-profile .forum-body").style.display = "flex";
       document.querySelector(".forum-profile .body-forum").style.display = "flex";
     }
@@ -3753,24 +3733,20 @@ function loadTopicsPage(newTopics, page, totalPages, nextPage, previousPage) {
           <div class="topic-left">
               <p><span class="fa fa-eye"></span> ${topic.topic.__v}
                   View${topic.topic.__v > 1 ? "s" : ""}</p>
-              <p><span class="fa fa-comment"></span> ${
-                topic.topic.responses.length
-              }
+              <p><span class="fa fa-comment"></span> ${topic.topic.responses.length
+      }
                   Comment${topic.topic.responses.length > 1 ? "s" : ""}</p>
-              <p><span class="fa-solid fa-up-long"></span> ${
-                topic.topic.upvotes
-              }
+              <p><span class="fa-solid fa-up-long"></span> ${topic.topic.upvotes
+      }
                   Upvote${topic.topic.upvotes > 1 ? "s" : ""}</p>
           </div>
           <div class="topic-middle">
-            <a href="/dashboard/public/forum/${forumID}/key?topicID=${
-        topic.topic._id
+            <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id
       }">
-              <h4>${
-                topic.topic.subject.length > 100
-                  ? topic.topic.subject.substr(0, 100) + "..."
-                  : topic.topic.subject
-              }</h4>
+              <h4>${topic.topic.subject.length > 100
+        ? topic.topic.subject.substr(0, 100) + "..."
+        : topic.topic.subject
+      }</h4>
             </a>
             <div class="tags" id="topicTags_${topic.topic._id}">` +
       topic.topic.topicTags
@@ -3787,23 +3763,20 @@ function loadTopicsPage(newTopics, page, totalPages, nextPage, previousPage) {
           </div>
           <div class="topic-right">
               <div class="user-info">
-              <a href="/dashboard/public/member_profile/${forumID}/key?memberID=${
-        topic.userInfo._id
+              <a href="/dashboard/public/member_profile/${forumID}/key?memberID=${topic.userInfo._id
       }">
                   <div class="profile-pic">
-                      <img src="../../../../uploads/${
-                        topic.userInfo.avatar
-                      }" alt="">
+                      <img src="../../../../uploads/${topic.userInfo.avatar
+      }" alt="">
                   </div>
                 </a>
-                  <h5><a href="/dashboard/public/member_profile/${forumID}/key?memberID=${
-        topic.userInfo._id
+                  <h5><a href="/dashboard/public/member_profile/${forumID}/key?memberID=${topic.userInfo._id
       }">${topic.userInfo.username}</a> <span
                           class="text-muted">${topic.memberUpvotes} upvote
                           ${topic.memberUpvotes > 1 ? "s" : ""},
                           ${new Date(
-                            topic.topic.createdAt
-                          ).toDateString()}</span>
+        topic.topic.createdAt
+      ).toDateString()}</span>
                   </h5>
               </div>
           </div>
@@ -3816,9 +3789,8 @@ function loadTopicsPage(newTopics, page, totalPages, nextPage, previousPage) {
   if (page == 1) {
     for (let i = 1; i < 4; i++) {
       div.innerHTML += `
-          <div onclick="goToNewPage('${i}','${totalPages}','${forumID}')" class=${
-        i == page ? "active" : ""
-      }>${i}</div>
+          <div onclick="goToNewPage('${i}','${totalPages}','${forumID}')" class=${i == page ? "active" : ""
+        }>${i}</div>
           `;
     }
     if (totalPages > 3) {
@@ -3842,18 +3814,16 @@ function loadTopicsPage(newTopics, page, totalPages, nextPage, previousPage) {
         `;
       for (let i = totalPages - 2; i < totalPages + 1; i++) {
         div.innerHTML += `
-          <div onclick="goToNewPage('${i}','${totalPages}','${forumID}')" class=${
-          i == page ? "active" : ""
-        }>${i}</div>
+          <div onclick="goToNewPage('${i}','${totalPages}','${forumID}')" class=${i == page ? "active" : ""
+          }>${i}</div>
           `;
       }
     }
     if (totalPages <= 3) {
       for (let i = 1; i < 4; i++) {
         div.innerHTML += `
-          <div onclick="goToNewPage('${i}','${totalPages}','${forumID}')" class=${
-          i == page ? "active" : ""
-        }>${i}</div>
+          <div onclick="goToNewPage('${i}','${totalPages}','${forumID}')" class=${i == page ? "active" : ""
+          }>${i}</div>
           `;
       }
       if (page < 3) {
@@ -3893,9 +3863,8 @@ function loadTopicsPage(newTopics, page, totalPages, nextPage, previousPage) {
       if (totalPages >= page + 2) {
         for (let i = page; i < page + 3; i++) {
           div.innerHTML += `
-              <div onclick="goToNewPage('${i}','${totalPages}','${forumID}')" class=${
-            i == page ? "active" : ""
-          }>${i}</div>
+              <div onclick="goToNewPage('${i}','${totalPages}','${forumID}')" class=${i == page ? "active" : ""
+            }>${i}</div>
               `;
         }
         if (totalPages > page + 2) {
@@ -3909,9 +3878,8 @@ function loadTopicsPage(newTopics, page, totalPages, nextPage, previousPage) {
       } else {
         for (let i = page; i < totalPages + 1; i++) {
           div.innerHTML += `
-              <div onclick="goToNewPage('${i}','${totalPages}','${forumID}')" class=${
-            i == page ? "active" : ""
-          }>${i}</div>
+              <div onclick="goToNewPage('${i}','${totalPages}','${forumID}')" class=${i == page ? "active" : ""
+            }>${i}</div>
               `;
         }
       }
@@ -3986,24 +3954,22 @@ function loadAForumInfo(
       forumInfo.forumDesc;
   }
   // ================== ATTACH FORUM DETAILS TO THE FORUM HEADER ================= //
-  if(document.querySelector("#forum-description")){
+  if (document.querySelector("#forum-description")) {
     var forumDescription = document.querySelector("#forum-description");
-  // ============ ATTACH FORUM DESCRIPTION TEXT TO FORUM DESCRIPTION ============== //
-  forumDescription.querySelector("p").innerText = forumInfo.forumDesc;
-  // ============ATTACH CREATOR AVATAR TO FORUM DESCRIPTION ================= //
-  forumDescription.querySelector(".moderators.creator").innerHTML = `
+    // ============ ATTACH FORUM DESCRIPTION TEXT TO FORUM DESCRIPTION ============== //
+    forumDescription.querySelector("p").innerText = forumInfo.forumDesc;
+    // ============ATTACH CREATOR AVATAR TO FORUM DESCRIPTION ================= //
+    forumDescription.querySelector(".moderators.creator").innerHTML = `
     <div class="moderator">
-        <a href="/dashboard/public/member_profile/${
-          forumInfo._id
-        }/key?memberID=${creatorDetails._id}">
+        <a href="/dashboard/public/member_profile/${forumInfo._id
+      }/key?memberID=${creatorDetails._id}">
           <div class="profile-pic">
               <img src="../../../../uploads/${creatorDetails.avatar}" alt="">
           </div>
         </a>
         <div class="info">
-          <a href="/dashboard/public/member_profile/${
-            forumInfo._id
-          }/key?memberID=${creatorDetails._id}">
+          <a href="/dashboard/public/member_profile/${forumInfo._id
+      }/key?memberID=${creatorDetails._id}">
             <h3>${creatorDetails.username}</h3>
           </a>
           <p>Forum Creator</p>
@@ -4011,26 +3977,24 @@ function loadAForumInfo(
         </div>
     </div>
   `;
-  // ============ATTACH CREATOR AVATAR TO FORUM DESCRIPTION ================= //
+    // ============ATTACH CREATOR AVATAR TO FORUM DESCRIPTION ================= //
   }
-  
+
 
   // ================== ATTACH FORUM CREATOR AVATAR TO USER PROFILE AT THE RIGHT ============ //
   //Check if user the forum creator
   if (creatorDetails._id == theUserID) {
     document.querySelector(".forum-user-profile").innerHTML = `
       <div class="user-info">
-          <a href="/dashboard/public/member_profile/${
-            forumInfo._id
-          }/key?memberID=${creatorDetails._id}">
+          <a href="/dashboard/public/member_profile/${forumInfo._id
+      }/key?memberID=${creatorDetails._id}">
             <div class="avatar">
                 <img src="../../../../uploads/${creatorDetails.avatar}" alt="">
             </div>
           </a>
           <div class="info">
-              <a href="/dashboard/public/member_profile/${
-                forumInfo._id
-              }/key?memberID=${creatorDetails._id}">
+              <a href="/dashboard/public/member_profile/${forumInfo._id
+      }/key?memberID=${creatorDetails._id}">
                 <h3>${creatorDetails.username}</h3>
               </a>
               <p>${numberOfPosts} posts</p>
@@ -4045,7 +4009,7 @@ function loadAForumInfo(
   }
   // ================== ATTACH FORUM CREATOR AVATAR TO USER PROFILE AT THE RIGHT ============ //
 
-  if(document.querySelector("#forum-members .members")){
+  if (document.querySelector("#forum-members .members")) {
     // ================== ATTACH FORUM CREATOR AVATAR TO FORUM MEMBERS PANEL ============ //
     var userCreator = document.createElement("div");
     userCreator.classList.add("member");
@@ -4068,13 +4032,13 @@ function loadAForumInfo(
 
   // ====================== UPDATE FORUM MEMBERS COUNT ======================= //
   if (forumMembers.length <= 0) {
-  // if (forumInfo.members.length <= 0) {
+    // if (forumInfo.members.length <= 0) {
     forumHeader.querySelector(".info .forum-member").innerText = "1 member";
   } else if (forumMembers.length > 0) {
-  // } else if (forumInfo.members.length > 0) {
+    // } else if (forumInfo.members.length > 0) {
     forumHeader.querySelector(".info .forum-member").innerText =
       forumMembers.length + 1 + " members";
-      // forumInfo.members.length + 1 + " members";
+    // forumInfo.members.length + 1 + " members";
   }
   // ====================== UPDATE FORUM MEMBERS COUNT ======================= //
 
@@ -4082,6 +4046,8 @@ function loadAForumInfo(
   var updateForum = document.querySelector(".settings-child.update-forum-info");
   updateForum.querySelector("#availableForLookUp").checked =
     forumInfo.availableForLookUp;
+  updateForum.querySelector("#membersCanInvite").checked =
+    forumInfo.membersCanInvite;
   updateForum.querySelector("#forumNameInput").value = forumInfo.forumName;
   updateForum.querySelector("#forumDescInput").value = forumInfo.forumDesc;
 
@@ -4110,7 +4076,7 @@ function loadAForumInfo(
   }
   // ================= CHECK IF THERE ARE NO MEMBERS IN THE FORUM =================== //
 
-  if(document.querySelector("#forum-description .moderators.mod_panel")){
+  if (document.querySelector("#forum-description .moderators.mod_panel")) {
     // ================= CHECK IF THERE ARE NO MODERATORS IN THE FORUM =================== //
     if (forumInfo.moderators.length < 1) {
       var mod_panel = document.createElement("div");
@@ -4238,7 +4204,7 @@ function loadAForumInfo(
           .querySelector(".settings-child.moderators .child")
           .appendChild(div);
 
-        if(document.querySelector(".moderators.mod_panel")){
+        if (document.querySelector(".moderators.mod_panel")) {
           var mod_panel = document.createElement("div");
           mod_panel.classList.add("moderator");
           if (forumInfo.moderators.length > 0) {
@@ -4256,7 +4222,7 @@ function loadAForumInfo(
                   </div>
             `;
           }
-  
+
           document.querySelector(".moderators.mod_panel").appendChild(mod_panel);
         }
       }
@@ -4377,25 +4343,22 @@ function loadAForumInfo(
     if (memberInfo._id == theUserID) {
       document.querySelector(".forum-user-profile").innerHTML = `
             <div class="user-info">
-                <a href="/dashboard/public/member_profile/${
-                  forumInfo._id
-                }}/key?memberID=${memberInfo._id}">
+                <a href="/dashboard/public/member_profile/${forumInfo._id
+        }/key?memberID=${memberInfo._id}">
                   <div class="avatar">
-                      <img src="../../../../uploads/${
-                        memberInfo.avatar
-                      }" alt="">
+                      <img src="../../../../uploads/${memberInfo.avatar
+        }" alt="">
                   </div>
                 </a>
                 <div class="info">
-                    <a href="/dashboard/public/member_profile/${
-                      forumInfo._id
-                    }}/key?memberID=${memberInfo._id}">
+                    <a href="/dashboard/public/member_profile/${forumInfo._id
+        }}/key?memberID=${memberInfo._id}">
                       <h3>${memberInfo.username}</h3>
                     </a>
                     <p>${numberOfPosts} posts</p>
                     <p>Joined On: ${new Date(
-                      member.dateJoined
-                    ).toLocaleDateString()}</p>
+          member.dateJoined
+        ).toLocaleDateString()}</p>
                 </div>
             </div>
             <h3 style="margin-top: 10px;">Current Rank &nbsp; <i class="fa-solid fa-ranking-star"></i></h3>
@@ -4408,15 +4371,13 @@ function loadAForumInfo(
                         <h4>${memberRank}</h4>
                         <p>Status: 
                           <span class =
-                          ${
-                            member.memberStatus == "active"
-                              ? "active"
-                              : "inactive"
-                          }>
+                          ${member.memberStatus == "active"
+          ? "active"
+          : "inactive"
+        }>
                           <i class="fa-regular fa-circle-dot fa-2xs"></i> 
-                          <b style="color: var(--color-success);">${
-                            member.memberStatus
-                          }</b>
+                          <b style="color: var(--color-success);">${member.memberStatus
+        }</b>
                           </span> 
                         </p>
                     </div>
@@ -4428,7 +4389,7 @@ function loadAForumInfo(
 
       document.querySelector(".forum-user-profile").style.display = "block";
 
-      if(document.querySelector("#forum-members .members")){
+      if (document.querySelector("#forum-members .members")) {
         var userMember = document.createElement("div");
         userMember.classList.add("member");
         userMember.innerHTML = `
@@ -4449,7 +4410,7 @@ function loadAForumInfo(
     }
     // ==================IF USER IS CURRENT MEMBER, ATTACH TO USER PROFILE AND FORUM MEMBERS PANEL ===================== //
 
-    if(document.querySelector("#forum-members .members")){
+    if (document.querySelector("#forum-members .members")) {
       // ==================IF USER IS NOT CURRENT MEMBER, ATTACH TO FORUM MEMBERS PANEL ===================== //
       if (memberInfo._id != theUserID) {
         var memberPanel = document.createElement("div");
@@ -4476,13 +4437,14 @@ function loadAForumInfo(
   }
   // ====================== LOOP THROUGH EACH FORUM MEMBER ====================== //
 
-  if(document.querySelector("#requests-to-join .moderators")){
+  if (document.querySelector("#requests-to-join .moderators")) {
     // =============== ATTACH INCOMING REQUESTS TO JOIN FORUM =============== //
     if (incomingInvites.length > 0) {
       for (let i = 0; i < incomingInvites.length; i++) {
         const { member } = incomingInvites[i];
         var div = document.createElement("div");
         div.classList.add("moderator");
+        div.id = member._id;
         div.innerHTML = ` 
           <div class="moderator-info">
               <div class="profile-pic">
@@ -4490,12 +4452,12 @@ function loadAForumInfo(
               </div>
               <div class="info">
                   <h3>${member.username}</h3>
-                  <p>${ member.email }</p>
+                  <p>${member.email}</p>
               </div>
           </div>
           <div class="action">
-              <span>Approve</span>
-              <span>Decline</span>
+              <span onclick="performActionAsModerator('${forumInfo._id}', '${member._id}', 'approveRequest')">Approve</span>
+              <span onclick="performActionAsModerator('${forumInfo._id}', '${member._id}', 'declineRequest')">Decline</span>
           </div>
         `;
         document.querySelector("#requests-to-join .moderators").appendChild(div);
@@ -4516,125 +4478,125 @@ function loadAForumInfo(
 
 function deleteForumTopic(id, forumID, topicID, topicCreator) {
   // if (confirm("Are you sure you want to delete this topic?")) {
-    const formData = new FormData();
+  const formData = new FormData();
 
-    formData.append("topicID", topicID);
-    formData.append("forumID", forumID);
-    formData.append("topicCreator", topicCreator);
+  formData.append("topicID", topicID);
+  formData.append("forumID", forumID);
+  formData.append("topicCreator", topicCreator);
 
-    fetch("/dashboard/public/deleteATopic", {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-      body: formData,
+  fetch("/dashboard/public/deleteATopic", {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: formData,
+  })
+    .then(function (res) {
+      return res.json();
     })
-      .then(function (res) {
-        return res.json();
-      })
-      .then(function (json) {
-        if (json.success == true) {
-          var panel = document.querySelector(".confirm-popup");
-          panel.style.display = "none"
-          panel.querySelector(".card").innerHTML = "";
+    .then(function (json) {
+      if (json.success == true) {
+        var panel = document.querySelector(".confirm-popup");
+        panel.style.display = "none"
+        panel.querySelector(".card").innerHTML = "";
 
-          if(document.getElementById("action-panel-" + id)){
-            var actionPanel = document.getElementById("action-panel-" + id)
-            var actionModal = document.getElementById("action-modal-" + id)
+        if (document.getElementById("action-panel-" + id)) {
+          var actionPanel = document.getElementById("action-panel-" + id)
+          var actionModal = document.getElementById("action-modal-" + id)
 
-            actionPanel.style.display = "none";
-            actionModal.style.display = "none";
-          }
-          
-          successAlert.style.display = "block";
-          successAlertIcon.className = "";
-          successAlertIcon.className = "fa fa-check-circle";
-          successMessage.textContent = json.msg;
-
-          setTimeout(() => {
-            successAlert.style.display = "none";
-            location.assign("/dashboard/public/forum/" + forumID);
-          }, 1000);
-        } else {
-          dangerAlert.style.display = "block";
-          dangerMessage.textContent = json.msg;
-
-          setTimeout(() => {
-            dangerAlert.style.display = "none";
-          }, 5000);
+          actionPanel.style.display = "none";
+          actionModal.style.display = "none";
         }
-      })
-      .catch(function (err) {
-        console.log(err);
-      });
+
+        successAlert.style.display = "block";
+        successAlertIcon.className = "";
+        successAlertIcon.className = "fa fa-check-circle";
+        successMessage.textContent = json.msg;
+
+        setTimeout(() => {
+          successAlert.style.display = "none";
+          location.assign("/dashboard/public/forum/" + forumID);
+        }, 1000);
+      } else {
+        dangerAlert.style.display = "block";
+        dangerMessage.textContent = json.msg;
+
+        setTimeout(() => {
+          dangerAlert.style.display = "none";
+        }, 5000);
+      }
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
   // }
 }
 
 function deleteTopicResponse(id, forumID, topicID, responseID, responseCreator) {
   // if (confirm("Are you sure you want to delete this topic?")) {
-    const formData = new FormData();
+  const formData = new FormData();
 
-    formData.append("topicID", topicID);
-    formData.append("forumID", forumID);
-    formData.append("responseID", responseID);
-    formData.append("responseCreator", responseCreator);
+  formData.append("topicID", topicID);
+  formData.append("forumID", forumID);
+  formData.append("responseID", responseID);
+  formData.append("responseCreator", responseCreator);
 
-    fetch("/dashboard/public/deleteAResponse", {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-      body: formData,
+  fetch("/dashboard/public/deleteAResponse", {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: formData,
+  })
+    .then(function (res) {
+      return res.json();
     })
-      .then(function (res) {
-        return res.json();
-      })
-      .then(function (json) {
-        if (json.success == true) {
-          var panel = document.querySelector(".confirm-popup");
-          panel.style.display = "none"
-          panel.querySelector(".card").innerHTML = "";
+    .then(function (json) {
+      if (json.success == true) {
+        var panel = document.querySelector(".confirm-popup");
+        panel.style.display = "none"
+        panel.querySelector(".card").innerHTML = "";
 
-          if(document.getElementById("action-panel-" + id)){
-            var actionPanel = document.getElementById("action-panel-" + id)
-            var actionModal = document.getElementById("action-modal-" + id)
+        if (document.getElementById("action-panel-" + id)) {
+          var actionPanel = document.getElementById("action-panel-" + id)
+          var actionModal = document.getElementById("action-modal-" + id)
 
-            actionPanel.style.display = "none";
-            actionModal.style.display = "none";
-          }
-
-          // Remove response box panel
-          document.querySelector(".responseBox_" + responseID).remove();
-          var newCommentCount = parseInt(
-            document.getElementById("comment-count").innerHTML
-          );
-          document.getElementById("comment-count").innerText =
-            newCommentCount - 1;
-
-          successAlert.style.display = "block";
-          successAlertIcon.className = "";
-          successAlertIcon.className = "fa fa-check-circle";
-          successMessage.textContent = json.msg;
-
-          setTimeout(() => {
-            successAlert.style.display = "none";
-          }, 3000);
-        } else {
-          dangerAlert.style.display = "block";
-          dangerMessage.textContent = json.msg;
-
-          setTimeout(() => {
-            dangerAlert.style.display = "none";
-          }, 5000);
+          actionPanel.style.display = "none";
+          actionModal.style.display = "none";
         }
-      })
-      .catch(function (err) {
-        console.log(err);
-      });
+
+        // Remove response box panel
+        document.querySelector(".responseBox_" + responseID).remove();
+        var newCommentCount = parseInt(
+          document.getElementById("comment-count").innerHTML
+        );
+        document.getElementById("comment-count").innerText =
+          newCommentCount - 1;
+
+        successAlert.style.display = "block";
+        successAlertIcon.className = "";
+        successAlertIcon.className = "fa fa-check-circle";
+        successMessage.textContent = json.msg;
+
+        setTimeout(() => {
+          successAlert.style.display = "none";
+        }, 3000);
+      } else {
+        dangerAlert.style.display = "block";
+        dangerMessage.textContent = json.msg;
+
+        setTimeout(() => {
+          dangerAlert.style.display = "none";
+        }, 5000);
+      }
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
   // }
 }
 
@@ -4644,14 +4606,27 @@ function updateTopicUpvotes(
   topicID,
   forumID,
   actionType,
-  isAMember
+  isAMember,
+  memberID
 ) {
+  event.querySelector(".icon").style.color = "var(--color-primary)";
   if (isAMember == false) {
     dangerAlert.style.display = "block";
     dangerMessage.textContent = "You are not a member of this forum!";
 
     setTimeout(() => {
       dangerAlert.style.display = "none";
+      event.querySelector(".icon").style.color = "";
+    }, 5000);
+    return;
+  }
+  if (memberID == userID) {
+    dangerAlert.style.display = "block";
+    dangerMessage.textContent = "You cannot upvote your own topic!";
+
+    setTimeout(() => {
+      dangerAlert.style.display = "none";
+      event.querySelector(".icon").style.color = "";
     }, 5000);
     return;
   }
@@ -4689,14 +4664,27 @@ function updateResponseUpvotes(
   responseID,
   forumID,
   actionType,
-  isAMember
+  isAMember,
+  memberID
 ) {
+  obj.querySelector(".icon").style.color = "var(--color-primary)";
   if (isAMember == false) {
     dangerAlert.style.display = "block";
     dangerMessage.textContent = "You are not a member of this forum!";
 
     setTimeout(() => {
       dangerAlert.style.display = "none";
+      obj.querySelector(".icon").style.color = "";
+    }, 5000);
+    return;
+  }
+  if (memberID == userID) {
+    dangerAlert.style.display = "block";
+    dangerMessage.textContent = "You cannot upvote your own response!";
+
+    setTimeout(() => {
+      dangerAlert.style.display = "none";
+      obj.querySelector(".icon").style.color = "";
     }, 5000);
     return;
   }
@@ -4800,40 +4788,40 @@ socket.on("inviteLinkHashed", (hashedKey, forumID, newLink) => {
   }, 3000);
 });
 
-function modifyModerators(forumID, memberID, actionType, memberRank, memberAvatar, username){
+function modifyModerators(forumID, memberID, actionType, memberRank, memberAvatar, username) {
   const formData = new FormData();
   formData.append("forumID", forumID);
   formData.append("memberID", memberID);
   formData.append("actionType", actionType);
 
   fetch("/dashboard/public/modifyModerators", {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-      body: formData,
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: formData,
   })
-  .then(function (res) {
+    .then(function (res) {
       return res.json();
-  })
-  .then(function (json) {
-    if (json.success == true) {
-          switch (actionType) {
-              case "assignModerators":
-                  // Notify that member has been added as a moderator
-                  var button = document.getElementById("assignModerators_" + memberID)
-                  button.classList.remove("btn-primary")
-                  button.querySelector(".icon").remove()
-                  button.style.backgroundColor = "var(--color-secondary)"
-                  button.querySelector(".text").innerHTML = "Added"
-                  button.removeAttribute("onclick")
+    })
+    .then(function (json) {
+      if (json.success == true) {
+        switch (actionType) {
+          case "assignModerators":
+            // Notify that member has been added as a moderator
+            var button = document.getElementById("assignModerators_" + memberID)
+            button.classList.remove("btn-primary")
+            button.querySelector(".icon").remove()
+            button.style.backgroundColor = "var(--color-secondary)"
+            button.querySelector(".text").innerHTML = "Added"
+            button.removeAttribute("onclick")
 
-                  var div = document.createElement("div")
-                  div.id = "moderatorDIV_" + memberID
-                  div.classList.add("moderator")
-                  div.innerHTML = `
+            var div = document.createElement("div")
+            div.id = "moderatorDIV_" + memberID
+            div.classList.add("moderator")
+            div.innerHTML = `
                       <div class="info">
                           <a href="/dashboard/public/member_profile/${forumID}/key?memberID=${memberID}">
                               <div class="profile-pic">
@@ -4852,40 +4840,45 @@ function modifyModerators(forumID, memberID, actionType, memberRank, memberAvata
                           <span>Remove</span>
                       </span>
                   `
-                  document.querySelector(".settings-child.moderators .child").appendChild(div)
-                  break;
-          
-              default:
-                  //Remove Moderator by Default
-                  var moderatorDIV = document.getElementById("moderatorDIV_" + memberID);
-                  moderatorDIV.remove()
-                  break;
-          }
-      
-      } else {
-      dangerAlert.style.display = "block";
-      dangerMessage.textContent = json.msg;
+            document.querySelector(".settings-child.moderators .child").appendChild(div)
+            break;
 
-      setTimeout(() => {
+          default:
+            //Remove Moderator by Default
+            var moderatorDIV = document.getElementById("moderatorDIV_" + memberID);
+            moderatorDIV.remove()
+            break;
+        }
+
+      } else {
+        dangerAlert.style.display = "block";
+        dangerMessage.textContent = json.msg;
+
+        setTimeout(() => {
           dangerAlert.style.display = "none";
-      }, 5000);
+        }, 5000);
       }
-  })
-  .catch(function (err) {
+    })
+    .catch(function (err) {
       dangerAlert.style.display = "block";
       dangerMessage.textContent = "An error occured. Please try again later";
 
       setTimeout(() => {
-          dangerAlert.style.display = "none";
+        dangerAlert.style.display = "none";
       }, 5000);
-  });
+    });
 }
 
-function updateForumProfile(forumID){
-  if(document.getElementById("availableForLookUp").checked == true){
-      var availableForLookUp = "on";
-  }else{
-      var availableForLookUp = "off"
+function updateForumProfile(forumID) {
+  if (document.getElementById("availableForLookUp").checked == true) {
+    var availableForLookUp = "on";
+  } else {
+    var availableForLookUp = "off"
+  }
+  if (document.getElementById("membersCanInvite").checked == true) {
+    var membersCanInvite = "on";
+  } else {
+    var membersCanInvite = "off"
   }
   var forumName = document.getElementById("forumNameInput").value
   var forumDesc = document.getElementById("forumDescInput").value
@@ -4893,8 +4886,8 @@ function updateForumProfile(forumID){
   var wordsFilter = []
   var allTags = document.querySelectorAll(".word-tags .up div")
   for (let i = 0; i < allTags.length; i++) {
-      var tagText = allTags[i].querySelector("p").innerText
-      wordsFilter.push(tagText);
+    var tagText = allTags[i].querySelector("p").innerText
+    wordsFilter.push(tagText);
   }
 
   const formData = new FormData();
@@ -4902,47 +4895,48 @@ function updateForumProfile(forumID){
   formData.append("forumName", forumName);
   formData.append("forumDesc", forumDesc);
   formData.append("lookUpValue", availableForLookUp);
+  formData.append("membersCanInvite", membersCanInvite);
   formData.append("wordsFilter", wordsFilter);
 
   fetch("/dashboard/public/updateForumProfile", {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
-      body: formData,
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: formData,
   })
-  .then(function (res) {
+    .then(function (res) {
       return res.json();
-  })
-  .then(function (json) {
+    })
+    .then(function (json) {
       if (json.success == true) {
-          successAlert.style.display = "block";
-          successAlertIcon.className = "";
-          successAlertIcon.className = "fa fa-check-circle";
-          successMessage.textContent = json.msg;
+        successAlert.style.display = "block";
+        successAlertIcon.className = "";
+        successAlertIcon.className = "fa fa-check-circle";
+        successMessage.textContent = json.msg;
 
-          setTimeout(() => {
-              successAlert.style.display = "none";
-          }, 3000);
+        setTimeout(() => {
+          successAlert.style.display = "none";
+        }, 3000);
       } else {
-      dangerAlert.style.display = "block";
-      dangerMessage.textContent = json.msg;
+        dangerAlert.style.display = "block";
+        dangerMessage.textContent = json.msg;
 
-      setTimeout(() => {
+        setTimeout(() => {
           dangerAlert.style.display = "none";
-      }, 5000);
+        }, 5000);
       }
-  })
-  .catch(function (err) {
+    })
+    .catch(function (err) {
       dangerAlert.style.display = "block";
       dangerMessage.textContent = "An error occured. Please try again later";
 
       setTimeout(() => {
-          dangerAlert.style.display = "none";
+        dangerAlert.style.display = "none";
       }, 5000);
-  });
+    });
 }
 
 function updateForumRanks(forumID, rank, minUpvotesRequiredText) {
@@ -4960,46 +4954,46 @@ function updateForumRanks(forumID, rank, minUpvotesRequiredText) {
     referrerPolicy: "no-referrer",
     body: formData,
   })
-  .then(function (res) {
+    .then(function (res) {
       return res.json();
-  })
-  .then(function (json) {
-    if (json.success == true) {
+    })
+    .then(function (json) {
+      if (json.success == true) {
         successAlert.style.display = "block";
         successAlertIcon.className = "";
         successAlertIcon.className = "fa fa-check-circle";
         successMessage.textContent = json.msg;
 
         setTimeout(() => {
-            successAlert.style.display = "none";
+          successAlert.style.display = "none";
         }, 3000);
       } else {
         dangerAlert.style.display = "block";
         dangerMessage.textContent = json.msg;
 
         setTimeout(() => {
-            dangerAlert.style.display = "none";
+          dangerAlert.style.display = "none";
         }, 5000);
       }
-  })
-  .catch(function (err) {
+    })
+    .catch(function (err) {
       dangerAlert.style.display = "block";
       dangerMessage.textContent = "An error occured. Please try again later";
 
       setTimeout(() => {
-          dangerAlert.style.display = "none";
+        dangerAlert.style.display = "none";
       }, 5000);
-  });
+    });
 }
 
-function resetRanks(forumID){
+function resetRanks(forumID) {
   socket.emit("resetForumRanks", { forumID });
 }
 
-socket.on("ranksReset", (data)=> {
+socket.on("ranksReset", (data) => {
   const { success, msg } = data
 
-  if(success == true){
+  if (success == true) {
     document.getElementById("rookie").value = 5
     document.getElementById("apprentice").value = 15
     document.getElementById("explorer").value = 30
@@ -5027,89 +5021,98 @@ socket.on("ranksReset", (data)=> {
   }
 })
 
-function performActionInForum(forumID, topicID, actionType) {
-  socket.emit("performActionInForum", { forumID, topicID, actionType });
+function performActionInForum(forumID, topicID, actionType, isAModerator) {
+  if (isAModerator == true) {
+    socket.emit("performActionInForum", { forumID, topicID, actionType, isAModerator });
+  } else {
+    dangerAlert.style.display = "block";
+    dangerMessage.textContent = "You must be a moderator to perform this action!";
+
+    setTimeout(() => {
+      dangerAlert.style.display = "none";
+    }, 5000);
+  }
 }
 socket.on("actionDone", data => {
-if (data.success == true) {
+  if (data.success == true) {
     switch (data.actionType) {
-        case "pinDiscussion":
-            var pinBtn = document.getElementById("pinDiscussion")
-            pinBtn.querySelector("span").style.color = "var(--color-primary)"
-            pinBtn.title = "Unpin Discussion"
-            pinBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'unpinDiscussion')")
-            break;
-        case "unpinDiscussion":
-            var pinBtn = document.getElementById("pinDiscussion")
-            pinBtn.querySelector("span").style.color = ""
-            pinBtn.title = "Pin Discussion"
-            pinBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'pinDiscussion')")
-            break;
-        case "closeDiscussion":
-            // CLOSE DISCUSSION
-            var closeBtn = document.getElementById("closeDiscussion")
-            closeBtn.querySelector("span").style.color = "var(--color-primary)"
-            closeBtn.title = "Open Discussion"
-            closeBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'openDiscussion')")
+      case "pinDiscussion":
+        var pinBtn = document.getElementById("pinDiscussion")
+        pinBtn.querySelector("span").style.color = "var(--color-primary)"
+        pinBtn.title = "Unpin Discussion"
+        pinBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'unpinDiscussion', " + data.isAModerator + ")")
+        break;
+      case "unpinDiscussion":
+        var pinBtn = document.getElementById("pinDiscussion")
+        pinBtn.querySelector("span").style.color = ""
+        pinBtn.title = "Pin Discussion"
+        pinBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'pinDiscussion', " + data.isAModerator + ")")
+        break;
+      case "closeDiscussion":
+        // CLOSE DISCUSSION
+        var closeBtn = document.getElementById("closeDiscussion")
+        closeBtn.querySelector("span").style.color = "var(--color-primary)"
+        closeBtn.title = "Open Discussion"
+        closeBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'openDiscussion', " + data.isAModerator + ")")
 
-            // Disable Editor features
-            var responseArea = document.querySelector('.response-area')
-            // Check if there's any tagged message
-            if(responseArea.querySelector('.tagged-msg div').innerHTML != ''){
-                responseArea.querySelector('.tagged-msg div').innerHTML = "";
-                responseArea.querySelector('.tagged-msg').style.display = "none"; 
-                responseArea.querySelector(".tagged-msg .icon").removeAttribute("onclick")
-            }
-            // Check if there's any preview
-            if(responseArea.querySelector('.preview div')){
-                responseArea.querySelectorAll('.preview div').forEach(div => {
-                    div.remove()
-                })
-            }
-            responseArea.querySelector('.actions').style.display = "none"
+        // Disable Editor features
+        var responseArea = document.querySelector('.response-area')
+        // Check if there's any tagged message
+        if (responseArea.querySelector('.tagged-msg div').innerHTML != '') {
+          responseArea.querySelector('.tagged-msg div').innerHTML = "";
+          responseArea.querySelector('.tagged-msg').style.display = "none";
+          responseArea.querySelector(".tagged-msg .icon").removeAttribute("onclick")
+        }
+        // Check if there's any preview
+        if (responseArea.querySelector('.preview div')) {
+          responseArea.querySelectorAll('.preview div').forEach(div => {
+            div.remove()
+          })
+        }
+        responseArea.querySelector('.actions').style.display = "none"
 
-            myEditor.setData('')
-            myEditor.enableReadOnlyMode('response-text')
-            break;
-        default:
-            // OPEN DISCUSSION
-            var closeBtn = document.getElementById("closeDiscussion")
-            closeBtn.querySelector("span").style.color = ""
-            closeBtn.title = "Close Discussion"
-            closeBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'closeDiscussion')");
+        myEditor.setData('')
+        myEditor.enableReadOnlyMode('response-text')
+        break;
+      default:
+        // OPEN DISCUSSION
+        var closeBtn = document.getElementById("closeDiscussion")
+        closeBtn.querySelector("span").style.color = ""
+        closeBtn.title = "Close Discussion"
+        closeBtn.setAttribute("onclick", "performActionInForum('" + data.forumID + "', '" + data.topicID + "', 'closeDiscussion', " + data.isAModerator + ")");
 
-            // Enable Editor features
-            var responseArea = document.querySelector('.response-area')
-            responseArea.querySelector('.actions').style.display = "flex";
-            myEditor.disableReadOnlyMode('response-text')
-            break;
+        // Enable Editor features
+        var responseArea = document.querySelector('.response-area')
+        responseArea.querySelector('.actions').style.display = "flex";
+        myEditor.disableReadOnlyMode('response-text')
+        break;
     }
-}
+  }
 })
 
 function warnMemberPanel(id, forumID, memberID, topicID, deletionType, responseID) {
-    socket.emit("warns", { id, forumID, memberID, topicID, deletionType, responseID });
+  socket.emit("warns", { id, forumID, memberID, topicID, deletionType, responseID });
 }
 socket.on("hereIsTheNumberOfWarns", data => {
-    const { memberWarnNumber, id, forumID, memberID, topicID, deletionType, responseID } = data;
+  const { memberWarnNumber, id, forumID, memberID, topicID, deletionType, responseID } = data;
 
-    var actionPanel = document.getElementById("action-panel-" + id)
-    var actionModal = document.getElementById("action-modal-" + id)
+  var actionPanel = document.getElementById("action-panel-" + id)
+  var actionModal = document.getElementById("action-modal-" + id)
 
-    actionPanel.style.display = "none"
-    actionModal.style.display = "none"
+  actionPanel.style.display = "none"
+  actionModal.style.display = "none"
 
-    var closeUp = document.createElement("div");
-    closeUp.classList.add("close-popup");
-    closeUp.setAttribute("style", "cursor: pointer;");
-    closeUp.setAttribute("onclick", `cancelWarn('${id}')`);
-    closeUp.innerHTML = `
+  var closeUp = document.createElement("div");
+  closeUp.classList.add("close-popup");
+  closeUp.setAttribute("style", "cursor: pointer;");
+  closeUp.setAttribute("onclick", `cancelWarn('${id}')`);
+  closeUp.innerHTML = `
         <span><i class="fa fa-times"></i></span>
     `;
 
-    var div = document.createElement("div");
-    div.classList.add("content");
-    div.innerHTML = `
+  var div = document.createElement("div");
+  div.classList.add("content");
+  div.innerHTML = `
         <h2>Warn Member</h2>
         <span>This user has ${memberWarnNumber} warn(s) left. Help this user know what they have done wrong!</span>
         <div class="warns">
@@ -5132,20 +5135,20 @@ socket.on("hereIsTheNumberOfWarns", data => {
         </div>
     `;
 
-    var actionDiv = document.createElement("div");
-    actionDiv.classList.add("action");
-    actionDiv.innerHTML = `
+  var actionDiv = document.createElement("div");
+  actionDiv.classList.add("action");
+  actionDiv.innerHTML = `
         <button class="btn" onclick="cancelWarn('${id}')">Cancel</button>
         <button class="btn btn-primary" onclick="warnMember('${id}', '${forumID}', '${memberID}', '${topicID}', '${deletionType}', '${responseID}')">Warn Member</button>
     `;
 
-    var panel = document.querySelector(".confirm-popup");
+  var panel = document.querySelector(".confirm-popup");
 
-    panel.querySelector(".card").innerHTML = "";
-    panel.querySelector(".card").appendChild(closeUp);
-    panel.querySelector(".card").appendChild(div);
-    panel.querySelector(".card").appendChild(actionDiv);
-    panel.style.display = "block";
+  panel.querySelector(".card").innerHTML = "";
+  panel.querySelector(".card").appendChild(closeUp);
+  panel.querySelector(".card").appendChild(div);
+  panel.querySelector(".card").appendChild(actionDiv);
+  panel.style.display = "block";
 })
 
 function ejectMemberPanel(id, forumID, memberID, topicID, deletionType, responseID) {
@@ -5448,6 +5451,66 @@ function warnMember(id, forumID, memberID, topicID, deletionType, responseID) {
         setTimeout(() => {
           successAlert.style.display = "none";
         }, 3000);
+      } else {
+        dangerAlert.style.display = "block";
+        dangerMessage.textContent = json.msg;
+
+        setTimeout(() => {
+          dangerAlert.style.display = "none";
+        }, 5000);
+      }
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
+}
+
+function performActionAsModerator(forumID, memberID, actionType) {
+  if (actionType == "approveRequest") {
+    primaryAlert.style.display = "block";
+    primaryMessage.textContent = "Processing, please wait!";
+  }
+
+  const formData = new FormData();
+
+  formData.append("forumID", forumID);
+  formData.append("memberID", memberID);
+  formData.append("actionType", actionType);
+
+  fetch("/dashboard/public/performActionAsModerator", {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: formData,
+  })
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (json) {
+      if (json.success == true) {
+        if (actionType == "approveRequest") {
+          primaryAlert.style.display = "none";
+          successAlert.style.display = "block";
+          successAlertIcon.className = "";
+          successAlertIcon.className = "fa fa-check-circle";
+          successMessage.textContent = json.msg;
+
+          setTimeout(() => {
+            successAlert.style.display = "none";
+          }, 3000);
+        }
+        document.getElementById(memberID).remove();
+        if (!document.querySelector("#requests-to-join .moderators .moderator")) {
+          var div = document.createElement("div");
+          div.classList.add("body");
+          div.innerHTML = `
+            <span class="text-muted">There are no new requests to join this forum!</span>
+            `;
+          document.querySelector("#requests-to-join .moderators").appendChild(div);
+        }
       } else {
         dangerAlert.style.display = "block";
         dangerMessage.textContent = json.msg;

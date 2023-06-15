@@ -52,6 +52,11 @@ const ForumsSchema = new mongoose.Schema(
           default: 0,
           max: 5,
         },
+        views: [
+          {
+            type: String,
+          },
+        ],
         dateJoined: {
           type: Date,
           default: Date.now,
