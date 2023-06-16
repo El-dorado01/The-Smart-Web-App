@@ -4072,7 +4072,8 @@ function loadAForumInfo(
 
     memberPanel.innerHTML = `
             <span class="text-muted">There are no members in this forum!</span>`;
-    document.querySelector(".member-modal .members").appendChild(memberPanel);
+    document.querySelector("#member-modal .members").appendChild(memberPanel);
+    document.querySelector("#modify-member-modal .members").appendChild(memberPanel);
   }
   // ================= CHECK IF THERE ARE NO MEMBERS IN THE FORUM =================== //
 
@@ -4335,8 +4336,36 @@ function loadAForumInfo(
           </button>
         `;
     document
-      .querySelector(".member-modal .members")
+      .querySelector("#member-modal .members")
       .appendChild(memberModalPanel);
+
+    var modifyMemberPanel = document.createElement("div");
+    modifyMemberPanel.id = "aMember_" + memberInfo._id
+    modifyMemberPanel.classList.add("member");
+    modifyMemberPanel.innerHTML = `
+          <div class="info">
+              <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${memberInfo._id}">
+                  <div class="profile-pic">
+                      <img src="../../../../uploads/${memberInfo.avatar}" alt="">
+                  </div>
+              </a>
+              <div class="name">
+                  <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${memberInfo._id}">
+                      <h4>${memberInfo.username}</h4>
+                  </a>
+                  <p>${memberRank}</p>
+              </div>
+          </div>
+          <span class="remove-user" onclick="ejectMembersPanel('${forumInfo._id}','${memberInfo._id}')">
+              <i class="fa-solid fa-user-minus"></i>
+              <span>Remove</span>
+          </span>
+        `;
+    // <button class="btn btn-primary" onclick="modifyModerators('${forumInfo._id}','${memberInfo._id}', 'assignModerators', '${memberRank}', '${memberInfo.avatar}','${memberInfo.username}')" id="assignModerators_${memberInfo._id}">
+    //   <span class="icon"><i class="fa-solid fa-plus"></i></span>
+    //   <span class="text">Add</span>
+    // </button>
+    document.querySelector("#modify-member-modal .members").appendChild(modifyMemberPanel);
     // ==================FETCH FORUM MEMBERS AND ATTACH TO MEMBERS MODAL========================= //
 
     // ==================IF USER IS CURRENT MEMBER, ATTACH TO USER PROFILE AND FORUM MEMBERS PANEL ===================== //

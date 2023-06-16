@@ -17,10 +17,15 @@
     </div>
     <div class="settings-child moderators">
         <div class="child"></div>
-        <button class="btn btn-gray" onclick="document.querySelector('.member-modal').style.display = 'grid';"
+        <button class="btn btn-gray" onclick="document.querySelector('#member-modal').style.display = 'grid';"
             style="display: flex; gap: 7px; align-items: center; justify-content: center;" id="add-moderator"><i
                 class="fa-solid fa-plus"></i><span>Add a
                 Moderator</span></button>
+    </div>
+    <div class="action">
+        <h4>Modify Members</h4> <span
+            onclick="document.querySelector('#modify-member-modal').style.display = 'grid';"><i
+                class="fa-solid fa-pencil"></i></span>
     </div>
     <div class="action">
         <h4>Update Forum Information</h4> <span onclick="toggleSettingsChild('update-forum-info')"><i
@@ -70,3 +75,94 @@
         <h4>Send an Invite to a Friend</h4> <span><i class="fa-solid fa-paper-plane"></i></span>
     </div> -->
 </div>
+
+<script>
+    function ejectMembersPanel(forumID, memberID) {
+        var closeUp = document.createElement("div");
+        closeUp.classList.add("close-popup");
+        closeUp.setAttribute("style", "cursor: pointer;");
+        closeUp.setAttribute("onclick", `cancelEjectMembers()`);
+        closeUp.innerHTML = `
+                            <span><i class="fa fa-times"></i></span>
+                        `;
+
+        var div = document.createElement("div");
+        div.classList.add("content");
+        div.innerHTML = `
+                            <h2>Eject Member</h2>
+                            <span>Are you sure you want to eject this member? This user will need an approval from a moderator before they can join back. </span>
+                        `;
+
+        var actionDiv = document.createElement("div");
+        actionDiv.classList.add("action");
+        actionDiv.innerHTML = `
+                            <button class="btn btn-danger" onclick="cancelEjectMembers()">No</button>
+                            <button class="btn btn-primary" onclick="ejectMembers('${forumID}', '${memberID}');">Yes</button>
+                        `;
+
+        var panel = document.querySelector(".confirm-popup");
+        panel.querySelector(".card").innerHTML = "";
+        panel.querySelector(".card").appendChild(closeUp);
+        panel.querySelector(".card").appendChild(div);
+        panel.querySelector(".card").appendChild(actionDiv);
+        panel.style.display = "block";
+    }
+
+    function cancelEjectMembers() {
+        var panel = document.querySelector(".confirm-popup");
+        panel.style.display = "none"
+        panel.querySelector(".card").innerHTML = "";
+    }
+
+    function ejectMembers(forumID, memberID) {
+        var actionType = "ejectMember";
+
+        var panel = document.querySelector(".confirm-popup");
+        panel.style.display = "none"
+        panel.querySelector(".card").innerHTML = "";
+
+        const formData = new FormData();
+
+        formData.append("forumID", forumID);
+        formData.append("memberID", memberID);
+        formData.append("actionType", actionType);
+
+        fetch("/dashboard/public/performActionAsModerator", {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+            body: formData,
+        })
+            .then(function (res) {
+                return res.json();
+            })
+            .then(function (json) {
+                if (json.success == true) {
+                    primaryAlert.style.display = "none";
+                    successAlert.style.display = "block";
+                    successAlertIcon.className = "";
+                    successAlertIcon.className = "fa fa-check-circle";
+                    successMessage.textContent = json.msg;
+
+                    setTimeout(() => {
+                        successAlert.style.display = "none";
+                    }, 3000);
+
+                    document.getElementById("aMember_" + memberID).remove()
+                } else {
+                    dangerAlert.style.display = "block";
+                    dangerMessage.textContent = json.msg;
+
+                    setTimeout(() => {
+                        dangerAlert.style.display = "none";
+                    }, 5000);
+                }
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    }
+</script>

@@ -17,15 +17,18 @@
 
     rankModal.addEventListener("click", closeRankModal);
 
-    const memberModal = document.querySelector(".member-modal");
+    const memberModal = document.querySelector("#member-modal");
+    const modifyMemberModal = document.querySelector("#modify-member-modal");
 
     const closeMemberModal = (e) => {
         if (e.target.classList.contains("member-modal")) {
             memberModal.style.display = "none";
+            modifyMemberModal.style.display = "none";
         }
     };
 
     memberModal.addEventListener("click", closeMemberModal);
+    modifyMemberModal.addEventListener("click", closeMemberModal);
 
     var filterInput = document.getElementById("filter-value")
 
@@ -56,9 +59,26 @@
         document.querySelector(".tag." + obj).remove()
     }
 
-    const members = document.querySelectorAll(".member-modal .members .member");
+    const members = document.querySelectorAll("#member-modal .members .member");
     if (document.querySelector("#search-member")) {
         const memberSearch = document.querySelector("#search-member");
+        const searchMember = () => {
+            const value = memberSearch.value.toLowerCase();
+            members.forEach((member) => {
+                let username = member.querySelector("h4").textContent.toLowerCase();
+                let rank = member.querySelector("p").textContent.toLowerCase();
+
+                if (username.indexOf(value) != -1 || rank.indexOf(value) != -1) {
+                    member.style.display = "flex";
+                } else {
+                    member.style.display = "none";
+                }
+            });
+        };
+        memberSearch.addEventListener("keyup", searchMember);
+    }
+    if (document.querySelector("#search-member-two")) {
+        const memberSearch = document.querySelector("#search-member-two");
         const searchMember = () => {
             const value = memberSearch.value.toLowerCase();
             members.forEach((member) => {

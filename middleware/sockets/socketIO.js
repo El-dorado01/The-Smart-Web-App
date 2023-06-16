@@ -702,6 +702,107 @@ const allSockets = (socket) => {
       numberOfPosts
     );
   });
+  socket.on("getTopicCategories", async (data) => {
+    const { forumID } = data;
+    var latestTopics = [];
+    var pinnedTopics = []; 
+    var trendingTopics = [];
+
+    const forumMembers = await ForumsModel.findById(
+      forumID,
+      "creator members ownerUpvotes"
+    );
+
+    const latestTopicsFetched = await ForumsTopicsModel.find({ forumID })
+      .limit(5).sort("-createdAt");
+
+    for (let i = 0; i < latestTopicsFetched.length; i++) {
+      const userInfo = await AuthModel.findById(
+        latestTopicsFetched[i].userID,
+        "username avatar about email"
+      );
+      if (latestTopicsFetched[i].userID == forumMembers.creator) {
+        latestTopics.push({
+          topic: latestTopicsFetched[i],
+          userInfo,
+          memberUpvotes: forumMembers.ownerUpvotes,
+        });
+      } else {
+        for (let i = 0; i < forumMembers.members.length; i++) {
+          const member = forumMembers.members[i];
+
+          if (latestTopicsFetched[i].userID == member.userID) {
+            latestTopics.push({
+              topic: latestTopicsFetched[i],
+              userInfo,
+              memberUpvotes: member.upvotes,
+            });
+          }
+        }
+      }
+    }
+
+    const pinnedTopicsFetched = await ForumsTopicsModel.find({ forumID, pinned: true })
+      .limit(15).sort("-createdAt");
+
+    for (let i = 0; i < pinnedTopicsFetched.length; i++) {
+      const userInfo = await AuthModel.findById(
+        pinnedTopicsFetched[i].userID,
+        "username avatar about email"
+      );
+      if (pinnedTopicsFetched[i].userID == forumMembers.creator) {
+        pinnedTopics.push({
+          topic: pinnedTopicsFetched[i],
+          userInfo,
+          memberUpvotes: forumMembers.ownerUpvotes,
+        });
+      } else {
+        for (let i = 0; i < forumMembers.members.length; i++) {
+          const member = forumMembers.members[i];
+
+          if (pinnedTopicsFetched[i].userID == member.userID) {
+            pinnedTopics.push({
+              topic: pinnedTopicsFetched[i],
+              userInfo,
+              memberUpvotes: member.upvotes,
+            });
+          }
+        }
+      }
+    }
+
+    const trendingTopicsFetched = await ForumsTopicsModel.find({ forumID, __v: { $ne: 0 } })
+      .limit(5).sort("-__v");
+
+    for (let i = 0; i < trendingTopicsFetched.length; i++) {
+      const userInfo = await AuthModel.findById(
+        trendingTopicsFetched[i].userID,
+        "username avatar about email"
+      );
+
+      if (trendingTopicsFetched[i].userID == forumMembers.creator) {
+        trendingTopics.push({
+          topic: trendingTopicsFetched[i],
+          userInfo,
+          memberUpvotes: forumMembers.ownerUpvotes,
+        });
+      } else {
+        for (let i = 0; i < forumMembers.members.length; i++) {
+          const member = forumMembers.members[i];
+
+          if (trendingTopicsFetched[i].userID == member.userID) {
+            trendingTopics.push({
+              topic: trendingTopicsFetched[i],
+              userInfo,
+              memberUpvotes: member.upvotes,
+            });
+          }
+        }
+      }
+    }
+
+    socket.emit("topicCategories", { latestTopics, pinnedTopics, trendingTopics });
+  });
   socket.on("getNewPageTopics", async (data) => {
     const { requestedPage, incomingTotalPages, forumID } = data;
     const page = parseInt(requestedPage);
@@ -767,14 +868,14 @@ const allSockets = (socket) => {
 
     // topics.results = model.slice(startIndex, endIndex);
   });
-  socket.on("warns", async(data) => {
+  socket.on("warns", async (data) => {
     const { id, forumID, memberID, topicID, deletionType, responseID } = data
 
     const forumInfo = await ForumsModel.findById({ _id: forumID });
     const forumOwner = forumInfo.creator;
     var memberWarnNumber;
     forumInfo.members.forEach(member => {
-      if(member.userID == memberID){
+      if (member.userID == memberID) {
         memberWarnNumber = 5 - member.numberOfWarns;
       }
     });

@@ -655,7 +655,7 @@
     gap: 10px;
 }
 
-.forum-profile .settings .moderators .moderator .remove-user {
+.remove-user {
     display: flex;
     align-items: center;
     justify-content: center;

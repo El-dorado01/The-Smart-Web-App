@@ -56,13 +56,16 @@
                                             </h3>
                                             <p class="forum-desc"></p>
                                             <p class="name" style="margin-top: 5px;">
-                                                <span style="padding: 5px; background-color: var(--color-light);"><i class="fa fa-users-rays"></i> <span
+                                                <span style="padding: 5px; background-color: var(--color-light);"><i
+                                                        class="fa fa-users-rays"></i> <span
                                                         class="forum-member"></span></span>
                                             </p>
                                             <div class="action-icons">
                                                 <% if(isAMember==false){ %>
-                                                    <div class="btn btn-primary" title="Send Request to Join Forum" style="width: 100%;">
-                                                        <i class="fa-solid fa-person-circle-plus"></i> <span>Request to Join</span>
+                                                    <div class="btn btn-primary" title="Send Request to Join Forum"
+                                                        style="width: 100%;">
+                                                        <i class="fa-solid fa-person-circle-plus"></i> <span>Request to
+                                                            Join</span>
                                                     </div>
                                                     <% }else{ %>
                                                         <div class="btn btn-primary"
@@ -71,174 +74,223 @@
                                                             <i class="fa-solid fa-plus"></i> <span>Add</span>
                                                         </div>
                                                         <div class="other-icons">
-                                                            <span title="Turn on notifications"><i class="fa fa-bell"></i></span>
-                                                            <% if(forumInfo.membersCanInvite==true && isAMember==true && isAModerator==false){ %>
+                                                            <span title="Turn on notifications"><i
+                                                                    class="fa fa-bell"></i></span>
+                                                            <% if(forumInfo.membersCanInvite==true && isAMember==true &&
+                                                                isAModerator==false){ %>
                                                                 <span
                                                                     onclick="copyForumInviteLink('<%= forumInfo.forumSecretKey %>', '<%= forumID %>', '<%= getURL %>/dashboard/public/forum_invites/<%= forumID %>/key?secretKey=')"
-                                                                    title="Copy Invite Link"><i class="fa-solid fa-link"></i></span>
+                                                                    title="Copy Invite Link"><i
+                                                                        class="fa-solid fa-link"></i></span>
                                                                 <% } %>
                                                                     <% if(isAModerator==true){ %>
-                                                                        <span onclick="toggleSettingsTwo()" title="Toggle to show and hide settings"><i
+                                                                        <span onclick="toggleSettingsTwo()"
+                                                                            title="Toggle to show and hide settings"><i
                                                                                 class="fa fa-cog"></i></span>
                                                                         <% } %>
-                                                                            <span title="Exit Forum"><i class="fa-solid fa-sign-out"></i></span>
+                                                                            <span title="Exit Forum"><i
+                                                                                    class="fa-solid fa-sign-out"></i></span>
                                                         </div>
                                                         <% } %>
                                             </div>
                                         </div>
                                     </div>
                                     <%- include ("./forum_settings") %>
-                                    <div class="forum-body">
-                                        <div class="topic-title">
-                                            <div class="first">
-                                                <div class="title">
-                                                    <%= topicInfo.subject %>
-                                                </div>
-                                            </div>
-                                            <div class="tags-panel">
-                                                <div class="tags">
-                                                    <% topicInfo.topicTags.forEach(tag=> {%>
-                                                        <a
-                                                            href="/dashboard/public/forum_topic_categories/<%= tag %>/key?forumID=<%= forumID %>">
-                                                            <div class="tag">
-                                                                <i class="fa-solid fa-tag"></i>
-                                                                <span>
-                                                                    <%= tag %>
-                                                                </span>
-                                                            </div>
-                                                        </a>
-                                                        <%})%>
-                                                </div>
-                                                <div class="action">
-                                                    <div title="Views">
-                                                        <span><i class="fa-solid fa-eye fa-lg"></i></span>
-                                                        <span class="count">
-                                                            <%= topicInfo.__v %>
-                                                        </span>
+                                        <div class="forum-body">
+                                            <div class="topic-title">
+                                                <div class="first">
+                                                    <div class="title">
+                                                        <%= topicInfo.subject %>
                                                     </div>
-                                                    <div title="Comments">
-                                                        <span><i class="fa-solid fa-comment fa-lg"></i></span>
-                                                        <span class="count" id="comment-count">
-                                                            <%= responses.length %>
-                                                        </span>
+                                                </div>
+                                                <div class="tags-panel">
+                                                    <div class="tags">
+                                                        <% topicInfo.topicTags.forEach(tag=> {%>
+                                                            <a
+                                                                href="/dashboard/public/forum_topic_categories/<%= tag %>/key?forumID=<%= forumID %>">
+                                                                <div class="tag">
+                                                                    <i class="fa-solid fa-tag"></i>
+                                                                    <span>
+                                                                        <%= tag %>
+                                                                    </span>
+                                                                </div>
+                                                            </a>
+                                                            <%})%>
                                                     </div>
-                                                    <% if(topicInfo.pinned==true){%>
-                                                        <div title="Unpin Discussion" id="pinDiscussion"
-                                                            onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'unpinDiscussion', <%= isAModerator %>)"
-                                                            style="cursor: pointer;">
-                                                            <span style="color: var(--color-primary);"><i
-                                                                    class="fa-solid fa-thumbtack fa-lg"></i></span>
+                                                    <div class="action">
+                                                        <div title="Views">
+                                                            <span><i class="fa-solid fa-eye fa-lg"></i></span>
+                                                            <span class="count">
+                                                                <%= topicInfo.__v %>
+                                                            </span>
                                                         </div>
-                                                        <% }else{ %>
-                                                            <div title="Pin Discussion" id="pinDiscussion"
-                                                                onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'pinDiscussion', <%= isAModerator %>)"
+                                                        <div title="Comments">
+                                                            <span><i class="fa-solid fa-comment fa-lg"></i></span>
+                                                            <span class="count" id="comment-count">
+                                                                <%= responses.length %>
+                                                            </span>
+                                                        </div>
+                                                        <% if(topicInfo.pinned==true){%>
+                                                            <div title="Unpin Discussion" id="pinDiscussion"
+                                                                onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'unpinDiscussion', <%= isAModerator %>)"
                                                                 style="cursor: pointer;">
-                                                                <span><i class="fa-solid fa-thumbtack fa-lg"></i></span>
+                                                                <span style="color: var(--color-primary);"><i
+                                                                        class="fa-solid fa-thumbtack fa-lg"></i></span>
                                                             </div>
-                                                            <% } %>
+                                                            <% }else{ %>
+                                                                <div title="Pin Discussion" id="pinDiscussion"
+                                                                    onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'pinDiscussion', <%= isAModerator %>)"
+                                                                    style="cursor: pointer;">
+                                                                    <span><i
+                                                                            class="fa-solid fa-thumbtack fa-lg"></i></span>
+                                                                </div>
+                                                                <% } %>
 
-                                                                <% if(topicInfo.discussionClosed==true){%>
-                                                                    <div title="Open Discussion"
-                                                                        onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'openDiscussion', <%= isAModerator %>)"
-                                                                        id="closeDiscussion" style="cursor: pointer;">
-                                                                        <span style="color: var(--color-primary);"><i
-                                                                                class="fa-solid fa-comment-slash fa-lg"></i></span>
-                                                                    </div>
-                                                                    <% }else{ %>
-                                                                        <div title="Close Discussion"
-                                                                            onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'closeDiscussion', <%= isAModerator %>)"
+                                                                    <% if(topicInfo.discussionClosed==true){%>
+                                                                        <div title="Open Discussion"
+                                                                            onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'openDiscussion', <%= isAModerator %>)"
                                                                             id="closeDiscussion"
                                                                             style="cursor: pointer;">
-                                                                            <span><i
+                                                                            <span
+                                                                                style="color: var(--color-primary);"><i
                                                                                     class="fa-solid fa-comment-slash fa-lg"></i></span>
                                                                         </div>
-                                                                        <% } %>
-                                                </div>
-                                            </div>
-                                            <div class="second">
-                                                <div class="user-info">
-                                                    <a
-                                                        href="/dashboard/public/member_profile/<%= forumID %>/key?memberID=<%= questionnaire.userInfo._id %>">
-                                                        <img src="../../../../uploads/<%= questionnaire.userInfo.avatar %>"
-                                                            alt="">
-                                                    </a>
-                                                    <div>
-                                                        <h5>By <a
-                                                                href="/dashboard/public/member_profile/<%= forumID %>/key?memberID=<%= questionnaire.userInfo._id %>">
-                                                                <%= questionnaire.userInfo.username %>
-                                                            </a>,</h5>
-                                                        <span class="text-muted">
-                                                            <%= questionnaire.memberUpvotes %>
-                                                                upvote<% if(questionnaire.memberUpvotes> 1){%>s<% } %>,
-                                                                        <%= new Date(topicInfo.createdAt).toDateString()
-                                                                            %>
-                                                        </span>
+                                                                        <% }else{ %>
+                                                                            <div title="Close Discussion"
+                                                                                onclick="performActionInForum('<%= forumID %>', '<%= topicInfo._id %>', 'closeDiscussion', <%= isAModerator %>)"
+                                                                                id="closeDiscussion"
+                                                                                style="cursor: pointer;">
+                                                                                <span><i
+                                                                                        class="fa-solid fa-comment-slash fa-lg"></i></span>
+                                                                            </div>
+                                                                            <% } %>
                                                     </div>
                                                 </div>
-                                                <div class="action">
-                                                    <% if(bookmarked==true){%>
-                                                        <div class="flex" title="Remove this Discussion from Bookmarks"
-                                                            style="cursor: pointer;"
-                                                            onclick="updateTopicBookmarks(this, '<%= user._id%>','<%= topicInfo._id %>','<%= topicInfo.forumID %>','removeTopicFromBookmarks', <%= isAMember %>)">
-                                                            <span class="icon" style="color: var(--color-primary);"><i
-                                                                    class="fa-solid fa-bookmark fa-lg"></i>
-                                                            </span>&nbsp;
-                                                            <div class="count">
-                                                                <%= topicInfo.bookmarks.length %>
-                                                            </div>
+                                                <div class="second">
+                                                    <div class="user-info">
+                                                        <a
+                                                            href="/dashboard/public/member_profile/<%= forumID %>/key?memberID=<%= questionnaire.userInfo._id %>">
+                                                            <img src="../../../../uploads/<%= questionnaire.userInfo.avatar %>"
+                                                                alt="">
+                                                        </a>
+                                                        <div>
+                                                            <h5>By <a
+                                                                    href="/dashboard/public/member_profile/<%= forumID %>/key?memberID=<%= questionnaire.userInfo._id %>">
+                                                                    <%= questionnaire.userInfo.username %>
+                                                                </a>,</h5>
+                                                            <span class="text-muted">
+                                                                <%= questionnaire.memberUpvotes %>
+                                                                    upvote<% if(questionnaire.memberUpvotes> 1){%>s<% }
+                                                                            %>,
+                                                                            <%= new
+                                                                                Date(topicInfo.createdAt).toDateString()
+                                                                                %>
+                                                            </span>
                                                         </div>
-                                                        <%}else{%>
-                                                            <div class="flex" title="Bookmark this Discussion"
+                                                    </div>
+                                                    <div class="action">
+                                                        <% if(bookmarked==true){%>
+                                                            <div class="flex"
+                                                                title="Remove this Discussion from Bookmarks"
                                                                 style="cursor: pointer;"
-                                                                onclick="updateTopicBookmarks(this, '<%= user._id%>','<%= topicInfo._id %>','<%= topicInfo.forumID %>','bookmarkATopic', <%= isAMember %>)">
-                                                                <span class="icon"><i
+                                                                onclick="updateTopicBookmarks(this, '<%= user._id%>','<%= topicInfo._id %>','<%= topicInfo.forumID %>','removeTopicFromBookmarks', <%= isAMember %>)">
+                                                                <span class="icon"
+                                                                    style="color: var(--color-primary);"><i
                                                                         class="fa-solid fa-bookmark fa-lg"></i>
                                                                 </span>&nbsp;
                                                                 <div class="count">
                                                                     <%= topicInfo.bookmarks.length %>
                                                                 </div>
                                                             </div>
-                                                            <%} if(topicUpvotedByUser==true){%>
-                                                                <div class="flex" title="Remove this Topic from Upvotes"
+                                                            <%}else{%>
+                                                                <div class="flex" title="Bookmark this Discussion"
                                                                     style="cursor: pointer;"
-                                                                    onclick="updateTopicUpvotes(this, '<%= user._id%>','<%= topicInfo._id %>','<%= topicInfo.forumID %>','removeTopicFromUpvotes', <%= isAMember %>, '<%= topicInfo.userID %>')">
-                                                                    <span class="icon"
-                                                                        style="color: var(--color-primary);"><i
-                                                                            class="fa-solid fa-circle-up fa-lg"></i>
+                                                                    onclick="updateTopicBookmarks(this, '<%= user._id%>','<%= topicInfo._id %>','<%= topicInfo.forumID %>','bookmarkATopic', <%= isAMember %>)">
+                                                                    <span class="icon"><i
+                                                                            class="fa-solid fa-bookmark fa-lg"></i>
                                                                     </span>&nbsp;
                                                                     <div class="count">
-                                                                        <%= topicInfo.upvotes %>
+                                                                        <%= topicInfo.bookmarks.length %>
                                                                     </div>
                                                                 </div>
-                                                                <%}else{%>
-                                                                    <div class="flex" title="Upvote this Topic"
+                                                                <%} if(topicUpvotedByUser==true){%>
+                                                                    <div class="flex"
+                                                                        title="Remove this Topic from Upvotes"
                                                                         style="cursor: pointer;"
-                                                                        onclick="updateTopicUpvotes(this, '<%= user._id%>','<%= topicInfo._id %>','<%= topicInfo.forumID %>','upvoteATopic', <%= isAMember %>, '<%= topicInfo.userID %>')">
-                                                                        <span class="icon"><i
+                                                                        onclick="updateTopicUpvotes(this, '<%= user._id%>','<%= topicInfo._id %>','<%= topicInfo.forumID %>','removeTopicFromUpvotes', <%= isAMember %>, '<%= topicInfo.userID %>')">
+                                                                        <span class="icon"
+                                                                            style="color: var(--color-primary);"><i
                                                                                 class="fa-solid fa-circle-up fa-lg"></i>
                                                                         </span>&nbsp;
                                                                         <div class="count">
                                                                             <%= topicInfo.upvotes %>
                                                                         </div>
                                                                     </div>
-                                                                    <%} %>
-                                                                        <div title="Share" class="extra">
-                                                                            <span><i
-                                                                                    class="fa-solid fa-arrow-up-from-bracket fa-lg"></i></span>
+                                                                    <%}else{%>
+                                                                        <div class="flex" title="Upvote this Topic"
+                                                                            style="cursor: pointer;"
+                                                                            onclick="updateTopicUpvotes(this, '<%= user._id%>','<%= topicInfo._id %>','<%= topicInfo.forumID %>','upvoteATopic', <%= isAMember %>, '<%= topicInfo.userID %>')">
+                                                                            <span class="icon"><i
+                                                                                    class="fa-solid fa-circle-up fa-lg"></i>
+                                                                            </span>&nbsp;
+                                                                            <div class="count">
+                                                                                <%= topicInfo.upvotes %>
+                                                                            </div>
                                                                         </div>
-                                                                        <%  if(isAMember==true){  
+                                                                        <%} %>
+                                                                            <div title="Share" class="extra">
+                                                                                <span><i
+                                                                                        class="fa-solid fa-arrow-up-from-bracket fa-lg"></i></span>
+                                                                            </div>
+                                                                            <% if(isAMember==true){
                                                                                 if(user._id==topicInfo.userID){ %>
-                                                                                    <div title="Delete Topic" class="extra"
-                                                                                        style="background-color: var(--color-danger);"
-                                                                                        onclick="deleteResponseInForum('<%= topicInfo._id %>','<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= topicInfo.userID %>','topicDelete')">
-                                                                                        <span><i
-                                                                                                class="fa-solid fa-trash fa-lg"></i></span>
-                                                                                    </div>
-                                                                            <%  } else if(topicInfo.userID==forumInfo.creator) { %>
-                                                                            <%  } else if(user._id==forumInfo.creator) { 
-                                                                                    for (let i=0; i < forumInfo.members.length; i++) {
+                                                                                <div title="Delete Topic" class="extra"
+                                                                                    style="background-color: var(--color-danger);"
+                                                                                    onclick="deleteResponseInForum('<%= topicInfo._id %>','<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= topicInfo.userID %>','topicDelete')">
+                                                                                    <span><i
+                                                                                            class="fa-solid fa-trash fa-lg"></i></span>
+                                                                                </div>
+                                                                                <% } else
+                                                                                    if(topicInfo.userID==forumInfo.creator)
+                                                                                    { %>
+                                                                                    <% } else
+                                                                                        if(user._id==forumInfo.creator)
+                                                                                        { for (let i=0; i <
+                                                                                        forumInfo.members.length; i++) {
                                                                                         if(forumInfo.members[i].userID==topicInfo.userID){
-                                                                                            if(forumInfo.members[i].memberStatus=="inactive" || forumInfo.members[i].memberStatus=="ejected") {%>
+                                                                                        if(forumInfo.members[i].memberStatus=="inactive"
+                                                                                        ||
+                                                                                        forumInfo.members[i].memberStatus=="ejected"
+                                                                                        ) {%>
+                                                                                        <div title="Delete Topic"
+                                                                                            class="extra"
+                                                                                            style="background-color: var(--color-danger);"
+                                                                                            onclick="deleteResponseInForum('<%= topicInfo._id %>','<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= topicInfo.userID %>','topicDelete')">
+                                                                                            <span><i
+                                                                                                    class="fa-solid fa-trash fa-lg"></i></span>
+                                                                                        </div>
+                                                                                        <% } else { %>
+                                                                                            <div style="position: relative;"
+                                                                                                id="other-actions-<%= topicInfo._id %>"
+                                                                                                class="moreDiv">
+                                                                                                <span class="extra"
+                                                                                                    title="More"
+                                                                                                    onclick="showOtherActionsInForum('<%= topicInfo._id %>', '<%= topicInfo.forumID %>', '<%= topicInfo.userID %>', '<%= topicInfo._id %>', 'topicDelete')"><i
+                                                                                                        class="fa-solid fa-ellipsis fa-lg"></i></span>
+                                                                                            </div>
+                                                                                            <% } } } } else { for (let
+                                                                                                i=0; i <
+                                                                                                forumInfo.moderators.length;
+                                                                                                i++) {
+                                                                                                if(forumInfo.moderators[i].userID==user._id)
+                                                                                                { for (let i=0; i <
+                                                                                                forumInfo.members.length;
+                                                                                                i++) {
+                                                                                                if(forumInfo.members[i].userID==topicInfo.userID){
+                                                                                                if(forumInfo.members[i].memberStatus=="inactive"
+                                                                                                ||
+                                                                                                forumInfo.members[i].memberStatus=="ejected"
+                                                                                                ) {%>
                                                                                                 <div title="Delete Topic"
                                                                                                     class="extra"
                                                                                                     style="background-color: var(--color-danger);"
@@ -246,163 +298,131 @@
                                                                                                     <span><i
                                                                                                             class="fa-solid fa-trash fa-lg"></i></span>
                                                                                                 </div>
-                                                                                        <%  } else { %>
-                                                                                                <div style="position: relative;"
-                                                                                                    id="other-actions-<%= topicInfo._id %>"
-                                                                                                    class="moreDiv">
-                                                                                                    <span class="extra"
-                                                                                                        title="More"
-                                                                                                        onclick="showOtherActionsInForum('<%= topicInfo._id %>', '<%= topicInfo.forumID %>', '<%= topicInfo.userID %>', '<%= topicInfo._id %>', 'topicDelete')"><i
-                                                                                                            class="fa-solid fa-ellipsis fa-lg"></i></span>
-                                                                                                </div>
-                                                                                        <%  
-                                                                                            } 
-                                                                                        } 
-                                                                                    } 
-                                                                                } else { 
-                                                                                    for (let i=0; i < forumInfo.moderators.length; i++) {
-                                                                                        if(forumInfo.moderators[i].userID==user._id) { 
-                                                                                            for (let i=0; i < forumInfo.members.length; i++) {
-                                                                                                if(forumInfo.members[i].userID==topicInfo.userID){
-                                                                                                    if(forumInfo.members[i].memberStatus=="inactive" || forumInfo.members[i].memberStatus=="ejected") {%>
-                                                                                                        <div title="Delete Topic"
+                                                                                                <% }else{ %>
+                                                                                                    <div style="position: relative;"
+                                                                                                        id="other-actions-<%= topicInfo._id %>"
+                                                                                                        class="moreDiv">
+                                                                                                        <span
                                                                                                             class="extra"
-                                                                                                            style="background-color: var(--color-danger);"
-                                                                                                            onclick="deleteResponseInForum('<%= topicInfo._id %>','<%= topicInfo.forumID %>','<%= topicInfo._id %>','<%= topicInfo.userID %>','topicDelete')">
-                                                                                                            <span><i
-                                                                                                                    class="fa-solid fa-trash fa-lg"></i></span>
-                                                                                                        </div>
-                                                                                                <%  }else{ %>
-                                                                                                        <div style="position: relative;"
-                                                                                                            id="other-actions-<%= topicInfo._id %>"
-                                                                                                            class="moreDiv">
-                                                                                                            <span
-                                                                                                                class="extra"
-                                                                                                                title="More"
-                                                                                                                onclick="showOtherActionsInForum('<%= topicInfo._id %>', '<%= topicInfo.forumID %>', '<%= topicInfo.userID %>', '<%= topicInfo._id %>', 'topicDelete')"><i
-                                                                                                                    class="fa-solid fa-ellipsis fa-lg"></i></span>
-                                                                                                        </div>
-                                                                                                <%
-                                                                                                    } 
-                                                                                                } 
-                                                                                            } 
-                                                                                        } 
-                                                                                    } 
-                                                                                }
-                                                                            }%>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--Questionnaire-->
-                                        <div class="q-box" id="<%= topicInfo._id %>"
-                                            style="box-shadow: 0 0 0.5rem var(--color-primary); margin-bottom: 2.5rem;">
-                                            <div class="q-box-main">
-                                                <div class="q-box-left">
-                                                    <div class="user-info">
-                                                        <a
-                                                            href="/dashboard/public/member_profile/<%= forumID %>/key?memberID=<%= questionnaire.userInfo._id %>">
-                                                            <h4>
-                                                                <%= questionnaire.userInfo.username %>
-                                                            </h4>
-                                                        </a>
-                                                        <a
-                                                            href="/dashboard/public/member_profile/<%= forumID %>/key?memberID=<%= questionnaire.userInfo._id %>">
-                                                            <img src="../../../../uploads/<%= questionnaire.userInfo.avatar %>"
-                                                                alt="">
-                                                        </a>
-                                                        <div class="upvotes">
-                                                            <%= questionnaire.memberUpvotes %>
-                                                                upvote<% if(questionnaire.memberUpvotes> 1){%>s<% } %>
-                                                        </div>
-                                                        <span>Posted: <i class="text-muted">
-                                                                <%= new Date(topicInfo.createdAt).toDateString() %>
-                                                            </i></span>
+                                                                                                            title="More"
+                                                                                                            onclick="showOtherActionsInForum('<%= topicInfo._id %>', '<%= topicInfo.forumID %>', '<%= topicInfo.userID %>', '<%= topicInfo._id %>', 'topicDelete')"><i
+                                                                                                                class="fa-solid fa-ellipsis fa-lg"></i></span>
+                                                                                                    </div>
+                                                                                                    <% } } } } } } }%>
                                                     </div>
                                                 </div>
-                                                <div class="q-box-right" id="field_<%= topicInfo._id %>">
-                                                    <div class="field-one">
-                                                        <div class="response-field">
-                                                            <%- topicInfo.topicText %>
-                                                        </div>
-                                                        <!-- Topic Media -->
-                                                        <% if(topicInfo.topicMedia.length> 0){%>
-                                                            <div class="media">
-                                                                <% var imagesExtensions=["jpg", "gif" , "png" ]; var
-                                                                    videosExtensions=["mp4", "3gp" , "ogg" ];
-                                                                    topicInfo.topicMedia.forEach(media=> {
-                                                                    var url = new URL(media)
-                                                                    var extension = url.pathname.split(".")[1]
-
-                                                                    if (imagesExtensions.includes(extension)) {
-                                                                    %>
-                                                                    <div class="img">
-                                                                        <img id="forumImg" src="<%= url %>" alt="">
-                                                                    </div>
-                                                                    <% } else if (videosExtensions.includes(extension))
-                                                                        { %>
-                                                                        <div class="video">
-                                                                            <video controls>
-                                                                                <source src="<%= url %>"
-                                                                                    type="video/<%= extension %>">
-                                                                            </video>
-                                                                        </div>
-                                                                        <% } }); %>
+                                            </div>
+                                            <!--Questionnaire-->
+                                            <div class="q-box" id="<%= topicInfo._id %>"
+                                                style="box-shadow: 0 0 0.5rem var(--color-primary); margin-bottom: 2.5rem;">
+                                                <div class="q-box-main">
+                                                    <div class="q-box-left">
+                                                        <div class="user-info">
+                                                            <a
+                                                                href="/dashboard/public/member_profile/<%= forumID %>/key?memberID=<%= questionnaire.userInfo._id %>">
+                                                                <h4>
+                                                                    <%= questionnaire.userInfo.username %>
+                                                                </h4>
+                                                            </a>
+                                                            <a
+                                                                href="/dashboard/public/member_profile/<%= forumID %>/key?memberID=<%= questionnaire.userInfo._id %>">
+                                                                <img src="../../../../uploads/<%= questionnaire.userInfo.avatar %>"
+                                                                    alt="">
+                                                            </a>
+                                                            <div class="upvotes">
+                                                                <%= questionnaire.memberUpvotes %>
+                                                                    upvote<% if(questionnaire.memberUpvotes> 1){%>s<% }
+                                                                            %>
                                                             </div>
-                                                            <% } %>
+                                                            <span>Posted: <i class="text-muted">
+                                                                    <%= new Date(topicInfo.createdAt).toDateString() %>
+                                                                </i></span>
+                                                        </div>
                                                     </div>
-                                                    <div class="actions">
-                                                        <span title="Quote"
-                                                            onclick="tagAResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>', '<%= topicInfo._id %>', '<%= JSON.stringify(forumInfo.wordsFilter) %>', <%= isAMember %>)">
-                                                            <i class="fa-solid fa-quote-right fa-lg"></i>
-                                                        </span>
-                                                        <!--<p title="Upvote" style="width: 40px;"><i class="fa-solid fa-circle-up fa-lg"></i><span><% //topicInfo.upvotes %>
+                                                    <div class="q-box-right" id="field_<%= topicInfo._id %>">
+                                                        <div class="field-one">
+                                                            <div class="response-field">
+                                                                <%- topicInfo.topicText %>
+                                                            </div>
+                                                            <!-- Topic Media -->
+                                                            <% if(topicInfo.topicMedia.length> 0){%>
+                                                                <div class="media">
+                                                                    <% var imagesExtensions=["jpg", "gif" , "png" ]; var
+                                                                        videosExtensions=["mp4", "3gp" , "ogg" ];
+                                                                        topicInfo.topicMedia.forEach(media=> {
+                                                                        var url = new URL(media)
+                                                                        var extension = url.pathname.split(".")[1]
+
+                                                                        if (imagesExtensions.includes(extension)) {
+                                                                        %>
+                                                                        <div class="img">
+                                                                            <img id="forumImg" src="<%= url %>" alt="">
+                                                                        </div>
+                                                                        <% } else if
+                                                                            (videosExtensions.includes(extension)) { %>
+                                                                            <div class="video">
+                                                                                <video controls>
+                                                                                    <source src="<%= url %>"
+                                                                                        type="video/<%= extension %>">
+                                                                                </video>
+                                                                            </div>
+                                                                            <% } }); %>
+                                                                </div>
+                                                                <% } %>
+                                                        </div>
+                                                        <div class="actions">
+                                                            <span title="Quote"
+                                                                onclick="tagAResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>', '<%= topicInfo._id %>', '<%= JSON.stringify(forumInfo.wordsFilter) %>', <%= isAMember %>)">
+                                                                <i class="fa-solid fa-quote-right fa-lg"></i>
+                                                            </span>
+                                                            <!--<p title="Upvote" style="width: 40px;"><i class="fa-solid fa-circle-up fa-lg"></i><span><% //topicInfo.upvotes %>
                                     </span></p>-->
-                                                        <span title="Share"><i
-                                                                class="fa-solid fa-arrow-up-from-bracket fa-lg"></i>
-                                                        </span>
+                                                            <span title="Share"><i
+                                                                    class="fa-solid fa-arrow-up-from-bracket fa-lg"></i>
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <!-- Loop through each responses -->
-                                        <div class="responses" style="width: 100%; padding: 0;">
-                                            <%- include ("./topic_responses") %>
-                                        </div>
+                                            <!-- Loop through each responses -->
+                                            <div class="responses" style="width: 100%; padding: 0;">
+                                                <%- include ("./topic_responses") %>
+                                            </div>
 
-                                        <div class="response-area">
-                                            <span style="font-size: 16px;">Your response</span>
-                                            <div class="tagged-msg">
-                                                <span class="icon"><i class="fa-solid fa-times"></i></span>
-                                                <div></div>
-                                            </div>
-                                            <div class="preview"></div>
-                                            <div class="textarea">
-                                                <% if(isAMember==false){ %>
-                                                    <textarea name="" id="response-text"
-                                                        disabled>You cannot post a comment on this topic because your not a member of this forum!</textarea>
-                                                    <% }else if(topicInfo.discussionClosed==true) { %>
-                                                        <textarea name=""
-                                                            id="response-text">You cannot post a comment on this topic because discussion has been closed!</textarea>
-                                                        <% } else{ %>
-                                                            <textarea name="" id="response-text"></textarea>
-                                                            <% } %>
-                                            </div>
-                                            <div class="actions" <% if(isAMember==false ||
-                                                topicInfo.discussionClosed==true){%> style="display: none;" <% } %>>
-                                                    <div class="icons">
-                                                        <span onclick="createResponseImg()" title="Add Images"><i
-                                                                class="fa-regular fa-image"></i></span>
-                                                        <span onclick="createResponseVideo()" title="Add Video"><i
-                                                                class="fa-solid fa-video"></i></span>
-                                                        <!--<span title="Add File"><i class="fa-solid fa-paperclip"></i></span>-->
-                                                    </div>
-                                                    <button class="btn btn-primary" type="submit"
-                                                        onclick="submitForumResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>', '<%= JSON.stringify(forumInfo.wordsFilter) %>', '')"><i
-                                                            class="fa-solid fa-paper-plane"></i><span>Send</span></button>
+                                            <div class="response-area">
+                                                <span style="font-size: 16px;">Your response</span>
+                                                <div class="tagged-msg">
+                                                    <span class="icon"><i class="fa-solid fa-times"></i></span>
+                                                    <div></div>
+                                                </div>
+                                                <div class="preview"></div>
+                                                <div class="textarea">
+                                                    <% if(isAMember==false){ %>
+                                                        <textarea name="" id="response-text"
+                                                            disabled>You cannot post a comment on this topic because your not a member of this forum!</textarea>
+                                                        <% }else if(topicInfo.discussionClosed==true) { %>
+                                                            <textarea name=""
+                                                                id="response-text">You cannot post a comment on this topic because discussion has been closed!</textarea>
+                                                            <% } else{ %>
+                                                                <textarea name="" id="response-text"></textarea>
+                                                                <% } %>
+                                                </div>
+                                                <div class="actions" <% if(isAMember==false ||
+                                                    topicInfo.discussionClosed==true){%> style="display: none;" <% } %>>
+                                                        <div class="icons">
+                                                            <span onclick="createResponseImg()" title="Add Images"><i
+                                                                    class="fa-regular fa-image"></i></span>
+                                                            <span onclick="createResponseVideo()" title="Add Video"><i
+                                                                    class="fa-solid fa-video"></i></span>
+                                                            <!--<span title="Add File"><i class="fa-solid fa-paperclip"></i></span>-->
+                                                        </div>
+                                                        <button class="btn btn-primary" type="submit"
+                                                            onclick="submitForumResponse('<%= topicInfo.forumID %>', '<%= topicInfo._id %>', '<%= JSON.stringify(forumInfo.wordsFilter) %>', '')"><i
+                                                                class="fa-solid fa-paper-plane"></i><span>Send</span></button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
                                 </div>
                                 <%- include ("./topic_category_middle") %>
                     </div>
@@ -434,47 +454,132 @@
 
         <!--Ranking System-->
         <%- include ("./rank_modal") %>
-        <!--Add Moderator Modal-->
-        <%- include ("./moderator_modal") %>
-        <!--Add Topic Modal-->
-        <%- include ("./add_topic_modal") %>
-        <!--Theme Customization-->
-        <%- include ("../partials/themeCustomization") %>
-        <%- include ("../partials/popup") %>
+            <!--Add Moderator Modal-->
+            <%- include ("./moderator_modal") %>
+            <%- include ("./member-modal") %>
+                <!--Add Topic Modal-->
+                <%- include ("./add_topic_modal") %>
+                    <!--Theme Customization-->
+                    <%- include ("../partials/themeCustomization") %>
+                        <%- include ("../partials/popup") %>
 
-        <!--JS Script Attachment-->
-        <script src="/socket.io/socket.io.js"></script>
-        <%- include ("./forum_script") %>
-        <script>
-            let myEditor;
+                            <!--JS Script Attachment-->
+                            <script src="/socket.io/socket.io.js"></script>
+                            <%- include ("./forum_script") %>
+                                <script>
+                                    let myEditor;
 
-            if (document.querySelector('#response-text')) {
-                ClassicEditor
-                    .create(document.querySelector('#response-text'), {
-                        toolbar: {
-                            // items: []
-                            shouldNotGroupWhenFull: true
-                        },
-                    })
-                    .then(editor => {
-                        myEditor = editor;
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            }
-        </script>
-        <% if(isAMember==false || topicInfo.discussionClosed==true){ %>
-        <script>
-            myEditor.enableReadOnlyMode('response-text')
-        </script>
-        <% } %>
-        <script src="../../../../js/script.js"></script>
-        <script>
-            const forumID = "<%= forumID %>";
-            fetchAForumInfo(forumID, theUserID);
-        </script>
-        <%- include ("./forum_script_two") %>         
+                                    if (document.querySelector('#response-text')) {
+                                        ClassicEditor
+                                            .create(document.querySelector('#response-text'), {
+                                                toolbar: {
+                                                    // items: []
+                                                    shouldNotGroupWhenFull: true
+                                                },
+                                            })
+                                            .then(editor => {
+                                                myEditor = editor;
+                                            })
+                                            .catch(error => {
+                                                console.error(error);
+                                            });
+                                    }
+                                </script>
+                                <% if(isAMember==false || topicInfo.discussionClosed==true){ %>
+                                    <script>
+                                        myEditor.enableReadOnlyMode('response-text')
+                                    </script>
+                                    <% } %>
+                                        <script src="../../../../js/script.js"></script>
+                                        <script>
+                                            const forumID = "<%= forumID %>";
+                                            fetchAForumInfo(forumID, theUserID);
+                                        </script>
+                                        <%- include ("./forum_script_two") %>
 </body>
+<script>
+    getTopicCategories('<%= forumID %>')
+    function getTopicCategories(forumID) {
+        socket.emit("getTopicCategories", { forumID })
+    }
+    socket.on("topicCategories", data => {
+        const { latestTopics, pinnedTopics, trendingTopics } = data;
+
+        var trendingTopicsHTML = trendingTopics.map(topic => {
+            return `
+                <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
+                    <div class="message" style="padding: 5px 0;">
+                        <div class="profile-pic">
+                            <img src="../../../../uploads/${topic.userInfo.avatar}" alt="">
+                        </div>
+                        <div class="message-body">
+                            <h5 style="font-size: 13px; font-weight: 600;">${topic.topic.subject.length > 100
+                        ? topic.topic.subject.substr(0, 30) + "..."
+                        : topic.topic.subject
+                    }</h5>
+                            <div>
+                                <p class="text-muted">By <span>${topic.userInfo.username}</span>,
+                                <b>${new Date(topic.topic.createdAt).toDateString()}</b> <span class="fa fa-clock"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }).join("");
+
+        var latestTopicsHTML = latestTopics.map(topic => {
+            return `
+                <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
+                    <div class="message" style="padding: 5px 0;">
+                        <div class="profile-pic">
+                            <img src="../../../../uploads/${topic.userInfo.avatar}" alt="">
+                        </div>
+                        <div class="message-body">
+                            <h5 style="font-size: 13px; font-weight: 600;">${topic.topic.subject.length > 100
+                        ? topic.topic.subject.substr(0, 30) + "..."
+                        : topic.topic.subject
+                    }</h5>
+                            <div>
+                                <p class="text-muted">By <span>${topic.userInfo.username}</span>,
+                                <b>${new Date(topic.topic.createdAt).toDateString()}</b> <span class="fa fa-clock"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }).join("");
+
+        var pinnedTopicsHTML = pinnedTopics.map(topic => {
+            return `
+                <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
+                    <div class="message" style="padding: 5px 0;">
+                        <div class="profile-pic">
+                            <img src="../../../../uploads/${topic.userInfo.avatar}" alt="">
+                        </div>
+                        <div class="message-body">
+                            <h5 style="font-size: 13px; font-weight: 600;">${topic.topic.subject.length > 100
+                        ? topic.topic.subject.substr(0, 30) + "..."
+                        : topic.topic.subject
+                    }</h5>
+                            <div>
+                                <p class="text-muted">By <span>${topic.userInfo.username}</span>,
+                                <b>${new Date(topic.topic.createdAt).toDateString()}</b> <span class="fa fa-clock"></span></p>
+                            </div>
+                        </div>
+                    </div>    
+                </a>
+            `;
+        }).join("");
+
+        document.querySelector("#pinned-topics .scroll-bar").innerHTML = pinnedTopicsHTML;
+        document.querySelector("#pinned-topics-middle .scroll-bar").innerHTML = pinnedTopicsHTML;
+
+        document.querySelector("#newest-topics .scroll-bar").innerHTML = latestTopicsHTML;
+        document.querySelector("#newest-topics-middle .scroll-bar").innerHTML = latestTopicsHTML;
+
+        document.querySelector("#trending-topics .scroll-bar").innerHTML = trendingTopicsHTML;
+        document.querySelector("#trending-topics-middle .scroll-bar").innerHTML = trendingTopicsHTML;
+    })
+</script>
 
 </html>
