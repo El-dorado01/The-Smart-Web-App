@@ -2423,7 +2423,7 @@ main .container .right {
 }
 
 .right .messages .forum .action span,
-.middle .messages .forum .action span {
+.middle .messages .forum .action span:not(.remove-user) {
     cursor: pointer;
     height: 20px;
     width: 20px;
@@ -5751,7 +5751,7 @@ main .container .right {
     display: flex;
     align-items: center;
     justify-content: center;
-    max-height: 8rem;
+    /* max-height: 8rem; */
     border-top: 1px solid var(--color-light);
     padding: 5px 5px 10px 5px;
     line-height: 1.4rem;
@@ -5781,6 +5781,7 @@ main .container .right {
 
 .middle .forum-body .topic .topic-middle .tags {
     display: flex;
+    flex-wrap: wrap;
     justify-content: flex-start;
     align-items: center;
     margin-top: 5px;

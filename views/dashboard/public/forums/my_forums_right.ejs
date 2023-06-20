@@ -10,7 +10,7 @@
         </h6>
         <h6 class="tablinks2" onclick="openTab2(event, 'forum-invites')" style="font-size: 1rem;">
             Invites &nbsp; <i class="fa-solid fa-envelope-open-text"></i>
-            <span class="msg-archive">4</span>
+            <span class="msg-archive">0</span>
         </h6>
     </div>
     <div class="postFeeds2" id="my-forums">
@@ -38,7 +38,7 @@
                                     <h5 style="font-size: 13px; font-weight: 600; color: var(--color-primary)"><%= forum.forumName %></h5>
                                 </a>
                                 <p class="text-muted">
-                                    <%= forum.members.length %>
+                                    <%= forum.members.length + 1 %>
                                     member<% if (forum.members.length > 1){%>s<%}%>
                                 </p>
                             </div>
@@ -58,7 +58,7 @@
                                     <h5 style="font-size: 13px; font-weight: 600;"><%= forum.forumName %></h5>
                                 </a>
                                 <p class="text-muted">
-                                    <%= forum.members.length %>
+                                    <%= forum.members.length + 1 %>
                                     member<% if (forum.members.length > 1){%>s<%}%>
                                 </p>
                             </div>

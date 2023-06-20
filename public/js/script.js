@@ -4212,7 +4212,7 @@ function loadAForumInfo(
             mod_panel.innerHTML = `
             <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${moderator.userID}">
                     <div class="profile-pic">
-                        <img src="${memberInfo.avatar}" alt="">
+                        <img src="../../../../uploads/${memberInfo.avatar}" alt="">
                     </div>
                   </a>
                   <div class="info">
@@ -4316,6 +4316,7 @@ function loadAForumInfo(
     // ==================FETCH FORUM MEMBERS AND ATTACH TO MEMBERS MODAL========================= //
     var memberModalPanel = document.createElement("div");
     memberModalPanel.classList.add("member");
+    memberModalPanel.id = "aModerator_" + memberInfo._id
     memberModalPanel.innerHTML = `
           <div class="info">
               <a href="/dashboard/public/member_profile/${forumInfo._id}/key?memberID=${memberInfo._id}">
@@ -5553,3 +5554,337 @@ function performActionAsModerator(forumID, memberID, actionType) {
       console.log(err);
     });
 }
+
+function getTopicCategories(forumID) {
+    socket.emit("getTopicCategories", { forumID })
+}
+socket.on("topicCategories", data => {
+    const { latestTopics, pinnedTopics, trendingTopics } = data;
+
+    var trendingTopicsHTML = trendingTopics.map(topic => {
+        return `
+            <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
+                <div class="message" style="padding: 5px 0;">
+                    <div class="profile-pic">
+                        <img src="../../../../uploads/${topic.userInfo.avatar}" alt="">
+                    </div>
+                    <div class="message-body">
+                        <h5 style="font-size: 13px; font-weight: 600;">${topic.topic.subject.length > 100
+                    ? topic.topic.subject.substr(0, 30) + "..."
+                    : topic.topic.subject
+                }</h5>
+                        <div>
+                            <p class="text-muted">By <span>${topic.userInfo.username}</span>,
+                            <b>${new Date(topic.topic.createdAt).toDateString()}</b> <span class="fa fa-clock"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        `;
+    }).join("");
+
+    var latestTopicsHTML = latestTopics.map(topic => {
+        return `
+            <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
+                <div class="message" style="padding: 5px 0;">
+                    <div class="profile-pic">
+                        <img src="../../../../uploads/${topic.userInfo.avatar}" alt="">
+                    </div>
+                    <div class="message-body">
+                        <h5 style="font-size: 13px; font-weight: 600;">${topic.topic.subject.length > 100
+                    ? topic.topic.subject.substr(0, 30) + "..."
+                    : topic.topic.subject
+                }</h5>
+                        <div>
+                            <p class="text-muted">By <span>${topic.userInfo.username}</span>,
+                            <b>${new Date(topic.topic.createdAt).toDateString()}</b> <span class="fa fa-clock"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        `;
+    }).join("");
+
+    var pinnedTopicsHTML = pinnedTopics.map(topic => {
+        return `
+            <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
+                <div class="message" style="padding: 5px 0;">
+                    <div class="profile-pic">
+                        <img src="../../../../uploads/${topic.userInfo.avatar}" alt="">
+                    </div>
+                    <div class="message-body">
+                        <h5 style="font-size: 13px; font-weight: 600;">${topic.topic.subject.length > 100
+                    ? topic.topic.subject.substr(0, 30) + "..."
+                    : topic.topic.subject
+                }</h5>
+                        <div>
+                            <p class="text-muted">By <span>${topic.userInfo.username}</span>,
+                            <b>${new Date(topic.topic.createdAt).toDateString()}</b> <span class="fa fa-clock"></span></p>
+                        </div>
+                    </div>
+                </div>    
+            </a>
+        `;
+    }).join("");
+
+    document.querySelector("#pinned-topics .scroll-bar").innerHTML = pinnedTopicsHTML;
+    document.querySelector("#pinned-topics-middle .scroll-bar").innerHTML = pinnedTopicsHTML;
+
+    document.querySelector("#newest-topics .scroll-bar").innerHTML = latestTopicsHTML;
+    document.querySelector("#newest-topics-middle .scroll-bar").innerHTML = latestTopicsHTML;
+
+    document.querySelector("#trending-topics .scroll-bar").innerHTML = trendingTopicsHTML;
+    document.querySelector("#trending-topics-middle .scroll-bar").innerHTML = trendingTopicsHTML;
+})
+
+function ejectMembersPanel(forumID, memberID) {
+  var closeUp = document.createElement("div");
+  closeUp.classList.add("close-popup");
+  closeUp.setAttribute("style", "cursor: pointer;");
+  closeUp.setAttribute("onclick", `cancelEjectMembers()`);
+  closeUp.innerHTML = `
+                            <span><i class="fa fa-times"></i></span>
+                        `;
+
+  var div = document.createElement("div");
+  div.classList.add("content");
+  div.innerHTML = `
+                            <h2>Eject Member</h2>
+                            <span>Are you sure you want to eject this member? This user will need an approval from a moderator before they can join back. </span>
+                        `;
+
+  var actionDiv = document.createElement("div");
+  actionDiv.classList.add("action");
+  actionDiv.innerHTML = `
+                            <button class="btn btn-danger" onclick="cancelEjectMembers()">No</button>
+                            <button class="btn btn-primary" onclick="ejectMembers('${forumID}', '${memberID}');">Yes</button>
+                        `;
+
+  var panel = document.querySelector(".confirm-popup");
+  panel.querySelector(".card").innerHTML = "";
+  panel.querySelector(".card").appendChild(closeUp);
+  panel.querySelector(".card").appendChild(div);
+  panel.querySelector(".card").appendChild(actionDiv);
+  panel.style.display = "block";
+}
+
+function cancelEjectMembers() {
+  var panel = document.querySelector(".confirm-popup");
+  panel.style.display = "none"
+  panel.querySelector(".card").innerHTML = "";
+}
+
+function ejectMembers(forumID, memberID) {
+  var actionType = "ejectMember";
+
+  var panel = document.querySelector(".confirm-popup");
+  panel.style.display = "none"
+  panel.querySelector(".card").innerHTML = "";
+
+  const formData = new FormData();
+
+  formData.append("forumID", forumID);
+  formData.append("memberID", memberID);
+  formData.append("actionType", actionType);
+
+  fetch("/dashboard/public/performActionAsModerator", {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: formData,
+  })
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (json) {
+      if (json.success == true) {
+        primaryAlert.style.display = "none";
+        successAlert.style.display = "block";
+        successAlertIcon.className = "";
+        successAlertIcon.className = "fa fa-check-circle";
+        successMessage.textContent = json.msg;
+
+        setTimeout(() => {
+          successAlert.style.display = "none";
+        }, 3000);
+
+        document.getElementById("aMember_" + memberID).remove()
+        if (document.getElementById("aModerator_" + memberID)) {
+          document.getElementById("aModerator_" + memberID).remove()
+        }
+        if (!document.querySelector("#modify-member-modal .members .member")) {
+          var memberPanel = document.createElement("div");
+          memberPanel.classList.add("body");
+
+          memberPanel.innerHTML = `
+                                <span class="text-muted">There are no members in this forum!</span>`;
+          document.querySelector("#modify-member-modal .members").appendChild(memberPanel);
+        }
+        if (!document.querySelector("#member-modal .members .member")) {
+          var memberPanel = document.createElement("div");
+          memberPanel.classList.add("body");
+
+          memberPanel.innerHTML = `
+                                <span class="text-muted">There are no members in this forum!</span>`;
+          document.querySelector("#member-modal .members").appendChild(memberPanel);
+        }
+      } else {
+        dangerAlert.style.display = "block";
+        dangerMessage.textContent = json.msg;
+
+        setTimeout(() => {
+          dangerAlert.style.display = "none";
+        }, 5000);
+      }
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
+}
+
+function sendRequestToJoin(event, forumID, actionType) {
+  event.innerHTML = `
+            <span>Sending...</span>
+        `;
+  const formData = new FormData();
+
+  formData.append("forumID", forumID);
+  formData.append("actionType", actionType);
+
+  fetch("/dashboard/public/updateForumInvites", {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: formData,
+  })
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (json) {
+      if (json.success == true) {
+        successAlert.style.display = "block";
+        successAlertIcon.className = "";
+        successAlertIcon.className = "fa fa-check-circle";
+        successMessage.textContent = json.msg;
+
+        event.setAttribute("onclick", `cancelRequestToJoin(this, '${forumID}', 'rejectInvites')`);
+        event.innerHTML = `
+                    <i class="fa-solid fa-user-times"></i> <span>Cancel Request</span>
+                    `;
+        event.classList.remove("btn-primary");
+        event.style.backgroundColor = "var(--color-danger)";
+
+        setTimeout(() => {
+          successAlert.style.display = "none";
+        }, 3000);
+      } else {
+        dangerAlert.style.display = "block";
+        dangerMessage.textContent = json.msg;
+
+        setTimeout(() => {
+          dangerAlert.style.display = "none";
+        }, 5000);
+      }
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
+}
+
+function cancelRequestToJoin(event, forumID, actionType) {
+  const formData = new FormData();
+
+  formData.append("forumID", forumID);
+  formData.append("actionType", actionType);
+
+  fetch("/dashboard/public/updateForumInvites", {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: formData,
+  })
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (json) {
+      if (json.success == true) {
+        event.setAttribute("onclick", `sendRequestToJoin(this, '${forumID}', 'sendRequestToJoin')`);
+        event.innerHTML = `
+                    <i class="fa-solid fa-person-circle-plus"></i> <span>Request to Join</span>
+                    `;
+        event.style.backgroundColor = "";
+        event.classList.add("btn-primary");
+      } else {
+        dangerAlert.style.display = "block";
+        dangerMessage.textContent = json.msg;
+
+        setTimeout(() => {
+          dangerAlert.style.display = "none";
+        }, 5000);
+      }
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
+
+}
+
+function sendRequestToJoinTwo(event, forumID, actionType){
+            event.innerHTML = `
+            <strong>Sending...</strong>
+        `;
+            const formData = new FormData();
+
+            formData.append("forumID", forumID);
+            formData.append("actionType", actionType);
+
+            fetch("/dashboard/public/updateForumInvites", {
+                method: "POST",
+                mode: "cors",
+                cache: "no-cache",
+                credentials: "same-origin",
+                redirect: "follow",
+                referrerPolicy: "no-referrer",
+                body: formData,
+            })
+                .then(function (res) {
+                    return res.json();
+                })
+                .then(function (json) {
+                    if (json.success == true) {
+                        successAlert.style.display = "block";
+                        successAlertIcon.className = "";
+                        successAlertIcon.className = "fa fa-check-circle";
+                        successMessage.textContent = json.msg;
+
+                        event.removeAttribute("onclick");
+                        event.innerHTML = `
+                        <strong>Request sent</strong>
+                        `;
+
+                        setTimeout(() => {
+                            successAlert.style.display = "none";
+                        }, 3000);
+                    } else {
+                        dangerAlert.style.display = "block";
+                        dangerMessage.textContent = json.msg;
+
+                        setTimeout(() => {
+                            dangerAlert.style.display = "none";
+                        }, 5000);
+                    }
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+        }
+    

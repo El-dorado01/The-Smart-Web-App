@@ -10,228 +10,281 @@
     <!-- NavBar -->
     <%- include ("../partials/navBar") %>
 
-    <!--Main-->
-    <main>
-        <div class="container">
-            <div class="alerts">
-                <div class="alert-primary" id="alert-primary" style="display: none;">
-                    <span class="fa fa-times"></span>
-                    <div class="body">
-                        <i class="fa-solid fa-spinner"></i>
-                        <p class="msg"></p>
+        <!--Main-->
+        <main>
+            <div class="container">
+                <div class="alerts">
+                    <div class="alert-primary" id="alert-primary" style="display: none;">
+                        <span class="fa fa-times"></span>
+                        <div class="body">
+                            <i class="fa-solid fa-spinner"></i>
+                            <p class="msg"></p>
+                        </div>
+                    </div>
+                    <div class="alert-success" id="alert-success" style="display: none;">
+                        <span class="fa fa-times"></span>
+                        <div class="body">
+                            <i class="fa fa-check-circle"></i>
+                            <p class="msg"></p>
+                        </div>
+                    </div>
+                    <div class="alert-danger" id="alert-danger" style="display: none;">
+                        <span class="fa fa-times"></span>
+                        <div class="body">
+                            <i class="fa fa-exclamation-circle"></i>
+                            <p class="msg"></p>
+                        </div>
                     </div>
                 </div>
-                <div class="alert-success" id="alert-success" style="display: none;">
-                    <span class="fa fa-times"></span>
-                    <div class="body">
-                        <i class="fa fa-check-circle"></i>
-                        <p class="msg"></p>
-                    </div>
-                </div>
-                <div class="alert-danger" id="alert-danger" style="display: none;">
-                    <span class="fa fa-times"></span>
-                    <div class="body">
-                        <i class="fa fa-exclamation-circle"></i>
-                        <p class="msg"></p>
-                    </div>
-                </div>
-            </div>
-            <!-- Sidebar -->
-            <%- include ("../partials/sidebar") %>
-            <!--Middle-->
-            <div class="middle">
-                <!--Forums-->
-                <%- include ("./my_forums_middle") %>
-                <%- include ("./create_forum") %>
+                <!-- Sidebar -->
+                <%- include ("../partials/sidebar") %>
+                    <!--Middle-->
+                    <div class="middle">
+                        <!--Forums-->
+                        <%- include ("./my_forums_middle") %>
+                            <%- include ("./create_forum") %>
 
-                <div class="forum-profile">
-                    <div class="forum-header">
-                        <div class="avatar" onclick='document.querySelector(".forum-profile .forum-body").style.display = "flex"; document.querySelector(".forum-profile .body-forum").style.display = "flex"; document.querySelector(".forum-profile .settings").style.display = "none";'>
-                            <img src="" alt="" id="forum-avatar">
-                        </div>
-                        <div class="info">
-                            <h3 onclick='document.querySelector(".forum-profile .forum-body").style.display = "flex"; document.querySelector(".forum-profile .body-forum").style.display = "flex"; document.querySelector(".forum-profile .settings").style.display = "none"; '></h3>
-                            <p class="forum-desc"></p>
-                            <p class="name" style="margin-top: 5px;">
-                                <span style="padding: 5px; background-color: var(--color-light);"><i
-                                        class="fa fa-users-rays"></i> <span class="forum-member"></span></span>
-                            </p>
-                            <div class="action-icons">
-                                <% if(isAMember == false){ %> 
-                                    <div class="btn btn-primary" title="Send Request to Join Forum" style="width: 100%;">
-                                        <i class="fa-solid fa-person-circle-plus"></i> <span>Request to Join</span>
+                                <div class="forum-profile">
+                                    <div class="forum-header">
+                                        <div class="avatar"
+                                            onclick='document.querySelector(".forum-profile .forum-body").style.display = "flex"; document.querySelector(".forum-profile .body-forum").style.display = "flex"; document.querySelector(".forum-profile .settings").style.display = "none";'>
+                                            <img src="" alt="" id="forum-avatar">
+                                        </div>
+                                        <div class="info">
+                                            <h3
+                                                onclick='document.querySelector(".forum-profile .forum-body").style.display = "flex"; document.querySelector(".forum-profile .body-forum").style.display = "flex"; document.querySelector(".forum-profile .settings").style.display = "none"; '>
+                                            </h3>
+                                            <p class="forum-desc"></p>
+                                            <p class="name" style="margin-top: 5px;">
+                                                <span style="padding: 5px; background-color: var(--color-light);"><i
+                                                        class="fa fa-users-rays"></i> <span
+                                                        class="forum-member"></span></span>
+                                            </p>
+                                            <div class="action-icons">
+                                                <% if(isAMember==false){ %>
+                                                    <div title="Send Request to Join Forum"
+                                                        <% if(thereIsRequest == true){ %>
+                                                            style="width: 100%; background-color: var(--color-danger);"
+                                                            class="btn"
+                                                            onclick="cancelRequestToJoin(this, '<%= forumID %>', 'rejectInvites')"
+                                                        <% }else{ %>
+                                                            style="width: 100%;"
+                                                            class="btn btn-primary"
+                                                            onclick="sendRequestToJoin(this, '<%= forumID %>', 'sendRequestToJoin')"
+                                                        <% } %>>
+                                                        <% if(thereIsRequest == true){ %>
+                                                            <i class="fa-solid fa-user-times"></i> <span>Cancel Request</span>
+                                                        <% }else{ %>
+                                                            <i class="fa-solid fa-person-circle-plus"></i> <span>Request to Join</span>
+                                                        <% } %>
+                                                    </div>
+                                                    <% }else{ %>
+                                                        <div class="btn btn-primary"
+                                                            onclick="document.querySelector('.add-topic-modal').style.display = 'grid';"
+                                                            title="Add a new topic">
+                                                            <i class="fa-solid fa-plus"></i> <span>Add</span>
+                                                        </div>
+                                                        <div class="other-icons">
+                                                            <span title="Turn on notifications"><i
+                                                                    class="fa fa-bell"></i></span>
+                                                            <% if(forumInfo.membersCanInvite==true && isAMember==true &&
+                                                                isAModerator==false){ %>
+                                                                <span
+                                                                    onclick="copyForumInviteLink('<%= forumInfo.forumSecretKey %>', '<%= forumID %>', '<%= getURL %>/dashboard/public/forum_invites/<%= forumID %>/key?secretKey=')"
+                                                                    title="Copy Invite Link"><i
+                                                                        class="fa-solid fa-link"></i></span>
+                                                                <% } %>
+                                                                    <% if(isAModerator==true){ %>
+                                                                        <span onclick="toggleSettings()"
+                                                                            title="Toggle to show and hide settings"><i
+                                                                                class="fa fa-cog"></i></span>
+                                                                        <% } %>
+                                                                            <span title="Exit Forum"><i
+                                                                                    class="fa-solid fa-sign-out"></i></span>
+                                                        </div>
+                                                        <% } %>
+                                            </div>
+                                        </div>
                                     </div>
-                                <% }else{ %> 
-                                    <div class="btn btn-primary"
-                                        onclick="document.querySelector('.add-topic-modal').style.display = 'grid';"
-                                        title="Add a new topic">
-                                        <i class="fa-solid fa-plus"></i> <span>Add</span>
-                                    </div>
-                                    <div class="other-icons">
-                                        <span title="Turn on notifications"><i class="fa fa-bell"></i></span>
-                                        <% 
-                                        if(forumInfo.membersCanInvite == true && isAMember == true && isAModerator == false){ %>
-                                            <span onclick="copyForumInviteLink('<%= forumInfo.forumSecretKey %>', '<%= forumID %>', '<%= getURL %>/dashboard/public/forum_invites/<%= forumID %>/key?secretKey=')" title="Copy Invite Link"><i class="fa-solid fa-link"></i></span>
-                                        <% } %>
-                                        <% if(isAModerator == true){ %>
-                                            <span onclick="toggleSettings()" title="Toggle to show and hide settings"><i
-                                                    class="fa fa-cog"></i></span>
-                                        <% } %>
-                                        <span title="Exit Forum"><i class="fa-solid fa-sign-out"></i></span>
-                                    </div>
-                                <% } %>
-                            </div>
-                        </div>
+                                    <%- include ("./forum_settings") %>
+                                        <%- include ("./forum_info") %>
+                                            <div class="forum-body" id="forumTopics">
+                                                <% if(topics.length < 1){%>
+                                                    <div
+                                                        style="width: 100%; height: 15rem; display: flex; align-items: center; justify-content: center;">
+                                                        <span class="text-muted">There are no topics in this
+                                                            forum</span>
+                                                    </div>
+                                                    <%} %>
+                                                        <% topics.forEach(topic=> { %>
+                                                            <div class="topic">
+                                                                <div class="topic-left">
+                                                                    <p><span class="fa fa-eye"></span>
+                                                                        <%= topic.topic.__v %>
+                                                                            View<% if(topic.topic.__v> 1){ %>s<% } %>
+                                                                    </p>
+                                                                    <p><span class="fa fa-comment"></span>
+                                                                        <%= topic.topic.responses.length %>
+                                                                            Comment<% if(topic.topic.responses.length>
+                                                                                1){ %>s<% } %>
+                                                                    </p>
+                                                                    <p><span class="fa-solid fa-up-long"></span>
+                                                                        <%= topic.topic.upvotes %>
+                                                                            Upvote<% if(topic.topic.upvotes> 1){ %>s<% }
+                                                                                    %>
+                                                                    </p>
+                                                                </div>
+                                                                <div class="topic-middle">
+                                                                    <a href="/dashboard/public/forum/<%= forumID %>/key?topicID=<%= topic.topic._id %>"
+                                                                        style="color: var(--color-dark);">
+                                                                        <h4>
+                                                                            <% if(topic.topic.subject.length> 100){%><%=
+                                                                                    topic.topic.subject.substr(0, 100)
+                                                                                    %>...<%}else{%>
+                                                                                        <%= topic.topic.subject %>
+                                                                                            <%} %>
+                                                                        </h4>
+                                                                    </a>
+                                                                    <div class="tags">
+                                                                        <% topic.topic.topicTags.forEach(tag=> {%>
+                                                                            <a
+                                                                                href="/dashboard/public/forum_topic_categories/<%= tag %>/key?forumID=<%= forumID %>">
+                                                                                <div>
+                                                                                    <span class="fa fa-tag"></span>
+                                                                                    <%= tag %>
+                                                                                </div>
+                                                                            </a>
+                                                                            <%})%>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="topic-right">
+                                                                    <div class="user-info">
+                                                                        <a
+                                                                            href="/dashboard/public/member_profile/<%= forumID %>/key?memberID=<%= topic.userInfo._id %>">
+                                                                            <div class="profile-pic">
+                                                                                <img src="../../../../uploads/<%= topic.userInfo.avatar %>"
+                                                                                    alt="">
+                                                                            </div>
+                                                                        </a>
+                                                                        <h5><a
+                                                                                href="/dashboard/public/member_profile/<%= forumID %>/key?memberID=<%= topic.userInfo._id %>">
+                                                                                <%= topic.userInfo.username %>
+                                                                            </a>
+                                                                            <span class="text-muted">
+                                                                                <%= topic.memberUpvotes %> upvote
+                                                                                    <% if(topic.memberUpvotes> 1){ %>s
+                                                                                        <%}%>,
+                                                                                            <%= new
+                                                                                                Date(topic.topic.createdAt).toDateString()
+                                                                                                %>
+                                                                            </span>
+                                                                        </h5>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <% }) %>
+                                                                <div class="pagination">
+                                                                    <% if(totalPages> 1 && totalPages < 4){ for(var i=1;
+                                                                            i < 4; i++){ %>
+                                                                            <div onclick="goToNewPage('<%= i %>','<%= totalPages %>','<%= forumID %>')"
+                                                                                <% if(i==1){%> class="active" <%}%>>
+                                                                                    <%= i %>
+                                                                            </div>
+                                                                            <% } }else if(totalPages> 3){
+                                                                                for(var i = 1; i < 4; i++){ %>
+                                                                                    <div onclick="goToNewPage('<%= i %>','<%= totalPages %>','<%= forumID %>')"
+                                                                                        <% if(i==1){%> class="active"
+                                                                                        <%}%>>
+                                                                                            <%= i %>
+                                                                                    </div>
+                                                                                    <% } if(totalPages> 3){%> <div
+                                                                                            style="cursor: auto;">...
+                                                                                        </div>
+                                                                                        <div
+                                                                                            onclick="goToNewPage('<%= totalPages %>','<%= totalPages %>','<%= forumID %>')">
+                                                                                            <%= totalPages %>
+                                                                                        </div>
+                                                                                        <% } %>
+                                                                                            <div class="next"
+                                                                                                onclick="goToNewPage('2','<%= totalPages %>','<%= forumID %>')">
+                                                                                                <span>Next</span><i
+                                                                                                    class="fa-solid fa-angle-right"></i>
+                                                                                            </div>
+                                                                                            <% } %>
+                                                                </div>
+                                            </div>
+                                </div>
+                                <%- include ("./topic_category_middle") %>
+                                    <!--Forum box end here-->
                     </div>
-                    <%- include ("./forum_settings") %>
-                    <%- include ("./forum_info") %>
-                    <div class="forum-body" id="forumTopics">
-                        <% if(topics.length < 1){%>
-                        <div
-                            style="width: 100%; height: 15rem; display: flex; align-items: center; justify-content: center;">
-                            <span class="text-muted">There are no topics in this forum</span>
-                        </div>
-                        <%} %>
-                        <% topics.forEach(topic => { %>
-                        <div class="topic">
-                            <div class="topic-left">
-                                <p><span class="fa fa-eye"></span> <%= topic.topic.__v %>
-                                    View<% if(topic.topic.__v > 1){ %>s<% } %></p>
-                                <p><span class="fa fa-comment"></span> <%= topic.topic.responses.length %>
-                                    Comment<% if(topic.topic.responses.length > 1){ %>s<% } %></p>
-                                <p><span class="fa-solid fa-up-long"></span> <%= topic.topic.upvotes %>
-                                    Upvote<% if(topic.topic.upvotes > 1){ %>s<% } %></p>
-                            </div>
-                            <div class="topic-middle">
-                                <a href="/dashboard/public/forum/<%= forumID %>/key?topicID=<%= topic.topic._id %>"
-                                    style="color: var(--color-dark);">
-                                    <h4><% if(topic.topic.subject.length > 100){%><%= topic.topic.subject.substr(0, 100) %>...<%}else{%><%= topic.topic.subject %><%}
-                                        %>
-                                    </h4>
-                                </a>
-                                <div class="tags">
-                                    <% topic.topic.topicTags.forEach(tag => {%>
-                                    <a
-                                        href="/dashboard/public/forum_topic_categories/<%= tag %>/key?forumID=<%= forumID %>">
-                                        <div>
-                                            <span class="fa fa-tag"></span>
-                                            <%= tag %>
-                                        </div>
-                                    </a>
-                                    <%})%>
-                                </div>
-                            </div>
-                            <div class="topic-right">
-                                <div class="user-info">
-                                    <a
-                                        href="/dashboard/public/member_profile/<%= forumID %>/key?memberID=<%= topic.userInfo._id %>">
-                                        <div class="profile-pic">
-                                            <img src="../../../../uploads/<%= topic.userInfo.avatar %>" alt="">
-                                        </div>
-                                    </a>
-                                    <h5><a
-                                            href="/dashboard/public/member_profile/<%= forumID %>/key?memberID=<%= topic.userInfo._id %>"><%= topic.userInfo.username %></a>
-                                        <span class="text-muted"><%= topic.memberUpvotes %> upvote
-                                            <% if(topic.memberUpvotes > 1){ %>s<%}%>,
-                                                <%= new Date(topic.topic.createdAt).toDateString() %></span>
-                                    </h5>
-                                </div>
-                            </div>
-                        </div>
-                        <% }) %>
-                        <div class="pagination">
-                            <% 
-                                if(totalPages > 1 && totalPages < 4){
-                                    for(var i = 1; i < 4; i++){
-                                        %>
-                                        <div onclick="goToNewPage('<%= i %>','<%= totalPages %>','<%= forumID %>')" <% if(i == 1){%> class="active" <%}%>>
-                                            <%= i %> </div> 
-                            <%      }
-                                }else if(totalPages > 3){
-                                    for(var i = 1; i < 4; i++){
-                                        %>
-                                        <div onclick="goToNewPage('<%= i %>','<%= totalPages %>','<%= forumID %>')" <% if(i == 1){%> class="active" <%}%>>
-                                            <%= i %> </div> 
-                            <%  
-                                    } 
-                                    if(totalPages > 3){%> <div style="cursor: auto;">...</div>
-                                    <div onclick="goToNewPage('<%= totalPages %>','<%= totalPages %>','<%= forumID %>')">
-                                        <%= totalPages %></div>
+                    <!--Middle ends here-->
+
+                    <!--Right-->
+                    <div class="right">
+                        <!--Forums-->
+                        <%- include ("./my_forums_right") %>
+                            <!--Forums end here-->
+
+                            <!-- ===============FORUM PROFILE=========================== -->
+                            <% if(isAMember==true){ %>
+                                <%- include ("./my_profile") %>
+                                    <%}%>
+                                        <!-- ===============FORUM PROFILE ENDS HERE=========================== -->
+
+                                        <!--Forum box-->
+                                        <%- include ("./topic_category_right") %>
+                                            <!--Forum box end here-->
+                    </div>
+            </div>
+        </main>
+        <!--Ranking System-->
+        <%- include ("./rank_modal") %>
+            <!--Add Moderator Modal-->
+            <%- include ("./moderator_modal") %>
+                <%- include ("./member-modal") %>
+                    <!--Add Topic Modal-->
+                    <%- include ("./add_topic_modal") %>
+                        <!--Theme Customization-->
+                        <%- include ("../partials/themeCustomization") %>
+        <%- include ("../partials/popup") %>
+                            <!--JS Script Attachment-->
+                            <script src="/socket.io/socket.io.js"></script>
+                            <%- include ("./forum_script") %>
+                                <script src="../../../../js/script.js"></script>
+                                <script>
+                                    const forumID = "<%= forumID %>";
+                                    fetchAForumInfo(forumID, theUserID);
+                                    getTopicCategories(forumID);
+                                </script>
+                                <% if(incomingMsg==true){ 
+                                    var inviteStatus=msg.success; 
+                                    var msgText=msg.content %>
+                                    <script>
+                                        checkInviteStatus(<%= inviteStatus %>, "<%= msgText %>")
+                                        function checkInviteStatus(inviteStatus, text) {
+                                            if (inviteStatus == true) {
+                                                successAlert.style.display = "block";
+                                                successAlertIcon.className = "";
+                                                successAlertIcon.className = "fa fa-check-circle";
+                                                successMessage.textContent = text;
+
+                                                setTimeout(() => {
+                                                    successAlert.style.display = "none";
+                                                }, 3000);
+                                            } else {
+                                                dangerAlert.style.display = "block";
+                                                dangerMessage.textContent = text;
+
+                                                setTimeout(() => {
+                                                    dangerAlert.style.display = "none";
+                                                }, 5000);
+                                            }
+                                        }
+                                    </script>
                                     <% } %>
-                                    <div class="next" onclick="goToNewPage('2','<%= totalPages %>','<%= forumID %>')">
-                                        <span>Next</span><i class="fa-solid fa-angle-right"></i></div>
-                            <%  } %>
-                        </div>
-                    </div>
-                </div>
-                <%- include ("./topic_category_middle") %>
-                <!--Forum box end here-->
-            </div>
-            <!--Middle ends here-->
-
-            <!--Right-->
-            <div class="right">
-                <!--Forums-->
-                <%- include ("./my_forums_right") %>
-                <!--Forums end here-->
-
-                <!-- ===============FORUM PROFILE=========================== -->
-                <% if(isAMember == true){ %> 
-                    <%- include ("./my_profile") %>
-                <%}%>
-                <!-- ===============FORUM PROFILE ENDS HERE=========================== -->
-
-                <!--Forum box-->
-                <%- include ("./topic_category_right") %>
-                <!--Forum box end here-->
-            </div>
-        </div>
-    </main>
-    <!--Ranking System-->
-    <%- include ("./rank_modal") %>
-    <!--Add Moderator Modal-->
-    <%- include ("./moderator_modal") %>
-    <%- include ("./member-modal") %>
-    <!--Add Topic Modal-->
-    <%- include ("./add_topic_modal") %>
-    <!--Theme Customization-->
-    <%- include ("../partials/themeCustomization") %>
-
-    <!--JS Script Attachment-->
-    <script src="/socket.io/socket.io.js"></script>
-    <%- include ("./forum_script") %>
-    <script src="../../../../js/script.js"></script>
-    <script>
-        const forumID = "<%= forumID %>";
-        fetchAForumInfo(forumID, theUserID);
-    </script>
-    <% if(incomingMsg == true){ 
-        var inviteStatus = msg.success
-        var msgText = msg.content
-        %> 
-        <script>
-            checkInviteStatus(<%= inviteStatus %>, "<%= msgText %>")
-            function checkInviteStatus(inviteStatus, text){
-                if(inviteStatus == true){
-                    successAlert.style.display = "block";
-                    successAlertIcon.className = "";
-                    successAlertIcon.className = "fa fa-check-circle";
-                    successMessage.textContent = text;
-
-                    setTimeout(() => {
-                    successAlert.style.display = "none";
-                    }, 3000);
-                }else{
-                    dangerAlert.style.display = "block";
-                    dangerMessage.textContent = text;
-
-                    setTimeout(() => {
-                        dangerAlert.style.display = "none";
-                    }, 5000);
-                }
-            }
-        </script>
-    <% } %>
 </body>
+<script>
+    
+</script>
 
 </html>

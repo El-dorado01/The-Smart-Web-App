@@ -62,10 +62,21 @@
                                             </p>
                                             <div class="action-icons">
                                                 <% if(isAMember==false){ %>
-                                                    <div class="btn btn-primary" title="Send Request to Join Forum"
-                                                        style="width: 100%;">
-                                                        <i class="fa-solid fa-person-circle-plus"></i> <span>Request to
-                                                            Join</span>
+                                                    <div title="Send Request to Join Forum"
+                                                        <% if(thereIsRequest == true){ %>
+                                                            style="width: 100%; background-color: var(--color-danger);"
+                                                            class="btn"
+                                                            onclick="cancelRequestToJoin(this, '<%= forumID %>', 'rejectInvites')"
+                                                        <% }else{ %>
+                                                            style="width: 100%;"
+                                                            class="btn btn-primary"
+                                                            onclick="sendRequestToJoin(this, '<%= forumID %>', 'sendRequestToJoin')"
+                                                        <% } %>>
+                                                        <% if(thereIsRequest == true){ %>
+                                                            <i class="fa-solid fa-user-times"></i> <span>Cancel Request</span>
+                                                        <% }else{ %>
+                                                            <i class="fa-solid fa-person-circle-plus"></i> <span>Request to Join</span>
+                                                        <% } %>
                                                     </div>
                                                     <% }else{ %>
                                                         <div class="btn btn-primary"
@@ -494,92 +505,9 @@
                                         <script>
                                             const forumID = "<%= forumID %>";
                                             fetchAForumInfo(forumID, theUserID);
+                                            getTopicCategories(forumID);
                                         </script>
                                         <%- include ("./forum_script_two") %>
 </body>
-<script>
-    getTopicCategories('<%= forumID %>')
-    function getTopicCategories(forumID) {
-        socket.emit("getTopicCategories", { forumID })
-    }
-    socket.on("topicCategories", data => {
-        const { latestTopics, pinnedTopics, trendingTopics } = data;
-
-        var trendingTopicsHTML = trendingTopics.map(topic => {
-            return `
-                <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
-                    <div class="message" style="padding: 5px 0;">
-                        <div class="profile-pic">
-                            <img src="../../../../uploads/${topic.userInfo.avatar}" alt="">
-                        </div>
-                        <div class="message-body">
-                            <h5 style="font-size: 13px; font-weight: 600;">${topic.topic.subject.length > 100
-                        ? topic.topic.subject.substr(0, 30) + "..."
-                        : topic.topic.subject
-                    }</h5>
-                            <div>
-                                <p class="text-muted">By <span>${topic.userInfo.username}</span>,
-                                <b>${new Date(topic.topic.createdAt).toDateString()}</b> <span class="fa fa-clock"></span></p>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            `;
-        }).join("");
-
-        var latestTopicsHTML = latestTopics.map(topic => {
-            return `
-                <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
-                    <div class="message" style="padding: 5px 0;">
-                        <div class="profile-pic">
-                            <img src="../../../../uploads/${topic.userInfo.avatar}" alt="">
-                        </div>
-                        <div class="message-body">
-                            <h5 style="font-size: 13px; font-weight: 600;">${topic.topic.subject.length > 100
-                        ? topic.topic.subject.substr(0, 30) + "..."
-                        : topic.topic.subject
-                    }</h5>
-                            <div>
-                                <p class="text-muted">By <span>${topic.userInfo.username}</span>,
-                                <b>${new Date(topic.topic.createdAt).toDateString()}</b> <span class="fa fa-clock"></span></p>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            `;
-        }).join("");
-
-        var pinnedTopicsHTML = pinnedTopics.map(topic => {
-            return `
-                <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
-                    <div class="message" style="padding: 5px 0;">
-                        <div class="profile-pic">
-                            <img src="../../../../uploads/${topic.userInfo.avatar}" alt="">
-                        </div>
-                        <div class="message-body">
-                            <h5 style="font-size: 13px; font-weight: 600;">${topic.topic.subject.length > 100
-                        ? topic.topic.subject.substr(0, 30) + "..."
-                        : topic.topic.subject
-                    }</h5>
-                            <div>
-                                <p class="text-muted">By <span>${topic.userInfo.username}</span>,
-                                <b>${new Date(topic.topic.createdAt).toDateString()}</b> <span class="fa fa-clock"></span></p>
-                            </div>
-                        </div>
-                    </div>    
-                </a>
-            `;
-        }).join("");
-
-        document.querySelector("#pinned-topics .scroll-bar").innerHTML = pinnedTopicsHTML;
-        document.querySelector("#pinned-topics-middle .scroll-bar").innerHTML = pinnedTopicsHTML;
-
-        document.querySelector("#newest-topics .scroll-bar").innerHTML = latestTopicsHTML;
-        document.querySelector("#newest-topics-middle .scroll-bar").innerHTML = latestTopicsHTML;
-
-        document.querySelector("#trending-topics .scroll-bar").innerHTML = trendingTopicsHTML;
-        document.querySelector("#trending-topics-middle .scroll-bar").innerHTML = trendingTopicsHTML;
-    })
-</script>
 
 </html>

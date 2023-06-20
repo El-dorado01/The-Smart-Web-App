@@ -39,6 +39,9 @@ const forums = async (req, res) => {
       { $and: [{ "members.userID": user.userId }, { "members.memberStatus": "active" }] }
     ],
   });
+  const suggestedForums = await ForumsModel.find({
+    $nor: [{ creator: user.userId }, { "members.userID": user.userId }, { availableForLookUp: false }, { "invites.userID": user.userId }],
+  });
 
   const invites = await ForumsModel.find({
     $and: [{ "invites.userID": user.userId }, { "invites.incoming": false }],
@@ -47,6 +50,7 @@ const forums = async (req, res) => {
   //Fetch Suggested Forums
 
   res.locals.forums = fetchAllForums;
+  res.locals.suggestedForums = suggestedForums;
   res.locals.invites = invites;
   res.status(StatusCodes.OK).render("./dashboard/public/forums/forums", {
     headTitle: "Smart Forums",
@@ -67,6 +71,7 @@ const processInvite = asyncWrapper(async (req, res) => {
     userName: payload.userName,
   };
 
+  var thereIsRequest = false;
   const forumInfoKey = await ForumsModel.findById(forumID);
 
   const isMatch = await bcrypt.compare(forumInfoKey.forumSecretKey, secretKey);
@@ -105,17 +110,20 @@ const processInvite = asyncWrapper(async (req, res) => {
         console.log(
           "New Member " + user.userId + " has rejoined the forum " + forumID
         );
+
+        var msg = {
+          success: true,
+          content: "Welcome back to " + forumInfoKey.forumName,
+        };
       }
 
-      var msg = {
-        success: true,
-        content: "Welcome back to " + forumInfoKey.forumName,
-      };
     }else if(isEjected == true){
       var requestExisted = await ForumsModel.findOne({ 
         _id: forumID, 
         $and: [{ "invites.incoming": true }, { "invites.userID": user.userId }],
       })
+
+      thereIsRequest = true;
 
       if(!requestExisted){
         var requestSent = await ForumsModel.findByIdAndUpdate(
@@ -245,6 +253,7 @@ const processInvite = asyncWrapper(async (req, res) => {
     res.locals.isAModerator = isAModerator;
     res.locals.incomingMsg = true;
     res.locals.forumRanks = forumRanks;
+    res.locals.thereIsRequest = thereIsRequest;
     res
       .status(StatusCodes.OK)
       .render("./dashboard/public/forums/single_forum_page", {
@@ -332,6 +341,7 @@ const processInvite = asyncWrapper(async (req, res) => {
     res.locals.isAModerator = isAModerator;
     res.locals.incomingMsg = true;
     res.locals.forumRanks = forumRanks;
+    res.locals.thereIsRequest = thereIsRequest;
     res
       .status(StatusCodes.OK)
       .render("./dashboard/public/forums/single_forum_page", {
@@ -349,6 +359,7 @@ const processInvite = asyncWrapper(async (req, res) => {
 const singleForum = async (req, res) => {
   const page_name = req.path;
   const forumID = req.params.forumID;
+  var thereIsRequest = false;
 
   const cookies = req.cookies;
   const token = cookies.jwtAccessToken;
@@ -368,6 +379,15 @@ const singleForum = async (req, res) => {
   const invites = await ForumsModel.find({
     $and: [{ "invites.userID": user.userId }, { "invites.incoming": false }],
   });
+
+  var requestExisted = await ForumsModel.findOne({
+    _id: forumID,
+    $and: [{ "invites.incoming": true }, { "invites.userID": user.userId }],
+  });
+
+  if(requestExisted){
+    thereIsRequest = true;
+  }
 
   const topics = [];
 
@@ -439,6 +459,7 @@ const singleForum = async (req, res) => {
   res.locals.isAModerator = isAModerator;
   res.locals.incomingMsg = false;
   res.locals.forumRanks = forumRanks;
+  res.locals.thereIsRequest = thereIsRequest;
   res
     .status(StatusCodes.OK)
     .render("./dashboard/public/forums/single_forum_page", {
@@ -455,6 +476,7 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   var isAMember = false;
   var isAModerator = false;
   var hasViewed = false;
+  var thereIsRequest = false;
 
   const cookies = req.cookies;
   const token = cookies.jwtAccessToken;
@@ -463,6 +485,15 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
     userId: payload.userId,
     userName: payload.userName,
   };
+
+  var requestExisted = await ForumsModel.findOne({
+    _id: forumID,
+    $and: [{ "invites.incoming": true }, { "invites.userID": user.userId }],
+  })
+
+  if(requestExisted){
+    thereIsRequest = true;
+  }
 
   const topicInfo = await ForumsTopicsModel.findById({ _id: topicID });
   const topicResponses = topicInfo.responses;
@@ -631,6 +662,7 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   res.locals.responsesUpvoted = responsesUpvoted;
   res.locals.topicUpvotedByUser = topicUpvotedByUser;
   res.locals.forumRanks = forumRanks;
+  res.locals.thereIsRequest = thereIsRequest;
 
   res.status(StatusCodes.OK).render("./dashboard/public/forums/topic_page", {
     headTitle: "Forum - " + forumInfo.forumName,
@@ -1523,16 +1555,25 @@ const updateForumInvites = asyncWrapper(async (req, res) => {
 
   switch (actionType) {
     case "sendRequestToJoin":
-      const requestSent = await ForumsModel.findByIdAndUpdate(
-        { _id: forumID },
-        { $push: { invites: { incoming: true, userID: user.userId } } }
-      );
+      var requestExisted = await ForumsModel.findOne({ 
+        _id: forumID, 
+        $and: [{ "invites.incoming": true }, { "invites.userID": user.userId }],
+      });
 
-      if (requestSent) {
-        console.log(
-          "You " + user.userId + " have sent a request to join forum " + forumID
+      if(!requestExisted){
+        const requestSent = await ForumsModel.findByIdAndUpdate(
+          { _id: forumID },
+          { $push: { invites: { incoming: true, userID: user.userId } } }
         );
-        // res.status(StatusCodes.OK).send("Request sent!");
+
+        if (requestSent) {
+          console.log(
+            "You " + user.userId + " have sent a request to join forum " + forumID
+          );
+          res
+            .status(StatusCodes.OK)
+            .json({ success: true, msg: "You have sent a request to join the forum!" });
+        }
       }
       break;
     case "acceptInvites":
@@ -1585,7 +1626,9 @@ const updateForumInvites = asyncWrapper(async (req, res) => {
 
       if (pullRequest) {
         console.log("You have turned down the invite to join forum " + forumID);
-        // res.status(StatusCodes.OK).send("Request approved!");
+        res
+          .status(StatusCodes.OK)
+          .json({ success: true, msg: "You have turned down the invite to join the forum!" });
       }
       break;
 
@@ -1663,6 +1706,7 @@ const createATopic = asyncWrapper(async (req, res) => {
                       uploadOk = 1;
 
                       topicMedia.push(newTopicMedia);
+                      fs.unlinkSync(topicMediaFile.tempFilePath);
                     }
                   }
                 );
@@ -1708,6 +1752,7 @@ const createATopic = asyncWrapper(async (req, res) => {
                       uploadOk = 1;
 
                       topicMedia.push(newTopicMedia);
+                      fs.unlinkSync(topicMediaFile.tempFilePath);
                     }
                   }
                 );
@@ -1822,6 +1867,7 @@ const createATopic = asyncWrapper(async (req, res) => {
                         uploadOk = 1;
 
                         topicMedia.push(newTopicMedia);
+                        fs.unlinkSync(topicMediaFile.tempFilePath);
                       }
                     }
                   );
@@ -1867,6 +1913,7 @@ const createATopic = asyncWrapper(async (req, res) => {
                         uploadOk = 1;
 
                         topicMedia.push(newTopicMedia);
+                        fs.unlinkSync(topicMediaFile.tempFilePath);
                       }
                     }
                   );
@@ -2128,6 +2175,7 @@ const replyToATopic = asyncWrapper(async (req, res) => {
                       uploadOk = 1;
 
                       replyMedia.push(newTopicMedia);
+                      fs.unlinkSync(topicMediaFile.tempFilePath);
                     }
                   }
                 );
@@ -2173,6 +2221,7 @@ const replyToATopic = asyncWrapper(async (req, res) => {
                       uploadOk = 1;
 
                       replyMedia.push(newTopicMedia);
+                      fs.unlinkSync(topicMediaFile.tempFilePath);
                     }
                   }
                 );
@@ -2320,6 +2369,7 @@ const replyToATopic = asyncWrapper(async (req, res) => {
                         uploadOk = 1;
 
                         replyMedia.push(newTopicMedia);
+                        fs.unlinkSync(topicMediaFile.tempFilePath);
                       }
                     }
                   );
@@ -2365,6 +2415,7 @@ const replyToATopic = asyncWrapper(async (req, res) => {
                         uploadOk = 1;
 
                         replyMedia.push(newTopicMedia);
+                        fs.unlinkSync(topicMediaFile.tempFilePath);
                       }
                     }
                   );
