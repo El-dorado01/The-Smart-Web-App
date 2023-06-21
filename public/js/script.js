@@ -5556,13 +5556,13 @@ function performActionAsModerator(forumID, memberID, actionType) {
 }
 
 function getTopicCategories(forumID) {
-    socket.emit("getTopicCategories", { forumID })
+  socket.emit("getTopicCategories", { forumID })
 }
 socket.on("topicCategories", data => {
-    const { latestTopics, pinnedTopics, trendingTopics } = data;
+  const { latestTopics, pinnedTopics, trendingTopics } = data;
 
-    var trendingTopicsHTML = trendingTopics.map(topic => {
-        return `
+  var trendingTopicsHTML = trendingTopics.map(topic => {
+    return `
             <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
                 <div class="message" style="padding: 5px 0;">
                     <div class="profile-pic">
@@ -5570,9 +5570,9 @@ socket.on("topicCategories", data => {
                     </div>
                     <div class="message-body">
                         <h5 style="font-size: 13px; font-weight: 600;">${topic.topic.subject.length > 100
-                    ? topic.topic.subject.substr(0, 30) + "..."
-                    : topic.topic.subject
-                }</h5>
+        ? topic.topic.subject.substr(0, 30) + "..."
+        : topic.topic.subject
+      }</h5>
                         <div>
                             <p class="text-muted">By <span>${topic.userInfo.username}</span>,
                             <b>${new Date(topic.topic.createdAt).toDateString()}</b> <span class="fa fa-clock"></span></p>
@@ -5581,10 +5581,10 @@ socket.on("topicCategories", data => {
                 </div>
             </a>
         `;
-    }).join("");
+  }).join("");
 
-    var latestTopicsHTML = latestTopics.map(topic => {
-        return `
+  var latestTopicsHTML = latestTopics.map(topic => {
+    return `
             <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
                 <div class="message" style="padding: 5px 0;">
                     <div class="profile-pic">
@@ -5592,9 +5592,9 @@ socket.on("topicCategories", data => {
                     </div>
                     <div class="message-body">
                         <h5 style="font-size: 13px; font-weight: 600;">${topic.topic.subject.length > 100
-                    ? topic.topic.subject.substr(0, 30) + "..."
-                    : topic.topic.subject
-                }</h5>
+        ? topic.topic.subject.substr(0, 30) + "..."
+        : topic.topic.subject
+      }</h5>
                         <div>
                             <p class="text-muted">By <span>${topic.userInfo.username}</span>,
                             <b>${new Date(topic.topic.createdAt).toDateString()}</b> <span class="fa fa-clock"></span></p>
@@ -5603,10 +5603,10 @@ socket.on("topicCategories", data => {
                 </div>
             </a>
         `;
-    }).join("");
+  }).join("");
 
-    var pinnedTopicsHTML = pinnedTopics.map(topic => {
-        return `
+  var pinnedTopicsHTML = pinnedTopics.map(topic => {
+    return `
             <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
                 <div class="message" style="padding: 5px 0;">
                     <div class="profile-pic">
@@ -5614,9 +5614,9 @@ socket.on("topicCategories", data => {
                     </div>
                     <div class="message-body">
                         <h5 style="font-size: 13px; font-weight: 600;">${topic.topic.subject.length > 100
-                    ? topic.topic.subject.substr(0, 30) + "..."
-                    : topic.topic.subject
-                }</h5>
+        ? topic.topic.subject.substr(0, 30) + "..."
+        : topic.topic.subject
+      }</h5>
                         <div>
                             <p class="text-muted">By <span>${topic.userInfo.username}</span>,
                             <b>${new Date(topic.topic.createdAt).toDateString()}</b> <span class="fa fa-clock"></span></p>
@@ -5625,16 +5625,16 @@ socket.on("topicCategories", data => {
                 </div>    
             </a>
         `;
-    }).join("");
+  }).join("");
 
-    document.querySelector("#pinned-topics .scroll-bar").innerHTML = pinnedTopicsHTML;
-    document.querySelector("#pinned-topics-middle .scroll-bar").innerHTML = pinnedTopicsHTML;
+  document.querySelector("#pinned-topics .scroll-bar").innerHTML = pinnedTopicsHTML;
+  document.querySelector("#pinned-topics-middle .scroll-bar").innerHTML = pinnedTopicsHTML;
 
-    document.querySelector("#newest-topics .scroll-bar").innerHTML = latestTopicsHTML;
-    document.querySelector("#newest-topics-middle .scroll-bar").innerHTML = latestTopicsHTML;
+  document.querySelector("#newest-topics .scroll-bar").innerHTML = latestTopicsHTML;
+  document.querySelector("#newest-topics-middle .scroll-bar").innerHTML = latestTopicsHTML;
 
-    document.querySelector("#trending-topics .scroll-bar").innerHTML = trendingTopicsHTML;
-    document.querySelector("#trending-topics-middle .scroll-bar").innerHTML = trendingTopicsHTML;
+  document.querySelector("#trending-topics .scroll-bar").innerHTML = trendingTopicsHTML;
+  document.querySelector("#trending-topics-middle .scroll-bar").innerHTML = trendingTopicsHTML;
 })
 
 function ejectMembersPanel(forumID, memberID) {
@@ -5838,53 +5838,102 @@ function cancelRequestToJoin(event, forumID, actionType) {
 
 }
 
-function sendRequestToJoinTwo(event, forumID, actionType){
-            event.innerHTML = `
-            <strong>Sending...</strong>
-        `;
-            const formData = new FormData();
+function sendRequestToJoinTwo(event, forumID, actionType) {
+  event.innerHTML = `
+        <strong>Sending...</strong>
+    `;
+  const formData = new FormData();
 
-            formData.append("forumID", forumID);
-            formData.append("actionType", actionType);
+  formData.append("forumID", forumID);
+  formData.append("actionType", actionType);
 
-            fetch("/dashboard/public/updateForumInvites", {
-                method: "POST",
-                mode: "cors",
-                cache: "no-cache",
-                credentials: "same-origin",
-                redirect: "follow",
-                referrerPolicy: "no-referrer",
-                body: formData,
-            })
-                .then(function (res) {
-                    return res.json();
-                })
-                .then(function (json) {
-                    if (json.success == true) {
-                        successAlert.style.display = "block";
-                        successAlertIcon.className = "";
-                        successAlertIcon.className = "fa fa-check-circle";
-                        successMessage.textContent = json.msg;
+  fetch("/dashboard/public/updateForumInvites", {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: formData,
+  })
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (json) {
+      if (json.success == true) {
+        successAlert.style.display = "block";
+        successAlertIcon.className = "";
+        successAlertIcon.className = "fa fa-check-circle";
+        successMessage.textContent = json.msg;
 
-                        event.removeAttribute("onclick");
-                        event.innerHTML = `
-                        <strong>Request sent</strong>
-                        `;
+        event.removeAttribute("onclick");
+        event.innerHTML = `
+                <strong>Request sent</strong>
+                `;
 
-                        setTimeout(() => {
-                            successAlert.style.display = "none";
-                        }, 3000);
-                    } else {
-                        dangerAlert.style.display = "block";
-                        dangerMessage.textContent = json.msg;
+        setTimeout(() => {
+          successAlert.style.display = "none";
+        }, 3000);
+      } else {
+        dangerAlert.style.display = "block";
+        dangerMessage.textContent = json.msg;
 
-                        setTimeout(() => {
-                            dangerAlert.style.display = "none";
-                        }, 5000);
-                    }
-                })
-                .catch(function (err) {
-                    console.log(err);
-                });
+        setTimeout(() => {
+          dangerAlert.style.display = "none";
+        }, 5000);
+      }
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
+}
+
+const publicVapidKey = 'BAm_moT9BdnQahs-Qjp0j85qpniyhWZFJxA1cJxcXLa2qakN6z9Xreq84IelHHkvV8pOTj_3pyEIr9lQmaxc-Pk'
+
+// self.addEventListener('push', e => {
+//     //Get the payload from the event
+//     const data = e.data.json();
+//     self.registration.showNotification(data.title, {
+//         body: "Here is the body of the notification"
+//     });
+// })
+
+addEventListener("load", async () => {
+  await navigator.serviceWorker.register('./worker.js')
+})
+
+async function subscribeToPushNotifications() {
+  if ('serviceWorker' in navigator) {
+    if ('PushManager' in window) {
+      // Request push notification permission from user
+      Notification.requestPermission().then(async (permission) => {
+        if (permission === "granted") {
+          // Register Service Worker File
+          const register = await navigator.serviceWorker.ready;
+
+          //Get active subscriptions
+          await register.pushManager.getSubscription().then(async (getSubscription) => {
+            //Check if there is an active subscription
+            if (!getSubscription) {
+              const subscription = await register.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: publicVapidKey,
+              });
+
+              //If user's subscription is successful, send the subscription to Server
+              if (subscription) {
+                socket.emit("subscribe", { subscription })
+              }
+            }
+          })
+        } else {
+
         }
-    
+      })
+    } else {
+
+    }
+  } else {
+
+  }
+}

@@ -569,6 +569,10 @@ const allSockets = (socket) => {
  =======================================================================================
  */
   // socket.on("deleteATopic", deleteATopicAsModerator);
+  socket.on("subscribe", async (data) => {
+    const subscription = data.subscription;
+    //Save subscription to database
+  })
   socket.on("updateResponseUpvotes", updateResponseUpvotes);
   socket.on("updateTopicUpvotes", updateTopicUpvotes);
   socket.on("updateTopicBookmarks", updateTopicBookmarks);

@@ -1,7 +1,9 @@
 const path = require("path");
 const fs = require("fs");
+require("dotenv").config();
 
 require("express-async-errors");
+const webpush = require('web-push');
 const { StatusCodes } = require("http-status-codes");
 const { v4: uuidv4 } = require("uuid");
 const jwt = require("jsonwebtoken");
@@ -19,6 +21,12 @@ const ForumsTopicsModel = require("../../../models/ForumsTopicsModel");
 const ForumRankingsModel = require("../../../models/ForumRankingsModel");
 const ForumsActivityModel = require("../../../models/ForumsActivityModel");
 const UserUpvotesModel = require("../../../models/UserUpvotesModel");
+webpush.setVapidDetails('mailto: ade@ade.com', process.env.PUBLIC_VAPID_KEYS, process.env.PRIVATE_VAPID_KEYS);
+// Send Notification to each user
+// const payload = JSON.stringify({ title: "Hey, I am here" });
+// webpush.sendNotification(data.getSubscription, payload).catch(err => {
+//   console.error(err);
+// })
 
 const forums = async (req, res) => {
   const page_name = req.path;
