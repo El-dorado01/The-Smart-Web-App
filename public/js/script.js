@@ -5888,7 +5888,7 @@ function sendRequestToJoinTwo(event, forumID, actionType) {
     });
 }
 
-const publicVapidKey = 'BAm_moT9BdnQahs-Qjp0j85qpniyhWZFJxA1cJxcXLa2qakN6z9Xreq84IelHHkvV8pOTj_3pyEIr9lQmaxc-Pk'
+const publicVapidKey = 'BHgOt-MxnO-RuLibIpfv1CXbxpKX08ksS9Xld8YJ6pTGQwpdV46DAqNtSYsV8Pz8iOAi1Ip0nc0dbI_yilqOAaU'
 
 // self.addEventListener('push', e => {
 //     //Get the payload from the event
