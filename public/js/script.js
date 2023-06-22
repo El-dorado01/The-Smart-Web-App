@@ -5890,14 +5890,6 @@ function sendRequestToJoinTwo(event, forumID, actionType) {
 
 const publicVapidKey = 'BHgOt-MxnO-RuLibIpfv1CXbxpKX08ksS9Xld8YJ6pTGQwpdV46DAqNtSYsV8Pz8iOAi1Ip0nc0dbI_yilqOAaU'
 
-// self.addEventListener('push', e => {
-//     //Get the payload from the event
-//     const data = e.data.json();
-//     self.registration.showNotification(data.title, {
-//         body: "Here is the body of the notification"
-//     });
-// })
-
 addEventListener("load", async () => {
   await navigator.serviceWorker.register('./worker.js')
 })
