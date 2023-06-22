@@ -58,7 +58,7 @@ const {
 const { lockScreen } = require("./LockScreen");
 
 const {
-  deleteATopicAsModerator,
+  // deleteATopicAsModerator,
   updateResponseUpvotes,
   updateTopicUpvotes,
   updateTopicBookmarks,
@@ -409,7 +409,7 @@ const allSockets = (socket) => {
         if (user.friends[i].status === "accepted") {
           var a = await AuthModel.findById(
             user.friends[i].userID,
-            "username avatar about"
+            "username avatar about email"
           );
           contactsArray.push({
             sender: user.friends[i].sender,
@@ -421,7 +421,7 @@ const allSockets = (socket) => {
         if (user.friends[i].status === "pending") {
           var a = await AuthModel.findById(
             user.friends[i].userID,
-            "username avatar about"
+            "username avatar about email"
           );
           requestsArray.push({
             sender: user.friends[i].sender,
@@ -433,7 +433,7 @@ const allSockets = (socket) => {
         if (user.friends[i].status === "declined") {
           var a = await AuthModel.findById(
             user.friends[i].userID,
-            "username avatar about"
+            "username avatar about email"
           );
           declinedArray.push({
             sender: user.friends[i].sender,
@@ -449,7 +449,7 @@ const allSockets = (socket) => {
         ) {
           var a = await AuthModel.findById(
             user.friends[i].userID,
-            "username avatar about"
+            "username avatar about email"
           );
           blockedArray.push({
             sender: user.friends[i].sender,
@@ -478,7 +478,7 @@ const allSockets = (socket) => {
       for (let i = 0; i < mayKnowArrays.length; i++) {
         var a = await AuthModel.findById(
           mayKnowArrays[i],
-          "username avatar about"
+          "username avatar about email"
         );
         mayKnowArray.push(a);
       }
@@ -568,7 +568,11 @@ const allSockets = (socket) => {
  //Fetch info about a forum
  =======================================================================================
  */
-  socket.on("deleteATopic", deleteATopicAsModerator);
+  // socket.on("deleteATopic", deleteATopicAsModerator);
+  socket.on("subscribe", async (data) => {
+    const subscription = data.subscription;
+    //Save subscription to database
+  })
   socket.on("updateResponseUpvotes", updateResponseUpvotes);
   socket.on("updateTopicUpvotes", updateTopicUpvotes);
   socket.on("updateTopicBookmarks", updateTopicBookmarks);
@@ -580,6 +584,68 @@ const allSockets = (socket) => {
     var newLink = link + hashedKey;
     socket.emit("inviteLinkHashed", hashedKey, forumID, newLink);
   });
+  socket.on("resetForumRanks", async (data) => {
+    const { forumID } = data;
+
+    const ranksReset = await ForumRankingsModel.findOneAndUpdate(
+      { forumID },
+      {
+        newbie: {
+          minUpvotesRequired: 0
+        },
+        rookie: {
+          minUpvotesRequired: 5
+        },
+        apprentice: {
+          minUpvotesRequired: 15
+        },
+        explorer: {
+          minUpvotesRequired: 30
+        },
+        contributor: {
+          minUpvotesRequired: 50
+        },
+        enthusiast: {
+          minUpvotesRequired: 75
+        },
+        collaborator: {
+          minUpvotesRequired: 105
+        },
+        communityRegular: {
+          minUpvotesRequired: 140
+        },
+        risingStar: {
+          minUpvotesRequired: 180
+        },
+        proficient: {
+          minUpvotesRequired: 225
+        },
+        experienced: {
+          minUpvotesRequired: 275
+        },
+        mentor: {
+          minUpvotesRequired: 330
+        },
+        veteran: {
+          minUpvotesRequired: 400
+        },
+        master: {
+          minUpvotesRequired: 500
+        },
+        grandmaster: {
+          minUpvotesRequired: 750
+        },
+        legendary: {
+          minUpvotesRequired: 1500
+        },
+      }
+    )
+
+    if (ranksReset) {
+      console.log("Forum " + forumID + " ranks have been reset to default");
+      socket.emit("ranksReset", { success: true, msg: "Forum Ranks have been reset" });
+    }
+  })
   socket.on("fetchAForumInfo", async (data) => {
     const { forumID, userID } = data;
 
@@ -594,7 +660,7 @@ const allSockets = (socket) => {
       if (allInvites[i].incoming == true) {
         var newMemberInfo = await AuthModel.findById(
           allInvites[i].userID,
-          "username avatar about"
+          "username avatar about email"
         );
         incomingInvites.push({ member: newMemberInfo });
       }
@@ -604,7 +670,7 @@ const allSockets = (socket) => {
       if (forumInfo.members[a].memberStatus == "active") {
         var memberInfo = await AuthModel.findById(
           forumInfo.members[a].userID,
-          "username avatar about"
+          "username avatar about email"
         );
         forumMembers.push({ member: forumInfo.members[a], memberInfo });
       }
@@ -612,7 +678,7 @@ const allSockets = (socket) => {
 
     const creatorDetails = await AuthModel.findById(
       forumInfo.creator,
-      "username avatar about"
+      "username avatar about email"
     );
 
     let numberOfPosts = 0;
@@ -639,6 +705,107 @@ const allSockets = (socket) => {
       creatorDetails,
       numberOfPosts
     );
+  });
+  socket.on("getTopicCategories", async (data) => {
+    const { forumID } = data;
+    var latestTopics = [];
+    var pinnedTopics = []; 
+    var trendingTopics = [];
+
+    const forumMembers = await ForumsModel.findById(
+      forumID,
+      "creator members ownerUpvotes"
+    );
+
+    const latestTopicsFetched = await ForumsTopicsModel.find({ forumID })
+      .limit(5).sort("-createdAt");
+
+    for (let i = 0; i < latestTopicsFetched.length; i++) {
+      const userInfo = await AuthModel.findById(
+        latestTopicsFetched[i].userID,
+        "username avatar about email"
+      );
+      if (latestTopicsFetched[i].userID == forumMembers.creator) {
+        latestTopics.push({
+          topic: latestTopicsFetched[i],
+          userInfo,
+          memberUpvotes: forumMembers.ownerUpvotes,
+        });
+      } else {
+        for (let i = 0; i < forumMembers.members.length; i++) {
+          const member = forumMembers.members[i];
+
+          if (latestTopicsFetched[i].userID == member.userID) {
+            latestTopics.push({
+              topic: latestTopicsFetched[i],
+              userInfo,
+              memberUpvotes: member.upvotes,
+            });
+          }
+        }
+      }
+    }
+
+    const pinnedTopicsFetched = await ForumsTopicsModel.find({ forumID, pinned: true })
+      .limit(15).sort("-createdAt");
+
+    for (let i = 0; i < pinnedTopicsFetched.length; i++) {
+      const userInfo = await AuthModel.findById(
+        pinnedTopicsFetched[i].userID,
+        "username avatar about email"
+      );
+      if (pinnedTopicsFetched[i].userID == forumMembers.creator) {
+        pinnedTopics.push({
+          topic: pinnedTopicsFetched[i],
+          userInfo,
+          memberUpvotes: forumMembers.ownerUpvotes,
+        });
+      } else {
+        for (let i = 0; i < forumMembers.members.length; i++) {
+          const member = forumMembers.members[i];
+
+          if (pinnedTopicsFetched[i].userID == member.userID) {
+            pinnedTopics.push({
+              topic: pinnedTopicsFetched[i],
+              userInfo,
+              memberUpvotes: member.upvotes,
+            });
+          }
+        }
+      }
+    }
+
+    const trendingTopicsFetched = await ForumsTopicsModel.find({ forumID, __v: { $ne: 0 } })
+      .limit(5).sort("-__v");
+
+    for (let i = 0; i < trendingTopicsFetched.length; i++) {
+      const userInfo = await AuthModel.findById(
+        trendingTopicsFetched[i].userID,
+        "username avatar about email"
+      );
+
+      if (trendingTopicsFetched[i].userID == forumMembers.creator) {
+        trendingTopics.push({
+          topic: trendingTopicsFetched[i],
+          userInfo,
+          memberUpvotes: forumMembers.ownerUpvotes,
+        });
+      } else {
+        for (let i = 0; i < forumMembers.members.length; i++) {
+          const member = forumMembers.members[i];
+
+          if (trendingTopicsFetched[i].userID == member.userID) {
+            trendingTopics.push({
+              topic: trendingTopicsFetched[i],
+              userInfo,
+              memberUpvotes: member.upvotes,
+            });
+          }
+        }
+      }
+    }
+
+    socket.emit("topicCategories", { latestTopics, pinnedTopics, trendingTopics });
   });
   socket.on("getNewPageTopics", async (data) => {
     const { requestedPage, incomingTotalPages, forumID } = data;
@@ -678,7 +845,7 @@ const allSockets = (socket) => {
     for (let i = 0; i < newTopics.length; i++) {
       const userInfo = await AuthModel.findById(
         newTopics[i].userID,
-        "username avatar about"
+        "username avatar about email"
       );
       if (newTopics[i].userID == forumMembers.creator) {
         topics.push({
@@ -705,6 +872,75 @@ const allSockets = (socket) => {
 
     // topics.results = model.slice(startIndex, endIndex);
   });
+  socket.on("warns", async (data) => {
+    const { id, forumID, memberID, topicID, deletionType, responseID } = data
+
+    const forumInfo = await ForumsModel.findById({ _id: forumID });
+    const forumOwner = forumInfo.creator;
+    var memberWarnNumber;
+    forumInfo.members.forEach(member => {
+      if (member.userID == memberID) {
+        memberWarnNumber = 5 - member.numberOfWarns;
+      }
+    });
+
+    socket.emit("hereIsTheNumberOfWarns", { memberWarnNumber, id, forumID, memberID, topicID, deletionType, responseID });
+  });
+  socket.on("performActionInForum", async (data) => {
+    const { forumID, topicID, actionType, isAModerator } = data;
+
+    switch (actionType) {
+      case "pinDiscussion":
+        var discussionPinned = await ForumsTopicsModel.findByIdAndUpdate(
+          { _id: topicID },
+          {
+            pinned: 1
+          });
+
+        if (discussionPinned) {
+          console.log("Discussion pinned!")
+          socket.emit("actionDone", { success: true, actionType, forumID, topicID, isAModerator })
+        }
+        break;
+      case "unpinDiscussion":
+        var discussionPinned = await ForumsTopicsModel.findByIdAndUpdate(
+          { _id: topicID },
+          {
+            pinned: 0
+          });
+
+        if (discussionPinned) {
+          console.log("Discussion has been unpinned!")
+          socket.emit("actionDone", { success: true, actionType, forumID, topicID, isAModerator })
+        }
+        break;
+      case "closeDiscussion":
+        var discussionClosed = await ForumsTopicsModel.findByIdAndUpdate(
+          { _id: topicID },
+          {
+            discussionClosed: 1
+          });
+
+        if (discussionClosed) {
+          console.log("Discussion closed!")
+          socket.emit("actionDone", { success: true, actionType, forumID, topicID, isAModerator })
+        }
+        break;
+
+      default:
+        var discussionOpened = await ForumsTopicsModel.findByIdAndUpdate(
+          { _id: topicID },
+          {
+            discussionClosed: 0
+          });
+
+        if (discussionOpened) {
+          console.log("Discussion opened!")
+          socket.emit("actionDone", { success: true, actionType, forumID, topicID, isAModerator })
+        }
+        break;
+    }
+  })
 
   /*
  =======================================================================================
@@ -795,8 +1031,8 @@ const allSockets = (socket) => {
         if (filterResults)
           console.log(
             "Filter results for gender: " +
-              filterValues.gender +
-              " fetched successfully!"
+            filterValues.gender +
+            " fetched successfully!"
           );
         break;
 
@@ -900,7 +1136,7 @@ const allSockets = (socket) => {
         for (let b = 0; b < profileInfo.matchedMates.length; b++) {
           if (
             fetchAllMates[i].userID !=
-              profileInfo.removeMatesFromSuggestion[a].userID ||
+            profileInfo.removeMatesFromSuggestion[a].userID ||
             fetchAllMates[i].userID != profileInfo.matchedMates[b].userID
           ) {
             allMates.push(fetchAllMates[i]);

@@ -41,11 +41,19 @@
                             </p>
                             <% }else { %>
                             <p>Joined on <%= new Date(profileInfo.dateJoined).toDateString() %>.</p>
-                            <p><span style="padding: 5px; background-color: var(--color-light);">
+                            <p style="display: flex; align-items: center; justify-content: space-between;">
+                                <span style="padding: 5px; background-color: var(--color-light);">
                                     <% if(isAModerator == true){%>
                                     Moderator
                                     <% }else{ %> Member <% } %>
-                                </span></p>
+                                </span>
+                                <% if(isAModerator == true){%>
+                                <span class="remove-user" onclick="ejectMembersPanel('<%= forumID %>','<%= memberInfo._id %>')">
+                                    <i class="fa-solid fa-user-minus"></i>
+                                    <span>Remove</span>
+                                </span>
+                                <% } %>
+                            </p>
                             <% } %>
                         </div>
                     </div>
@@ -207,7 +215,7 @@
 
     <!--Theme Customization-->
     <%- include ("../partials/themeCustomization") %>
-
+    <%- include ("../partials/popup") %>
     <!--JS Script Attachment-->
     <script src="/socket.io/socket.io.js"></script>
     <script src="../../../../js/script.js"></script>

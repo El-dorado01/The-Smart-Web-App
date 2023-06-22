@@ -5,32 +5,29 @@
             <span class="fa fa-times"></span>
         </div>
         <h3>Update Forum Ranking System</h3>
+        <div class="info">
+            <span style="font-size: 18px;"><i class="fa-solid fa-circle-info"></i></span>
+            <span>
+                <span>You can click the "Reset Ranks" button to reset all ranks back to default &nbsp; &nbsp;
+                    <button onclick="resetRanks('<%= forumID %>')">
+                        <span style="font-size: 10px;"><i class="fa-solid fa-arrows-rotate"></i></span>
+                        <span>Reset Ranks</span>
+                    </button>
+                </span>
+            </span>
+        </div>
         <div class="ranks">
             <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
                 onmouseout='this.querySelector(".edit").style.display="none";'>
                 <div class="rank-info">
                     <div class="rank-name">
                         <div class="pic">
-                            <img src="../../../images/3.jpg" alt="">
-                        </div>
-                        <h4>Newbie</h4>
-                    </div>
-                    <span><i class="fa-solid fa-right-long"></i></span>
-                    <input type="text" class="upvote upvote-newbie" value="1500" disabled>
-                </div>
-                <span class="edit" onclick="editRank('newbie', '<%= forumID %>')"><i class="fa-solid fa-pen"></i></span>
-            </div>
-            <div class="rank" onmouseover='this.querySelector(".edit").style.display="flex"'
-                onmouseout='this.querySelector(".edit").style.display="none";'>
-                <div class="rank-info">
-                    <div class="rank-name">
-                        <div class="pic">
-                            <img src="../../../images/3.jpg" alt="">
+                            <img src="../../../../images/3.jpg" alt="">
                         </div>
                         <h4>Rookie</h4>
                     </div>
                     <span><i class="fa-solid fa-right-long"></i></span>
-                    <input type="text" class="upvote upvote-rookie" value="1500" disabled>
+                    <input type="number" id="rookie" class="upvote edit-rank upvote-rookie" value="<%= forumRanks.rookie.minUpvotesRequired %>" disabled onblur="this.disabled = true; updateForumRanks('<%= forumID %>', 'rookie', '<%= forumRanks.rookie.minUpvotesRequired %>')">
                 </div>
                 <span class="edit" onclick="editRank('rookie', '<%= forumID %>')"><i class="fa-solid fa-pen"></i></span>
             </div>
@@ -39,12 +36,12 @@
                 <div class="rank-info">
                     <div class="rank-name">
                         <div class="pic">
-                            <img src="../../../images/3.jpg" alt="">
+                            <img src="../../../../images/3.jpg" alt="">
                         </div>
                         <h4>Apprentice</h4>
                     </div>
                     <span><i class="fa-solid fa-right-long"></i></span>
-                    <input type="text" class="upvote upvote-apprentice" value="1500" disabled>
+                    <input type="number" id="apprentice" class="upvote edit-rank upvote-apprentice" value="<%= forumRanks.apprentice.minUpvotesRequired %>" disabled onblur="this.disabled = true; updateForumRanks('<%= forumID %>', 'apprentice', '<%= forumRanks.apprentice.minUpvotesRequired %>')">
                 </div>
                 <span class="edit" onclick="editRank('apprentice', '<%= forumID %>')"><i
                         class="fa-solid fa-pen"></i></span>
@@ -54,12 +51,12 @@
                 <div class="rank-info">
                     <div class="rank-name">
                         <div class="pic">
-                            <img src="../../../images/3.jpg" alt="">
+                            <img src="../../../../images/3.jpg" alt="">
                         </div>
                         <h4>Explorer</h4>
                     </div>
                     <span><i class="fa-solid fa-right-long"></i></span>
-                    <input type="text" class="upvote upvote-explorer" value="1500" disabled>
+                    <input type="number" id="explorer" class="upvote edit-rank upvote-explorer" value="<%= forumRanks.explorer.minUpvotesRequired %>" disabled onblur="this.disabled = true; updateForumRanks('<%= forumID %>', 'explorer', '<%= forumRanks.explorer.minUpvotesRequired %>')">
                 </div>
                 <span class="edit" onclick="editRank('explorer', '<%= forumID %>')"><i
                         class="fa-solid fa-pen"></i></span>
@@ -69,12 +66,12 @@
                 <div class="rank-info">
                     <div class="rank-name">
                         <div class="pic">
-                            <img src="../../../images/3.jpg" alt="">
+                            <img src="../../../../images/3.jpg" alt="">
                         </div>
                         <h4>Contributor</h4>
                     </div>
                     <span><i class="fa-solid fa-right-long"></i></span>
-                    <input type="text" class="upvote upvote-contributor" value="1500" disabled>
+                    <input type="number" id="contributor" class="upvote edit-rank upvote-contributor" value="<%= forumRanks.contributor.minUpvotesRequired %>" disabled onblur="this.disabled = true; updateForumRanks('<%= forumID %>', 'contributor', '<%= forumRanks.contributor.minUpvotesRequired %>')">
                 </div>
                 <span class="edit" onclick="editRank('contributor', '<%= forumID %>')"><i
                         class="fa-solid fa-pen"></i></span>
@@ -84,12 +81,12 @@
                 <div class="rank-info">
                     <div class="rank-name">
                         <div class="pic">
-                            <img src="../../../images/3.jpg" alt="">
+                            <img src="../../../../images/3.jpg" alt="">
                         </div>
                         <h4>Enthusiast</h4>
                     </div>
                     <span><i class="fa-solid fa-right-long"></i></span>
-                    <input type="text" class="upvote upvote-enthusiast" value="1500" disabled>
+                    <input type="number" id="enthusiast" class="upvote edit-rank upvote-enthusiast" value="<%= forumRanks.enthusiast.minUpvotesRequired %>" disabled onblur="this.disabled = true; updateForumRanks('<%= forumID %>', 'enthusiast', '<%= forumRanks.enthusiast.minUpvotesRequired %>')">
                 </div>
                 <span class="edit" onclick="editRank('enthusiast', '<%= forumID %>')"><i
                         class="fa-solid fa-pen"></i></span>
@@ -99,12 +96,12 @@
                 <div class="rank-info">
                     <div class="rank-name">
                         <div class="pic">
-                            <img src="../../../images/3.jpg" alt="">
+                            <img src="../../../../images/3.jpg" alt="">
                         </div>
                         <h4>Collaborator</h4>
                     </div>
                     <span><i class="fa-solid fa-right-long"></i></span>
-                    <input type="text" class="upvote upvote-collaborator" value="1500" disabled>
+                    <input type="number" id="collaborator" class="upvote edit-rank upvote-collaborator" value="<%= forumRanks.collaborator.minUpvotesRequired %>" disabled onblur="this.disabled = true; updateForumRanks('<%= forumID %>', 'collaborator', '<%= forumRanks.collaborator.minUpvotesRequired %>')">
                 </div>
                 <span class="edit" onclick="editRank('collaborator', '<%= forumID %>')"><i
                         class="fa-solid fa-pen"></i></span>
@@ -114,12 +111,12 @@
                 <div class="rank-info">
                     <div class="rank-name">
                         <div class="pic">
-                            <img src="../../../images/3.jpg" alt="">
+                            <img src="../../../../images/3.jpg" alt="">
                         </div>
                         <h4>Community Regular</h4>
                     </div>
                     <span><i class="fa-solid fa-right-long"></i></span>
-                    <input type="text" class="upvote upvote-communityRegular" value="1500" disabled>
+                    <input type="number" id="communityRegular" class="upvote edit-rank upvote-communityRegular" value="<%= forumRanks.communityRegular.minUpvotesRequired %>" disabled onblur="this.disabled = true; updateForumRanks('<%= forumID %>', 'communityRegular', '<%= forumRanks.communityRegular.minUpvotesRequired %>')">
                 </div>
                 <span class="edit" onclick="editRank('communityRegular', '<%= forumID %>')"><i
                         class="fa-solid fa-pen"></i></span>
@@ -129,12 +126,12 @@
                 <div class="rank-info">
                     <div class="rank-name">
                         <div class="pic">
-                            <img src="../../../images/3.jpg" alt="">
+                            <img src="../../../../images/3.jpg" alt="">
                         </div>
                         <h4>Rising Star</h4>
                     </div>
                     <span><i class="fa-solid fa-right-long"></i></span>
-                    <input type="text" class="upvote upvote-risingStar" value="1500" disabled>
+                    <input type="number" id="risingStar" class="upvote edit-rank upvote-risingStar" value="<%= forumRanks.risingStar.minUpvotesRequired %>" disabled onblur="this.disabled = true; updateForumRanks('<%= forumID %>', 'risingStar', '<%= forumRanks.risingStar.minUpvotesRequired %>')">
                 </div>
                 <span class="edit" onclick="editRank('risingStar', '<%= forumID %>')"><i
                         class="fa-solid fa-pen"></i></span>
@@ -144,12 +141,12 @@
                 <div class="rank-info">
                     <div class="rank-name">
                         <div class="pic">
-                            <img src="../../../images/3.jpg" alt="">
+                            <img src="../../../../images/3.jpg" alt="">
                         </div>
                         <h4>Proficient</h4>
                     </div>
                     <span><i class="fa-solid fa-right-long"></i></span>
-                    <input type="text" class="upvote upvote-proficient" value="1500" disabled>
+                    <input type="number" id="proficient" class="upvote edit-rank upvote-proficient" value="<%= forumRanks.proficient.minUpvotesRequired %>" disabled onblur="this.disabled = true; updateForumRanks('<%= forumID %>', 'proficient', '<%= forumRanks.proficient.minUpvotesRequired %>')">
                 </div>
                 <span class="edit" onclick="editRank('proficient', '<%= forumID %>')"><i
                         class="fa-solid fa-pen"></i></span>
@@ -159,12 +156,12 @@
                 <div class="rank-info">
                     <div class="rank-name">
                         <div class="pic">
-                            <img src="../../../images/3.jpg" alt="">
+                            <img src="../../../../images/3.jpg" alt="">
                         </div>
                         <h4>Experienced</h4>
                     </div>
                     <span><i class="fa-solid fa-right-long"></i></span>
-                    <input type="text" class="upvote upvote-experienced" value="1500" disabled>
+                    <input type="number" id="experienced" class="upvote edit-rank upvote-experienced" value="<%= forumRanks.experienced.minUpvotesRequired %>" disabled onblur="this.disabled = true; updateForumRanks('<%= forumID %>', 'experienced', '<%= forumRanks.experienced.minUpvotesRequired %>')">
                 </div>
                 <span class="edit" onclick="editRank('experienced', '<%= forumID %>')"><i
                         class="fa-solid fa-pen"></i></span>
@@ -174,12 +171,12 @@
                 <div class="rank-info">
                     <div class="rank-name">
                         <div class="pic">
-                            <img src="../../../images/3.jpg" alt="">
+                            <img src="../../../../images/3.jpg" alt="">
                         </div>
                         <h4>Mentor</h4>
                     </div>
                     <span><i class="fa-solid fa-right-long"></i></span>
-                    <input type="text" class="upvote upvote-mentor" value="1500" disabled>
+                    <input type="number" id="mentor" class="upvote edit-rank upvote-mentor" value="<%= forumRanks.mentor.minUpvotesRequired %>" disabled onblur="this.disabled = true; updateForumRanks('<%= forumID %>', 'mentor', '<%= forumRanks.mentor.minUpvotesRequired %>')">
                 </div>
                 <span class="edit" onclick="editRank('mentor', '<%= forumID %>')"><i class="fa-solid fa-pen"></i></span>
             </div>
@@ -188,12 +185,12 @@
                 <div class="rank-info">
                     <div class="rank-name">
                         <div class="pic">
-                            <img src="../../../images/3.jpg" alt="">
+                            <img src="../../../../images/3.jpg" alt="">
                         </div>
                         <h4>Veteran</h4>
                     </div>
                     <span><i class="fa-solid fa-right-long"></i></span>
-                    <input type="text" class="upvote upvote-veteran" value="1500" disabled>
+                    <input type="number" id="veteran" class="upvote edit-rank upvote-veteran" value="<%= forumRanks.veteran.minUpvotesRequired %>" disabled onblur="this.disabled = true; updateForumRanks('<%= forumID %>', 'veteran', '<%= forumRanks.veteran.minUpvotesRequired %>')">
                 </div>
                 <span class="edit" onclick="editRank('veteran', '<%= forumID %>')"><i
                         class="fa-solid fa-pen"></i></span>
@@ -203,12 +200,12 @@
                 <div class="rank-info">
                     <div class="rank-name">
                         <div class="pic">
-                            <img src="../../../images/3.jpg" alt="">
+                            <img src="../../../../images/3.jpg" alt="">
                         </div>
                         <h4>Master</h4>
                     </div>
                     <span><i class="fa-solid fa-right-long"></i></span>
-                    <input type="text" class="upvote upvote-master" value="1500" disabled>
+                    <input type="number" id="master" class="upvote edit-rank upvote-master" value="<%= forumRanks.master.minUpvotesRequired %>" disabled onblur="this.disabled = true; updateForumRanks('<%= forumID %>', 'master', '<%= forumRanks.master.minUpvotesRequired %>')">
                 </div>
                 <span class="edit" onclick="editRank('master', '<%= forumID %>')"><i class="fa-solid fa-pen"></i></span>
             </div>
@@ -217,12 +214,12 @@
                 <div class="rank-info">
                     <div class="rank-name">
                         <div class="pic">
-                            <img src="../../../images/3.jpg" alt="">
+                            <img src="../../../../images/3.jpg" alt="">
                         </div>
                         <h4>Grandmaster</h4>
                     </div>
                     <span><i class="fa-solid fa-right-long"></i></span>
-                    <input type="text" class="upvote upvote-grandmaster" value="1500" disabled>
+                    <input type="number" id="grandmaster" class="upvote edit-rank upvote-grandmaster" value="<%= forumRanks.grandmaster.minUpvotesRequired %>" disabled onblur="this.disabled = true; updateForumRanks('<%= forumID %>', 'grandmaster', '<%= forumRanks.grandmaster.minUpvotesRequired %>')">
                 </div>
                 <span class="edit" onclick="editRank('grandmaster', '<%= forumID %>')"><i
                         class="fa-solid fa-pen"></i></span>
@@ -232,12 +229,12 @@
                 <div class="rank-info">
                     <div class="rank-name">
                         <div class="pic">
-                            <img src="../../../images/3.jpg" alt="">
+                            <img src="../../../../images/3.jpg" alt="">
                         </div>
                         <h4>Legendary</h4>
                     </div>
                     <span><i class="fa-solid fa-right-long"></i></span>
-                    <input type="text" class="upvote upvote-legendary" value="1500" disabled>
+                    <input type="number" id="legendary" class="upvote edit-rank upvote-legendary" value="<%= forumRanks.legendary.minUpvotesRequired %>" disabled onblur="this.disabled = true; updateForumRanks('<%= forumID %>', 'legendary', '<%= forumRanks.legendary.minUpvotesRequired %>')">
                 </div>
                 <span class="edit" onclick="editRank('legendary', '<%= forumID %>')"><i
                         class="fa-solid fa-pen"></i></span>
@@ -245,3 +242,18 @@
         </div>
     </div>
 </div>
+<script>
+    var allInputs = document.querySelectorAll("input");
+    allInputs.forEach(input => {
+        if(input.classList.contains("edit-rank")){
+            input.addEventListener("keypress", (e) => {
+                if(e.key == "Enter" || e.key == " "){
+                    var inputValue = input.value
+                    var rank = input.id
+                    input.disabled = true
+                    updateForumRanks('<%= forumID %>', rank, inputValue)
+                }
+            })
+        }
+    })
+</script>

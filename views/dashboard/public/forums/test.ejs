@@ -1,133 +1,28 @@
-if (replyInfo.response.userID == topicInfo.userID) {
-div.classList.add("q-box")
-
-div.innerHTML += `
-<div class="q-box-main">
-    <div class="q-box-left">
-        <div class="user-info">
-            <h4>${replyInfo.userInfo.username}</h4>
-            <img src="../../../../uploads/${replyInfo.userInfo.avatar}" alt="">
-            <div class="upvotes">${replyInfo.memberUpvotes}
-                upvote${replyInfo.memberUpvotes > 1 ? "s" : ""}</div>
-            <span>Posted: <i class="text-muted">${new Date(replyInfo.response.dateReplied).toDateString()}</i></span>
-        </div>
-    </div>
-    <div class="q-box-right" id="field_${replyInfo.response.responseID}">
-        <div class="q-box-right" id="field_${replyInfo.response.responseID}">`
-            if (replyInfo.response.taggedResponseID != '') {
-            if (replyInfo.response.taggedResponseID == topicInfo._id) {
-
-            div.innerHTML += `<div class="tag-statement">
-                <div class="statement">
-                    <div class="head">
-                        <span class="fa fa-angle-down"></span>
-                        On ${new Date(topicInfo.createdAt).toDateString()},
-                        ${replyInfo.userInfo.username} said:
-                    </div>
-                    <a href="#${replyInfo.response.taggedResponseID}">
-                        <div class="body">
-                            ${topicInfo.topicText}
-                        </div>
-                    </a>
-                </div>
-            </div>`
-            } else {
-            for (let i = 0; i < responses.length; i++) { const reply=responses[i]; if
-                (replyInfo.response.taggedResponseID==reply.response .responseID) { div.innerHTML +=`<div
-                class="tag-statement">
-                <div class="statement">
-                    <div class="head">
-                        <span class="fa fa-angle-down"></span>
-                        On ${new Date(reply.response.dateReplied).toDateString()},
-                        ${replyInfo.userInfo.username} said:
-                    </div>
-                    <a href="#${replyInfo.response.taggedResponseID}">
-                        <div class="body">
-                            ${reply.response.replyText}
-                        </div>
-                    </a>
-                </div>
-        </div>`
-        }
-        }
-        }
-        }
-        div.innerHTML += `<div class="response-field">
-            ${replyInfo.response.replyText}
-        </div>
-        <div class="actions">
-            <p onclick="tagAResponse('${topicInfo.forumID}', '${topicInfo._id}',
-                                            '${replyInfo.response.responseID}',
-                                            '${JSON.stringify(forumInfo.wordsFilter)}')">
-                <i class="fa-solid fa-quote-right"></i> <span>Quote</span></p>
-            <p><i class="fa fa-arrow-up"></i><span>${replyInfo.response.upvotes}
-                    upvote${replyInfo.response.upvotes > 1 ? "s" : ""} </span></p>
-            <p><i class="fa fa-share-alt"></i> <span>Share</span> </p>
-        </div>
-    </div>
-</div>
-`
-} else {
-div.classList.add("c-box")
-
-div.innerHTML += `
-<div class="c-box-main">
-    <div class="c-box-left">
-        <div class="user-info">
-            <h4>${replyInfo.userInfo.username}</h4>
-            <img src="../../../../uploads/${replyInfo.userInfo.avatar}" alt="">
-            <div class="upvotes">${replyInfo.memberUpvotes}
-                upvote${replyInfo.memberUpvotes > 1 ? "s" : ""}</div>
-            <span>Posted: <i class="text-muted">${new Date(replyInfo.response.dateReplied).toDateString()}</i></span>
-        </div>
-    </div>
-    <div class="c-box-right" id="field_${replyInfo.response.responseID}">`
-        if (replyInfo.response.taggedResponseID != '') {
-        if (replyInfo.response.taggedResponseID == topicInfo._id) {
-        div.innerHTML += `<div class="tag-statement">
-            <div class="statement">
-                <div class="head">
-                    <span class="fa fa-angle-down"></span>
-                    On ${new Date(topicInfo.createdAt).toDateString()},
-                    ${replyInfo.userInfo.username} said:
-                </div>
-                <a href=" ${replyInfo.response.taggedResponseID}">
-                    <div class="body">
-                        <${topicInfo.topicText} </div> </a> </div> </div>` } else { for (let i=0; i < responses.length;
-                            i++) { const reply=responses[i]; if (replyInfo.response.taggedResponseID==reply.response
-                            .responseID) { div.innerHTML +=`<div class="tag-statement">
-                            <div class="statement">
-                                <div class="head">
-                                    <span class="fa fa-angle-down"></span>
-                                    On ${new Date(reply.response.dateReplied).toDateString()},
-                                    ${replyInfo.userInfo.username} said:
-                                </div>
-                                <a href="#${replyInfo.response.taggedResponseID}">
-                                    <div class="body">
-                                        ${reply.response.replyText}
+<div class="scroll-bar">
+                    <div class="messages">
+                        <% invites.forEach(invite=> { %>
+                            <div class="forum">
+                                <div class="info">
+                                    <div class="profile-pic">
+                                        <img src="<%= invite.displayPic %>" alt="">
                                     </div>
-                                </a>
+                                    <div class="message-body">
+                                        <h5 style="font-size: 13px; font-weight: 600;">
+                                            <%= invite.forumName %>
+                                        </h5>
+                                        <p class="text-muted">
+                                            <%= invite.members.length %>
+                                                member<% if(invite.members.length> 1){%>s<%}%>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="action">
+                                    <span onclick="updateInvite('<%= invite._id %>', '<%= userID %>', 'accept')"><i
+                                            class="fa-solid fa-check"></i></span>
+                                    <span onclick="updateInvite('<%= invite._id %>', '<%= userID %>', 'reject')"><i
+                                            class="fa-solid fa-times"></i></span>
+                                </div>
                             </div>
-                    </div>`
-                    }
-                    }
-                    }
-
-                    }
-                    div.innerHTML += `<div class="response-field">
-                        ${replyInfo.response.replyText}
+                            <% }); %>
                     </div>
-                    <!-- Topic Media -->
-                    <div class="actions">
-                        <p onclick="tagAResponse('${topicInfo.forumID}', '${topicInfo._id}',
-                                            '${replyInfo.response.responseID}',
-                                            '${JSON.stringify(forumInfo.wordsFilter)}')">
-                            <i class="fa-solid fa-quote-right"></i> <span>Quote</span></p>
-                        <p><i class="fa fa-arrow-up"></i><span>${replyInfo.response.upvotes}
-                                upvote${replyInfo.response.upvotes > 1 ? "s" : ""}</span></p>
-                        <p><i class="fa fa-share-alt"></i> <span>Share</span> </p>
-                    </div>
-            </div>
-        </div>
-        `
-        }
+                </div>

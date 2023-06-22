@@ -42,7 +42,7 @@
             <!--Middle-->
             <div class="middle">
                 <!--Forums-->
-                <%- include ("./my_forums_middle") %>
+                <%- //include ("./middle_forum") %>
                 <!-- <div class="user-chatroom">
                     <div class="chatroom">
                         <div class="chat-head">
@@ -67,16 +67,49 @@
                     </div>
                 </div> -->
                 <%- include ("./create_forum") %>
+                <div class="messages" style="display: block;">
+                    <div class="heading">
+                        <h4>Suggested Forums</h4>
+                        <i class="fa fa-users-rays"></i>
+                    </div>
+                    <% if (suggestedForums.length < 1) { %>
+                        <div class="body" style="height: 70vh;">
+                            <span class="text-muted">You have no forum suggestions at the moment</span>
+                        </div>
+                    <% }else{ %> 
+                        <div class="scroll-bar" style="max-height: 70vh; margin-top: 10px;">
+                            <% suggestedForums.forEach(forum => { %> 
+                                <div class="forum">
+                                    <a href="/dashboard/public/forum/<%= forum._id %>">
+                                        <div class="info">
+                                            <div class="profile-pic">
+                                                <img src="<%= forum.displayPic %>" alt="">
+                                            </div>
+                                            <div class="message-body">
+                                                <h5 style="font-size: 13px; font-weight: 600;"><%= forum.forumName %></h5>
+                                                <p class="text-muted">
+                                                    <%= forum.members.length %>
+                                                        member<% if (forum.members.length> 1){%>s<%}%>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <div class="action">
+                                        <span class="remove-user" onclick="sendRequestToJoinTwo(this, '<%= forum._id %>', 'sendRequestToJoin')"
+                                            style="background-color: var(--color-light); color: var(--color-dark); padding: 5px;"><i
+                                                class="fa-solid fa-person-circle-plus"></i><strong>Join</strong></span>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    <% } %>
+                </div>
                 <!--Forum box end here-->
             </div>
             <!--Middle ends here-->
 
             <!--Right-->
-            <div class="right">
-                <!--Forums-->
-                <%- include ("./my_forums_right") %>
-                <!--Forums end here-->
-            </div>
+            <%- include ("./right_forum") %>
         </div>
     </main>
 
@@ -93,6 +126,7 @@
         var primaryMessage = document.querySelector("#alert-primary .msg")
         var dangerAlert = document.getElementById("alert-danger")
         var dangerMessage = document.querySelector("#alert-danger .msg")
+
     </script>
     <script src="../../../../js/script.js"></script>
 </body>

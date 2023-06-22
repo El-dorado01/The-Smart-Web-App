@@ -17,7 +17,7 @@
         <a class="menu-item <% if(page_name === "/" || page_name === "/index"){ %> active <%}%>" href="/dashboard/public/">
             <span><i class="fa fa-house icon"></i></span> <h3>Home</h3>
         </a>
-        <a class="menu-item <% if(page_name === "/forums"){ %> active <%}%>" href="/dashboard/public/forums">
+        <a class="menu-item <% if(page_name === "/forums" || (page_name. indexOf('/forum') > -1) || (page_name. indexOf('/forum_invites') > -1)){ %> active <%}%>" href="/dashboard/public/forums">
             <span><i class="fa-solid fa-users-rays"></i></span> <h3>Forums</h3>
         </a>
         <a class="menu-item">
