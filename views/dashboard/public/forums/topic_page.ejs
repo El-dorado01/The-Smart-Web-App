@@ -501,12 +501,21 @@
                                         myEditor.enableReadOnlyMode('response-text')
                                     </script>
                                     <% } %>
-                                        <script src="../../../../js/script.js"></script>
-                                        <script>
-                                            const forumID = "<%= forumID %>";
-                                            fetchAForumInfo(forumID, theUserID);
-                                            getTopicCategories(forumID);
-                                        </script>
+                                    <script src="../../../../js/script.js"></script>
+                                    <script>
+                                        const forumID = "<%= forumID %>";
+                                        fetchAForumInfo(forumID, theUserID);
+                                        getTopicCategories(forumID);
+
+                                        // function fetchAForumInfo(forumID, userID) {
+                                        //     socket.emit("fetchAForumInfo", { forumID, userID });
+                                        //     primaryAlert.style.display = "block";
+                                        //     primaryMessage.textContent = "Loading...";
+                                        // }
+                                        // function getTopicCategories(forumID) {
+                                        //     socket.emit("getTopicCategories", { forumID })
+                                        // }
+                                    </script>
                                         <%- include ("./forum_script_two") %>
 </body>
 

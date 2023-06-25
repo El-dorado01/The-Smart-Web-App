@@ -43,7 +43,6 @@
                         <!--Forums-->
                         <%- include ("./my_forums_middle") %>
                             <%- include ("./create_forum") %>
-
                                 <div class="forum-profile">
                                     <div class="forum-header">
                                         <div class="avatar"
@@ -85,7 +84,7 @@
                                                             <i class="fa-solid fa-plus"></i> <span>Add</span>
                                                         </div>
                                                         <div class="other-icons">
-                                                            <span onclick="subscribeToPushNotifications()" title="Turn on notifications"><i
+                                                            <span onclick="notificationsPanel('<%= forumID %>', '<%= user._id %>', 'enablePushNotifications', 'subscriptionObject')" title="Turn on notifications"><i
                                                                     class="fa fa-bell"></i></span>
                                                             <% if(forumInfo.membersCanInvite==true && isAMember==true &&
                                                                 isAModerator==false){ %>
@@ -250,12 +249,21 @@
                             <!--JS Script Attachment-->
                             <script src="/socket.io/socket.io.js"></script>
                             <%- include ("./forum_script") %>
-                                <script src="../../../../js/script.js"></script>
-                                <script>
-                                    const forumID = "<%= forumID %>";
-                                    fetchAForumInfo(forumID, theUserID);
-                                    getTopicCategories(forumID);
-                                </script>
+                            <script src="../../../../js/script.js"></script>
+                            <script>
+                                const forumID = "<%= forumID %>";
+                                fetchAForumInfo(forumID, theUserID);
+                                getTopicCategories(forumID);
+
+                                // function fetchAForumInfo(forumID, userID) {
+                                //     socket.emit("fetchAForumInfo", { forumID, userID });
+                                //     primaryAlert.style.display = "block";
+                                //     primaryMessage.textContent = "Loading...";
+                                // }
+                                // function getTopicCategories(forumID) {
+                                //     socket.emit("getTopicCategories", { forumID })
+                                // }
+                            </script>
                                 <% if(incomingMsg==true){ 
                                     var inviteStatus=msg.success; 
                                     var msgText=msg.content %>

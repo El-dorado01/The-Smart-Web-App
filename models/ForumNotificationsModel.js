@@ -17,6 +17,7 @@ const ForumNotificationsSchema = new mongoose.Schema(
         },
         enablePushNotifications: {
           type: Boolean,
+          default: false,
         },
         pushNotifications: [
           {

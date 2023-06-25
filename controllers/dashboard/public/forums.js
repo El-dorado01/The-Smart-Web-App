@@ -19,9 +19,10 @@ const AuthModel = require("../../../models/AuthModel");
 const ForumsModel = require("../../../models/ForumsModel");
 const ForumsTopicsModel = require("../../../models/ForumsTopicsModel");
 const ForumRankingsModel = require("../../../models/ForumRankingsModel");
+const ForumNotificationsModel = require("../../../models/ForumNotificationsModel");
 const ForumsActivityModel = require("../../../models/ForumsActivityModel");
 const UserUpvotesModel = require("../../../models/UserUpvotesModel");
-webpush.setVapidDetails('mailto: ade@ade.com', process.env.PUBLIC_VAPID_KEYS, process.env.PRIVATE_VAPID_KEYS);
+// webpush.setVapidDetails('mailto: ade@ade.com', process.env.PUBLIC_VAPID_KEYS, process.env.PRIVATE_VAPID_KEYS);
 // Send Notification to each user
 // const payload = JSON.stringify({ title: "Hey, I am here" });
 // webpush.sendNotification(data.getSubscription, payload).catch(err => {
@@ -727,9 +728,9 @@ const createForum = asyncWrapper(async (req, res) => {
         },
         async function (err, logo) {
           if (err) {
-            // res
-            //   .status(StatusCodes.INTERNAL_SERVER_ERROR)
-            //   .json({ success: false, mgs: err.msg });
+            res
+              .status(StatusCodes.INTERNAL_SERVER_ERROR)
+              .json({ success: false, msg: err.msg });
             console.log(err);
             uploadOk = 0;
           } else {
@@ -745,6 +746,10 @@ const createForum = asyncWrapper(async (req, res) => {
 
             //Create Forum Ranking System
             await ForumRankingsModel.create({
+              forumID: forumInfo._id,
+            });
+            //Create Forum Notification System
+            await ForumNotificationsModel.create({
               forumID: forumInfo._id,
             });
             console.log(

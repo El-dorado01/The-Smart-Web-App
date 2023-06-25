@@ -7,6 +7,7 @@ const MeetingsModel = require("../../models/MeetingsModel");
 const FeedpostModel = require("../../models/FeedpostModel");
 const ForumsModel = require("../../models/ForumsModel");
 const ForumRankingsModel = require("../../models/ForumRankingsModel");
+const ForumNotificationsModel = require("../../models/ForumNotificationsModel");
 const FindMatesModel = require("../../models/FindMatesModel");
 const StoreProductsModel = require("../../models/StoreProductsModel");
 const MarketStoresModel = require("../../models/MarketStoresModel");
@@ -941,6 +942,96 @@ const allSockets = (socket) => {
         break;
     }
   })
+  socket.on("subscribeToForumNotifications", async (data) => {
+    const { forumID, userID, subscriptionType, actionType } = data;
+    switch (actionType) {
+      case "subscribe":
+        const subscription = await ForumNotificationsModel.findOne({
+          forumID,
+          "notificationSubscribers.userID": userID
+        });
+        if(subscription) {
+          // Update user's subscription type
+          var subscriptionUpdated = await ForumNotificationsModel.findOneAndUpdate(
+            { forumID, "notificationSubscribers.userID": userID },
+            {
+              $set: {
+                "notificationSubscribers.$.subscriptionType": subscriptionType,
+              },
+            }
+          );
+
+          if(subscriptionUpdated) {
+            // Subscription Type updated
+            console.log("Subscription Type updated");
+          }
+        }else{
+          var subscriptionCreated = await ForumNotificationsModel.findOneAndUpdate(
+            { forumID },
+            { $push: { notificationSubscribers: { userID, subscriptionType } } }
+          )
+          
+          if(subscriptionCreated) {
+            // New susbcription created
+            console.log("New susbcription created");
+          }
+        }
+        break;
+    
+      default:
+        // Unsubscribe from forum notifications by default
+        var unsubscribed = await ForumNotificationsModel.findOneAndUpdate(
+          { forumID, "notificationSubscribers.userID": userID },
+          {
+            $pull: { notificationSubscribers: { userID } },
+          }
+        );
+
+        if(unsubscribed){
+          // User has unsubscribed from forum notifications
+          console.log("User has unsubscribed from forum notifications");
+        }
+        break;
+    }
+  });
+  socket.on("subscribeToForumPushNotifications", async (data) => {
+    const { forumID, userID, actionType, subscription } = data
+
+    console.log(data);
+
+    switch (actionType) {
+      case "subscribe":
+        var subscribed = await ForumNotificationsModel.findOneAndUpdate(
+          { forumID, "notificationSubscribers.userID": userID },
+          { 
+            $set: { "notificationSubscribers.$.enablePushNotifications": true },
+            $push: { "notificationSubscribers.$.pushNotifications": subscription },
+          }
+        );
+
+        if(subscribed){
+          // User has subscribed to push notifications
+          console.log("User has subscribed to push notifications");
+        }
+        break;
+    
+      default:
+        // Unsubscribe by default
+        var unsubscribed = await ForumNotificationsModel.findOneAndUpdate(
+          { forumID, "notificationSubscribers.userID": userID },
+          { 
+            $set: { "notificationSubscribers.$.enablePushNotifications": false },
+            $pull: { "notificationSubscribers.$.pushNotifications": subscription },
+          }
+        );
+
+        if(unsubscribed){
+          // User has unsubscribed from push notifications
+          console.log("User has unsubscribed from push notifications");
+        }
+        break;
+    }
+  });
 
   /*
  =======================================================================================

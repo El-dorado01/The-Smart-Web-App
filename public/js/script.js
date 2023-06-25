@@ -1,4 +1,12 @@
 hljs.highlightAll();
+const publicVapidKey = 'BHgOt-MxnO-RuLibIpfv1CXbxpKX08ksS9Xld8YJ6pTGQwpdV46DAqNtSYsV8Pz8iOAi1Ip0nc0dbI_yilqOAaU'
+
+// addEventListener("load", async () => {
+//   await 
+  navigator.serviceWorker.register('/worker.js')
+    .then(reg => console.log('SW registered!', reg))
+    .catch(err => console.log('Boo!', err));
+// })
 /*
 ===================================================================================================
 ********************************************FILE CONTENTS******************************************
@@ -5888,13 +5896,128 @@ function sendRequestToJoinTwo(event, forumID, actionType) {
     });
 }
 
-const publicVapidKey = 'BHgOt-MxnO-RuLibIpfv1CXbxpKX08ksS9Xld8YJ6pTGQwpdV46DAqNtSYsV8Pz8iOAi1Ip0nc0dbI_yilqOAaU'
+function notificationsPanel(forumID, userID, enablePushNotifications, subscriptionObject) {
+  var closeUp = document.createElement("div");
+  closeUp.classList.add("close-popup");
+  closeUp.setAttribute("style", "cursor: pointer;");
+  closeUp.setAttribute("onclick", `cancelEjectMembers()`);
+  closeUp.innerHTML = `
+                            <span><i class="fa fa-times"></i></span>
+                        `;
 
-addEventListener("load", async () => {
-  await navigator.serviceWorker.register('./worker.js')
-})
+  var div = document.createElement("div");
+  div.classList.add("content");
+  div.innerHTML = `
+        <h2>Get Notified of new topics and responses</h2>
+        <div class="notification">
+          <span>
+            <h4>Topics Only</h4>
+          </span>
+          <label class="toggle">
+            <input class="toggle-input" type="checkbox" id="topics-only" onclick="subscribeToForumNotifications('${forumID}', '${userID}', 'topics-only', '${enablePushNotifications}', '${subscriptionObject}')" />
+            <span class="toggle-label" data-off="OFF" data-on="ON"></span>
+            <span class="toggle-handle"></span>
+          </label>
+        </div>
+        <div class="notification">
+          <span>
+            <h4>Topics and Responses</h4>
+          </span>
+          <label class="toggle">
+            <input class="toggle-input" type="checkbox" id="topics-and-responses" onclick="subscribeToForumNotifications('${forumID}', '${userID}', 'topics-and-responses', '${enablePushNotifications}', '${subscriptionObject}')" />
+            <span class="toggle-label" data-off="OFF" data-on="ON"></span>
+            <span class="toggle-handle"></span>
+          </label>
+        </div>
+        <div class="notification">
+          <span>
+            <h4>Push Notifications</h4>
+          </span>
+          <label class="toggle">
+            <input class="toggle-input" type="checkbox" id="push-notifications" onclick="subscribeToForumNotifications('${forumID}', '${userID}', 'push-notifications', '${enablePushNotifications}', '${subscriptionObject}')" />
+            <span class="toggle-label" data-off="OFF" data-on="ON"></span>
+            <span class="toggle-handle"></span>
+          </label>
+        </div>
+    `;
 
-async function subscribeToPushNotifications() {
+  var panel = document.querySelector(".confirm-popup");
+  panel.querySelector(".card").innerHTML = "";
+  panel.querySelector(".card").appendChild(closeUp);
+  panel.querySelector(".card").appendChild(div);
+  panel.style.display = "block";
+}
+
+function subscribeToForumNotifications(forumID, userID, subscriptionType, enablePushNotifications, subscriptionObject) {
+  var topicsOnly = document.getElementById("topics-only");
+  var topicsAndResponses = document.getElementById("topics-and-responses");
+  var pushNotifications = document.getElementById("push-notifications");
+
+  if(subscriptionType == "topics-only"){
+    if(topicsAndResponses.checked == true){
+      topicsAndResponses.checked = false;
+    }
+
+    if(topicsOnly.checked == true) {
+      // Send msg to server to update subscription type to topic only
+      console.log("Send msg to server to update subscription type to topic only")
+      var actionType = "subscribe"
+      socket.emit("subscribeToForumNotifications", { forumID, userID, subscriptionType, actionType });
+    }else{
+      // Send msg to server to unsubscribe user from notifications
+      console.log("Send msg to server to unsubscribe user from notifications")
+      var actionType = "unsubscribe";
+      socket.emit("subscribeToForumNotifications", { forumID, userID, subscriptionType, actionType });
+      if(pushNotifications.checked == true){
+        // Unsubscribe user from push notifications
+        pushNotifications.checked = false;
+      }
+    }
+  }else if(subscriptionType == "topics-and-responses") {
+    if(topicsOnly.checked == true) {
+      topicsOnly.checked = false;
+    }
+
+    if (topicsAndResponses.checked == true) {
+      // Send msg to server to update subscription type to topics and responses
+      console.log("Send msg to server to update subscription type to topics and responses");
+      var actionType = "subscribe"
+      socket.emit("subscribeToForumNotifications", { forumID, userID, subscriptionType, actionType });
+    } else {
+      // Send msg to server to unsubscribe user from notifications
+      console.log("Send msg to server to unsubscribe user from notifications")
+      var actionType = "unsubscribe";
+      socket.emit("subscribeToForumNotifications", { forumID, userID, subscriptionType, actionType });
+      if(pushNotifications.checked == true){
+        // Unsubscribe user from push notifications
+        pushNotifications.checked = false;
+      }
+    }
+  }else {
+    // Push Notifications by default
+    if(pushNotifications.checked == true){
+      // If user has selected a subscription type
+      if (topicsOnly.checked == true || topicsAndResponses.checked == true) {
+        // Then proceed and subscribe user to push Notifications
+        console.log("Subscribe user to push notifications")
+        var actionType = "subscribe";
+        subscribeToPushNotifications(forumID, userID, actionType);
+      }else{
+        // Else, inform user to select a subscription type
+        pushNotifications.checked =  false;
+        console.log("Please select a subscription type first")
+      }
+    }else{
+      // Unsubscribe user from push notifications
+      console.log("Unsubscribe user from push notifications")
+      var actionType = "unsubscribe";
+      unsubscribeFromPushNotifications(forumID, userID, actionType);
+    }
+  }
+}
+
+async function subscribeToPushNotifications(forumID, userID, actionType){
+  console.log("subscribe to push notifications")
   if ('serviceWorker' in navigator) {
     if ('PushManager' in window) {
       // Request push notification permission from user
@@ -5909,14 +6032,15 @@ async function subscribeToPushNotifications() {
             if (!getSubscription) {
               const subscription = await register.pushManager.subscribe({
                 userVisibleOnly: true,
-                applicationServerKey: publicVapidKey,
+                applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
               });
 
-              //If user's subscription is successful, send the subscription to Server
-              if (subscription) {
-                socket.emit("subscribe", { subscription })
-              }
+              var sub = JSON.stringify(subscription);
+            }else{
+              var sub = JSON.stringify(getSubscription);
             }
+
+            socket.emit("subscribeToForumPushNotifications", { forumID, userID, actionType, subscription: sub });
           })
         } else {
 
@@ -5929,3 +6053,33 @@ async function subscribeToPushNotifications() {
 
   }
 }
+async function unsubscribeFromPushNotifications(forumID, userID, actionType){
+  console.log("Unsubscribe from push notifications")
+  const register = await navigator.serviceWorker.ready;
+
+  //Get active subscriptions
+  await register.pushManager.getSubscription().then(async (getSubscription) => {
+    getSubscription.unsubscribe().then((successful) => {
+      console.log(successful);
+    }).catch((err) => console.error(err))
+    
+    var sub = JSON.stringify(getSubscription);
+
+    socket.emit("subscribeToForumPushNotifications", { forumID, userID, actionType, subscription: sub });
+  })
+}
+
+function urlBase64ToUint8Array(base64String) {
+    const padding = "=".repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+      .replace(/\-/g, "+")
+      .replace(/_/g, "/");
+  
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+  
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+} 
