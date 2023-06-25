@@ -352,6 +352,12 @@
                                     actionsField)
                             }
 
+                            // HIGHLIGHT ALL CODE BLOCKS
+                            if (document.querySelectorAll('pre code')) {
+                                document.querySelectorAll('pre code').forEach((el) => {
+                                    hljs.highlightElement(el);
+                                });
+                            }
                             // DISPLAY APPENDED BOX
                             appendedBox.style.display = "block"
 
@@ -371,12 +377,12 @@
                         console.log(err);
                     });
 
-                // HIGHLIGHT ALL CODE BLOCKS
-                if (document.querySelectorAll('pre code')) {
-                    document.querySelectorAll('pre code').forEach((el) => {
-                        hljs.highlightElement(el);
-                    });
-                }
+                // // HIGHLIGHT ALL CODE BLOCKS
+                // if (document.querySelectorAll('pre code')) {
+                //     document.querySelectorAll('pre code').forEach((el) => {
+                //         hljs.highlightElement(el);
+                //     });
+                // }
             }
 
         }

@@ -6018,8 +6018,7 @@ function subscribeToForumNotifications(forumID, userID, subscriptionType, enable
 
 async function subscribeToPushNotifications(forumID, userID, actionType){
   console.log("subscribe to push notifications")
-  if ('serviceWorker' in navigator) {
-    if ('PushManager' in window) {
+  if ('serviceWorker' in navigator  && 'PushManager' in window) {
       // Request push notification permission from user
       Notification.requestPermission().then(async (permission) => {
         if (permission === "granted") {
@@ -6046,9 +6045,6 @@ async function subscribeToPushNotifications(forumID, userID, actionType){
 
         }
       })
-    } else {
-
-    }
   } else {
 
   }

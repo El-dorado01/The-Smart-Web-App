@@ -20,14 +20,10 @@ const ForumsModel = require("../../../models/ForumsModel");
 const ForumsTopicsModel = require("../../../models/ForumsTopicsModel");
 const ForumRankingsModel = require("../../../models/ForumRankingsModel");
 const ForumNotificationsModel = require("../../../models/ForumNotificationsModel");
+const NotificationsModel = require("../../../models/NotificationsModel");
 const ForumsActivityModel = require("../../../models/ForumsActivityModel");
 const UserUpvotesModel = require("../../../models/UserUpvotesModel");
-// webpush.setVapidDetails('mailto: ade@ade.com', process.env.PUBLIC_VAPID_KEYS, process.env.PRIVATE_VAPID_KEYS);
-// Send Notification to each user
-// const payload = JSON.stringify({ title: "Hey, I am here" });
-// webpush.sendNotification(data.getSubscription, payload).catch(err => {
-//   console.error(err);
-// })
+webpush.setVapidDetails('mailto: sphereweb@sphere.com', process.env.PUBLIC_VAPID_KEYS, process.env.PRIVATE_VAPID_KEYS);
 
 const forums = async (req, res) => {
   const page_name = req.path;
@@ -1818,6 +1814,53 @@ const createATopic = asyncWrapper(async (req, res) => {
         });
       }
 
+      const forumNotifications = await ForumNotificationsModel.findOne({ forumID });
+      var subscribers = forumNotifications.notificationSubscribers;
+
+      var notificationObj = {
+        status: "unread",
+        notificationType: "forum",
+        subType: "topic",
+        forumID,
+        forumName: forumInfo.forumName,
+        topicID: topicCreated._id,
+        posterID: user.userId,
+        posterName: user.userName
+      }
+
+      var notification = JSON.stringify(notificationObj);
+
+      for (let i = 0; i < subscribers.length; i++) {
+        // Send notification to each subscriber
+        const subscriber = subscribers[i];
+        if(subscriber.userID != user.userId){
+          // Do not notify me, if I am the poster of this content
+          const subscriberNotified = await NotificationsModel.findOneAndUpdate(
+            { userID: subscriber.userID },
+            {
+              $addToSet: { notifications: notification }
+            }
+          );
+  
+          if(subscriber.enablePushNotifications == true){
+            for (let i = 0; i < subscriber.pushNotifications.length; i++) {
+              const subscription = JSON.parse(subscriber.pushNotifications[i]);
+  
+              // Send push notification to each endpoint
+              const payload = JSON.stringify({ 
+                title: forumInfo.forumName,
+                body: user.userName + " posted a new topic.",
+                icon: "",
+                otherInfo: notificationObj,
+              });
+              webpush.sendNotification(subscription, payload).catch(err => {
+                console.error(err);
+              });
+            }
+          }
+        }
+      }
+
       if (topicCreated)
         console.log(
           "User " +
@@ -1950,6 +1993,53 @@ const createATopic = asyncWrapper(async (req, res) => {
           topicTags,
           topicMedia,
         });
+
+        const forumNotifications = await ForumNotificationsModel.findOne({ forumID });
+        var subscribers = forumNotifications.notificationSubscribers;
+
+        var notificationObj = {
+          status: "unread",
+          notificationType: "forum",
+          subType: "topic",
+          forumID,
+          forumName: forumInfo.forumName,
+          topicID: topicCreated._id,
+          posterID: user.userId,
+          posterName: user.userName
+        }
+
+        var notification = JSON.stringify(notificationObj);
+
+        for (let i = 0; i < subscribers.length; i++) {
+          // Send notification to each subscriber
+          const subscriber = subscribers[i];
+          if(subscriber.userID != user.userId){
+            // Do not notify me, if I am the poster of this content
+            const subscriberNotified = await NotificationsModel.findOneAndUpdate(
+              { userID: subscriber.userID },
+              {
+                $addToSet: { notifications: notification }
+              }
+            );
+  
+            if(subscriber.enablePushNotifications == true){
+              for (let i = 0; i < subscriber.pushNotifications.length; i++) {
+                const subscription = JSON.parse(subscriber.pushNotifications[i]);
+  
+                // Send push notification to each endpoint
+                const payload = JSON.stringify({ 
+                  title: forumInfo.forumName,
+                  body: user.userName + " posted a new topic.",
+                  icon: "",
+                  otherInfo: notificationObj,
+                });
+                webpush.sendNotification(subscription, payload).catch(err => {
+                  console.error(err);
+                });
+              }
+            }
+          }
+        }
 
         const userActivity = await ForumsActivityModel.findOne({
           userID: user.userId,
@@ -2290,6 +2380,54 @@ const replyToATopic = asyncWrapper(async (req, res) => {
         }
       }
 
+      const forumNotifications = await ForumNotificationsModel.findOne({ forumID });
+      var subscribers = forumNotifications.notificationSubscribers;
+
+      var notificationObj = {
+        status: "unread",
+        notificationType: "forum",
+        subType: "response",
+        forumID,
+        forumName: forumInfo.forumName,
+        topicID: topicID,
+        responseID: replyPosted.response._id,
+        posterID: user.userId,
+        posterName: user.userName
+      }
+
+      var notification = JSON.stringify(notificationObj);
+
+      for (let i = 0; i < subscribers.length; i++) {
+        // Send notification to each subscriber
+        const subscriber = subscribers[i];
+        if(subscriber.userID != user.userId){
+          // Do not notify me, if I am the poster of this content
+          const subscriberNotified = await NotificationsModel.findOneAndUpdate(
+            { userID: subscriber.userID },
+            {
+              $addToSet: { notifications: notification }
+            }
+          );
+  
+          if(subscriber.enablePushNotifications == true){
+            for (let i = 0; i < subscriber.pushNotifications.length; i++) {
+              const subscription = JSON.parse(subscriber.pushNotifications[i]);
+  
+              // Send push notification to each endpoint
+              const payload = JSON.stringify({ 
+                title: forumInfo.forumName,
+                body: user.userName + " commented on a topic in " + forumInfo.forumName,
+                icon: "",
+                otherInfo: notificationObj,
+              });
+              webpush.sendNotification(subscription, payload).catch(err => {
+                console.error(err);
+              });
+            }
+          }
+        }
+      }
+
       const userActivity = await ForumsActivityModel.findOne({
         userID: user.userId,
       });
@@ -2481,6 +2619,54 @@ const replyToATopic = asyncWrapper(async (req, res) => {
                 forumInfo,
                 memberUpvotes: member.upvotes,
               };
+            }
+          }
+        }
+
+        const forumNotifications = await ForumNotificationsModel.findOne({ forumID });
+        var subscribers = forumNotifications.notificationSubscribers;
+
+        var notificationObj = {
+          status: "unread",
+          notificationType: "forum",
+          subType: "response",
+          forumID,
+          forumName: forumInfo.forumName,
+          topicID: topicID,
+          responseID: replyPosted.response._id,
+          posterID: user.userId,
+          posterName: user.userName
+        }
+
+        var notification = JSON.stringify(notificationObj);
+
+        for (let i = 0; i < subscribers.length; i++) {
+          // Send notification to each subscriber
+          const subscriber = subscribers[i];
+          if(subscriber.userID != user.userId){
+            // Do not notify me, if I am the poster of this content
+            const subscriberNotified = await NotificationsModel.findOneAndUpdate(
+              { userID: subscriber.userID },
+              {
+                $addToSet: { notifications: notification }
+              }
+            );
+    
+            if(subscriber.enablePushNotifications == true){
+              for (let i = 0; i < subscriber.pushNotifications.length; i++) {
+                const subscription = JSON.parse(subscriber.pushNotifications[i]);
+    
+                // Send push notification to each endpoint
+                const payload = JSON.stringify({ 
+                  title: forumInfo.forumName,
+                  body: user.userName + " commented on a topic in " + forumInfo.forumName,
+                  icon: "",
+                  otherInfo: notificationObj,
+                });
+                webpush.sendNotification(subscription, payload).catch(err => {
+                  console.error(err);
+                });
+              }
             }
           }
         }
