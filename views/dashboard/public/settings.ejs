@@ -11,25 +11,43 @@
     <!--Main-->
     <main>
         <div class="body-container">
+            <div class="alerts">
+                <div class="alert-success" id="alert-success" style="display: none;">
+                    <span class="fa fa-times"></span>
+                    <div class="body">
+                        <i class="fa fa-check-circle"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+                <div class="alert-danger" id="alert-danger" style="display: none;">
+                    <span class="fa fa-times"></span>
+                    <div class="body">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <p class="msg"></p>
+                    </div>
+                </div>
+            </div>
             <!-- Sidebar -->
             <%- include ("./partials/sidebar") %>
+
             <!--Middle-->
             <div class="middle">
                 <div class="settings-container">
                     <div class="change-avatar">
                         <div class="avatar">
                             <img src="
-                                <% if(user.avatar){ %> 
-                                    ../../../uploads/<%= user.avatar %> 
-                                <% } else { %> 
-                                    ../../../images/smart.png 
-                                <% } %>" alt="">
+                            <% if(user.avatar){ %> 
+                                ../../../uploads/<%= user.avatar %> 
+                            <% } else { %> 
+                                ../../../images/smart.png 
+                            <% } %>" alt="">
                             <span class="fa fa-edit"></span>
                         </div>
-                        <form enctype="multipart/form-data" method="post" action="/dashboard/private/upload/avatar" class="avatar-form"
-                            style="width: 7rem;">
+                        <form enctype="multipart/form-data" method="post" action="/dashboard/private/upload/avatar"
+                            class="avatar-form" style="width: 7rem;">
                             <input type="file" name="avatar" id="avatar-field" style="opacity: 0;">
-                            <button type="submit" class="btn btn-primary" id="apply-avatar" style="display: none;">Apply</button>
+                            <button type="submit" class="btn btn-primary" id="apply-avatar"
+                                style="display: none;">Apply</button>
                         </form>
                     </div>
                     <div class="change-info">
@@ -73,7 +91,26 @@
     <!--Theme Customization-->
     <%- include ("./partials/themeCustomization") %> 
 
+    <script>
+        var avatarField = document.getElementById("avatar-field")
+        var editBtn = document.querySelector(".settings-container .change-avatar .avatar span")
+        var applyAvatar = document.getElementById("apply-avatar")
+
+        // const successAlert = document.getElementById("alert-success");
+        // const successMessage = document.querySelector("#alert-success .msg")
+        // const dangerAlert = document.getElementById("alert-danger")
+        // const dangerMessage = document.querySelector("#alert-danger .msg")
+
+        editBtn.addEventListener("click", () => {
+            avatarField.click()
+            applyAvatar.style.display = "block"
+        })
+
+        const avatarForm = document.querySelector(".avatar-form")
+    </script>
+
     <!--JS Script Attachment-->
+    <script src="/socket.io/socket.io.js"></script>
     <script src="../../../js/script.js"></script>
 </body>
 </html>

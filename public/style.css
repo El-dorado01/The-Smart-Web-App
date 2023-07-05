@@ -6861,7 +6861,7 @@ main .container .right {
     bottom: 10%;
     right: 18%;
     color: var(--color-primary);
-    z-index: 20;
+    z-index: 9;
     background: transparent;
     padding: 5px;
     cursor: pointer;

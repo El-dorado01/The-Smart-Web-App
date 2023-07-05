@@ -1025,21 +1025,48 @@ function displaySingleFeedComments(postedComments) {
 // =========================Hide Bar===================== //
 var hideBar = document.querySelector(".hide-bar");
 var sideBar = document.querySelector(".left");
-var navContainer = document.querySelector("nav .container");
-var container = document.querySelector("main .container");
 
-var bodyContainer = document.querySelector("main .body-container");
+if(document.querySelector("main .container")){
+  var navContainer = document.querySelector("nav .container");
+  var container = document.querySelector("main .container");
+  
+  hideBar.addEventListener("click", () => {
+    navContainer.classList.toggle("sidebar-close");
+    container.classList.toggle("sidebar-close");
+    sideBar.classList.toggle("sidebar-close");
+  });
 
-hideBar.addEventListener("click", () => {
-  navContainer.classList.toggle("sidebar-close");
-  container.classList.toggle("sidebar-close");
-  sideBar.classList.toggle("sidebar-close");
-});
+  document.addEventListener("scroll", (e) => {
+    if(!sideBar.classList.contains("sidebar-close")){
+      if(screen.width <= 570){
+        navContainer.classList.toggle("sidebar-close");
+        container.classList.toggle("sidebar-close");
+        sideBar.classList.toggle("sidebar-close");
+      }
+    }
+  })
+}
 
-hideBar.addEventListener("click", () => {
-  bodyContainer.classList.toggle("sidebar-close");
-  sideBar.classList.toggle("sidebar-close");
-});
+if(document.querySelector("main .body-container")){
+  var bodyContainer = document.querySelector("main .body-container");
+  var navContainer = document.querySelector("nav .container");
+  
+  hideBar.addEventListener("click", () => {
+    navContainer.classList.toggle("sidebar-close");
+    bodyContainer.classList.toggle("sidebar-close");
+    sideBar.classList.toggle("sidebar-close");
+  });
+
+  document.addEventListener("scroll", (e) => {
+    if(!sideBar.classList.contains("sidebar-close")){
+      if(screen.width <= 701){
+        navContainer.classList.toggle("sidebar-close");
+        bodyContainer.classList.toggle("sidebar-close");
+        sideBar.classList.toggle("sidebar-close");
+      }
+    }
+  });
+}
 
 // =================Active class=============== //
 
