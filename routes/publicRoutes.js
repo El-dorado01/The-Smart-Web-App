@@ -43,25 +43,25 @@ const {
 const { helpCentre } = require("../controllers/dashboard/public/helpCenter");
 
 // ===================GET ROUTERS========================= //
-router.route("/").get(homePage);
-router.route("/index").get(homePage);
-router.route("/index/:postID").get(singlePost);
+// router.route("/").get(homePage);
+// router.route("/index").get(homePage);
+// router.route("/index/:postID").get(singlePost);
 // router.route("/:postID").get(singlePost);
 router.route("/forums").get(forums);
 router.route("/forum/:forumID").get(singleForum);
 router.route("/forum_invites/:forumID/key?:secretKey").get(processInvite);
 router.route("/forum/:forumID/key?:topicID").get(forumTopicInfo);
 router.route("/member_profile/:forumID/key?:memberID").get(visitMemberProfile);
-router.route("/find_mates").get(findMates);
-router.route("/live_spaces").get(liveSpaces);
+// router.route("/find_mates").get(findMates);
+// router.route("/live_spaces").get(liveSpaces);
 // // router.route("/live_space?name=&id=").get(videoSpace)
 router.route("/profile").get(profile);
 router.route("/smart_network").get(smartNetwork);
-router.route("/help_centre").get(helpCentre);
+// router.route("/help_centre").get(helpCentre);
 router.route("/settings").get(settingsForm);
 
 // ===============POST ROUTERS===================== //
-router.route("/addPost").post(handlePosts);
+// router.route("/addPost").post(handlePosts);
 router.route("/createForum").post(createForum);
 router.route("/modifyModerators").post(modifyModerators);
 router.route("/updateForumRanks").post(updateForumRanks);
@@ -74,7 +74,7 @@ router.route("/createATopic").post(createATopic);
 router.route("/deleteATopic").post(deleteATopic);
 router.route("/replyToATopic").post(replyToATopic);
 router.route("/deleteAResponse").post(deleteAResponse);
-router.route("/createFindMatesProfile").post(createFindMatesProfile);
+// router.route("/createFindMatesProfile").post(createFindMatesProfile);
 // router.route("/savePost").post(savePosts);
 
 module.exports = router;

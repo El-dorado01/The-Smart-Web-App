@@ -885,7 +885,7 @@ main .body-container .left .profile {
     position: relative;
 }
 
-.left .sidebar i .notification-count {
+/* #notifications .notification-count {
     background: var(--color-danger);
     color: white;
     font-size: 0.7rem;
@@ -895,7 +895,7 @@ main .body-container .left .profile {
     position: absolute;
     top: -0.4rem;
     right: -0.35rem;
-}
+} */
 
 .left .sidebar h3 {
     margin-left: 1.5rem;
@@ -1162,39 +1162,198 @@ main .body-container .left .profile {
 }
 
 /* --------------Notification popup --------------*/
-.left .notifications-popup {
-    position: absolute;
-    top: 0;
-    left: 110%;
-    width: 30rem;
+.notification-container {
+    width: 30vw;
+    height: 100vh;
     background: var(--color-white);
-    border-radius: var(--card-border-radius);
-    padding: var(--card-padding);
+    z-index: 100;
+    position: fixed;
+    top: 0;
+    right: -50rem;
+    padding: 30px 20px;
+    transition: all 0.5s;
+}
+
+.notif-closer {
+    float: right;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.notif-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 30px;
+    font-size: small;
+}
+
+.notif-header span {
+    font-size: 20px;
+}
+
+.mark-as-read {
+    width: 100%;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0;
+    background-color: var(--color-light);
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.notif-center {
+    overflow: hidden;
+    height: 65vh;
+}
+
+.notif-center:hover {
+    overflow-y: auto;
+}
+
+.notif-center .notification {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.notif-center .notification .action {
+    float: right;
+    padding: 5px;
+    align-items: center;
+    justify-content: center;
+    max-width: 30px;
+    cursor: pointer;
+}
+
+.notif-center .notification .main {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+}
+
+.notif-center .notification .main .notif-icon {
+    width: 30px;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notif-center .notification .main .notif-icon span {
+    font-size: 16px;
+}
+
+.notif-center .notification .main .notif-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.notif-center .notification .main .notif-text {
+    font-size: 12px;
+}
+
+#notifications {
+    color: var(--color-gray);
+    position: relative;
+}
+
+#notifications .notification-count {
+    background: var(--color-primary);
+    color: white;
+    font-size: 0.4rem;
+    width: fit-content;
+    border-radius: 0.8rem;
+    padding: 0.1rem 0.4rem;
+    position: absolute;
+    top: 0.5rem;
+    right: -0.2rem;
+}
+
+.notifications-popup {
+    position: absolute;
+    top: 4.5rem;
+    right: -5rem;
+    width: 22rem;
+    background: var(--color-white);
+    border-radius: 8px;
     box-shadow: 0 0 2rem hsl(var(--color-primary), 75%, 60% 25%);
-    z-index: 8;
+    z-index: 52;
     display: none;
 }
 
-.left .notifications-popup::before {
+.notifications-popup .notifications {
+    padding: var(--card-padding);
+    width: 100%;
+}
+
+.notifications-popup-cover {
     content: "";
-    width: 1.2rem;
-    height: 1.2rem;
+    width: 2rem;
+    height: 2rem;
     display: block;
     background: var(--color-white);
     position: absolute;
-    left: -0.6rem;
+    left: -0.3rem;
+    top: 3.6rem;
     transform: rotate(45deg);
+    display: none;
 }
 
-.left .notifications-popup>div {
+.notifications-popup .notif {
     display: flex;
     align-items: start;
     gap: 1rem;
     margin-bottom: 1rem;
-    z-index: 10;
+    font-size: 12px;
 }
 
-.left .notifications-popup small {
+.notifications-popup .showAll {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0 0 8px 8px;
+    background-color: var(--color-primary);
+    opacity: 1;
+    width: 100%;
+    height: 2.5rem;
+    cursor: pointer;
+}
+
+.notifications-popup .showAll:hover {
+    opacity: 0.7;
+}
+
+.notif .profile-pic {
+    width: 40px;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.notif .profile-pic span {
+    font-size: 17px;
+}
+
+.notif .profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.notifications-popup small {
     display: block;
 }
 
@@ -4745,7 +4904,7 @@ main .container .right {
     justify-content: space-between;
 }
 
-/* .left .notifications-popup {
+/* .notifications-popup {
     position: absolute;
     left: -20rem;
     width: 20rem;
@@ -6909,18 +7068,22 @@ main .container .right {
         right: 0;
     }
 
-    .left .notifications-popup {
+    .notification-container {
+        width: 40vw;
+    }
+
+    /* .notifications-popup {
         position: absolute;
         left: -20rem;
         width: 20rem;
     }
 
-    .left .notifications-popup::before {
+    .notifications-popup::before {
         display: absolute;
         top: 1.3rem;
         left: calc(20rem - 0.6rem);
         display: block;
-    }
+    } */
 
     .middle .stories {
         max-width: 73rem;
@@ -7010,6 +7173,10 @@ main .container .right {
     .movies-container .change-dot.action-bar {
         width: 30vw;
     }
+
+    .notification-container {
+        width: 43vw;
+    }
 }
 
 @media screen and (max-width: 810px) {
@@ -7086,9 +7253,12 @@ main .container .right {
     }
 }
 
-@media screen and (max-width: 650px) {
+@media screen and (max-width: 660px) {
     .contact-list .card {
         width: 75%;
+    }
+    .notification-container {
+        width: 60vw;
     }
 }
 
@@ -7096,6 +7266,10 @@ main .container .right {
     .middle .stories {
         max-width: 46rem;
     }
+
+    /* .notification-container {
+        width: 60vw;
+    } */
 
     .movies-container .change-dot.action-bar {
         width: 40vw;
@@ -7324,6 +7498,10 @@ main .container .right {
 @media (max-width: 497px) {
     .row {
         grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    }
+
+    .notification-container {
+        width: 100vw;
     }
 
     .rank-modal .card,

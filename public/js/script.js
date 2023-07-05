@@ -1056,14 +1056,14 @@ menuItems.forEach((item) => {
     changeActiveItem();
     item.classList.add("active");
 
-    if (item.id != "notifications") {
-      document.querySelector(".notifications-popup").style.display = "none";
-    } else {
-      document.querySelector(".notifications-popup").style.display = "block";
-      document.querySelector(
-        "#notifications .notification-count"
-      ).style.display = "none";
-    }
+    // if (item.id != "notifications") {
+    //   document.querySelector(".notifications-popup").style.display = "none";
+    // } else {
+    //   document.querySelector(".notifications-popup").style.display = "block";
+    //   document.querySelector(
+    //     "#notifications .notification-count"
+    //   ).style.display = "none";
+    // }
   });
 });
 
@@ -6079,3 +6079,11 @@ function urlBase64ToUint8Array(base64String) {
     }
     return outputArray;
 } 
+
+function updateNotification(notification, userID, linkUrl) {
+  socket.emit("updateNotification", { notification, userID, linkUrl });
+}
+
+socket.on("notificationUpdated", data => {
+  window.location.href = data.linkUrl
+})

@@ -9,6 +9,7 @@ const express = require("express");
 const app = express();
 
 const AuthModel = require("../../models/AuthModel");
+const NotificationsModel = require("../../models/NotificationsModel");
 const asyncWrapper = require("../../middleware/async");
 let isValidEmail = false;
 app.use(cookieParser());
@@ -57,6 +58,9 @@ const registerUser = asyncWrapper(async (req, res) => {
   //   return;
 
   const user = await AuthModel.create(userInfo);
+  const userNotification = await NotificationsModel.create({
+    userID: user._id
+  })
 
   res.status(StatusCodes.CREATED).json({ user });
 

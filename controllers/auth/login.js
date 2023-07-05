@@ -34,6 +34,7 @@ const loginUser = async (req, res) => {
   }
 
   const user = await AuthModel.findOne({ username });
+  // const notifications = await NotificationsModel.findOne({ userID: user._id });
 
   if (!user) {
     throw new UnauthenticatedError("Invalid username");

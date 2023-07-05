@@ -1825,7 +1825,8 @@ const createATopic = asyncWrapper(async (req, res) => {
         forumName: forumInfo.forumName,
         topicID: topicCreated._id,
         posterID: user.userId,
-        posterName: user.userName
+        posterName: user.userName,
+        createdAt: Date.now()
       }
 
       var notification = JSON.stringify(notificationObj);
@@ -2005,7 +2006,8 @@ const createATopic = asyncWrapper(async (req, res) => {
           forumName: forumInfo.forumName,
           topicID: topicCreated._id,
           posterID: user.userId,
-          posterName: user.userName
+          posterName: user.userName,
+          createdAt: Date.now()
         }
 
         var notification = JSON.stringify(notificationObj);
@@ -2392,7 +2394,8 @@ const replyToATopic = asyncWrapper(async (req, res) => {
         topicID: topicID,
         responseID: replyPosted.response._id,
         posterID: user.userId,
-        posterName: user.userName
+        posterName: user.userName,
+        createdAt: Date.now()
       }
 
       var notification = JSON.stringify(notificationObj);
@@ -2635,7 +2638,8 @@ const replyToATopic = asyncWrapper(async (req, res) => {
           topicID: topicID,
           responseID: replyPosted.response._id,
           posterID: user.userId,
-          posterName: user.userName
+          posterName: user.userName,
+          createdAt: Date.now()
         }
 
         var notification = JSON.stringify(notificationObj);

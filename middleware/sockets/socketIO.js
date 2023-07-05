@@ -8,6 +8,7 @@ const FeedpostModel = require("../../models/FeedpostModel");
 const ForumsModel = require("../../models/ForumsModel");
 const ForumRankingsModel = require("../../models/ForumRankingsModel");
 const ForumNotificationsModel = require("../../models/ForumNotificationsModel");
+const NotificationsModel = require("../../models/NotificationsModel");
 const FindMatesModel = require("../../models/FindMatesModel");
 const StoreProductsModel = require("../../models/StoreProductsModel");
 const MarketStoresModel = require("../../models/MarketStoresModel");
@@ -1032,6 +1033,22 @@ const allSockets = (socket) => {
         break;
     }
   });
+
+  socket.on("updateNotification", async(data) => {
+    const notif = await NotificationsModel.findOne({ userID: data.userID })
+    var notifications = notif.notifications;
+    var foundIndex = notifications.findIndex((notification) => notification == JSON.stringify(data.notification))
+    var updatedNotif = data.notification['status'] = "read";
+    notifications[foundIndex] = JSON.stringify(data.notification)
+
+    var notificationUpdated = await NotificationsModel.findOneAndUpdate(
+      { userID: data.userID },
+      { notifications }
+    )
+    if(notificationUpdated){
+      socket.emit("notificationUpdated", data);
+    }
+  })
 
   /*
  =======================================================================================

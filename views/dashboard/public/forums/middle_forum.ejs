@@ -52,9 +52,10 @@
                             </p>
                         </div>
                     </div>
-                <% }) %>
+                    <% }) %>
             </div>
-            <button class="btn btn-primary" style="margin-top: 10px;" onclick="showCreateForum()">
+            <% } %>
+                    <button class="btn btn-primary" style="margin-top: 10px;" onclick="showCreateForum()">
                 <span class="fa fa-plus"></span>
                 Create a Forum
             </button>
@@ -64,36 +65,38 @@
                 <div class="body">
                     <span class="text-muted">You have no invites</span>
                 </div>
-            <% } else { %>
-                <div class="scroll-bar">
-                    <div class="messages">
-                        <% invites.forEach(invite=> { %>
-                            <div class="forum">
-                                <div class="info">
-                                    <div class="profile-pic">
-                                        <img src="<%= invite.displayPic %>" alt="">
+                <% } else { %>
+                    <div class="scroll-bar">
+                        <div class="messages">
+                            <% invites.forEach(invite=> { %>
+                                <div class="forum">
+                                    <div class="info">
+                                        <div class="profile-pic">
+                                            <img src="<%= invite.displayPic %>" alt="">
+                                        </div>
+                                        <div class="message-body">
+                                            <h5 style="font-size: 13px; font-weight: 600;">
+                                                <%= invite.forumName %>
+                                            </h5>
+                                            <p class="text-muted">
+                                                <%= invite.members.length %>
+                                                    member<% if(invite.members.length> 1){%>s<%}%>
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div class="message-body">
-                                        <h5 style="font-size: 13px; font-weight: 600;">
-                                            <%= invite.forumName %>
-                                        </h5>
-                                        <p class="text-muted">
-                                            <%= invite.members.length %>
-                                                member<% if(invite.members.length> 1){%>s<%}%>
-                                        </p>
+                                    <div class="action">
+                                        <span
+                                            onclick="updateInvite('<%= invite._id %>', '<%= user._id %>', 'accept')"><i
+                                                class="fa-solid fa-check"></i></span>
+                                        <span
+                                            onclick="updateInvite('<%= invite._id %>', '<%= user._id %>', 'reject')"><i
+                                                class="fa-solid fa-times"></i></span>
                                     </div>
                                 </div>
-                                <div class="action">
-                                    <span onclick="updateInvite('<%= invite._id %>', '<%= user._id %>', 'accept')"><i
-                                            class="fa-solid fa-check"></i></span>
-                                    <span onclick="updateInvite('<%= invite._id %>', '<%= user._id %>', 'reject')"><i
-                                            class="fa-solid fa-times"></i></span>
-                                </div>
-                            </div>
-                            <% }); %>
+                                <% }); %>
+                        </div>
                     </div>
-                </div>
-                <% } %>
+                    <% } %>
         </div>
     </div>
 </div>

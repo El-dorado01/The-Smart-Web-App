@@ -42,8 +42,8 @@ const {
 } = require("../controllers/dashboard/private/themeCustomization");
 
 // ==============GET ROUTERS========================= //
-router.route("/").get(homePage);
-router.route("/index").get(homePage);
+// router.route("/").get(homePage);
+// router.route("/index").get(homePage);
 router.route("/movies").get(movies);
 router.route("/movies/channel").get(createChannel).post(postChannels);
 router.route("/movies/myPlaylists").get(moviePlaylists);
@@ -55,7 +55,7 @@ router.route("/editMovie/:movieID").get(editMovie);
 router.route("/profile/:profileID").get(profile);
 router.route("/smart_network").get(smartNetwork);
 router.route("/smart_network/:feedID").get(singleFeed);
-router.route("/help_centre").get(helpCentre);
+// router.route("/help_centre").get(helpCentre);
 router.route("/live_meeting").get(liveMeeting);
 router.route("/live_meeting/:roomID").get(room);
 router.route("/settings").get(settingsForm);

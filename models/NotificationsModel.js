@@ -14,8 +14,11 @@ const NotificationsSchema = new mongoose.Schema(
     //   forumID,
     //   forumName: forumInfo.forumName
     //   topicID: topicCreated._id,
+    //   responseID,
     //   posterID: user.userId,
-    //   posterName: user.userName
+    //   posterName: user.userName,
+    //   status: "unread",
+    //   createdAt: Date.now()
     // }
     notifications: [
       {
