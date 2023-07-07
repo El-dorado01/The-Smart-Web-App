@@ -1049,19 +1049,9 @@ SWIPE EVENT HANDLER
 */
 
 document.addEventListener('swiped-left', function(e) {
-<<<<<<< HEAD
-    console.log(e.type);
-    console.log(e.target);
-    console.log(e.detail);
-    e.target.innerHTML = e.type;
-
-    if(!sideBar.classList.contains("sidebar-close")){
-      navContainer.classList.toggle("sidebar-close");
-=======
   if (screen.width <= 992) {
     if(sideBar.classList.contains("sidebar-close")){
       // navContainer.classList.toggle("sidebar-close");
->>>>>>> 9d0169ed917e6cfe286f0246f7f45bb54de98ae4
       sideBar.classList.toggle("sidebar-close");
       if(document.querySelector("main .container")){
         var container = document.querySelector("main .container");
@@ -1071,9 +1061,6 @@ document.addEventListener('swiped-left', function(e) {
         var bodyContainer = document.querySelector("main .body-container");
         bodyContainer.classList.toggle("sidebar-close");
       }
-<<<<<<< HEAD
-    }
-=======
     }else{
       if(document.querySelector("main .container")){
         var container = document.querySelector("main .container");
@@ -1115,7 +1102,6 @@ document.addEventListener('swiped-right', function(e) {
       }
     }
   }
->>>>>>> 9d0169ed917e6cfe286f0246f7f45bb54de98ae4
 });
 
 if(document.querySelector("main .container")){
