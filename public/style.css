@@ -90,6 +90,10 @@
     border: none;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: 'Quicksand', sans-serif;
     color: var(--color-dark);
@@ -687,9 +691,9 @@ nav .create {
     gap: 2rem;
 }
 
-nav .create .hide-bar {
+/* nav .create .hide-bar {
     display: none;
-}
+} */
 
 /* --------------Main---------------------- */
 main {
@@ -723,6 +727,7 @@ main .body-container .left {
     height: max-content;
     position: sticky;
     top: var(--sticky-top-left);
+    transition: all 0.5s;
 }
 
 .alerts {
@@ -900,6 +905,7 @@ main .body-container .left .profile {
 .left .sidebar h3 {
     margin-left: 1.5rem;
     font-size: 1rem;
+    display: block;
 }
 
 .left .sidebar .active {
@@ -6956,9 +6962,9 @@ main .container .right {
         padding: 0 2rem;
     }
 
-    .left {
+    .container .left {
         width: 5rem;
-        z-index: 5;
+        z-index: 8;
     }
 
     main .container .left .profile,
@@ -6966,7 +6972,7 @@ main .container .right {
         display: none;
     }
 
-    .sidebar h3 {
+    .left .sidebar h3 {
         display: none;
     }
 
@@ -7015,7 +7021,7 @@ main .container .right {
         width: 25vw;
     }
 
-    nav .create .hide-bar {
+    /* nav .create .hide-bar {
         display: block;
     }
 
@@ -7029,7 +7035,7 @@ main .container .right {
 
     nav .container.sidebar-close .hidebar-icon-2 {
         display: none;
-    }
+    } */
 
     main .container {
         grid-template-columns: 0 auto 5rem;
@@ -7257,6 +7263,7 @@ main .container .right {
     .contact-list .card {
         width: 75%;
     }
+
     .notification-container {
         width: 60vw;
     }
