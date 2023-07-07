@@ -7,6 +7,22 @@ const publicVapidKey = 'BHgOt-MxnO-RuLibIpfv1CXbxpKX08ksS9Xld8YJ6pTGQwpdV46DAqNt
     .then(reg => console.log('SW registered!', reg))
     .catch(err => console.log('Boo!', err));
 // })
+
+// document.addEventListener('touchstart', function(e){
+//     // document.innerHTML = ''
+//     var touchobj = e.changedTouches[0]
+//     dist = 0
+//     startX = touchobj.pageX
+//     startY = touchobj.pageY
+//     startTime = new Date().getTime() // record time when finger first makes contact with surface
+//     e.preventDefault()
+
+//     console.log(touchobj, dist, startX, startY, startTime)
+// }, false)
+
+// document.addEventListener('touchmove', function(e){
+//     e.preventDefault() // prevent scrolling when inside DIV
+// }, false)
 /*
 ===================================================================================================
 ********************************************FILE CONTENTS******************************************
@@ -1025,6 +1041,32 @@ function displaySingleFeedComments(postedComments) {
 // =========================Hide Bar===================== //
 var hideBar = document.querySelector(".hide-bar");
 var sideBar = document.querySelector(".left");
+
+/* 
+====================================================================================================
+SWIPE EVENT HANDLER
+====================================================================================================
+*/
+
+document.addEventListener('swiped-left', function(e) {
+    console.log(e.type);
+    console.log(e.target);
+    console.log(e.detail);
+    e.target.innerHTML = e.type;
+
+    if(!sideBar.classList.contains("sidebar-close")){
+      navContainer.classList.toggle("sidebar-close");
+      sideBar.classList.toggle("sidebar-close");
+      if(document.querySelector("main .container")){
+        var container = document.querySelector("main .container");
+        container.classList.toggle("sidebar-close");
+      }
+      if(document.querySelector("main .body-container")){
+        var bodyContainer = document.querySelector("main .body-container");
+        bodyContainer.classList.toggle("sidebar-close");
+      }
+    }
+});
 
 if(document.querySelector("main .container")){
   var navContainer = document.querySelector("nav .container");
