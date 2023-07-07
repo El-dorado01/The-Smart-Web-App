@@ -6,7 +6,7 @@
 </script>
 <!--Left-->
 <div class="left">
-    <a class="profile" href="/dashboard/public/profile">
+    <a class="profile" href="/dashboard/private/profile/<%= user._id %>">
         <div class="profile-pic">
             <img src="../../../../uploads/<%= user.avatar %>" alt="">
         </div>
@@ -58,4 +58,5 @@
     <script>
         const theUserID = '<%= user._id %>'
     </script>
+    <script src="../../../../js/swiped-events.js"></script>
 </div>

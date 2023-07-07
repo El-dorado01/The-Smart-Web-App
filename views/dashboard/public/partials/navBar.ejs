@@ -128,15 +128,12 @@
           </div>
         </div>
       </div>
-
-      <i class="hide-bar">
-        <span class="fa fa-eye hidebar-icon-1" title="Show Bar"></span>
-        <span class="fa fa-eye-slash hidebar-icon-2" title="Hide Bar"></span>
-      </i>
-      <div class="profile-pic">
-        <a href="/dashboard/public/profile">
-          <img src="../../../../uploads/<%= user.avatar %>" alt="" />
-        </a>
+      <div class="profile-pic hide-bar">
+          <% if(user.avatar){ %>
+              <img src="../../../../uploads/<%= user.avatar %>" alt="">
+          <% } else { %>
+              <img src="../../../../images/smart.png" alt="">
+          <% } %>
       </div>
     </div>
   </div>
@@ -156,9 +153,6 @@
       document.querySelector(".notifications-popup-cover").style.display =
         "block";
       document.querySelector(".notifications-popup").style.display = "block";
-      document.querySelector(
-        "#notifications .notification-count"
-      ).style.display = "none";
     }
   });
 
