@@ -44,9 +44,12 @@ const AuthSchema = new mongoose.Schema(
     },
     about: {
       type: String,
+      trim: true,
+      default: "Hey, Let's be friends on Sphere!"
     },
     avatar: {
       type: String,
+      default: "smart.png",
     },
     friends: [
       {
