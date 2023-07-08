@@ -51,7 +51,12 @@
             <span><i class="fa fa-lock"></i></span> <h3>Lockscreen</h3>
         </a>
         <a class="menu-item">
-            <span><i class="fa fa-sign-out"></i></span> <h3>Logout</h3>
+            <form action="/logout?_method=DELETE" method="post">
+                <button type="submit">
+                    <span><i class="fa fa-sign-out icon"></i></span>
+                    <h3 style="color: var(--color-gray);">Logout</h3>
+                </button>
+            </form>
         </a>       
     </div>
     <label for="create-post" class="btn btn-primary">Public</label>
