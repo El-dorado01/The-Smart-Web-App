@@ -468,3 +468,13 @@ input:focus+.focus-input-resume::before {
         display: none;
     }
 }
+
+@media(max-width: 570px) {
+    .login-form, .signup-form {
+        width: 96vw;
+    }
+
+    .login-form h1, .signup-form h1 {
+        font-size: 3.5rem;
+    }
+}
