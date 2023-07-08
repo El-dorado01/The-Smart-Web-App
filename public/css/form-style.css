@@ -474,6 +474,10 @@ input:focus+.focus-input-resume::before {
         width: 96vw;
     }
 
+    .form-wrapper.sign-up {
+        height: 65rem;
+    }
+
     .login-form h1, .signup-form h1 {
         font-size: 3.5rem;
     }
