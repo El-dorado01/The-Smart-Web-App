@@ -470,7 +470,7 @@ input:focus+.focus-input-resume::before {
 }
 
 @media(max-width: 570px) {
-    .login-form, .signup-form {
+    .form-wrapper {
         width: 96vw;
     }
 
