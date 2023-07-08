@@ -1,42 +1,26 @@
-<div class="notification-container">
-  <span class="notif-closer" onclick="document.querySelector('.notification-container').style.right = '-50rem';"><i class="fa-solid fa-times"></i></span>
-  <div class="notif-header">
-    <h2>Notifications Centre</h2>
-    <span><i class="fa-solid fa-bell"></i></span>
-  </div>
-  <!-- <div class="notif-filter"></div> -->
-  <div class="mark-as-read">
-    <span>Mark all as read</span>
-  </div>
-  <div class="notif-center">
-    <% for (let i = 0; i < notifications.length; i++) { 
-        var singleNotification = JSON.parse(notifications[i]);
-        if(singleNotification.notificationType == "forum"){
-            if (singleNotification.subType == "topic") { %>
-              <div class="notification" <% if(singleNotification.status == "unread"){%> style="opacity: 0.8; font-weight: 800;" <%}%>>
-                <div class="main" onclick="updateNotification(<%= notifications[i] %>, '<%= user._id %>', '/dashboard/public/forum/<%= singleNotification.forumID %>/key?topicID=<%= singleNotification.topicID %>')">
-                  <div class="notif-icon">
-                    <span><i class="fa-solid fa-users-rays"></i></span>
-                  </div>
-                  <div class="notif-text">
-                    <b><%= singleNotification.posterName %></b> just posted a new topic in <%= singleNotification.forumName %> &bullet;
-                      <span class="text-muted" style="font-size: 10px">
-                        <%= new Date(singleNotification.createdAt).toDateString() %>
-                      </span>
-                  </div>
-                </div>
-                <div class="action">
-                  <span><i class="fa-solid fa-ellipsis"></i></span>
-                </div>
-              </div>
-      <%      } else { %>
+<% if(notifications.length > 0){ %>
+  <div class="notification-container">
+    <span class="notif-closer" onclick="document.querySelector('.notification-container').style.right = '-50rem';"><i class="fa-solid fa-times"></i></span>
+    <div class="notif-header">
+      <h2>Notifications Centre</h2>
+      <span><i class="fa-solid fa-bell"></i></span>
+    </div>
+    <!-- <div class="notif-filter"></div> -->
+    <div class="mark-as-read">
+      <span>Mark all as read</span>
+    </div>
+    <div class="notif-center">
+      <% for (let i = 0; i < notifications.length; i++) { 
+          var singleNotification = JSON.parse(notifications[i]);
+          if(singleNotification.notificationType == "forum"){
+              if (singleNotification.subType == "topic") { %>
                 <div class="notification" <% if(singleNotification.status == "unread"){%> style="opacity: 0.8; font-weight: 800;" <%}%>>
-                  <div class="main" onclick="updateNotification(<%= notifications[i] %>, '<%= user._id %>', '/dashboard/public/forum/<%= singleNotification.forumID %>/key?topicID=<%= singleNotification.topicID %>#<%= singleNotification.responseID %>')">
+                  <div class="main" onclick="updateNotification(<%= notifications[i] %>, '<%= user._id %>', '/dashboard/public/forum/<%= singleNotification.forumID %>/key?topicID=<%= singleNotification.topicID %>')">
                     <div class="notif-icon">
                       <span><i class="fa-solid fa-users-rays"></i></span>
                     </div>
                     <div class="notif-text">
-                      <b><%= singleNotification.posterName %></b> just commented on a topic in <%= singleNotification.forumName %> &bullet;
+                      <b><%= singleNotification.posterName %></b> just posted a new topic in <%= singleNotification.forumName %> &bullet;
                         <span class="text-muted" style="font-size: 10px">
                           <%= new Date(singleNotification.createdAt).toDateString() %>
                         </span>
@@ -46,27 +30,45 @@
                     <span><i class="fa-solid fa-ellipsis"></i></span>
                   </div>
                 </div>
-      <%      }
-          }
-      } %>
-    <!--<div class="notification">
-      <a href="">
-        <div class="main">
-          <div class="notif-icon">
-            <img src="../../../../images/1.jpg" />
+        <%      } else { %>
+                  <div class="notification" <% if(singleNotification.status == "unread"){%> style="opacity: 0.8; font-weight: 800;" <%}%>>
+                    <div class="main" onclick="updateNotification(<%= notifications[i] %>, '<%= user._id %>', '/dashboard/public/forum/<%= singleNotification.forumID %>/key?topicID=<%= singleNotification.topicID %>#<%= singleNotification.responseID %>')">
+                      <div class="notif-icon">
+                        <span><i class="fa-solid fa-users-rays"></i></span>
+                      </div>
+                      <div class="notif-text">
+                        <b><%= singleNotification.posterName %></b> just commented on a topic in <%= singleNotification.forumName %> &bullet;
+                          <span class="text-muted" style="font-size: 10px">
+                            <%= new Date(singleNotification.createdAt).toDateString() %>
+                          </span>
+                      </div>
+                    </div>
+                    <div class="action">
+                      <span><i class="fa-solid fa-ellipsis"></i></span>
+                    </div>
+                  </div>
+        <%      }
+            }
+        } %>
+      <!--<div class="notification">
+        <a href="">
+          <div class="main">
+            <div class="notif-icon">
+              <img src="../../../../images/1.jpg" />
+            </div>
+            <div class="notif-text">
+              El Dorado posted a new topic in Ladies Only Forum
+            </div>
           </div>
-          <div class="notif-text">
-            El Dorado posted a new topic in Ladies Only Forum
-          </div>
+        </a>
+        <div class="action">
+          <span><i class="fa-solid fa-ellipsis"></i></span>
         </div>
-      </a>
-      <div class="action">
-        <span><i class="fa-solid fa-ellipsis"></i></span>
-      </div>
-    </div>-->
+      </div>-->
+    </div>
+    </div>
   </div>
-  </div>
-</div>
+<% } %>
 <nav>
     <div class="container">
         <h2 class="logo">Smart Web</h2>
@@ -91,40 +93,45 @@
         <div class="notifications-popup-cover"></div>
         <div class="notifications-popup">
           <div class="notifications">
-            <% for (let i = 0; i < 5; i++) { 
-                var singleNotification = JSON.parse(notifications[i]);
-                if(singleNotification.notificationType == "forum"){
-                    if (singleNotification.subType == "topic") { %>
-                        <div class="notif" <% if(singleNotification.status == "unread"){%> style="opacity: 0.8; font-weight: 800;" <%}%>>
-                            <div class="profile-pic">
-                                <span><i class="fa-solid fa-users-rays"></i></span>
-                            </div>
-                              <div class="notification-body" onclick="updateNotification(<%= notifications[i] %>, '<%= user._id %>', '/dashboard/public/forum/<%= singleNotification.forumID %>/key?topicID=<%= singleNotification.topicID %>')">
-                                <span>
-                                    <b><%= singleNotification.posterName %></b> just posted a new topic in <%= singleNotification.forumName %> &bullet;
-                                    <span class="text-muted" style="font-size: 10px"
-                                    ><%= new Date(singleNotification.createdAt).toDateString() %></span>
-                                </span>
+            <% 
+              if(notifications.length > 0){
+                for (let i = 0; i < 5; i++) { 
+                  var singleNotification = JSON.parse(notifications[i]);
+                  if(singleNotification.notificationType == "forum"){
+                      if (singleNotification.subType == "topic") { %>
+                          <div class="notif" <% if(singleNotification.status == "unread"){%> style="opacity: 0.8; font-weight: 800;" <%}%>>
+                              <div class="profile-pic">
+                                  <span><i class="fa-solid fa-users-rays"></i></span>
                               </div>
-                        </div>
-            <%      } else { %>
-                        <div class="notif" <% if(singleNotification.status == "unread"){%> style="opacity: 0.8; font-weight: 800;" <%}%>>
-                            <div class="profile-pic">
-                                <span><i class="fa-solid fa-users-rays"></i></span>
-                            </div>
-                            
-                              <div class="notification-body" onclick="updateNotification(<%= notifications[i] %>, '<%= user._id %>', '/dashboard/public/forum/<%= singleNotification.forumID %>/key?topicID=<%= singleNotification.topicID %>#<%= singleNotification.responseID %>')">
+                                <div class="notification-body" onclick="updateNotification(<%= notifications[i] %>, '<%= user._id %>', '/dashboard/public/forum/<%= singleNotification.forumID %>/key?topicID=<%= singleNotification.topicID %>')">
                                   <span>
-                                      <b><%= singleNotification.posterName %></b> just commented on a topic in <%= singleNotification.forumName %> &bullet;
-                                      <span class="text-muted" style="font-size: 10px">
-                                        <%= new Date(singleNotification.createdAt).toDateString() %>
-                                      </span>
+                                      <b><%= singleNotification.posterName %></b> just posted a new topic in <%= singleNotification.forumName %> &bullet;
+                                      <span class="text-muted" style="font-size: 10px"
+                                      ><%= new Date(singleNotification.createdAt).toDateString() %></span>
                                   </span>
+                                </div>
+                          </div>
+              <%      } else { %>
+                          <div class="notif" <% if(singleNotification.status == "unread"){%> style="opacity: 0.8; font-weight: 800;" <%}%>>
+                              <div class="profile-pic">
+                                  <span><i class="fa-solid fa-users-rays"></i></span>
                               </div>
-                        </div>
-            <%      }
-                }
-              } %>
+                              
+                                <div class="notification-body" onclick="updateNotification(<%= notifications[i] %>, '<%= user._id %>', '/dashboard/public/forum/<%= singleNotification.forumID %>/key?topicID=<%= singleNotification.topicID %>#<%= singleNotification.responseID %>')">
+                                    <span>
+                                        <b><%= singleNotification.posterName %></b> just commented on a topic in <%= singleNotification.forumName %> &bullet;
+                                        <span class="text-muted" style="font-size: 10px">
+                                          <%= new Date(singleNotification.createdAt).toDateString() %>
+                                        </span>
+                                    </span>
+                                </div>
+                          </div>
+              <%      }
+                  }
+                } 
+              }else{ %>
+              <div style="display: flex; align-items: center; justify-content: center; height: 7rem;">You have no notifications</div>
+            <% } %>
           </div>
           <div class="showAll" onclick="showNotification()">
             Show All
