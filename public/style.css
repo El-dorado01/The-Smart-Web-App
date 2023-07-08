@@ -7712,7 +7712,7 @@ main .container .right {
     .contact-list .card,
     .drafts-modal .card,
     .add-topic-modal .card {
-        width: 105vw;
+        width: 100vw;
         height: 100vh;
         max-height: 100vh;
         padding: 3rem .2rem;
