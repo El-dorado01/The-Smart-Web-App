@@ -95,7 +95,7 @@
           <div class="notifications">
             <% 
               if(notifications.length > 0){
-                for (let i = 0; i < notifications.length; i++) { 
+                for (let i = 0; i < notifications.length && i < 5; i++) { 
                   var singleNotification = JSON.parse(notifications[i]);
                   if(singleNotification.notificationType == "forum"){
                       if (singleNotification.subType == "topic") { %>
