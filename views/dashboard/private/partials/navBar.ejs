@@ -133,9 +133,11 @@
               <div style="display: flex; align-items: center; justify-content: center; height: 7rem;">You have no notifications</div>
             <% } %>
           </div>
-          <div class="showAll" onclick="showNotification()">
-            Show All
-          </div>
+          <% if(notifications.length > 0){ %> 
+            <div class="showAll" onclick="showNotification()">
+              Show All
+            </div>
+          <% } %>
         </div>
       </div>
             <!--<i class="hide-bar">
