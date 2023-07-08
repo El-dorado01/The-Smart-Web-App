@@ -29,7 +29,7 @@ html {
 }
 
 body {
-    min-width: 500px;
+    min-width: 320px;
 }
 
 .form-container {
@@ -50,6 +50,7 @@ body {
     from {
         opacity: .4;
     }
+
     to {
         opacity: 1;
     }
@@ -357,11 +358,11 @@ body {
     background: rgba(105, 124, 18, 0.5);
 }
 
-input:focus + .focus-input::before {
+input:focus+.focus-input::before {
     width: 100%;
 }
 
-input:focus + .focus-input-resume::before {
+input:focus+.focus-input-resume::before {
     width: 100%;
 }
 
@@ -385,6 +386,7 @@ input:focus + .focus-input-resume::before {
     color: #fff;
     cursor: pointer;
 }
+
 .resume {
     margin-top: 2rem;
     margin-bottom: 1rem;
@@ -404,48 +406,55 @@ input:focus + .focus-input-resume::before {
     cursor: pointer;
 }
 
-@media(min-width: 856px){
+@media(min-width: 856px) {
     .resume {
         display: none;
     }
 }
 
-@media(max-width: 1028px){
+@media(max-width: 1028px) {
     .form-wrapper {
         width: 80rem;
     }
-    .banner{
+
+    .banner {
         left: 2rem;
         width: 27rem;
     }
-    .banner-right{
+
+    .banner-right {
         right: 2rem;
         width: 27rem;
     }
+
     .banner h1, .banner-right h1 {
         font-size: 3rem;
     }
+
     .banner h1 img, .banner-right h1 img {
         width: 17%;
     }
-    .signup-form{
+
+    .signup-form {
         left: 25rem;
     }
+
     .login-form {
         right: 25rem;
     }
 }
 
-@media(max-width: 855px){
+@media(max-width: 855px) {
     .form-wrapper {
         padding: var(--card-padding);
         width: 45rem;
     }
 
-    .signup-form{
+    .signup-form {
         width: 100%;
         left: 0;
     }
+
     .login-form {
         width: 100%;
         right: 0;
