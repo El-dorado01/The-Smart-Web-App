@@ -91,7 +91,7 @@ const registerUser = asyncWrapper(async (req, res) => {
             auth: {
                 type: "OAuth2",
                 user: "adebayosodiqkolade@gmail.com",
-                clientID: process.env.OAUTH_CLIENT_ID,
+                clientId: process.env.OAUTH_CLIENT_ID,
                 clientSecret: process.env.OAUTH_CLIENT_SECRET,
                 refreshToken: process.env.OAUTH_REFRESH_TOKEN,
                 accessToken: accessToken,
@@ -99,10 +99,10 @@ const registerUser = asyncWrapper(async (req, res) => {
         });
 
         let message = {
-            from: "Sphere Web App <sphere@sphereweb.com",
+            from: "Sphere Web App <sphere@sphereweb.com>",
             to: `${fetchUser.email}`,
             subject: "Email Verification Link",
-            text: "Here is your verification link",
+            //text: "Here is your verification link",
             html: `
                     <p style="
                         font-size: 1.5rem; 
