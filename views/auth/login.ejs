@@ -116,9 +116,6 @@
                 password
             } = userInfo
 
-            userName.value = ''
-            userPassword.value = ''
-
             try {
                 const response = await fetch("/auth/login", {
                         method: "POST",
@@ -137,6 +134,9 @@
                         },5000)
                 }
                 else{
+                    userName.value = ''
+                    userPassword.value = ''
+                    
                     location.assign("/dashboard/index")
                 }
                 

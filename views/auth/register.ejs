@@ -129,11 +129,6 @@
                 repeatPassword
             } = userInfo
 
-            userName.value = ''
-            userEmail.value = ''
-            userPassword.value = ''
-            userRepeatPassword.value = ''
-
             try {
 
                 if(password === repeatPassword) {
@@ -163,6 +158,11 @@
                             dangerAlert.style.display = "none"
                         },5000)
                     } else {
+                        userName.value = ''
+                        userEmail.value = ''
+                        userPassword.value = ''
+                        userRepeatPassword.value = ''
+                        
                         successAlert.style.display = "block"
                         successMessage.textContent = "Account created successfully"
 
