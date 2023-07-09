@@ -1121,8 +1121,32 @@ if (document.querySelector("main .container")) {
 
     hideBar.addEventListener("click", () => {
         // navContainer.classList.toggle("sidebar-close");
-        container.classList.toggle("sidebar-close");
-        sideBar.classList.toggle("sidebar-close");
+        // if(screen.width >= 1200){
+        // }else 
+        if(screen.width >= 992){
+            if(document.querySelector(".container .left").style.width == "5rem"){
+                if(screen.width >= 1200){
+                    document.querySelector("main .container").style.gridTemplateColumns = "18vw auto 20vw";
+                }
+                document.querySelector(".container .left").style.width = "18vw";
+                document.querySelector(".container .left .profile").style.display = "flex";
+                document.querySelectorAll(".left .sidebar h3").forEach(item => {
+                    item.style.display = "block";
+                })
+            }else{
+                if(screen.width >= 1200){
+                    document.querySelector("main .container").style.gridTemplateColumns = "5rem auto 20vw";
+                }
+                document.querySelector(".container .left").style.width = "5rem";
+                document.querySelector(".container .left .profile").style.display = "none";
+                document.querySelectorAll(".left .sidebar h3").forEach(item => {
+                    item.style.display = "none";
+                })
+            }
+        }else{
+            container.classList.toggle("sidebar-close");
+            sideBar.classList.toggle("sidebar-close");
+        }
     });
 
     document.addEventListener("scroll", (e) => {
@@ -1134,7 +1158,9 @@ if (document.querySelector("main .container")) {
                 if (container.querySelector(".left").style.width == "20rem") {
                     container.querySelector(".left").style.width = "5rem";
                     container.querySelector(".left .profile").style.display = "none";
-                    container.querySelector(".sidebar h3").style.display = "none"
+                    container.querySelectorAll(".left .sidebar h3").forEach(item => {
+                        item.style.display = "none";
+                    })
                 }
             }
         }
@@ -1160,7 +1186,9 @@ if (document.querySelector("main .body-container")) {
                 if (bodyContainer.querySelector(".left").style.width == "20rem") {
                     bodyContainer.querySelector(".left").style.width = "5rem";
                     bodyContainer.querySelector(".left .profile").style.display = "none";
-                    bodyContainer.querySelector(".sidebar h3").style.display = "none"
+                    bodyContainer.querySelectorAll(".left .sidebar h3").forEach(item => {
+                        item.style.display = "none";
+                    })
                 }
             }
         }
@@ -5795,68 +5823,91 @@ socket.on("topicCategories", data => {
         trendingTopics
     } = data;
 
-    var trendingTopicsHTML = trendingTopics.map(topic => {
-        return `
-        <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
-        <div class="message" style="padding: 5px 0;">
-        <div class="profile-pic">
-        <img src="../../../../uploads/${topic.userInfo.avatar}" alt="">
+    if(trendingTopics.length <= 0){
+        var trendingTopicsHTML = `
+        <div class="body">
+            <span class="text-muted">There are no trending topics!</span>
         </div>
-        <div class="message-body">
-        <h5 style="font-size: 13px; font-weight: 600;">${topic.topic.subject.length > 100
-        ? topic.topic.subject.substr(0, 30) + "...": topic.topic.subject
-        }</h5>
-        <div>
-        <p class="text-muted">By <span>${topic.userInfo.username}</span>,
-        <b>${new Date(topic.topic.createdAt).toDateString()}</b> <span class="fa fa-clock"></span></p>
-        </div>
-        </div>
-        </div>
-        </a>
         `;
-    }).join("");
+    }else{
+        var trendingTopicsHTML = trendingTopics.map(topic => {
+            return `
+            <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
+            <div class="message" style="padding: 5px 0;">
+            <div class="profile-pic">
+            <img src="../../../../uploads/${topic.userInfo.avatar}" alt="">
+            </div>
+            <div class="message-body">
+            <h5 style="font-size: 13px; font-weight: 600;">${topic.topic.subject.length > 100
+            ? topic.topic.subject.substr(0, 30) + "...": topic.topic.subject
+            }</h5>
+            <div>
+            <p class="text-muted">By <span>${topic.userInfo.username}</span>,
+            <b>${new Date(topic.topic.createdAt).toDateString()}</b> <span class="fa fa-clock"></span></p>
+            </div>
+            </div>
+            </div>
+            </a>
+            `;
+        }).join("");
+    }
 
-    var latestTopicsHTML = latestTopics.map(topic => {
-        return `
-        <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
-        <div class="message" style="padding: 5px 0;">
-        <div class="profile-pic">
-        <img src="../../../../uploads/${topic.userInfo.avatar}" alt="">
+    if(latestTopics.length <= 0){
+        var latestTopicsHTML = `
+        <div class="body">
+            <span class="text-muted">There are no topics in this forum!</span>
         </div>
-        <div class="message-body">
-        <h5 style="font-size: 13px; font-weight: 600;">${topic.topic.subject.length > 100
-        ? topic.topic.subject.substr(0, 30) + "...": topic.topic.subject
-        }</h5>
-        <div>
-        <p class="text-muted">By <span>${topic.userInfo.username}</span>,
-        <b>${new Date(topic.topic.createdAt).toDateString()}</b> <span class="fa fa-clock"></span></p>
-        </div>
-        </div>
-        </div>
-        </a>
         `;
-    }).join("");
-
-    var pinnedTopicsHTML = pinnedTopics.map(topic => {
-        return `
-        <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
-        <div class="message" style="padding: 5px 0;">
-        <div class="profile-pic">
-        <img src="../../../../uploads/${topic.userInfo.avatar}" alt="">
+    }else{
+        var latestTopicsHTML = latestTopics.map(topic => {
+            return `
+            <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
+            <div class="message" style="padding: 5px 0;">
+            <div class="profile-pic">
+            <img src="../../../../uploads/${topic.userInfo.avatar}" alt="">
+            </div>
+            <div class="message-body">
+            <h5 style="font-size: 13px; font-weight: 600;">${topic.topic.subject.length > 100
+            ? topic.topic.subject.substr(0, 30) + "...": topic.topic.subject
+            }</h5>
+            <div>
+            <p class="text-muted">By <span>${topic.userInfo.username}</span>,
+            <b>${new Date(topic.topic.createdAt).toDateString()}</b> <span class="fa fa-clock"></span></p>
+            </div>
+            </div>
+            </div>
+            </a>
+            `;
+        }).join("");
+    }
+    if(pinnedTopics.length <= 0){
+        var pinnedTopicsHTML = `
+        <div class="body">
+            <span class="text-muted">There are no pinned topics!</span>
         </div>
-        <div class="message-body">
-        <h5 style="font-size: 13px; font-weight: 600;">${topic.topic.subject.length > 100
-        ? topic.topic.subject.substr(0, 30) + "...": topic.topic.subject
-        }</h5>
-        <div>
-        <p class="text-muted">By <span>${topic.userInfo.username}</span>,
-        <b>${new Date(topic.topic.createdAt).toDateString()}</b> <span class="fa fa-clock"></span></p>
-        </div>
-        </div>
-        </div>
-        </a>
         `;
-    }).join("");
+    }else{
+        var pinnedTopicsHTML = pinnedTopics.map(topic => {
+            return `
+            <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
+            <div class="message" style="padding: 5px 0;">
+            <div class="profile-pic">
+            <img src="../../../../uploads/${topic.userInfo.avatar}" alt="">
+            </div>
+            <div class="message-body">
+            <h5 style="font-size: 13px; font-weight: 600;">${topic.topic.subject.length > 100
+            ? topic.topic.subject.substr(0, 30) + "...": topic.topic.subject
+            }</h5>
+            <div>
+            <p class="text-muted">By <span>${topic.userInfo.username}</span>,
+            <b>${new Date(topic.topic.createdAt).toDateString()}</b> <span class="fa fa-clock"></span></p>
+            </div>
+            </div>
+            </div>
+            </a>
+            `;
+        }).join("");
+    }
 
     document.querySelector("#pinned-topics .scroll-bar").innerHTML = pinnedTopicsHTML;
     document.querySelector("#pinned-topics-middle .scroll-bar").innerHTML = pinnedTopicsHTML;
@@ -6154,7 +6205,7 @@ function notificationsPanel(forumID, userID, enablePushNotifications, subscripti
     <h4>Topics Only</h4>
     </span>
     <label class="toggle">
-    <input class="toggle-input" type="checkbox" id="topics-only" onclick="subscribeToForumNotifications('${forumID}', '${userID}', 'topics-only', '${enablePushNotifications}', '${subscriptionObject}')" />
+    <input class="toggle-input" type="checkbox" id="topics-only" onclick="subscribeToForumNotifications('${forumID}', '${userID}', 'topics-only', ${enablePushNotifications}, '${subscriptionObject}')" />
     <span class="toggle-label" data-off="OFF" data-on="ON"></span>
     <span class="toggle-handle"></span>
     </label>
@@ -6164,7 +6215,7 @@ function notificationsPanel(forumID, userID, enablePushNotifications, subscripti
     <h4>Topics and Responses</h4>
     </span>
     <label class="toggle">
-    <input class="toggle-input" type="checkbox" id="topics-and-responses" onclick="subscribeToForumNotifications('${forumID}', '${userID}', 'topics-and-responses', '${enablePushNotifications}', '${subscriptionObject}')" />
+    <input class="toggle-input" type="checkbox" id="topics-and-responses" onclick="subscribeToForumNotifications('${forumID}', '${userID}', 'topics-and-responses', ${enablePushNotifications}, '${subscriptionObject}')" />
     <span class="toggle-label" data-off="OFF" data-on="ON"></span>
     <span class="toggle-handle"></span>
     </label>
@@ -6174,7 +6225,7 @@ function notificationsPanel(forumID, userID, enablePushNotifications, subscripti
     <h4>Push Notifications</h4>
     </span>
     <label class="toggle">
-    <input class="toggle-input" type="checkbox" id="push-notifications" onclick="subscribeToForumNotifications('${forumID}', '${userID}', 'push-notifications', '${enablePushNotifications}', '${subscriptionObject}')" />
+    <input class="toggle-input" type="checkbox" id="push-notifications" onclick="subscribeToForumNotifications('${forumID}', '${userID}', 'push-notifications', ${enablePushNotifications}, '${subscriptionObject}')" />
     <span class="toggle-label" data-off="OFF" data-on="ON"></span>
     <span class="toggle-handle"></span>
     </label>

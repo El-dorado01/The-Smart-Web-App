@@ -125,8 +125,8 @@ code {
 }
 
 code {
-    max-height: 15rem;
-    max-width: 27vw;
+    max-height: 25rem;
+    /* max-width: 27vw; */
 }
 
 .tag-statement code {
@@ -747,6 +747,7 @@ main .body-container .left {
     position: sticky;
     top: var(--sticky-top-left);
     transition: all 0.5s;
+    z-index: 8;
 }
 
 .alerts {
@@ -1383,9 +1384,9 @@ main .body-container .left .profile {
 }
 
 /* -----------------Middle------------- */
-.middle {
+/* .middle {
     max-width: 40vw;
-}
+} */
 
 .middle .stories {
     display: flex;
@@ -1529,7 +1530,7 @@ main .body-container .left .profile {
     border-color: var(--color-dark);
 }
 
-.middle .messages .archive {
+.right .messages .archive, .middle .messages .archive {
     color: var(--color-primary);
 }
 
@@ -2566,6 +2567,14 @@ main .container .right {
 
 .right .messages .scroll-bar:hover {
     overflow-y: auto;
+}
+
+.middle .messages .scroll-bar .body, .right .messages .scroll-bar .body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    height: 10rem;
 }
 
 .right .messages .message {
@@ -6983,7 +6992,6 @@ main .container .right {
 
     .container .left {
         width: 5rem;
-        z-index: 8;
     }
 
     main .container .left .profile,
@@ -6995,9 +7003,9 @@ main .container .right {
         display: none;
     }
 
-    .left .btn {
+    /* .left .btn {
         display: none;
-    }
+    } */
 
     .customize-theme .card,
     .add-post-modal .card,

@@ -374,6 +374,30 @@ const singleForum = async (req, res) => {
     userName: payload.userName,
   };
 
+  // Fetch User's notification status in forum
+  // const userNotificationStatus = await ForumNotificationsModel.findOne({ 
+  //   forumID, 
+  //   "notificationSubscribers.userID": user.userId
+  // });
+  const userNotificationStatus = await ForumNotificationsModel.aggregate([
+    {
+      $match: { forumID }
+    },
+    {
+      $project: {
+        susbscriber: {
+          $filter: {
+            input: '$notificationSubscribers',
+            as: 'item',
+            cond: { $eq: ['$$item.userID', user.userId] }
+          }
+        }
+      }
+    }
+  ])
+
+  console.log(userNotificationStatus[0].susbscriber[0]);
+
   //Fetch User's forums
   const fetchAllForums = await ForumsModel.find({
     $or: [
@@ -465,6 +489,7 @@ const singleForum = async (req, res) => {
   res.locals.incomingMsg = false;
   res.locals.forumRanks = forumRanks;
   res.locals.thereIsRequest = thereIsRequest;
+  res.locals.userNotificationStatus = userNotificationStatus[0].susbscriber[0];
   res
     .status(StatusCodes.OK)
     .render("./dashboard/public/forums/single_forum_page", {

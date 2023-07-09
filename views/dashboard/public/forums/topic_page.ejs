@@ -85,7 +85,7 @@
                                                             <i class="fa-solid fa-plus"></i> <span>Add</span>
                                                         </div>
                                                         <div class="other-icons">
-                                                            <span title="Turn on notifications"><i
+                                                            <span onclick="notificationsPanel('<%= forumID %>', '<%= user._id %>', 'enablePushNotifications', 'subscriptionObject')" title="Turn on notifications"><i
                                                                     class="fa fa-bell"></i></span>
                                                             <% if(forumInfo.membersCanInvite==true && isAMember==true &&
                                                                 isAModerator==false){ %>
