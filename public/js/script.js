@@ -6185,7 +6185,9 @@ function sendRequestToJoinTwo(event, forumID, actionType) {
     });
 }
 
-function notificationsPanel(forumID, userID, enablePushNotifications, subscriptionObject) {
+function notificationsPanel(forumID, userID, enablePushNotifications, subscriptionObjects, subscriptionType) {
+    var subscriptionObject = JSON.parse(subscriptionObjects);
+    
     var closeUp = document.createElement("div");
     closeUp.classList.add("close-popup");
     closeUp.setAttribute("style",

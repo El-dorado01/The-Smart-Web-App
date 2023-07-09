@@ -84,11 +84,13 @@
                                                             <i class="fa-solid fa-plus"></i> <span>Add</span>
                                                         </div>
                                                         <div class="other-icons">
-                                                            <% if(userNotificationStatus){ %>
-                                                                <span onclick="notificationsPanel('<%= forumID %>', '<%= user._id %>', <%= userNotificationStatus.enablePushNotifications %>, 'subscriptionObject')" title="Turn on notifications"><i
+                                                            <% if(userNotificationStatus){
+                                                                var subscriptionObjects = JSON.stringify(userNotificationStatus.pushNotifications);
+                                                            %>
+                                                                <span onclick="notificationsPanel('<%= forumID %>', '<%= user._id %>', <%= userNotificationStatus.enablePushNotifications %>, '<%= subscriptionObjects %>', '<%= userNotificationStatus.subscriptionType %>')" title="Turn off notifications"><i
                                                                         class="fa fa-bell"></i></span>
                                                             <% }else{ %>
-                                                                <span onclick="notificationsPanel('<%= forumID %>', '<%= user._id %>', 'enablePushNotifications', 'subscriptionObject')" title="Turn on notifications"><i
+                                                                <span onclick="notificationsPanel('<%= forumID %>', '<%= user._id %>', false, 'subscriptionObject')" title="Turn on notifications"><i
                                                                         class="fa fa-bell"></i></span>
                                                             <% } %>
                                                             <% if(forumInfo.membersCanInvite==true && isAMember==true &&
