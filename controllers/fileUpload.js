@@ -32,12 +32,11 @@ const fileUploadController = asyncWrapper(async (req, res) => {
 
     fileSize = req.files.fileUploaded.size;
     maxSize = 10000000;
-
-
+    
     // Input and output file paths
     var sharpFileName = uuidv4() + "-" + sampleFile.name;
-    const inputFilePath = sampleFile.tempFilePath;
-    const outputFilePath = path.join(__dirname, "../../../public/sharpFileCompressor", sharpFileName);
+    const inputFilePath = sampleFile.data;
+    const outputFilePath = path.join(__dirname, "../../../public", sharpFileName);
 
     /*sharp(inputFilePath)
   .resize(20)
@@ -69,6 +68,7 @@ const fileUploadController = asyncWrapper(async (req, res) => {
 
     //Delete file from temp folder
     fs.unlinkSync(sampleFile.tempFilePath);
+     res.status(StatusCodes.OK).send("File Uploaded");
     /*if (allowedFiles && allowedFiles === "video/mp4") {
     if (fileSize > maxSize) {
       res.send("File is too big");
