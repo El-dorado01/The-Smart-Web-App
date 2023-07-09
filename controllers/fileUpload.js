@@ -1,6 +1,7 @@
 const path = require("path");
 const fs = require("fs");
-const sharp = require('sharp');
+//const sharp = require('sharp');
+const Jimp = require('jimp');
 const {
     v4: uuidv4
 } = require("uuid");
@@ -11,9 +12,6 @@ const asyncWrapper = require("../middleware/async");
 const {
     StatusCodes
 } = require("http-status-codes");
-
-// Set the path to the FFmpeg binary
-ffmpeg.setFfmpegPath(ffmpegPath);
 
 const fileUploadController = asyncWrapper(async (req, res) => {
     const {
@@ -41,7 +39,7 @@ const fileUploadController = asyncWrapper(async (req, res) => {
     const inputFilePath = sampleFile.tempFilePath;
     const outputFilePath = path.join(__dirname, "../../../public/sharpFileCompressor", sharpFileName);
 
-sharp(inputFilePath)
+    /*sharp(inputFilePath)
   .resize(20)
   .toFile(outputFilePath, (err, info) => {
     if (err) {
@@ -49,7 +47,25 @@ sharp(inputFilePath)
     } else {
       console.log('Image resized and saved', info);
     }
-  });
+  });*/
+
+    async function reduceImageSize() {
+        try {
+            const image = await Jimp.read(inputFilePath);
+            image.scaleToFit(20, Jimp.AUTO).write(outputFilePath);
+            console.log('Image size reduced successfully');
+        } catch (error) {
+            //console.error('Error:', error);
+            return error;
+        }
+    }
+
+    reduceImageSize().then(res => {
+        console.log("Successfully reduced.")
+    }).catch(err => {
+        console.log(err)
+    });
+
 
     //Delete file from temp folder
     fs.unlinkSync(sampleFile.tempFilePath);
