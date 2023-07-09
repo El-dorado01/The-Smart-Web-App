@@ -1,31 +1,59 @@
 const path = require("path");
 const fs = require("fs");
-const { v4: uuidv4 } = require("uuid");
+const sharp = require('sharp');
+const {
+    v4: uuidv4
+} = require("uuid");
 const cloudinary = require("cloudinary").v2;
 const SmartNetworkModel = require("../models/SmartNetworkModel");
 
 const asyncWrapper = require("../middleware/async");
-const { StatusCodes } = require("http-status-codes");
+const {
+    StatusCodes
+} = require("http-status-codes");
+
+// Set the path to the FFmpeg binary
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 const fileUploadController = asyncWrapper(async (req, res) => {
-  const { notes, category } = req.body;
+    const {
+        notes, category
+    } = req.body;
 
-  let sampleFile;
-  let fileName;
+    let sampleFile;
+    let fileName;
 
-  let uploadOk = 1;
+    let uploadOk = 1;
 
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400).send("No files were uploaded.");
-  }
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send("No files were uploaded.");
+    }
 
-  sampleFile = req.files.fileUploaded;
-  allowedFiles = req.files.fileUploaded.mimetype;
+    sampleFile = req.files.fileUploaded;
+    allowedFiles = req.files.fileUploaded.mimetype;
 
-  fileSize = req.files.fileUploaded.size;
-  maxSize = 10000000;
+    fileSize = req.files.fileUploaded.size;
+    maxSize = 10000000;
 
-  if (allowedFiles && allowedFiles === "video/mp4") {
+
+    // Input and output file paths
+    var sharpFileName = uuidv4() + "-" + sampleFile.name;
+    const inputFilePath = sampleFile.tempFilePath;
+    const outputFilePath = path.join(__dirname, "../../../public/sharpFileCompressor", sharpFileName);
+
+sharp(inputFilePath)
+  .resize(20)
+  .toFile(outputFilePath, (err, info) => {
+    if (err) {
+      console.log('Error:', err);
+    } else {
+      console.log('Image resized and saved', info);
+    }
+  });
+
+    //Delete file from temp folder
+    fs.unlinkSync(sampleFile.tempFilePath);
+    /*if (allowedFiles && allowedFiles === "video/mp4") {
     if (fileSize > maxSize) {
       res.send("File is too big");
       uploadOk = 0;
@@ -107,7 +135,7 @@ const fileUploadController = asyncWrapper(async (req, res) => {
     res.send("File type not allowed");
     uploadOk = 0;
   }
-  if (uploadOk == 1) res.status(StatusCodes.OK).send("File Uploaded");
+  if (uploadOk == 1) res.status(StatusCodes.OK).send("File Uploaded");*/
 });
 
 module.exports = fileUploadController;
