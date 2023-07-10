@@ -2,13 +2,10 @@ const path = require("path");
 const fs = require("fs");
 //const sharp = require('sharp');
 const ffmpeg = require('fluent-ffmpeg');
-<<<<<<< HEAD
-=======
 const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
 
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 // ffmpeg.setFfprobePath('../node_modules/fluent-ffmpeg/lib/ffprobe.js');
->>>>>>> 8a377d2d6ba209bce13509e209d936442a347551
 //const Jimp = require('jimp');
 const {
     v4: uuidv4
