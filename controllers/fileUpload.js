@@ -2,6 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const sharp = require('sharp');
 const ffmpeg = require('fluent-ffmpeg');
+ffmpeg.setFfprobePath('../node_modules/fluent-ffmpeg/lib/ffprobe.js');
 //const Jimp = require('jimp');
 const {
     v4: uuidv4
