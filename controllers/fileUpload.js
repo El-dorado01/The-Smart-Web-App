@@ -1,8 +1,7 @@
 const path = require("path");
 const fs = require("fs");
-const sharp = require('sharp');
+//const sharp = require('sharp');
 const ffmpeg = require('fluent-ffmpeg');
-ffmpeg.setFfprobePath('../node_modules/fluent-ffmpeg/lib/ffprobe.js');
 //const Jimp = require('jimp');
 const {
     v4: uuidv4
@@ -71,15 +70,14 @@ const fileUploadController = asyncWrapper(async (req, res) => {
         
         //Generate Video Thumbnail
         ffmpeg(sampleFile.tempFilePath)
-          .screenshots({
-            count: 1,
-            folder: path.dirname(outputFilePath),
-            filename: path.basename(outputFilePath)
-          })
+          .seekInput(1)
+          .frames(1)
+          .output(outputFilePath)
           .on('end', () => {
-            // Thumnail generation completed
+              console.log("Thumbnail generated.")
+            // Thumbnail generation completed
             // Resize with sharp
-            sharp(outputFilePath)
+            /*sharp(outputFilePath)
               .seek(0) // Set the position in seconds from where to extract the frame (e.g., 0 for the first frame)
               .frames(1) // Specify the number of frames to extract (e.g., 1 for a single frame)
               .resize(20)
@@ -89,10 +87,11 @@ const fileUploadController = asyncWrapper(async (req, res) => {
                 } else {
                   console.log('Thumbnail generated, resized and saved', info);
                 }
-              });
+              });*/
           })
+          .run()
           
-        await cloudinary.uploader.upload(
+        /*await cloudinary.uploader.upload(
           sampleFile.tempFilePath,
           {
             resource_type: "video",
@@ -143,7 +142,7 @@ const fileUploadController = asyncWrapper(async (req, res) => {
               fs.unlinkSync(outputFilePath);
             }
           }
-        );
+        );*/
       }
     } else if (allowedFiles && (allowedFiles == "jpg" || allowedFiles == "png" || allowedFiles == "jpeg")) {
       if (fileSize > maxSize) {
