@@ -10,6 +10,10 @@ const SmartNetworkSchema = new mongoose.Schema(
       type: String,
       required: [true, "A file must be provided"],
     },
+    compressedFileName: {
+      type: String,
+      required: [true, "A file must be provided"],
+    },
     category: {
       type: String,
       required: [true, "Field cannot be left blank"],
