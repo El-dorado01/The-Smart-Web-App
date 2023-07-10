@@ -1,6 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const sharp = require('sharp');
+const ffmpeg = require('fluent-ffmpeg');
 //const Jimp = require('jimp');
 const {
     v4: uuidv4
@@ -68,17 +69,27 @@ const fileUploadController = asyncWrapper(async (req, res) => {
       } else {
         
         //Generate Video Thumbnail
-        await sharp(sampleFile.tempFilePath)
-            .seek(0) // Set the position in seconds from where to extract the frame (e.g., 0 for the first frame)
-            .frames(1) // Specify the number of frames to extract (e.g., 1 for a single frame)
-            .resize(20)
-            .toFile(outputFilePath, (err, info) => {
-              if (err) {
-                console.log('Error:', err);
-              } else {
-                console.log('Thumbnail generated, resized and saved', info);
-              }
-            });
+        ffmpeg(sampleFile.tempFilePath)
+          .screenshots({
+            count: 1,
+            folder: path.dirname(outputFilePath),
+            filename: path.basename(outputFilePath)
+          })
+          .on('end', () => {
+            // Thumnail generation completed
+            // Resize with sharp
+            sharp(outputFilePath)
+              .seek(0) // Set the position in seconds from where to extract the frame (e.g., 0 for the first frame)
+              .frames(1) // Specify the number of frames to extract (e.g., 1 for a single frame)
+              .resize(20)
+              .toFile(outputFilePath, (err, info) => {
+                if (err) {
+                  console.log('Error:', err);
+                } else {
+                  console.log('Thumbnail generated, resized and saved', info);
+                }
+              });
+          })
           
         await cloudinary.uploader.upload(
           sampleFile.tempFilePath,
