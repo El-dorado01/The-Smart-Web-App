@@ -5002,6 +5002,35 @@ main .container .right {
     overflow: hidden;
     margin: 0.7rem 0;
     width: 100%;
+    position: relative;
+}
+
+.middle .feed .feed-body .load-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.middle .feed .feed-body .media-size {
+    position: absolute;
+    bottom: 5%;
+    left: 5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px;
+    height: auto;
+    width: auto;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
 }
 
 .videoInsert {

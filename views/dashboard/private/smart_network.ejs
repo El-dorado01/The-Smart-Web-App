@@ -94,20 +94,22 @@
                                     <span>Report Post</span>
                                 </div>
                             </div>
-                            <a href="/dashboard/private/smart_network/<%= feed._id %>" class="feed-link">
-                                <div class="feed-body">
+                            <!--<a href="/dashboard/private/smart_network/<% //= feed._id %>" class="feed-link">-->
+                                <div class="feed-body" onclick="loadMedia(this)">
+                                    <span class="load-icon"><i class="fa-solid fa-arrow-down-long"></i></span>
+                                    <span class="media-size"></span>
                                     <% if(feed.fileUploads. indexOf('https://res.cloudinary.com/eldoradotechguy/video/') > -1){ %>
-                                        <video class="videoInsert" controls autoplay>
+                                        <video class="videoInsert media" controls autoplay>
                                             <source src="<%= feed.fileUploads %>" type="video/mp4">
                                         </video>
                                     <% }else{ %>
-                                        <img src="<%= feed.fileUploads %>" alt="File Uploaded">
+                                        <img src="<%= feed.compressedFileName %>" data-src="<%= feed.fileUploads %>" class="media" loading="lazy" alt="File Uploaded">
                                     <% } %>
                                 </div>
                                 <div class="feed-text">
                                     <%= feed.notes %>
                                 </div>
-                            </a>
+                            <!--</a>-->
                             <div class="action-button">
                                 <% var likesArray=[]; feed.likes.forEach((feed)=> {
                                     likesArray.push(feed.user);
@@ -419,6 +421,80 @@
                 socket.emit("unBookmarkPost", { userID, postID })
             }
         }
+        
+        function loadMedia(e) {
+            var media = e.querySelector(".media");
+            var dataSrc = media.getAttribute("data-src");
+            media.setAttribute("src", dataSrc);
+            e.querySelector(".load-icon").style.display = "none";
+            e.querySelector(".media-size").style.display = "none";
+        }
+        
+        // Select all image containers
+        const feedBodies = document.querySelectorAll('.feed-body');
+
+        // Options for the Intersection Observer
+        const observerOptions = {
+          root: null, // Use the viewport as the root
+          threshold: 0.3, // Trigger when at least 30% of the element is visible
+        };
+        
+        // Create a new Intersection Observer instance
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              // The image container is now in the viewport
+              const mediaContainer = entry.target;
+        
+              // Call your function or perform any desired action
+              getMediaSize(mediaContainer);
+            }
+          });
+        }, observerOptions);
+        
+        // Observe each image container
+        feedBodies.forEach((container) => {
+          observer.observe(container);
+        });
+        
+        // Your function to be triggered
+        function getMediaSize(mediaContainer) {
+          // Perform actions when the image container is in the viewport
+          var media = mediaContainer.querySelector(".media");
+          const mediaUrl = media.getAttribute("data-src");
+          var mediaSizeContainer = mediaContainer.querySelector(".media-size")
+          //alert(mediaUrl)
+        
+        fetch(mediaUrl)
+          .then(response => {
+            const fileSize = response.headers.get('Content-Length');
+            const formattedSize = formatFileSize(fileSize);
+            if(mediaSizeContainer.innerHTML == ""){
+              mediaSizeContainer.innerHTML = formattedSize;
+              //alert(formattedSize);  
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching the image:', error);
+          });
+        }
+        
+        function formatFileSize(bytes) {
+          const kilobyte = 1024;
+          const megabyte = kilobyte * 1024;
+          const gigabyte = megabyte * 1024;
+        
+          if (bytes < kilobyte) {
+            return bytes + ' B';
+          } else if (bytes < megabyte) {
+            return (bytes / kilobyte).toFixed(2) + ' KB';
+          } else if (bytes < gigabyte) {
+            return (bytes / megabyte).toFixed(2) + ' MB';
+          } else {
+            return (bytes / gigabyte).toFixed(2) + ' GB';
+          }
+        }
+
     </script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="../../../js/script.js"></script>

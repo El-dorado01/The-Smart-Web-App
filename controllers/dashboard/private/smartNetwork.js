@@ -20,6 +20,7 @@ const smartNetwork = async (req, res) => {
       $project: {
         notes: "$notes",
         fileUploads: "$fileUploads",
+        compressedFileName: "$compressedFileName",
         category: "$category",
         comments: "$comments",
         likes: "$likes",

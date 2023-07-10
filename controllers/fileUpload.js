@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const sharp = require('sharp');
-// const Jimp = require('jimp');
+//const Jimp = require('jimp');
 const {
     v4: uuidv4
 } = require("uuid");
@@ -29,7 +29,7 @@ const fileUploadController = asyncWrapper(async (req, res) => {
     }
 
     sampleFile = req.files.fileUploaded;
-    allowedFiles = req.files.fileUploaded.mimetype;
+    allowedFiles = sampleFile.name.split(".")[1]
 
     fileSize = req.files.fileUploaded.size;
     maxSize = 10000000;
@@ -37,55 +37,54 @@ const fileUploadController = asyncWrapper(async (req, res) => {
     // Input and output file paths
     var sharpFileName = uuidv4() + "-" + sampleFile.name;
     const inputFilePath = sampleFile.data;
-    // const outputFilePath = sharpFileName;
     const outputFilePath = path.join(__dirname, "../public/fileCompressors", sharpFileName);
 
     if(!fs.existsSync(path.join(__dirname, "../public/fileCompressors"))){
       fs.mkdirSync(path.join(__dirname, "../public/fileCompressors"))
     }
-    
-    await sharp(sampleFile.tempFilePath)
-    .resize(20)
-    .toFile(outputFilePath, (err, info) => {
-      if (err) {
-        console.log('Error:', err);
-      } else {
-        console.log('Image resized and saved', info);
-      }
-    });
+
+     /*async function reduceImageSize() {
+         try {
+             const image = await Jimp.read(inputFilePath);
+             image.scaleToFit(20, Jimp.AUTO).write(outputFilePath);
+             console.log('Image size reduced successfully');
+         } catch (error) {
+             //console.error('Error:', error);
+             return error;
+         }
+     }
+
+     reduceImageSize().then(res => {
+         console.log("Successfully reduced.")
+     }).catch(err => {
+         console.log("Error: ", err)
+     });*/
 
 
-    // async function reduceImageSize() {
-    //     try {
-    //         const image = await Jimp.read(inputFilePath);
-    //         image.scaleToFit(20, Jimp.AUTO).write(outputFilePath);
-    //         console.log('Image size reduced successfully');
-    //     } catch (error) {
-    //         //console.error('Error:', error);
-    //         return error;
-    //     }
-    // }
-
-    // reduceImageSize().then(res => {
-    //     console.log("Successfully reduced.")
-    // }).catch(err => {
-    //     console.log(err)
-    // });
-
-
-    
-    //  res.status(StatusCodes.OK).send("File Uploaded");
-    if (allowedFiles && allowedFiles === "video/mp4") {
+    if (allowedFiles && (allowedFiles === "mp4" || allowedFiles == "mkv")) {
       if (fileSize > maxSize) {
         res.send("File is too big");
         uploadOk = 0;
       } else {
-        const fName = req.files.fileUploaded.name.split(".")[0];
-        cloudinary.uploader.upload(
+        
+        //Generate Video Thumbnail
+        await sharp(sampleFile.tempFilePath)
+            .seek(0) // Set the position in seconds from where to extract the frame (e.g., 0 for the first frame)
+            .frames(1) // Specify the number of frames to extract (e.g., 1 for a single frame)
+            .resize(20)
+            .toFile(outputFilePath, (err, info) => {
+              if (err) {
+                console.log('Error:', err);
+              } else {
+                console.log('Thumbnail generated, resized and saved', info);
+              }
+            });
+          
+        await cloudinary.uploader.upload(
           sampleFile.tempFilePath,
           {
             resource_type: "video",
-            public_id: `VideoUploads/${fName}`,
+            public_id: `smartNetworkPosts/${sharpFileName.split(".")[0]}`,
             chunk_size: 6000000,
             eager: [
               {
@@ -109,26 +108,46 @@ const fileUploadController = asyncWrapper(async (req, res) => {
               uploadOk = 0;
             } else {
               fileName = video.secure_url;
-              const smartNetworkFeeds = {
-                notes,
-                category,
-                fileName,
-              };
-              const success = await SmartNetworkModel.create({
-                notes: smartNetworkFeeds.notes,
-                category: smartNetworkFeeds.category,
-                fileUploads: smartNetworkFeeds.fileName,
-              });
-              if (success) uploadOk = 1;
+              uploadOk = 1;
+            }
+          }
+        );
+        
+        await cloudinary.uploader.upload(
+          outputFilePath,
+          {
+            resource_type: "image",
+            public_id: `sharpCompressedFiles/${sharpFileName.split(".")[0]}`,
+          },
+          async function (err, res) {
+            if (err) {
+              console.log(err);
+              uploadOk = 0;
+            } else {
+              compressedFileName = res.secure_url;
+              uploadOk = 1;
+              //Delete file from temp folder
+              fs.unlinkSync(sampleFile.tempFilePath);
+              fs.unlinkSync(outputFilePath);
             }
           }
         );
       }
-    } else if (allowedFiles && allowedFiles.startsWith("image/")) {
+    } else if (allowedFiles && (allowedFiles == "jpg" || allowedFiles == "png" || allowedFiles == "jpeg")) {
       if (fileSize > maxSize) {
         res.send("File is too big");
         uploadOk = 0;
       } else {
+          
+        await sharp(sampleFile.tempFilePath)
+            .resize(20)
+            .toFile(outputFilePath, (err, info) => {
+              if (err) {
+                console.log('Error:', err);
+              } else {
+                console.log('Image resized and saved', info);
+              }
+            });
         // Use the mv() method to place the file somewhere on your server
         await cloudinary.uploader.upload(
           sampleFile.tempFilePath,
@@ -147,13 +166,6 @@ const fileUploadController = asyncWrapper(async (req, res) => {
           }
         );
 
-        // fs.readFile(outputFilePath, (err, data) => {
-        //   if(err){
-        //     console.error('Error: ', err)
-        //     return;
-        //   }
-        //   console.log(data.toString('base64'))
-        // })
         await cloudinary.uploader.upload(
           outputFilePath,
           {
