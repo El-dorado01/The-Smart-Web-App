@@ -2,6 +2,13 @@ const path = require("path");
 const fs = require("fs");
 //const sharp = require('sharp');
 const ffmpeg = require('fluent-ffmpeg');
+<<<<<<< HEAD
+=======
+const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
+
+ffmpeg.setFfmpegPath(ffmpegInstaller.path);
+// ffmpeg.setFfprobePath('../node_modules/fluent-ffmpeg/lib/ffprobe.js');
+>>>>>>> 8a377d2d6ba209bce13509e209d936442a347551
 //const Jimp = require('jimp');
 const {
     v4: uuidv4
@@ -37,12 +44,7 @@ const fileUploadController = asyncWrapper(async (req, res) => {
     
     // Input and output file paths
     var sharpFileName = uuidv4() + "-" + sampleFile.name;
-    const inputFilePath = sampleFile.data;
-    const outputFilePath = path.join(__dirname, "../public/fileCompressors", sharpFileName);
-
-    if(!fs.existsSync(path.join(__dirname, "../public/fileCompressors"))){
-      fs.mkdirSync(path.join(__dirname, "../public/fileCompressors"))
-    }
+    var outputFilePath;
 
      /*async function reduceImageSize() {
          try {
@@ -61,15 +63,19 @@ const fileUploadController = asyncWrapper(async (req, res) => {
          console.log("Error: ", err)
      });*/
 
-
     if (allowedFiles && (allowedFiles === "mp4" || allowedFiles == "mkv")) {
       if (fileSize > maxSize) {
         res.send("File is too big");
         uploadOk = 0;
       } else {
-        
+        const thumbnailFilePath = path.join(__dirname, "../public/thumbnails", sharpFileName.split(".")[0] + ".jpg");
+
+        if(!fs.existsSync(path.join(__dirname, "../public/thumbnails"))){
+          fs.mkdirSync(path.join(__dirname, "../public/thumbnails"))
+        }
         //Generate Video Thumbnail
         ffmpeg(sampleFile.tempFilePath)
+<<<<<<< HEAD
           .seekInput(1)
           .frames(1)
           .output(outputFilePath)
@@ -80,6 +86,23 @@ const fileUploadController = asyncWrapper(async (req, res) => {
             /*sharp(outputFilePath)
               .seek(0) // Set the position in seconds from where to extract the frame (e.g., 0 for the first frame)
               .frames(1) // Specify the number of frames to extract (e.g., 1 for a single frame)
+=======
+        .seekInput(1)
+        .frames(1)
+        .on('error', function(err) {
+          console.log('An error occurred: ' + err.message);
+        })
+          .on('end', () => {
+            console.log("Thumbnail Generated")
+            // Thumbnail generation completed
+            // Resize with sharp
+            outputFilePath = path.join(__dirname, "../public/fileCompressors", sharpFileName.split(".")[0] + ".jpg");
+
+            if(!fs.existsSync(path.join(__dirname, "../public/fileCompressors"))){
+              fs.mkdirSync(path.join(__dirname, "../public/fileCompressors"))
+            }
+            sharp(thumbnailFilePath)
+>>>>>>> 8a377d2d6ba209bce13509e209d936442a347551
               .resize(20)
               .toFile(outputFilePath, (err, info) => {
                 if (err) {
@@ -89,7 +112,16 @@ const fileUploadController = asyncWrapper(async (req, res) => {
                 }
               });*/
           })
+<<<<<<< HEAD
           .run()
+=======
+          // .screenshots({
+          //   count: 1,
+          //   folder: path.dirname(outputFilePath),
+          //   filename: path.basename(outputFilePath)
+          // })
+          .save(thumbnailFilePath)
+>>>>>>> 8a377d2d6ba209bce13509e209d936442a347551
           
         /*await cloudinary.uploader.upload(
           sampleFile.tempFilePath,
@@ -140,6 +172,7 @@ const fileUploadController = asyncWrapper(async (req, res) => {
               //Delete file from temp folder
               fs.unlinkSync(sampleFile.tempFilePath);
               fs.unlinkSync(outputFilePath);
+              fs.unlinkSync(path.join(__dirname, "../public/thumbnails", sharpFileName.split(".")[0] + ".jpg"));
             }
           }
         );*/
@@ -149,16 +182,20 @@ const fileUploadController = asyncWrapper(async (req, res) => {
         res.send("File is too big");
         uploadOk = 0;
       } else {
-          
-        await sharp(sampleFile.tempFilePath)
-            .resize(20)
-            .toFile(outputFilePath, (err, info) => {
-              if (err) {
-                console.log('Error:', err);
-              } else {
-                console.log('Image resized and saved', info);
-              }
-            });
+        outputFilePath = path.join(__dirname, "../public/fileCompressors", sharpFileName);
+
+        if(!fs.existsSync(path.join(__dirname, "../public/fileCompressors"))){
+          fs.mkdirSync(path.join(__dirname, "../public/fileCompressors"))
+        }
+        sharp(sampleFile.tempFilePath)
+          .resize(20)
+          .toFile(outputFilePath, (err, info) => {
+            if (err) {
+              console.log('Error:', err);
+            } else {
+              console.log('Image resized and saved', info);
+            }
+          });
         // Use the mv() method to place the file somewhere on your server
         await cloudinary.uploader.upload(
           sampleFile.tempFilePath,
