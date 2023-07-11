@@ -1,11 +1,10 @@
 const path = require("path");
 const fs = require("fs");
-//const sharp = require('sharp');
+const sharp = require('sharp');
 const ffmpeg = require('fluent-ffmpeg');
 const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
 
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
-// ffmpeg.setFfprobePath('../node_modules/fluent-ffmpeg/lib/ffprobe.js');
 //const Jimp = require('jimp');
 const {
     v4: uuidv4
@@ -72,18 +71,6 @@ const fileUploadController = asyncWrapper(async (req, res) => {
         }
         //Generate Video Thumbnail
         ffmpeg(sampleFile.tempFilePath)
-<<<<<<< HEAD
-          .seekInput(1)
-          .frames(1)
-          .output(outputFilePath)
-          .on('end', () => {
-              console.log("Thumbnail generated.")
-            // Thumbnail generation completed
-            // Resize with sharp
-            /*sharp(outputFilePath)
-              .seek(0) // Set the position in seconds from where to extract the frame (e.g., 0 for the first frame)
-              .frames(1) // Specify the number of frames to extract (e.g., 1 for a single frame)
-=======
         .seekInput(1)
         .frames(1)
         .on('error', function(err) {
@@ -99,7 +86,6 @@ const fileUploadController = asyncWrapper(async (req, res) => {
               fs.mkdirSync(path.join(__dirname, "../public/fileCompressors"))
             }
             sharp(thumbnailFilePath)
->>>>>>> 8a377d2d6ba209bce13509e209d936442a347551
               .resize(20)
               .toFile(outputFilePath, (err, info) => {
                 if (err) {
@@ -107,20 +93,16 @@ const fileUploadController = asyncWrapper(async (req, res) => {
                 } else {
                   console.log('Thumbnail generated, resized and saved', info);
                 }
-              });*/
+              });
           })
-<<<<<<< HEAD
-          .run()
-=======
           // .screenshots({
           //   count: 1,
           //   folder: path.dirname(outputFilePath),
           //   filename: path.basename(outputFilePath)
           // })
           .save(thumbnailFilePath)
->>>>>>> 8a377d2d6ba209bce13509e209d936442a347551
           
-        /*await cloudinary.uploader.upload(
+        await cloudinary.uploader.upload(
           sampleFile.tempFilePath,
           {
             resource_type: "video",
@@ -172,7 +154,7 @@ const fileUploadController = asyncWrapper(async (req, res) => {
               fs.unlinkSync(path.join(__dirname, "../public/thumbnails", sharpFileName.split(".")[0] + ".jpg"));
             }
           }
-        );*/
+        );
       }
     } else if (allowedFiles && (allowedFiles == "jpg" || allowedFiles == "png" || allowedFiles == "jpeg")) {
       if (fileSize > maxSize) {
