@@ -1122,10 +1122,10 @@ if (document.querySelector("main .container")) {
     hideBar.addEventListener("click", () => {
         // navContainer.classList.toggle("sidebar-close");
         // if(screen.width >= 1200){
-        // }else 
-        if(screen.width >= 992){
-            if(document.querySelector(".container .left").style.width == "5rem"){
-                if(screen.width >= 1200){
+        // }else
+        if (screen.width >= 992) {
+            if (document.querySelector(".container .left").style.width == "5rem") {
+                if (screen.width >= 1200) {
                     document.querySelector("main .container").style.gridTemplateColumns = "18vw auto 20vw";
                 }
                 document.querySelector(".container .left").style.width = "18vw";
@@ -1133,8 +1133,8 @@ if (document.querySelector("main .container")) {
                 document.querySelectorAll(".left .sidebar h3").forEach(item => {
                     item.style.display = "block";
                 })
-            }else{
-                if(screen.width >= 1200){
+            } else {
+                if (screen.width >= 1200) {
                     document.querySelector("main .container").style.gridTemplateColumns = "5rem auto 20vw";
                 }
                 document.querySelector(".container .left").style.width = "5rem";
@@ -1143,28 +1143,29 @@ if (document.querySelector("main .container")) {
                     item.style.display = "none";
                 })
             }
-        }else{
+        } else {
             container.classList.toggle("sidebar-close");
             sideBar.classList.toggle("sidebar-close");
         }
     });
 
-    document.addEventListener("scroll", (e) => {
-        if (!sideBar.classList.contains("sidebar-close")) {
-            if (screen.width <= 570) {
-                // navContainer.classList.toggle("sidebar-close");
-                container.classList.toggle("sidebar-close");
-                sideBar.classList.toggle("sidebar-close");
-                if (container.querySelector(".left").style.width == "20rem") {
-                    container.querySelector(".left").style.width = "5rem";
-                    container.querySelector(".left .profile").style.display = "none";
-                    container.querySelectorAll(".left .sidebar h3").forEach(item => {
-                        item.style.display = "none";
-                    })
+    document.addEventListener("scroll",
+        (e) => {
+            if (!sideBar.classList.contains("sidebar-close")) {
+                if (screen.width <= 570) {
+                    // navContainer.classList.toggle("sidebar-close");
+                    container.classList.toggle("sidebar-close");
+                    sideBar.classList.toggle("sidebar-close");
+                    if (container.querySelector(".left").style.width == "20rem") {
+                        container.querySelector(".left").style.width = "5rem";
+                        container.querySelector(".left .profile").style.display = "none";
+                        container.querySelectorAll(".left .sidebar h3").forEach(item => {
+                            item.style.display = "none";
+                        })
+                    }
                 }
             }
-        }
-    })
+        })
 }
 
 if (document.querySelector("main .body-container")) {
@@ -5823,13 +5824,13 @@ socket.on("topicCategories", data => {
         trendingTopics
     } = data;
 
-    if(trendingTopics.length <= 0){
+    if (trendingTopics.length <= 0) {
         var trendingTopicsHTML = `
         <div class="body">
-            <span class="text-muted">There are no trending topics!</span>
+        <span class="text-muted">There are no trending topics!</span>
         </div>
         `;
-    }else{
+    } else {
         var trendingTopicsHTML = trendingTopics.map(topic => {
             return `
             <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
@@ -5852,13 +5853,13 @@ socket.on("topicCategories", data => {
         }).join("");
     }
 
-    if(latestTopics.length <= 0){
+    if (latestTopics.length <= 0) {
         var latestTopicsHTML = `
         <div class="body">
-            <span class="text-muted">There are no topics in this forum!</span>
+        <span class="text-muted">There are no topics in this forum!</span>
         </div>
         `;
-    }else{
+    } else {
         var latestTopicsHTML = latestTopics.map(topic => {
             return `
             <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
@@ -5880,13 +5881,13 @@ socket.on("topicCategories", data => {
             `;
         }).join("");
     }
-    if(pinnedTopics.length <= 0){
+    if (pinnedTopics.length <= 0) {
         var pinnedTopicsHTML = `
         <div class="body">
-            <span class="text-muted">There are no pinned topics!</span>
+        <span class="text-muted">There are no pinned topics!</span>
         </div>
         `;
-    }else{
+    } else {
         var pinnedTopicsHTML = pinnedTopics.map(topic => {
             return `
             <a href="/dashboard/public/forum/${forumID}/key?topicID=${topic.topic._id}">
@@ -6187,7 +6188,7 @@ function sendRequestToJoinTwo(event, forumID, actionType) {
 
 function notificationsPanel(forumID, userID, enablePushNotifications, subscriptionObjects, subscriptionType) {
     var subscriptionObject = JSON.parse(subscriptionObjects);
-    
+
     var closeUp = document.createElement("div");
     closeUp.classList.add("close-popup");
     closeUp.setAttribute("style",
@@ -6390,3 +6391,105 @@ function updateNotification(notification, userID, linkUrl) {
 socket.on("notificationUpdated", data => {
     window.location.href = data.linkUrl
 })
+
+function loadMedia(e) {
+    var media = e.querySelector(".media");
+    var dataSrc = media.getAttribute("data-src");
+    if (dataSrc.indexOf('https://res.cloudinary.com/eldoradotechguy/video/') > -1) {
+        var videoTag = document.createElement("video");
+        videoTag.classList.add("videoInsert")
+        videoTag.classList.add("media")
+        videoTag.setAttribute("controls", "true")
+        videoTag.setAttribute("autoplay", "true")
+        videoTag.innerHTML = `
+        <source src="${dataSrc}">
+        `;
+        e.appendChild(videoTag);
+        media.style.display = "none";
+    } else {
+        media.setAttribute("src", dataSrc);
+    }
+    e.querySelector(".load-icon").style.display = "none";
+    e.querySelector(".media-size").style.display = "none";
+}
+
+function getMediaSize(mediaContainer) {
+    // Perform actions when the image container is in the viewport
+    var media = mediaContainer.querySelector(".media");
+    const mediaUrl = media.getAttribute("data-src");
+    var mediaSizeContainer = mediaContainer.querySelector(".media-size")
+    //alert(mediaUrl)
+
+    fetch(mediaUrl)
+    .then(response => {
+        var formattedDuration;
+        const fileSize = response.headers.get('Content-Length');
+        const formattedSize = formatFileSize(fileSize);
+
+        // Check the Content-Type header to determine if it's an image or video
+        const contentType = response.headers.get('content-type');
+        if (contentType.startsWith('video/')) {
+            // It's a video, load it into a video element to get the duration
+            response.blob().then(blob => {
+                const video = document.createElement('video');
+                video.src = URL.createObjectURL(blob);
+
+                video.addEventListener('loadedmetadata', () => {
+                    formattedDuration = formatVideoDuration(video.duration);
+                    if (mediaSizeContainer.innerHTML == "") {
+                        mediaSizeContainer.innerHTML = formattedDuration + " " + formattedSize;
+                    }
+                    //console.log('Video duration:', formattedDuration);
+                });
+            });
+        } else {
+            if (mediaSizeContainer.innerHTML == "") {
+                mediaSizeContainer.innerHTML = formattedSize;
+            }
+        }
+
+    })
+    .catch(error => {
+        console.error('Error fetching the media:', error);
+    });
+}
+
+function formatFileSize(bytes) {
+    const kilobyte = 1024;
+    const megabyte = kilobyte * 1024;
+    const gigabyte = megabyte * 1024;
+
+    if (bytes < kilobyte) {
+        return bytes + ' B';
+    } else if (bytes < megabyte) {
+        return (bytes / kilobyte).toFixed(2) + ' KB';
+    } else if (bytes < gigabyte) {
+        return (bytes / megabyte).toFixed(2) + ' MB';
+    } else {
+        return (bytes / gigabyte).toFixed(2) + ' GB';
+    }
+}
+
+function formatVideoDuration(duration) {
+    var formattedDuration;
+    // Check the duration value
+    if (duration >= 3600) {
+        const totalSeconds = Math.floor(duration);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        // Format as hours:minutes:seconds
+        formattedDuration = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    } else {
+        const totalSeconds = Math.floor(duration);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+
+        // Format as minutes:seconds
+        formattedDuration = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+
+    return formattedDuration;
+}
