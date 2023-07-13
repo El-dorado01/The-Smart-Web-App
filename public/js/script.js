@@ -6188,6 +6188,8 @@ function sendRequestToJoinTwo(event, forumID, actionType) {
 
 function notificationsPanel(forumID, userID, enablePushNotifications, subscriptionObjects, subscriptionType) {
     var subscriptionObject = JSON.parse(subscriptionObjects);
+    console.log(subscriptionObject);
+    return;
 
     var closeUp = document.createElement("div");
     closeUp.classList.add("close-popup");
