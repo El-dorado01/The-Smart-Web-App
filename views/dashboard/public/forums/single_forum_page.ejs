@@ -85,9 +85,9 @@
                                                         </div>
                                                         <div class="other-icons">
                                                             <% if(userNotificationStatus){
-                                                                var subscriptionObjects = JSON.stringify(userNotificationStatus.pushNotifications);
+                                                                var subscriptionObjects = JSON.stringify(userNotificationStatus.pushNotifications)
                                                             %>
-                                                                <span onclick="notificationsPanel('<%= forumID %>', '<%= user._id %>', <%= userNotificationStatus.enablePushNotifications %>, '<%= subscriptionObjects %>', '<%= userNotificationStatus.subscriptionType %>')" title="Turn off notifications"><i
+                                                                <span onclick="notificationsPanel('<%= forumID %>', '<%= user._id %>', <%= userNotificationStatus.enablePushNotifications %>, <%= subscriptionObjects %>, '<%= userNotificationStatus.subscriptionType %>')" title="Turn off notifications"><i
                                                                         class="fa fa-bell"></i></span>
                                                             <% }else{ %>
                                                                 <span onclick="notificationsPanel('<%= forumID %>', '<%= user._id %>', false, 'subscriptionObject')" title="Turn on notifications"><i

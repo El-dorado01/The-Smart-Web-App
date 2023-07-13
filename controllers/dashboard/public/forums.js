@@ -396,8 +396,6 @@ const singleForum = async (req, res) => {
     }
   ])
 
-  console.log(userNotificationStatus[0].susbscriber[0]);
-
   //Fetch User's forums
   const fetchAllForums = await ForumsModel.find({
     $or: [
@@ -515,6 +513,25 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
     userId: payload.userId,
     userName: payload.userName,
   };
+  
+  const userNotificationStatus = await ForumNotificationsModel.aggregate([
+
+    {
+
+      $match: { forumID }
+    },
+    {
+      $project: {
+        susbscriber: {
+          $filter: {
+            input: '$notificationSubscribers',
+            as: 'item',
+            cond: { $eq: ['$$item.userID', user.userId] }
+          }
+        }
+      }
+    }
+  ])
 
   var requestExisted = await ForumsModel.findOne({
     _id: forumID,
@@ -693,6 +710,7 @@ const forumTopicInfo = asyncWrapper(async (req, res) => {
   res.locals.topicUpvotedByUser = topicUpvotedByUser;
   res.locals.forumRanks = forumRanks;
   res.locals.thereIsRequest = thereIsRequest;
+  res.locals.userNotificationStatus = userNotificationStatus[0].susbscriber[0];
 
   res.status(StatusCodes.OK).render("./dashboard/public/forums/topic_page", {
     headTitle: "Forum - " + forumInfo.forumName,

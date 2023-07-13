@@ -6186,10 +6186,37 @@ function sendRequestToJoinTwo(event, forumID, actionType) {
     });
 }
 
-function notificationsPanel(forumID, userID, enablePushNotifications, subscriptionObjects, subscriptionType) {
-    var subscriptionObject = JSON.parse(subscriptionObjects);
-    console.log(subscriptionObject);
-    return;
+async function notificationsPanel(forumID, userID, enablePushNotifications, subscriptionObjects, subscriptionType) {
+    var pushNotificationsStatus;
+
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+        // Request push notification permission from user
+        Notification.requestPermission().then(async (permission) => {
+            if (permission === "granted") {
+                //console.log(subscriptionObjects);
+                const register = await navigator.serviceWorker.ready;
+                //Get active subscriptions
+                await register.pushManager.getSubscription().then(async (getSubscription) => {
+                    //Check if there is an active subscription
+                    if (!getSubscription) {
+                        //User has not subscribed to push Notifications
+                        pushNotificationsStatus = "notSubscribed";
+                        //alert("User has not subscribed to push Notifications")
+                    } else {
+                        var sub = JSON.stringify(getSubscription);
+                        if (subscriptionObjects.includes(sub)) {
+                            pushNotificationsStatus = "subscribed";
+                        } else {
+                            pushNotificationsStatus = "notSubscribed";
+                        }
+                        //alert(sub);
+                    }
+                })
+            }
+        })
+    } else {
+        pushNotificationsStatus = "notSupported";
+    }
 
     var closeUp = document.createElement("div");
     closeUp.classList.add("close-popup");
@@ -6210,7 +6237,7 @@ function notificationsPanel(forumID, userID, enablePushNotifications, subscripti
     <h4>Topics Only</h4>
     </span>
     <label class="toggle">
-    <input class="toggle-input" type="checkbox" id="topics-only" onclick="subscribeToForumNotifications('${forumID}', '${userID}', 'topics-only', ${enablePushNotifications}, '${subscriptionObject}')" />
+    <input ${subscriptionType == "topics-only" ? "checked": ""} class="toggle-input" type="checkbox" id="topics-only" onclick="subscribeToForumNotifications('${forumID}', '${userID}', 'topics-only', ${enablePushNotifications})" />
     <span class="toggle-label" data-off="OFF" data-on="ON"></span>
     <span class="toggle-handle"></span>
     </label>
@@ -6220,7 +6247,7 @@ function notificationsPanel(forumID, userID, enablePushNotifications, subscripti
     <h4>Topics and Responses</h4>
     </span>
     <label class="toggle">
-    <input class="toggle-input" type="checkbox" id="topics-and-responses" onclick="subscribeToForumNotifications('${forumID}', '${userID}', 'topics-and-responses', ${enablePushNotifications}, '${subscriptionObject}')" />
+    <input ${subscriptionType == "topics-and-responses" ? "checked": ""} class="toggle-input" type="checkbox" id="topics-and-responses" onclick="subscribeToForumNotifications('${forumID}', '${userID}', 'topics-and-responses', ${enablePushNotifications})" />
     <span class="toggle-label" data-off="OFF" data-on="ON"></span>
     <span class="toggle-handle"></span>
     </label>
@@ -6230,7 +6257,7 @@ function notificationsPanel(forumID, userID, enablePushNotifications, subscripti
     <h4>Push Notifications</h4>
     </span>
     <label class="toggle">
-    <input class="toggle-input" type="checkbox" id="push-notifications" onclick="subscribeToForumNotifications('${forumID}', '${userID}', 'push-notifications', ${enablePushNotifications}, '${subscriptionObject}')" />
+    <input ${pushNotificationsStatus == "subscribed" ? "checked": ""} class="toggle-input" ${pushNotificationsStatus == "notSupported" ? "disabled": ""} type="checkbox" id="push-notifications" onclick="subscribeToForumNotifications('${forumID}', '${userID}', 'push-notifications', ${enablePushNotifications})" />
     <span class="toggle-label" data-off="OFF" data-on="ON"></span>
     <span class="toggle-handle"></span>
     </label>
@@ -6244,7 +6271,7 @@ function notificationsPanel(forumID, userID, enablePushNotifications, subscripti
     panel.style.display = "block";
 }
 
-function subscribeToForumNotifications(forumID, userID, subscriptionType, enablePushNotifications, subscriptionObject) {
+function subscribeToForumNotifications(forumID, userID, subscriptionType, enablePushNotifications) {
     var topicsOnly = document.getElementById("topics-only");
     var topicsAndResponses = document.getElementById("topics-and-responses");
     var pushNotifications = document.getElementById("push-notifications");
