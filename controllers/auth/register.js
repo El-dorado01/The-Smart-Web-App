@@ -103,8 +103,8 @@ const registerUser = asyncWrapper(async (req, res) => {
                     <!-- Email Body Section -->
                     <mj-section border-radius="1rem" background-color="hsl(252, 30%, 95%)">
                         <mj-column>
-                            <mj-text font-family="Quicksand" align="center" color="#fff" font-size="20px">Email Verification Link</mj-text>
-                            <mj-text font-family="Quicksand" font-size="18px" font-style="italic">Hello ${userDetails.userName},</mj-text>
+                            <mj-text font-family="Quicksand" align="center" font-size="20px">Email Verification Link</mj-text>
+                            <mj-text font-family="Quicksand" font-size="17px" font-style="italic">Hello ${userDetails.userName},</mj-text>
                             <mj-text font-family="Quicksand">
                                 There is one more step to complete for you to begin your social adventure.
                             </mj-text>
