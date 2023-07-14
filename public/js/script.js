@@ -6197,6 +6197,7 @@ async function notificationsPanel(forumID, userID, enablePushNotifications, subs
                 const register = await navigator.serviceWorker.ready;
                 //Get active subscriptions
                 await register.pushManager.getSubscription().then(async (getSubscription) => {
+                    console.log(getSubscription)
                     //Check if there is an active subscription
                     if (!getSubscription) {
                         //User has not subscribed to push Notifications
@@ -6211,6 +6212,7 @@ async function notificationsPanel(forumID, userID, enablePushNotifications, subs
                         }
                         //alert(sub);
                     }
+                    console.log(pushNotificationsStatus);
                 })
             }
         })
