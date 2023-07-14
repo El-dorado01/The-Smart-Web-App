@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs")
 require("dotenv").config();
 
 require("express-async-errors");
@@ -7,6 +8,7 @@ const cookieParser = require("cookie-parser");
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 const { v4: uuidv4 } = require("uuid");
+const mjml2html = require('mjml');
 const jwt = require("jsonwebtoken");
 const express = require("express");
 const app = express();
@@ -78,6 +80,73 @@ const registerUser = asyncWrapper(async (req, res) => {
 
   const fetchUser = await AuthModel.findById(userDetails.userId);
 
+    //Build email body using mjml
+
+        var mjmlOptions = {
+
+            fonts: {
+                'Quicksand': "https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap",
+            }
+        };
+        var mjmlData = `
+            <mjml>
+                <mj-head>
+                    <mj-font name="Quicksand" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" />
+                </mj-head>
+                <mj-body background-color="#FFFFFF">
+                    <!-- Header with Sphere logo -->
+                    <mj-section background-color="#FFFFFF">
+                        <mj-column width="600px">
+                            <mj-image align="center" width="35px" height="35px" src="https://res.cloudinary.com/eldoradotechguy/image/upload/v1688845550/imageUpload/smart_c5sa9e.png" />
+                        </mj-column>
+                    </mj-section>
+                    <!-- Email Body Section -->
+                    <mj-section border-radius="1rem" background-color="hsl(252, 30%, 95%)">
+                        <mj-column>
+                            <mj-text font-family="Quicksand" align="center" color="#fff" font-size="20px">Email Verification Link</mj-text>
+                            <mj-text font-family="Quicksand" font-size="18px" font-style="italic">Hello ${userDetails.userName},</mj-text>
+                            <mj-text font-family="Quicksand">
+                                There is one more step to complete for you to begin your social adventure.
+                            </mj-text>
+                            <mj-text font-family="Quicksand">
+                                Please click the button below to verify your email. You can also copy and paste the link below in your browser.
+                            </mj-text>
+                            <mj-button font-family="Quicksand" href="http://localhost:5050/emailVerification/verify_email/${userDetails.userId}/key?keyValue=${key}" border-radius="2rem" align="center" background-color="#3b5998">
+                                Verify
+                            </mj-button>
+                            <mj-button font-family="Quicksand" href="http://localhost:5050/emailVerification/verify_email/${userDetails.userId}/key?keyValue=${key}">
+                                http://localhost:5050/emailVerification/verify_email/${userDetails.userId}/key?keyValue=${key}
+                            </mj-button>
+                            <mj-text font-family="Quicksand">
+                                Thanks, Sphere Inc.
+                            </mj-text>
+                        </mj-column>
+                    </mj-section>
+                    <!-- Email Footer & Social Icons -->
+                    <mj-section background-color="#FFFFFF">
+                        <mj-column width="500px">
+                            <mj-text align="center" padding="0">&copy; 2023 Sphere, Inc. All rights reserved.</mj-text>
+                            <mj-text align="center" padding="0"> Avenue 8 Iludun, Osogbo Osun, Nigeria.</mj-text>
+                            <mj-social align="center">
+                                <mj-social-element name="facebook"></mj-social-element>
+                                <mj-social-element name="twitter"></mj-social-element>
+                                <mj-social-element name="instagram"></mj-social-element>
+                            </mj-social>
+                        </mj-column>
+                    </mj-section>
+                </mj-body>
+            </mjml>
+        `;
+
+  const { html, errors } = mjml2html(mjmlData, mjmlOptions);
+
+  if (errors.length) {
+    console.error(errors);
+  } else {
+    //console.log(html);
+    // Further processing with the generated HTML
+  }
+  
   //Send Email for Verification
   const oAuth2Client = new google.auth.OAuth2(process.env.OAUTH_CLIENT_ID, process.env.OAUTH_CLIENT_SECRET, process.env.OAUTH_REDIRECT_URI);
   oAuth2Client.setCredentials({ refresh_token: process.env.OAUTH_REFRESH_TOKEN })
@@ -102,37 +171,7 @@ const registerUser = asyncWrapper(async (req, res) => {
             from: "Sphere Web App <sphere@sphereweb.com>",
             to: `${fetchUser.email}`,
             subject: "Email Verification Link",
-            //text: "Here is your verification link",
-            html: `
-                    <p style="
-                        font-size: 1.5rem; 
-                        margin-bottom: 10px;
-                    ">
-                        <b>Hello</b>, ${userDetails.userName}!
-                    </p>
-                    <p style="
-                        font-size: 1rem; 
-                        margin-bottom: 5px;
-                    ">
-                        Here is your email verification link. You can 
-                        <a style="
-                            padding: 0.2rem; 
-                            border-radius: 5px; 
-                            background: rgb(8, 119, 194); 
-                            text-decoration: none; 
-                            cursor: pointer;
-                        " href="http://localhost:5050/emailVerification/verify_email/${userDetails.userId}/key?keyValue=${key}">Click Here</a> 
-                        to verify your account or copy and paste the link below in your browser;
-                    </p>
-                    <p style="
-                        font-size: 1rem; 
-                        font-weight: 600;
-                    ">
-                        <a href="http://localhost:5050/emailVerification/verify_email/${userDetails.userId}/key?keyValue=${key}" style="text-decoration: underline;">
-                            http://localhost:5050/emailVerification/verify_email/${userDetails.userId}/key?keyValue=${key}
-                        </a>
-                    </p>
-                `,
+            html: html,
         };
 
         const result = await transporter.sendMail(message);
@@ -153,141 +192,9 @@ const registerUser = asyncWrapper(async (req, res) => {
 //     },
 //   });
 
-  // Message object
-//   let message = {
-//     from: "Smart Web App <adebayosodiqkolade.email>",
-//     to: `${userDetails.userName} <${fetchUser.email}>`,
-//     subject: "Successful registration",
-//     html: `
-//         <html>
-//             <head>
-//                 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet">
-//                 <script src="https://kit.fontawesome.com/02e26faee8.js" crossorigin="anonymous"></script>
-//             </head>
-//             <body>
-//                 <div style="
-//                 background: hsl(252, 30%, 95%);
-//                 height: 100vh;
-//                 width: 100%;
-//                 ">
-//                     <div style="
-//                         width: 100%;
-//                         height: 25%;
-//                         display: flex;
-//                         flex-direction: column;
-//                         align-items: center;
-//                         justify-content: center;
-//                         background-color: hsl(252, 30%, 17%);
-//                         color: hsl(252, 30%, 95%);
-//                     ">
-//                         <h2 style="
-//                             font-size: 3rem; 
-//                             font-weight: bold; 
-//                             margin-bottom: 30px;
-//                         ">Smart Web</h2>
-//                         <a href="" style="
-//                             border-radius: 1rem; 
-//                             padding: 1rem; 
-//                             display: flex; 
-//                             align-items: center; 
-//                             justify-content: center;
-//                             border: hsl(252, 30%, 100%) 1px solid;
-//                             background: hsl(252, 30%, 95%);
-//                         ">Get Started</a>
-//                     </div>
-//                     <div style="
-//                         display: flex;
-//                         align-items: center;
-//                         justify-content: center;
-//                         margin: 40px 0 15px 0;
-//                         height: 50%;
-//                     ">
-//                         <div style="
-//                             width: 70%;
-//                             height: auto;
-//                             padding: 1rem 0;
-//                             border-radius: 1rem;
-//                             background: hsl(252, 30%, 100%);
-//                         ">
-//                             <div style="
-//                                 border-radius: 1rem 1rem 0 0; 
-//                                 padding: 1rem; 
-//                                 border-bottom: 1px solid;
-//                             ">
-//                                 <h4 style="
-//                                     font-size: 1.8rem; 
-//                                     font-weight: 600;
-//                                 ">Email Verification Link</h4>
-//                             </div>
-//                             <div style="
-//                                 padding: 1rem; 
-//                                 margin-top: 20px; 
-//                                 border-radius: 0 0 1rem 1rem;
-//                                 line-height: 20px;
-//                             ">
-//                                 <p style="
-//                                     font-size: 1.5rem; 
-//                                     margin-bottom: 10px;
-//                                 ">
-//                                     <b>Hello</b>, ${userDetails.userName}!
-//                                 </p>
-//                                 <p style="
-//                                     font-size: 1rem; 
-//                                     margin-bottom: 5px;
-//                                 ">
-//                                     Here is your email verification link. You can 
-//                                     <a style="
-//                                         padding: 0.2rem; 
-//                                         border-radius: 5px; 
-//                                         background: rgb(8, 119, 194); 
-//                                         text-decoration: none; 
-//                                         cursor: pointer;
-//                                     " href="http://localhost:5050/emailVerification/verify_email/${userDetails.userId}/key?keyValue=${key}">Click Here</a> 
-//                                     to verify your account or copy and paste the link below in your browser;
-//                                 </p>
-//                                 <p style="
-//                                     font-size: 1rem; 
-//                                     font-weight: 600;
-//                                 ">
-//                                     <a href="http://localhost:5050/emailVerification/verify_email/${userDetails.userId}/key?keyValue=${key}" style="text-decoration: underline;">
-//                                         http://localhost:5050/emailVerification/verify_email/${userDetails.userId}/key?keyValue=${key}
-//                                     </a>
-//                                 </p>
-//                             </div>
-//                         </div>
-//                     </div>
-//                     <div style="
-//                         border: 1px solid;
-//                         width: 100%;
-//                         height: auto;
-//                         background-color: hsl(252, 30%, 17%);
-//                         display: flex;
-//                         flex-direction: column;
-//                         align-items: center;
-//                         justify-content: center;
-//                         color: hsl(252, 30%, 95%);
-//                         padding: 1rem 0;
-//                     ">
-//                         <p style="font-size: 1.8rem;"><i class="fa fa-copyright"></i> Smart Web</p>
-//                         <p style="font-size: 1.5rem; margin-bottom: 5px;">Avenue 8, Sango Ota, Lagos, Nigeria</p>
-//                         <div style="font-size: 1.5rem;">
-//                             <span><a href=""><i class="fa fa-facebook-square"></i></a></span>
-//                             <span><a href=""><i class="fa fa-twitter-square"></i></a></span>
-//                             <span><a href=""><i class="fa fa-instagram"></i></a></span>
-//                         </div>
-//                     </div>
-//                 </div>
-//             </body>
-//         </html>
-        
-//         `,
-//   };
-
-//   await transporter.sendMail(message);
-
 sendMail().then(result => {
     // =====================Email Verification Sent==================== //
-    console.log("Registration successfully", result);
+    console.log("Registration successfully");
 }).catch(err => {
     console.error("An error occurred: ", err)
 })
