@@ -6186,40 +6186,7 @@ function sendRequestToJoinTwo(event, forumID, actionType) {
     });
 }
 
-async function notificationsPanel(forumID, userID, enablePushNotifications, subscriptionObjects, subscriptionType) {
-    var pushNotificationsStatus;
-
-    if ('serviceWorker' in navigator && 'PushManager' in window) {
-        // Request push notification permission from user
-        Notification.requestPermission().then(async (permission) => {
-            if (permission === "granted") {
-                //console.log(subscriptionObjects);
-                const register = await navigator.serviceWorker.ready;
-                //Get active subscriptions
-                await register.pushManager.getSubscription().then(async (getSubscription) => {
-                    console.log(getSubscription)
-                    //Check if there is an active subscription
-                    if (!getSubscription) {
-                        //User has not subscribed to push Notifications
-                        pushNotificationsStatus = "notSubscribed";
-                        //alert("User has not subscribed to push Notifications")
-                    } else {
-                        var sub = JSON.stringify(getSubscription);
-                        if (subscriptionObjects.includes(sub)) {
-                            pushNotificationsStatus = "subscribed";
-                        } else {
-                            pushNotificationsStatus = "notSubscribed";
-                        }
-                        //alert(sub);
-                    }
-                    console.log(pushNotificationsStatus);
-                })
-            }
-        })
-    } else {
-        pushNotificationsStatus = "notSupported";
-    }
-
+function getSubscriptionStatus(pushNotificationsStatus, forumID, userID, enablePushNotifications, subscriptionType) {
     var closeUp = document.createElement("div");
     closeUp.classList.add("close-popup");
     closeUp.setAttribute("style",
@@ -6259,7 +6226,7 @@ async function notificationsPanel(forumID, userID, enablePushNotifications, subs
     <h4>Push Notifications</h4>
     </span>
     <label class="toggle">
-    <input ${pushNotificationsStatus == "subscribed" ? "checked": ""} class="toggle-input" ${pushNotificationsStatus == "notSupported" ? "disabled": ""} type="checkbox" id="push-notifications" onclick="subscribeToForumNotifications('${forumID}', '${userID}', 'push-notifications', ${enablePushNotifications})" />
+    <input ${pushNotificationsStatus == "subscribed" ? "checked": "data-src"} class="toggle-input" ${pushNotificationsStatus == "notSupported" ? "disabled": ""} type="checkbox" id="push-notifications" onclick="subscribeToForumNotifications('${forumID}', '${userID}', 'push-notifications', ${enablePushNotifications})" />
     <span class="toggle-label" data-off="OFF" data-on="ON"></span>
     <span class="toggle-handle"></span>
     </label>
@@ -6271,6 +6238,40 @@ async function notificationsPanel(forumID, userID, enablePushNotifications, subs
     panel.querySelector(".card").appendChild(closeUp);
     panel.querySelector(".card").appendChild(div);
     panel.style.display = "block";
+}
+
+async function notificationsPanel(forumID, userID, enablePushNotifications, subscriptionObjects, subscriptionType) {
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+        // Request push notification permission from user
+        Notification.requestPermission().then(async (permission) => {
+            if (permission === "granted") {
+                //console.log(subscriptionObjects);
+                const register = await navigator.serviceWorker.ready;
+                //Get active subscriptions
+                await register.pushManager.getSubscription().then(async (getSubscription) => {
+                    //console.log(getSubscription)
+                    //Check if there is an active subscription
+                    if (!getSubscription) {
+                        //User has not subscribed to push Notifications
+                        pushNotificationsStatus = "notSubscribed";
+                        //alert("User has not subscribed to push Notifications")
+                    } else {
+                        var sub = JSON.stringify(getSubscription);
+                        if (subscriptionObjects.includes(sub)) {
+                            pushNotificationsStatus = "subscribed";
+                        } else {
+                            pushNotificationsStatus = "notSubscribed";
+                        }
+                        //alert(sub);
+                    }
+                    getSubscriptionStatus(pushNotificationsStatus, forumID, userID, enablePushNotifications, subscriptionType);
+                })
+            }
+        })
+    } else {
+        pushNotificationsStatus = "notSupported";
+        getSubscriptionStatus(pushNotificationsStatus, forumID, userID, enablePushNotifications, subscriptionType)
+    }
 }
 
 function subscribeToForumNotifications(forumID, userID, subscriptionType, enablePushNotifications) {
