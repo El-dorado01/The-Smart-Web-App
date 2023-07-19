@@ -6365,7 +6365,7 @@ async function subscribeToPushNotifications(forumID, userID, actionType) {
                     if (!getSubscription) {
                         const subscription = await register.pushManager.subscribe({
                             userVisibleOnly: true,
-                            applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+                            applicationServerKey: publicVapidKey,
                         });
 
                         var sub = JSON.stringify(subscription);
