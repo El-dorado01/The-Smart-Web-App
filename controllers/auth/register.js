@@ -175,6 +175,7 @@ const registerUser = asyncWrapper(async (req, res) => {
         };
 
         const result = await transporter.sendMail(message);
+      console.log(accessToken);
         return result;
     } catch (err) {
         return err;
@@ -194,7 +195,7 @@ const registerUser = asyncWrapper(async (req, res) => {
 
 sendMail().then(result => {
     // =====================Email Verification Sent==================== //
-    console.log("Registration successfully");
+    console.log("Registration successfully", result);
 }).catch(err => {
     console.error("An error occurred: ", err)
 })
