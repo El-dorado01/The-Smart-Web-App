@@ -6525,3 +6525,87 @@ function formatVideoDuration(duration) {
 
     return formattedDuration;
 }
+
+function exitForum(forumID, actionType){
+    const formData = new FormData();
+
+    formData.append("forumID",
+        forumID);
+    formData.append("actionType",
+        actionType);
+        
+    fetch("/dashboard/public/exitForum",
+        {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+            body: formData,
+        })
+    .then(function (res) {
+        return res.json();
+    })
+    .then(function (json) {
+        if (json.success == true) {
+            window.location.href = "/dashboard/public/forums"
+        } else {
+            dangerAlert.style.display = "block";
+            dangerMessage.textContent = json.msg;
+
+            setTimeout(() => {
+                dangerAlert.style.display = "none";
+            }, 5000);
+        }
+    })
+    .catch(function (err) {
+        console.log(err);
+    });
+}
+
+function exitForumsPanel(forumID, forumCreator, userID) {
+    var actionType;
+    var closeUp = document.createElement("div");
+    closeUp.classList.add("close-popup");
+    closeUp.setAttribute("style",
+        "cursor: pointer;");
+    closeUp.setAttribute("onclick",
+        `cancelEjectMembers()`);
+    closeUp.innerHTML = `
+    <span><i class="fa fa-times"></i></span>
+    `;
+
+    //check if current user is the forum creator
+    if(forumCreator == userID){
+        actionType = "deleteForum";
+        var div = document.createElement("div");
+        div.classList.add("content");
+        div.innerHTML = `
+        <h2>Delete Forum</h2>
+        <span>Are you sure you want to delete this forum and its resources? You can choose to revoke this action within 30 days after which this forum will be deleted. </span>
+        `;
+    }else{
+        actionType = "exitForum";
+        var div = document.createElement("div");
+        div.classList.add("content");
+        div.innerHTML = `
+        <h2>Exit Forum</h2>
+        <span>Are you sure you want to leave this forum? You may have to get this forum invite link before you can join back. </span>
+        `;
+    }
+
+    var actionDiv = document.createElement("div");
+    actionDiv.classList.add("action");
+    actionDiv.innerHTML = `
+    <button class="btn btn-danger" onclick="cancelEjectMembers()">No</button>
+    <button class="btn btn-primary" onclick="exitForum('${forumID}', '${actionType}');">Yes</button>
+    `;
+
+    var panel = document.querySelector(".confirm-popup");
+    panel.querySelector(".card").innerHTML = "";
+    panel.querySelector(".card").appendChild(closeUp);
+    panel.querySelector(".card").appendChild(div);
+    panel.querySelector(".card").appendChild(actionDiv);
+    panel.style.display = "block";
+}

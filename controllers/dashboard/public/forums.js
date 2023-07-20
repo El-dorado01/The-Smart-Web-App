@@ -75,6 +75,23 @@ const processInvite = asyncWrapper(async (req, res) => {
     userId: payload.userId,
     userName: payload.userName,
   };
+  
+  const userNotificationStatus = await ForumNotificationsModel.aggregate([
+    {
+      $match: { forumID }
+    },
+    {
+      $project: {
+        susbscriber: {
+          $filter: {
+            input: '$notificationSubscribers',
+            as: 'item',
+            cond: { $eq: ['$$item.userID', user.userId] }
+          }
+        }
+      }
+    }
+  ])
 
   var thereIsRequest = false;
   const forumInfoKey = await ForumsModel.findById(forumID);
@@ -107,13 +124,13 @@ const processInvite = asyncWrapper(async (req, res) => {
 
     if(isInactive == true){
       const memberRejoined = await ForumsModel.findOneAndUpdate(
-        { _id: forumID, "members.userID": memberID },
+        { _id: forumID, "members.userID": user.userId },
         { $set: { "members.$.memberStatus": "active" } }
       );
 
       if (memberRejoined) {
         console.log(
-          "New Member " + user.userId + " has rejoined the forum " + forumID
+          "A Member " + user.userId + " has rejoined the forum " + forumID
         );
 
         var msg = {
@@ -259,6 +276,7 @@ const processInvite = asyncWrapper(async (req, res) => {
     res.locals.incomingMsg = true;
     res.locals.forumRanks = forumRanks;
     res.locals.thereIsRequest = thereIsRequest;
+    res.locals.userNotificationStatus = userNotificationStatus[0].susbscriber[0];
     res
       .status(StatusCodes.OK)
       .render("./dashboard/public/forums/single_forum_page", {
@@ -347,6 +365,7 @@ const processInvite = asyncWrapper(async (req, res) => {
     res.locals.incomingMsg = true;
     res.locals.forumRanks = forumRanks;
     res.locals.thereIsRequest = thereIsRequest;
+    res.locals.userNotificationStatus = userNotificationStatus[0].susbscriber[0];
     res
       .status(StatusCodes.OK)
       .render("./dashboard/public/forums/single_forum_page", {
@@ -1088,7 +1107,7 @@ const updateForumRanks = asyncWrapper(async (req, res) => {
   }
 });
 
-const deleteForum = asyncWrapper(async (req, res) => {
+const exitForum = asyncWrapper(async (req, res) => {
   const { forumID } = req.body;
 
   const cookies = req.cookies;
@@ -1099,7 +1118,20 @@ const deleteForum = asyncWrapper(async (req, res) => {
     userName: payload.userName,
   };
 
+  var isAModerator = false;
+  var isAMember = false;
   const forumInfo = await ForumsModel.findById({ _id: forumID });
+  const fetchMemberStatusAsAMember = await ForumsModel.findOne({
+    _id: forumID,
+    $and: [{ "members.userID": user.userId }, { "members.memberStatus": "active" }],  
+  });
+  const fetchMemberStatusAsAModerator = await ForumsModel.findOne({
+      _id: forumID,
+      "moderators.userID": user.Id,
+  });
+  
+  if(fetchMemberStatusAsAMember) isAMember = true;
+  if(fetchMemberStatusAsAModerator) isAModerator = true;
 
   //Check if user is the forum creator
   if (forumInfo.creator == user.userId) {
@@ -1110,13 +1142,43 @@ const deleteForum = asyncWrapper(async (req, res) => {
     const forumRankingsDeleted = await ForumRankingsModel.findByOneAndDelete({
       forumID,
     });
+    const forumNotificationsDeleted = await ForumNotificationsModel.findByOneAndDelete({
+        forumID
+    });
 
     //Redirect to all forums page after delete
-    if (forumDeleted && forumTopicsDeleted && forumRankingsDeleted) {
+    if (forumDeleted && forumTopicsDeleted && forumRankingsDeleted && forumNotificationsDeleted) {
       res
-        .status(StatusCodes.PERMANENT_REDIRECT)
-        .redirect("/dashboard/public/forums");
+        .status(StatusCodes.OK)
+            .json({
+                success: true,
+                msg: "You have deleted and left this forum"
+            });
     }
+  } else if(isAMember == true){
+      //Remove member by setting member status to inactive
+      const memberRemoved = await ForumsModel.findOneAndUpdate(
+          { _id: forumID, "members.userID": user.userId },
+          { $set: { "members.$.memberStatus": "inactive" } }
+      );
+      
+      //Check if user is a moderator and remove them
+      if(isAModerator == true){
+          await ForumsModel.findOneAndUpdate(
+              { _id: forumID },
+              { $pull: { moderators: { userID: user.userId } } }
+          )
+      }
+      
+      if(memberRemoved){
+          console.log("Member " + user.userId + " has left the forum");
+          res
+            .status(StatusCodes.OK)
+            .json({
+                success: true,
+                msg: "You have left this forum"
+            });
+      }
   } else {
     res
       .status(StatusCodes.FORBIDDEN)
@@ -3096,7 +3158,7 @@ module.exports = {
   createForum,
   modifyModerators,
   updateForumRanks,
-  deleteForum,
+  exitForum,
   updateForumDisplayPic,
   updateForumProfile,
   performActionAsModerator,

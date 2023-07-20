@@ -1,10 +1,10 @@
 const path = require("path");
 const fs = require("fs");
-//const sharp = require('sharp');
+const sharp = require('sharp');
 const ffmpeg = require('fluent-ffmpeg');
-//const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
+const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
 
-//ffmpeg.setFfmpegPath(ffmpegInstaller.path);
+ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 //const Jimp = require('jimp');
 const {
     v4: uuidv4

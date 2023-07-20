@@ -24,7 +24,7 @@ const {
   createForum,
   modifyModerators,
   updateForumRanks,
-  deleteForum,
+  exitForum,
   updateForumDisplayPic,
   updateForumProfile,
   performActionAsModerator,
@@ -39,6 +39,7 @@ const {
 // const { singleForum } = require("../controllers/dashboard/public/forum-single");
 const {
   smartNetwork,
+  singleFeed
 } = require("../controllers/dashboard/public/smartNetwork");
 const { helpCentre } = require("../controllers/dashboard/public/helpCenter");
 
@@ -57,6 +58,7 @@ router.route("/member_profile/:forumID/key?:memberID").get(visitMemberProfile);
 // // router.route("/live_space?name=&id=").get(videoSpace)
 router.route("/profile").get(profile);
 router.route("/smart_network").get(smartNetwork);
+router.route("/smart_network/:feedID").get(singleFeed);
 // router.route("/help_centre").get(helpCentre);
 router.route("/settings").get(settingsForm);
 
@@ -65,7 +67,7 @@ router.route("/settings").get(settingsForm);
 router.route("/createForum").post(createForum);
 router.route("/modifyModerators").post(modifyModerators);
 router.route("/updateForumRanks").post(updateForumRanks);
-router.route("/deleteForum").post(deleteForum);
+router.route("/exitForum").post(exitForum);
 router.route("/updateForumDisplayPic").post(updateForumDisplayPic);
 router.route("/updateForumProfile").post(updateForumProfile);
 router.route("/performActionAsModerator").post(performActionAsModerator);

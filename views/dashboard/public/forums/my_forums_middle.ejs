@@ -22,6 +22,11 @@
             </h6>
         </div>
         <div class="postFeeds" id="my-forums-middle">
+            <% if (forums.length < 1) { %>
+                <div class="body">
+                    <span class="text-muted">You have no forums</span>
+                </div>
+                <% }else{ %>
             <!--Search Bar-->
             <div class="search-bar2">
                 <i class="fa fa-search"></i>
@@ -69,6 +74,7 @@
                     <% } 
                 }) %>
             </div>
+            <% } %>
             <button class="btn btn-primary" style="margin-top: 10px;" onclick="showCreateForum()">
                 <span class="fa fa-plus"></span>
                 Create a Forum
